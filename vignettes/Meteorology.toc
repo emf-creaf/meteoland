@@ -1,0 +1,36 @@
+\contentsline {section}{\numberline {1}Introduction to the package}{3}{section.1}
+\contentsline {subsection}{\numberline {1.1}Purpose}{3}{subsection.1.1}
+\contentsline {subsection}{\numberline {1.2}Meteorological variables}{3}{subsection.1.2}
+\contentsline {subsection}{\numberline {1.3}Spatial variation of meteorology and topography}{4}{subsection.1.3}
+\contentsline {subsection}{\numberline {1.4}Reading and writing meteorological data}{6}{subsection.1.4}
+\contentsline {subsubsection}{\numberline {1.4.1}Point meteorology}{6}{subsubsection.1.4.1}
+\contentsline {subsubsection}{\numberline {1.4.2}Grid meteorology}{7}{subsubsection.1.4.2}
+\contentsline {subsection}{\numberline {1.5}Meteorology estimation functions}{7}{subsection.1.5}
+\contentsline {subsubsection}{\numberline {1.5.1}Spatial interpolation}{7}{subsubsection.1.5.1}
+\contentsline {subsubsection}{\numberline {1.5.2}Statistical downscaling}{9}{subsubsection.1.5.2}
+\contentsline {section}{\numberline {2}Spatial interpolation of weather records}{10}{section.2}
+\contentsline {subsection}{\numberline {2.1}Overview}{10}{subsection.2.1}
+\contentsline {subsection}{\numberline {2.2}Interpolation weights}{10}{subsection.2.2}
+\contentsline {subsection}{\numberline {2.3}Temperature}{12}{subsection.2.3}
+\contentsline {subsection}{\numberline {2.4}Relative humidity}{14}{subsection.2.4}
+\contentsline {subsection}{\numberline {2.5}Precipitation}{17}{subsection.2.5}
+\contentsline {subsection}{\numberline {2.6}Wind}{19}{subsection.2.6}
+\contentsline {subsubsection}{\numberline {2.6.1}Simple wind interpolation}{19}{subsubsection.2.6.1}
+\contentsline {subsubsection}{\numberline {2.6.2}Interpolation using wind fields}{20}{subsubsection.2.6.2}
+\contentsline {section}{\numberline {3}Estimation of solar radiation}{20}{section.3}
+\contentsline {subsection}{\numberline {3.1}Solar declination}{20}{subsection.3.1}
+\contentsline {subsection}{\numberline {3.2}Day length}{21}{subsection.3.2}
+\contentsline {subsection}{\numberline {3.3}Potential radiation}{24}{subsection.3.3}
+\contentsline {subsection}{\numberline {3.4}Incident solar radiation}{25}{subsection.3.4}
+\contentsline {subsection}{\numberline {3.5}Outgoing longwave radiation and net radiation}{27}{subsection.3.5}
+\contentsline {section}{\numberline {4}Statistical downscaling of coarse-scale weather data}{28}{section.4}
+\contentsline {subsection}{\numberline {4.1}Precipitation}{29}{subsection.4.1}
+\contentsline {subsection}{\numberline {4.2}Other variables}{29}{subsection.4.2}
+\contentsline {section}{\numberline {5}Estimation of potential evapo-transpiration}{30}{section.5}
+\contentsline {subsection}{\numberline {5.1}Penman formulation}{31}{subsection.5.1}
+\contentsline {subsection}{\numberline {5.2}Penman-Monteith formulation}{33}{subsection.5.2}
+\contentsline {section}{\numberline {6}Miscellaneous functions}{33}{section.6}
+\contentsline {subsection}{\numberline {6.1}Downloading data from AEMET}{33}{subsection.6.1}
+\contentsline {subsection}{\numberline {6.2}Extraction of climatic netCDF data}{33}{subsection.6.2}
+\contentsline {subsection}{\numberline {6.3}Obtaining static wind fields}{34}{subsection.6.3}
+\contentsline {section}{\numberline {7}References}{35}{section.7}

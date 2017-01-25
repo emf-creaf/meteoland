@@ -1,0 +1,36 @@
+\encoding{UTF-8}
+\name{spplot}
+\alias{spplot,SpatialGridTopography-method}
+\alias{spplot,SpatialGridMeteorology-method}
+
+\title{Spatial grid plots}
+\description{
+Function \code{spplot} for \code{\link{SpatialGridTopography-class}} objects allows drawing maps of topographic attributes. Function \code{spplot} for \code{\link{SpatialGridMeteorology-class}} objects allows drawing maps of meteorological variables corresponding to specific dates.
+}
+\usage{
+\S4method{spplot}{SpatialGridTopography}(obj, variable="elevation",...)
+\S4method{spplot}{SpatialGridMeteorology}(obj, date, variable="MeanTemperature", ...)
+}
+%- maybe also 'usage' for other objects documented here.
+\arguments{
+  \item{obj}{An object of class \code{SpatialGridTopography}.}
+  \item{variable}{A string of the variable to be plotted (only \code{type="elevation"}, \code{type="slope"}, \code{type="aspect"} are allowed).}
+  \item{...}{Additional parameters to function \code{\link{spplot}}.}
+  \item{date}{A string or an integer for the date to be plotted.}
+}
+\author{
+Miquel De \enc{Cáceres}{Caceres} Ainsa, Biodiversity and Landscape Ecology Laboratory, Centre Tecnologic Forestal de Catalunya
+}
+\seealso{
+\code{\link{meteoplot}}
+}
+\examples{
+data(examplegridtopography)
+
+#Display data
+spplot(examplegridtopography, type="elevation", scales=list(draw=TRUE))
+spplot(examplegridtopography, type="slope", scales=list(draw=TRUE))
+spplot(examplegridtopography, type="aspect", scales=list(draw=TRUE))
+}
+% Add one or more standard keywords, see file 'KEYWORDS' in the
+% R documentation directory.

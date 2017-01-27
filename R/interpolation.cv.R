@@ -62,49 +62,49 @@ interpolation.cv<-function(object, stations = NULL, verbose = FALSE) {
   
   #Process results
   nstations = length(codes)
-  mintemp_station_mae = numeric(nstations)
-  mintemp_station_bias = numeric(nstations)
-  mintemp_day_mae = numeric(ndates)
-  mintemp_day_bias = numeric(ndates)
+  mintemp_station_mae =rep(NA,nstations)
+  mintemp_station_bias = rep(NA,nstations)
+  mintemp_day_mae = rep(NA,ndates)
+  mintemp_day_bias = rep(NA,ndates)
   mintemp_obs = as.matrix(object@MinTemperature[stations,])
   mintemp_pred = as.matrix(MinTemperature[stations,])
   mintemp_pred[is.na(mintemp_obs)] = NA
   mintemp_error = mintemp_pred-mintemp_obs
   mintemp_r2 = cor(as.vector(mintemp_pred), as.vector(mintemp_obs), use="complete.obs")
     
-  maxtemp_station_mae = numeric(nstations)
-  maxtemp_station_bias = numeric(nstations)
-  maxtemp_day_mae = numeric(ndates)
-  maxtemp_day_bias = numeric(ndates)
+  maxtemp_station_mae = rep(NA,nstations)
+  maxtemp_station_bias = rep(NA,nstations)
+  maxtemp_day_mae = rep(NA,ndates)
+  maxtemp_day_bias = rep(NA,ndates)
   maxtemp_obs = as.matrix(object@MaxTemperature[stations,])
   maxtemp_pred = as.matrix(MaxTemperature[stations,])
   maxtemp_pred[is.na(maxtemp_obs)] = NA
   maxtemp_error = maxtemp_pred-maxtemp_obs
   maxtemp_r2 = cor(as.vector(maxtemp_pred), as.vector(maxtemp_obs), use="complete.obs")
   
-  temprange_station_mae = numeric(nstations)
-  temprange_station_bias = numeric(nstations)
-  temprange_day_mae = numeric(ndates)
-  temprange_day_bias = numeric(ndates)
+  temprange_station_mae = rep(NA,nstations)
+  temprange_station_bias = rep(NA,nstations)
+  temprange_day_mae = rep(NA,ndates)
+  temprange_day_bias =rep(NA,ndates)
   temprange_obs = maxtemp_obs - mintemp_obs
   temprange_pred = maxtemp_pred - mintemp_pred
   temprange_error = temprange_pred - temprange_obs
   temprange_r2 = cor(as.vector(temprange_pred), as.vector(temprange_obs), use="complete.obs")
   
-  rh_station_mae = numeric(nstations)
-  rh_station_bias = numeric(nstations)
-  rh_day_mae = numeric(ndates)
-  rh_day_bias = numeric(ndates)
+  rh_station_mae = rep(NA,nstations)
+  rh_station_bias = rep(NA,nstations)
+  rh_day_mae = rep(NA,ndates)
+  rh_day_bias = rep(NA,ndates)
   rh_obs = as.matrix(object@RelativeHumidity[stations,])
   rh_pred = as.matrix(RelativeHumidity[stations,])
   rh_pred[is.na(rh_obs)] = NA
   rh_error = rh_pred-rh_obs
   rh_r2 = cor(as.vector(rh_pred), as.vector(rh_obs), use="complete.obs")
   
-  rad_station_mae = numeric(nstations)
-  rad_station_bias = numeric(nstations)
-  rad_day_mae = numeric(ndates)
-  rad_day_bias = numeric(ndates)
+  rad_station_mae = rep(NA,nstations)
+  rad_station_bias = rep(NA,nstations)
+  rad_day_mae = rep(NA,ndates)
+  rad_day_bias = rep(NA,ndates)
   rad_obs = as.matrix(object@Radiation[stations,])
   rad_pred = as.matrix(Radiation[stations,])
   rad_pred[is.na(rad_obs)] = NA
@@ -115,23 +115,30 @@ interpolation.cv<-function(object, stations = NULL, verbose = FALSE) {
   prec_pred = as.matrix(Precipitation[stations,])
   prec_pred[is.na(prec_obs)] = NA
   prec_error = prec_pred-prec_obs
-  totalprec_station_relbias = numeric(nstations)
-  totalprec_station_bias = numeric(nstations)
-  precdays_station_bias = numeric(nstations)
-  precdays_station_relbias = numeric(nstations)
-  totalprec_day_relbias = numeric(ndates)
-  totalprec_day_bias = numeric(ndates)
-  precstations_day_bias = numeric(ndates)
-  precstations_day_relbias = numeric(ndates)
+  totalprec_station_relbias = rep(NA,nstations)
+  totalprec_station_bias = rep(NA,nstations)
+  precdays_station_bias =rep(NA,nstations)
+  precdays_station_relbias = rep(NA,nstations)
+  totalprec_day_relbias = rep(NA,ndates)
+  totalprec_day_bias = rep(NA,ndates)
+  precstations_day_bias =rep(NA,ndates)
+  precstations_day_relbias = rep(NA,ndates)
   totalprec_stations_obs = rowSums(prec_obs,na.rm=TRUE)
+  totalprec_stations_obs[totalprec_stations_obs==0] = NA
   totalprec_days_obs = colSums(prec_obs,na.rm=TRUE)
+  totalprec_days_obs[totalprec_days_obs==0]= NA
   totalprec_stations_pred = rowSums(prec_pred,na.rm=TRUE)
+  totalprec_stations_pred[totalprec_stations_pred==0] = NA
   totalprec_days_pred = colSums(prec_pred,na.rm=TRUE)
+  totalprec_days_pred[totalprec_days_pred==0] = NA
   precfreq_stations_obs = rowMeans(prec_obs>0,na.rm=TRUE)
+  precfreq_stations_obs[is.na(totalprec_stations_obs)] = NA
   precfreq_days_obs = colMeans(prec_obs>0,na.rm=TRUE)
+  precfreq_days_obs[is.na(totalprec_days_obs)]=NA
   precfreq_stations_pred = rowMeans(prec_pred>0,na.rm=TRUE)
+  precfreq_stations_pred[is.na(totalprec_stations_pred)] = NA
   precfreq_days_pred = colMeans(prec_pred>0,na.rm=TRUE)
-
+  precfreq_days_pred[is.na(totalprec_days_pred)] = NA
 
 
   for(p in 1:nstations) {
@@ -145,12 +152,14 @@ interpolation.cv<-function(object, stations = NULL, verbose = FALSE) {
     rh_station_mae[p] = mean(abs(rh_error[p,]),na.rm=TRUE)
     rad_station_bias[p] = mean(rad_error[p,],na.rm=TRUE)
     rad_station_mae[p] = mean(abs(rad_error[p,]),na.rm=TRUE)
-    totalprec_station_bias[p] = sum(prec_pred[p,],na.rm=TRUE)-sum(prec_obs[p,],na.rm=TRUE)
-    totalprec_station_relbias[p] = 100*(sum(prec_pred[p,],na.rm=TRUE)-sum(prec_obs[p,],na.rm=TRUE))/sum(prec_obs[p,],na.rm=TRUE)
-    if(is.na(totalprec_station_relbias[p])) totalprec_station_relbias[p] = 0.0
-    precdays_station_bias[p] =sum(prec_pred[p,]>0,na.rm=TRUE)-sum(prec_obs[p,]>0,na.rm=TRUE)
-    precdays_station_relbias[p] = 100*(sum(prec_pred[p,]>0,na.rm=TRUE)-sum(prec_obs[p,]>0,na.rm=TRUE))/sum(prec_obs[p,]>0,na.rm=TRUE)
-    if(is.na(precdays_station_relbias[p])) precdays_station_relbias[p] = 0.0
+    if(!is.na(totalprec_stations_pred[p])) {
+      totalprec_station_bias[p] = sum(prec_pred[p,],na.rm=TRUE)-sum(prec_obs[p,],na.rm=TRUE)
+      totalprec_station_relbias[p] = 100*(sum(prec_pred[p,],na.rm=TRUE)-sum(prec_obs[p,],na.rm=TRUE))/sum(prec_obs[p,],na.rm=TRUE)
+      if(is.na(totalprec_station_relbias[p])) totalprec_station_relbias[p] = NA
+      precdays_station_bias[p] =sum(prec_pred[p,]>0,na.rm=TRUE)-sum(prec_obs[p,]>0,na.rm=TRUE)
+      precdays_station_relbias[p] = 100*(sum(prec_pred[p,]>0,na.rm=TRUE)-sum(prec_obs[p,]>0,na.rm=TRUE))/sum(prec_obs[p,]>0,na.rm=TRUE)
+      if(is.na(precdays_station_relbias[p])) precdays_station_relbias[p] = NA
+    }
   }
   for(d in 1:ndates) {
     mintemp_day_bias[d] = mean(mintemp_error[,d],na.rm=TRUE)
@@ -163,11 +172,14 @@ interpolation.cv<-function(object, stations = NULL, verbose = FALSE) {
     rh_day_mae[d] = mean(abs(rh_error[,d]),na.rm=TRUE)
     rad_day_bias[d] = mean(rad_error[,d],na.rm=TRUE)
     rad_day_mae[d] = mean(abs(rad_error[,d]),na.rm=TRUE)
-    totalprec_day_bias[d] = sum(prec_pred[,d],na.rm=TRUE)-sum(prec_obs[,d],na.rm=TRUE)
-    totalprec_day_relbias[d] = 100*(sum(prec_pred[,d],na.rm=TRUE)-sum(prec_obs[,d],na.rm=TRUE))/sum(prec_obs[,d],na.rm=TRUE)
-    precstations_day_bias[d] =sum(prec_pred[,d]>0,na.rm=TRUE)-sum(prec_obs[,d]>0,na.rm=TRUE)
-    precstations_day_relbias[d] = 100*(sum(prec_pred[,d]>0,na.rm=TRUE)-sum(prec_obs[,d]>0,na.rm=TRUE))/sum(prec_obs[,d]>0,na.rm=TRUE)
-    if(is.na(totalprec_day_relbias[d])) totalprec_day_relbias[d] = 0.0
+    if(!is.na(totalprec_days_pred[d])){
+      totalprec_day_bias[d] = sum(prec_pred[,d],na.rm=TRUE)-sum(prec_obs[,d],na.rm=TRUE)
+      totalprec_day_relbias[d] = 100*(sum(prec_pred[,d],na.rm=TRUE)-sum(prec_obs[,d],na.rm=TRUE))/sum(prec_obs[,d],na.rm=TRUE)
+      if(is.na(totalprec_day_bias[d])) totalprec_day_relbias[d] = NA
+      precstations_day_bias[d] =sum(prec_pred[,d]>0,na.rm=TRUE)-sum(prec_obs[,d]>0,na.rm=TRUE)
+      precstations_day_relbias[d] = 100*(sum(prec_pred[,d]>0,na.rm=TRUE)-sum(prec_obs[,d]>0,na.rm=TRUE))/sum(prec_obs[,d]>0,na.rm=TRUE)
+      if(is.na(precstations_day_bias[d])) precstations_day_relbias[d] = NA
+    }
   }
 
   r2res = list("MinTemperature" = mintemp_r2,

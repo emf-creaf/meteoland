@@ -47,5 +47,5 @@ Nicolas Martin, INRA-Avignon
 %% ~Make other sections like Warning with \section{Warning }{....} ~
 
 \seealso{
-\code{\link{downscalingpoints}}, \code{\link{writemeteorologypointfiles}}, \code{\link{SpatialPointsMeteorology-class}}
+\code{\link{correctionpoints}}, \code{\link{writemeteorologypointfiles}}, \code{\link{SpatialPointsMeteorology-class}}
 }

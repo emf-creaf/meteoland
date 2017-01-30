@@ -2,14 +2,14 @@
 \docType{methods}
 \alias{subsample}
 \alias{subsample-methods}
-\alias{subsample,MeteorologyDownscalingData-method}
+\alias{subsample,MeteorologyUncorrectedData-method}
 \alias{subsample,MeteorologyInterpolationData-method}
 \title{Sub-sampling procedure data}
 \description{
  Generates a spatial and/or temporal subset of procedure data
 }
 \usage{
-\S4method{subsample}{MeteorologyDownscalingData}(object, bbox = NULL, dates = NULL, buffer = 0)
+\S4method{subsample}{MeteorologyUncorrectedData}(object, bbox = NULL, dates = NULL, buffer = 0)
 \S4method{subsample}{MeteorologyInterpolationData}(object, bbox = NULL, dates = NULL, buffer = 0)
 }
 \arguments{
@@ -21,7 +21,7 @@
 \value{An object of the same class as \code{object}.}
 \section{Methods}{
 \describe{
-    \item{subsample}{\code{signature(object = "MeteorologyDownscalingData")}: Generates a \code{\link{MeteorologyDownscalingData}} object for a smaller area and a subset of dates. }
+    \item{subsample}{\code{signature(object = "MeteorologyUncorrectedData")}: Generates a \code{\link{MeteorologyUncorrectedData}} object for a smaller area and a subset of dates. }
 
     \item{subsample}{\code{signature(object = "MeteorologyInterpolationData")}: Generates a \code{\link{MeteorologyInterpolationData}} object for a smaller area and a subset of dates. }
 	 }

@@ -1,8 +1,8 @@
-downscalinggrid<-function(object, gridfiles, topodata = NULL, dates = NULL, maxreadcells = 50, export = FALSE,
+correctiongrid<-function(object, gridfiles, topodata = NULL, dates = NULL, maxreadcells = 50, export = FALSE,
                           exportDir = getwd(), exportFormat = "netCDF",
                           metadatafile="MG.txt", verbose=TRUE) {
   #Check input classes
-  if(!inherits(object,"MeteorologyDownscalingData")) stop("'object' has to be of class 'MeteorologyDownscalingData'.")
+  if(!inherits(object,"MeteorologyUncorrectedData")) stop("'object' has to be of class 'MeteorologyUncorrectedData'.")
   if(!inherits(dates, "Date")) stop("'dates' has to be of class 'Date'")
   if(!inherits(gridfiles,"data.frame") && !inherits(gridfiles,"character")) stop("'gridfiles' has to be a 'data.frame' or a 'character' vector.")
   if(inherits(gridfiles,"data.frame")) {
@@ -48,13 +48,13 @@ downscalinggrid<-function(object, gridfiles, topodata = NULL, dates = NULL, maxr
   if(verbose) cat(paste("All grid cells inside boundary box.\n", sep=""))
 
 
-  #Project long/lat coordinates of predicted climatic objects into the projection of points
-  if(verbose) cat(paste("Determining nearest predicted cells.\n", sep=""))
+  #Project long/lat coordinates of climatic objects into the projection of points
+  if(verbose) cat(paste("Determining nearest cells in uncorrected data.\n", sep=""))
   xypred = spTransform(SpatialPoints(object@coords,object@proj4string,object@bbox), grid1@proj4string)
   colnames(xypred@coords)<-c("x","y")
   ipred = numeric(ncells)
   for(i in 1:ncells) {
-    #Find closest predicted climatic cell for historical/projection periods (ideally the same)
+    #Find closest climatic cell for historical/projection periods (ideally the same)
     d = sqrt(rowSums(sweep(xypred@coords,2,cc[i,],"-")^2))
     ipred[i] = which.min(d)[1]
   }
@@ -64,11 +64,11 @@ downscalinggrid<-function(object, gridfiles, topodata = NULL, dates = NULL, maxr
   cellbiases = vector("list",ncells)
 
   for(ip in unique.preds) {
-    if(inherits(object@historicdata,"list")) {
-      rcmhist = object@historicdata[[ip]]
+    if(inherits(object@reference_data,"list")) {
+      rcmhist = object@reference_data[[ip]]
     } else {
-      f = paste(object@historicdata$dir[ip], object@historicdata$filename[ip],sep="/")
-      if(!file.exists(f)) stop(paste("Predicted climate historic file '", f,"' does not exist!",sep=""))
+      f = paste(object@reference_data$dir[ip], object@reference_data$filename[ip],sep="/")
+      if(!file.exists(f)) stop(paste("Reference meteorology file '", f,"' does not exist!",sep=""))
       rcmhistoric = readmeteorologypoint(f)
     }
     icells = which(ipred==ip)
@@ -103,18 +103,18 @@ downscalinggrid<-function(object, gridfiles, topodata = NULL, dates = NULL, maxr
   for(m in unique(dates.months)) {
     idays = which(dates.months==m)
     for(id in idays) {
-      if(verbose) cat(paste("Downscaling date (",dates[id],") -",sep=""))
+      if(verbose) cat(paste("Correcting grid for date (",dates[id],") -",sep=""))
       doy = as.numeric(format(dates[id],"%j"))
       for(ip in unique.preds) {
-         if(inherits(object@futuredata,"list")) {
-           rcmfut = object@futuredata[[ip]]
+         if(inherits(object@projection_data,"list")) {
+           rcmfut = object@projection_data[[ip]]
          } else {
-           f = paste(object@futuredata$dir[ip], object@futuredata$filename[ip],sep="/")
-           if(!file.exists(f)) stop(paste("Predicted climate future file '", f,"' does not exist!",sep=""))
+           f = paste(object@projection_data$dir[ip], object@projection_data$filename[ip],sep="/")
+           if(!file.exists(f)) stop(paste("Projection climate file '", f,"' does not exist!",sep=""))
            rcmfut = readmeteorologypoint(f)
          }
          irow = which(as.character(object@dates)==as.character(dates[id]))
-         if(length(irow)==0) stop("Date outside the predicted period.")
+         if(length(irow)==0) stop("Date outside the projection period.")
          rcmfutdate = as.list(rcmfut[irow,])
          HSmodelFut<-.HRHS(Tc=rcmfutdate$MeanTemperature ,HR=rcmfutdate$MeanRelativeHumidity)
          icells = which(ipred==ip)

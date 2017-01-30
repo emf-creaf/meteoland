@@ -30,7 +30,7 @@ Miquel De \enc{Cáceres}{Caceres} Ainsa, Biodiversity and Landscape Ecology Labo
 }
 
 \seealso{
-\code{\link{MeteorologyInterpolationData-class}}, \code{\link{MeteorologyDownscalingData-class}}
+\code{\link{MeteorologyInterpolationData-class}}, \code{\link{MeteorologyUncorrectedData-class}}
 }
 \examples{
 showClass("MeteorologyProcedureData")

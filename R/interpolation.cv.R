@@ -58,7 +58,13 @@ interpolation.cv<-function(object, stations = NULL, verbose = FALSE) {
     object@RelativeHumidity[i,] = orh
     object@Radiation[i,] = orad
   }
+  #Set to NA predictions where there are no observations
+  MinTemperature[is.na(object@MinTemperature)] = NA
+  MaxTemperature[is.na(object@MaxTemperature)] = NA
   TemperatureRange = MaxTemperature - MinTemperature
+  Precipitation[is.na(object@Precipitation)] = NA
+  Radiation[is.na(object@Radiation)] = NA
+  RelativeHumidity[is.na(object@RelativeHumidity)] = NA
   
   #Process results
   nstations = length(codes)

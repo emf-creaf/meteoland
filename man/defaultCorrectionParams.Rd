@@ -1,14 +1,14 @@
 \encoding{UTF-8}
-\name{defaultDownscalingParams}
-\alias{defaultDownscalingParams}
+\name{defaultCorrectionParams}
+\alias{defaultCorrectionParams}
 \title{
-Default downscaling parameters
+Default correction parameters
 }
 \description{
-Returns a list with the default parameterization for staistical downscaling.
+Returns a list with the default parameterization for staistical correction.
 }
 \usage{
-defaultDownscalingParams()
+defaultCorrectionParams()
 }
 \value{
 A list with the following items (default values in brackets):

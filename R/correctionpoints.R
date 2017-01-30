@@ -35,7 +35,7 @@
   return(list(corrPrec=corrPrec,corrRad=corrRad,corrTmean=corrTmean,corrTmin=corrTmin,
               corrTmax=corrTmax,corrHS=corrHS,corrWS=corrWS))
 }
-.downscalingonepoint<-function(mbias, MODFut, dates = NULL, fill_wind = FALSE, verbose=TRUE){
+.correctiononepoint<-function(mbias, MODFut, dates = NULL, fill_wind = FALSE, verbose=TRUE){
   if(!is.null(dates)) {
     sel3 = rownames(MODFut) %in% as.character(dates)
     if(sum(sel3)!=length(dates)) stop("Some dates are outside the predicted period.")
@@ -125,12 +125,12 @@
   return(ResCor)
 }
 
-downscalingpoints<-function(object, points, topodata = NULL, dates = NULL, export = FALSE,
+correctionpoints<-function(object, points, topodata = NULL, dates = NULL, export = FALSE,
                             exportDir = getwd(), exportFormat = "meteoland",
                             metadatafile = "MP.txt", verbose=TRUE) {
 
   #Check input classes
-  if(!inherits(object,"MeteorologyDownscalingData")) stop("'object' has to be of class 'MeteorologyDownscalingData'.")
+  if(!inherits(object,"MeteorologyUncorrectedData")) stop("'object' has to be of class 'MeteorologyUncorrectedData'.")
   if(!inherits(points,"SpatialPointsMeteorology") && !inherits(points,"SpatialPointsDataFrame")) stop("'points' has to be of class 'SpatialPointsMeteorology' or 'SpatialPointsDataFrame'.")
 
   mPar = object@params
@@ -178,7 +178,7 @@ downscalingpoints<-function(object, points, topodata = NULL, dates = NULL, expor
 
   #Loop over all points
   for(i in 1:npoints) {
-    if(verbose) cat(paste("Downscaling to point '",ids[i],"' (",i,"/",npoints,") -",sep=""))
+    if(verbose) cat(paste("Correcting point '",ids[i],"' (",i,"/",npoints,") -",sep=""))
     xy = points@coords[i,]
     #observed data frame
     if(inherits(points,"SpatialPointsMeteorology")) {
@@ -188,41 +188,41 @@ downscalingpoints<-function(object, points, topodata = NULL, dates = NULL, expor
       if(!file.exists(f)) stop(paste("Observed file '", f,"' does not exist!", sep=""))
       obs = readmeteorologypoint(f)
     }
-    #Find closest predicted climatic cell for historical/projection periods (ideally the same)
+    #Find closest predicted climatic cell for reference/projection periods (ideally the same)
     d = sqrt(rowSums(sweep(xypred@coords,2,xy,"-")^2))
     ipred = which.min(d)[1]
     if(verbose) cat(paste(" ipred = ",ipred, sep=""))
     #predicted climatic data frames
-    if(inherits(object@historicdata,"list")) {
-      rcmhist = object@historicdata[[ipred]]
+    if(inherits(object@reference_data,"list")) {
+      rcmhist = object@reference_data[[ipred]]
     } else {
-      if(("dir" %in% names(object@historicdata))&&("filename" %in% names(object@historicdata))) {
-        f = paste(object@historicdata$dir[ipred], object@historicdata$filename[ipred],sep="/")
-        if(!file.exists(f)) stop(paste("Predicted climate historical file '", f,"' does not exist!", sep=""))
+      if(("dir" %in% names(object@reference_data))&&("filename" %in% names(object@reference_data))) {
+        f = paste(object@reference_data$dir[ipred], object@reference_data$filename[ipred],sep="/")
+        if(!file.exists(f)) stop(paste("Reference meteorology file '", f,"' does not exist!", sep=""))
         rcmhist = readmeteorologypoint(f)
       } else if(nrow(object@coords)==1) {
-        rcmhist = object@historicdata
+        rcmhist = object@reference_data
       } else {
-        stop("Cannot access historic climate data")
+        stop("Cannot access reference meteorology data")
       }
     }
-    if(inherits(object@futuredata,"list")) {
-      rcmfut = object@futuredata[[ipred]]
+    if(inherits(object@projection_data,"list")) {
+      rcmfut = object@projection_data[[ipred]]
     } else {
-      if(("dir" %in% names(object@futuredata))&&("filename" %in% names(object@futuredata))) {
-        f = paste(object@futuredata$dir[ipred], object@futuredata$filename[ipred],sep="/")
-        if(!file.exists(f)) stop(paste("Predicted climate future file '", f,"' does not exist!",sep=""))
+      if(("dir" %in% names(object@projection_data))&&("filename" %in% names(object@projection_data))) {
+        f = paste(object@projection_data$dir[ipred], object@projection_data$filename[ipred],sep="/")
+        if(!file.exists(f)) stop(paste("Projection meteorology file '", f,"' does not exist!",sep=""))
         rcmfut = readmeteorologypoint(f)
       } else if(nrow(object@coords)==1) {
-        rcmfut = object@futuredata
+        rcmfut = object@projection_data
       } else {
-        stop("Cannot access future climate data")
+        stop("Cannot access projection meteorology data")
       }
     }
 
-    #Call dowscaling correction routine
+    #Call statistical correction routine
     mbias = .monthbiasonepoint(obs,rcmhist, verbose)
-    df = .downscalingonepoint(mbias,rcmfut, dates, mPar$fill_wind, verbose)
+    df = .correctiononepoint(mbias,rcmfut, dates, mPar$fill_wind, verbose)
 
     if(is.null(dates)) dates = as.Date(rownames(df))
     #Calculate PET

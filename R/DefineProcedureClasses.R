@@ -1,6 +1,6 @@
 setClass("MeteorologyProcedureData", slots = list(dates = "Date"), contains="Spatial")
-setClass("MeteorologyDownscalingData",
-         slots = list(coords="matrix", historicdata = "ANY", futuredata = "ANY",
+setClass("MeteorologyUncorrectedData",
+         slots = list(coords="matrix", reference_data = "ANY", projection_data = "ANY",
                       params = "list"),
          contains="MeteorologyProcedureData")
 setClass("MeteorologyInterpolationData",
@@ -69,7 +69,7 @@ setMethod("subsample", signature("MeteorologyInterpolationData"), definition =
       
     }
 )
-setMethod("subsample", signature("MeteorologyDownscalingData"), definition =
+setMethod("subsample", signature("MeteorologyUncorrectedData"), definition =
             function(object, bbox = NULL, dates = NULL, buffer = 0) {
               cc = object@coords
               if(is.null(bbox)) bbox = object@bbox
@@ -84,24 +84,24 @@ setMethod("subsample", signature("MeteorologyDownscalingData"), definition =
                 seldates = rep(TRUE, length(object@dates))
               }
               points = SpatialPoints(cc[selpoints,],object@proj4string)
-              historicdata = object@historicdata
-              futuredata = object@futuredata
-              if(!inherits(historicdata,"data.frame")){
-                historicdata = historicdata[selpoints,]
+              reference_data = object@reference_data
+              projection_data = object@projection_data
+              if(!inherits(reference_data,"data.frame")){
+                reference_data = reference_data[selpoints,]
               } else {
-                historicdata = historicdata[selpoints]
+                reference_data = reference_data[selpoints]
               }
-              if(!inherits(futuredata,"data.frame")){
-                futuredata = futuredata[selpoints,]
+              if(!inherits(projection_data,"data.frame")){
+                projection_data = projection_data[selpoints,]
               } else {
-                futuredata = futuredata[selpoints]
+                projection_data = projection_data[selpoints]
               }
-              spm = new("MeteorologyDownscalingData",
+              spm = new("MeteorologyUncorrectedData",
                         coords = points@coords,
                         bbox = points@bbox,
                         proj4string = points@proj4string,
-                        historicdata = historicdata,
-                        futuredata = futuredata,
+                        reference_data = reference_data,
+                        projection_data = projection_data,
                         dates = object@dates[seldates],
                         params = object@params)
               return(spm)

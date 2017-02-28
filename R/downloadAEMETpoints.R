@@ -25,6 +25,7 @@ downloadAEMETpoints <- function(api, dates, station_id, export = FALSE, exportDi
   
   npoints = length(station_id)
   ndays = length(dates)
+  if(verbose) cat(paste0("\n  Downloading data for ", npoints, " stations and ", ndays," days.\n"))
   
   ## Output data frame meta data
   dfout$dir = as.character(rep(exportDir, npoints)) 
@@ -34,8 +35,10 @@ downloadAEMETpoints <- function(api, dates, station_id, export = FALSE, exportDi
   stationfound = rep(FALSE, length(station_id))
   
   ## Met data
-  intlength = 10
-  # convert dates into 10 days interval initial date and end date covering the specified period
+  intlength = 31 #maximum range length
+  maxCallsPerMinute = 10 #Maximum calls per minute
+  
+  # convert dates into 31 days interval initial date and end date covering the specified period
   steps_ini <- seq(1,length(dates), by = intlength)
   steps_fin <- pmin(steps_ini+intlength-1, length(dates)) # does not allow holes in the date sequence
   dates_seq <- list(ini = dates[steps_ini], fin = dates[steps_fin])
@@ -50,6 +53,7 @@ downloadAEMETpoints <- function(api, dates, station_id, export = FALSE, exportDi
   data_list <- vector("list",npoints)
   names(data_list) <- colnames(url)
   
+  count = 0;
   for(j in 1:ncol(url)){
     if(verbose) cat(paste("\n  Downloading data for station '",station_id[j],"' (",j,"/",npoints,")\n",sep=""))
     dfread <- matrix(NA, ncol = 7, nrow = 0, dimnames = list(NULL, c("date", "MeanTemperature", "Precipitation",
@@ -97,6 +101,11 @@ downloadAEMETpoints <- function(api, dates, station_id, export = FALSE, exportDi
       
       dfread <- rbind(dfread, data_value)
       t2[i] <- Sys.time()
+      count = count +1
+      if(count==maxCallsPerMinute) {
+        Sys.sleep(60)
+        count=0
+      }
     }
     
     # print(paste("Station ", colnames(url)[j],": downloading time = ", round(sum(t1-t0)/sum(t2-t0)*100), "% of total", sep =""))
@@ -140,13 +149,14 @@ downloadAEMETpoints <- function(api, dates, station_id, export = FALSE, exportDi
       }
     } else {
       stationfound[j] = FALSE
+      data_list[[j]] = df
     }
+
   }
-  data_list = data_list[stationfound]
-  
-  if(length(stationfound)>0) warning(paste("\nInformation could not be retrieved for the following stations: \n  ",
-                                        paste(station_id[stationfound], collapse=", "), ".\n", sep=""))
-  if(!export) return(SpatialPointsMeteorology(points = points, data = data_list, dates = dates))
+
+  if(length(stationfound)>0) warning(paste("\nStations with missing values: \n  ",
+                                        paste(station_id[!stationfound], collapse=", "), ".\n", sep=""))
+  if(!export) return(SpatialPointsMeteorology(points = points[stationfound], data = data_list[stationfound], dates = dates))
   invisible(spdf)
 }
 

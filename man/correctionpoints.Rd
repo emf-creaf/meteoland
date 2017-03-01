@@ -63,33 +63,33 @@ spt = SpatialPointsTopography(points, examplegridtopography$elevation[p],
 #Interpolation of two points for the whole time period (2000-2003)
 historical = interpolationpoints(exampleinterpolationdata, spt)
 
-#Downscaling of future predictions (RCM models, period 2020-2023)
+#Downscaling of future predictions (RCM models, year 2023)
 predicted = correctionpoints(examplecorrectiondata, historical, spt@data)
 
 #Plot predicted mean temperature for point 1
 meteoplot(predicted, 1, "MeanTemperature", ylab="Mean temperature (Celsius)", ylim=c(-5,40))
-#Add uncorrected mean temperature data (cell #5)
+#Add uncorrected mean temperature data (cell #3)
 lines(examplecorrectiondata@dates,
-      examplecorrectiondata@projection_data[[5]]$MeanTemperature,
+      examplecorrectiondata@projection_data[[3]]$MeanTemperature,
       col="red")
 legend("topright", legend=c("corrected","uncorrected"), col=c("black","red"), lty=c(1,1), bty="n")
 
 #Scatter plot
-plot(examplecorrectiondata@projection_data[[5]]$MeanTemperature,
+plot(examplecorrectiondata@projection_data[[3]]$MeanTemperature,
      predicted@data[[1]]$MeanTemperature, cex=0.1, asp=1,
      ylab="Corrected mean temperature", xlab="Uncorrected mean temperature")
 abline(a=0,b=1,col="gray")
 
 #Plot predicted precipitation for point 1
 meteoplot(predicted, 1, "Precipitation", ylab="Precipitation (mm)", ylim=c(0,120))
-#Add uncorrected mean temperature data (cell #5)
+#Add uncorrected mean temperature data (cell #3)
 lines(examplecorrectiondata@dates,
-      examplecorrectiondata@projection_data[[5]]$Precipitation,
+      examplecorrectiondata@projection_data[[3]]$Precipitation,
       col="red", lty=3)
 legend("topleft", legend=c("corrected","uncorrected"), col=c("black","red"), lty=c(1,3), bty="n")
 
 #Scatter plot
-plot(examplecorrectiondata@projection_data[[5]]$Precipitation,
+plot(examplecorrectiondata@projection_data[[3]]$Precipitation,
      predicted@data[[1]]$Precipitation, cex=0.1, asp=1,
      ylab="Corrected precipitation (mm)", xlab="Uncorrected precipitation (mm)")
 abline(a=0,b=1,col="gray")

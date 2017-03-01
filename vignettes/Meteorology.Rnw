@@ -9,7 +9,12 @@
 %\VignetteIndexEntry{User's guide to meteoland}
 %\VignettePackage{meteoland}
 
-\title{User's guide to meteoland}
+<<echo=FALSE>>=
+options(width=67)
+library(meteoland)
+@
+
+\title{User's guide to meteoland (ver. \Sexpr{packageVersion("meteoland")})}
 \author[1,2]{Miquel De Cáceres}
 \affil[1]{Centre Tecnològic Forestal de Catalunya. Ctra. St. Llorenç de Morunys km 2, 25280, Solsona, Catalonia, Spain}
 \affil[2]{CREAF, Cerdanyola del Vallès, 08193, Spain}
@@ -22,24 +27,19 @@
 
 \newpage
 
-<<echo=FALSE>>=
-options(width=67)
-library(meteoland)
-@
 \section{Introduction to the package}
 \subsection{Purpose}
-Reliable meteorological data are a basic requirement for hydrological and ecological studies at the landscape scale. Given the large spatial variation of meteorology over complex terrains, meteorological records from a single weather station are often not representative of entire landscapes. Studies made on multiple sites over a landscape require different meteorological series for each site; and other studies may require meteorological data series for all grid cells of a landscape, in a continuous way. In these cases, spatial correlation between the meteorology series of different sites or cells must be taken into account. For example, the sequence of days with rain of contiguous cells will normally be the same or very similar, even if precipitation amounts may differ. Finally, studies addressing the impacts of climate change on forests and landscapes require downscaling coarse-scale predictions  of global or regional climate models to the landscape scale. When downscaling predictions for several locations in a landscape, spatial correlation of downscaled predictions is also important.
-
+Reliable meteorological data are a basic requirement for hydrological and ecological studies at the landscape scale. Given the large spatial variation of meteorology over complex terrains, meteorological records from a single weather station are often not representative of entire landscapes. Studies made on multiple sites over a landscape require different meteorological series for each site; and other studies may require meteorological data series for all grid cells of a landscape, in a continuous way. In these cases, spatial correlation between the meteorology series of different sites or cells must be taken into account. For example, the sequence of days with rain of contiguous cells will normally be the same or very similar, even if precipitation amounts may differ. Finally, studies addressing the impacts of climate change on forests and landscapes require downscaling coarse-scale predictions  of global or regional climate models to the landscape scale. When downscaling predictions for several locations in a landscape, spatial correlation of predictions is also important.
 
 
 With the aim to assist research of climatic impacts on forests, the R package \texttt{meteoland} provides utilities to estimate daily weather variables at any position in complex terrains:
 \begin{enumerate}
-\item{Spatial interpolation of daily weather records from meteorological stations.}
-\item{Statistical downscaling of coarse-scale meteorological data (coming from regional climate models or re-analyses) to the landscape scale.}
+\item{Spatial interpolation of daily weather records from meteorological stations. }
+\item{Statistical correction of meteorological data series (e.g. from regional climate models).}
 \end{enumerate}
+Spatial interpolation is required when meteorology for the area and period of interest cannot be obtained from local measurements. The nearest weather station may not have data for the period of interest or it may be located too far away to be representative of the target area. Correcting the biases of a meteorological data series containing biases using a more accurate (i.e. local) meteorological series for a given reference period is necessary when the more accurate series does not cover the period of interest and the less accurate series does. The less accurate series may be at coarser scale, as with global/regional climate models or historical climate reanalysis. In this case one can speak of statistical downscaling. However, one may also correct the predictions of climate models using reanalysis data estimated at the same scale. 
 
-
-\subsection{Meteorological variables}
+\subsection{Data structures}
 Package \texttt{meteoland} assists in the estimation of the following variables over lanscapes (units in parentheses):
 \begin{itemize}
 \item{\texttt{DOY}: Day of the year ([1-365]).}
@@ -56,46 +56,46 @@ Package \texttt{meteoland} assists in the estimation of the following variables 
 \item{\texttt{PET}: Potential evapo-transpiration (in mm of water).}
 \end{itemize}
 
+The package deals with two kinds of spatial structures: individual points and grids. The package includes four S4 spatial classes, which are defined as children of classes in package \texttt{sp}. 
 
-\subsection{Spatial variation of meteorology and topography}
-Package \texttt{meteoland} deals with two kinds of spatial structures: individual points and grids. The package includes four S4 spatial classes, which are defined as children of classes in package \texttt{sp}. Two classes are defined to represent the variation of topographic features (i.e., elevation, slope and aspect) over space:
+\subsubsection{Topography}
+Two classes are defined to represent the variation of topographic features (i.e., elevation, slope and aspect) over space:
 \begin{itemize}
 \item{\texttt{SpatialPointsTopography} extends \texttt{SpatialPointsDataFrame} and represents the topographic features of a set of points in a landscape.
 <<echo=FALSE>>=
 showClass("SpatialPointsTopography")
 @
 }
-\item{\texttt{SpatialGridTopography} extends \texttt{SpatialGridDataFrame} and represents the continuous variation of topography over a grid.
+\item{\texttt{SpatialGridTopography} extends \texttt{SpatialGridDataFrame} and represents the continuous variation of topographic features over all cells in a grid.
 <<echo=FALSE>>=
 showClass("SpatialGridTopography")
 @
 }
 \end{itemize}
-Although they have the same slots as their parent S4 classes, the data frames in \texttt{SpatialPointsTopography} and \texttt{SpatialGridTopography} have only three variables: `\textbf{elevation}' (in meters), `\textbf{slope}' (in degrees) and `\textbf{aspect}' (in degrees from North).
+Although they have the same slots as their parent S4 classes, data frames in \texttt{SpatialPointsTopography} and \texttt{SpatialGridTopography} objects have only three variables: `\textbf{elevation}' (in meters), `\textbf{slope}' (in degrees) and `\textbf{aspect}' (in degrees from North).
 
-The following code produces a plot with the variation of elevation across the landscape of the example \texttt{SpatialGridTopography} object given in the package:
-\begin{center}
-<<fig=TRUE, echo=TRUE, width=4, height=4>>=
-data(examplegridtopography)
-spplot(examplegridtopography)
-@
-\end{center}
-
-Two analogous spatial classes are used to represent the variation of daily meteorology over space:
+\subsubsection{Meteorology}
+Analogously to topography, two spatial classes are used to represent the variation of daily meteorology over space:
 \begin{itemize}
 \item{\texttt{SpatialPointsMeteorology} extends \texttt{SpatialPoints} and represents daily meteorology series for a set of points in a landscape.
 <<echo=FALSE>>=
 showClass("SpatialPointsMeteorology")
 @
 }
-\item{\texttt{SpatialGridMeteorology} extends \texttt{SpatialGrid} and represents the continuous variation of daily meteorology over a grid of cells.
+\item{\texttt{SpatialGridMeteorology} extends \texttt{SpatialGrid} and represents the continuous variation of daily meteorology across a grid of cells.
 <<echo=FALSE>>=
 showClass("SpatialGridMeteorology")
 @
 }
 \end{itemize}
 In addition to their corresponding inherited slots, \texttt{SpatialPointsMeteorology} and \texttt{SpatialGridMeteorology} have two additional slots: `\texttt{dates}' (a vector of days specifying a time period), and `\texttt{data}' (a vector of data frames with the meteorological data).
-Although both have a `\texttt{data}' with data frames, meteorological data is in different form in each class. In objects of \texttt{SpatialPointsMeteorology}, there is one data frame for each point with variables in columns and dates in rows. In objects of \texttt{SpatialGridMeteorology}, each data frame describes the meteorology over the grid for one day, with grid cells in rows and variables in columns.
+Although both classes have a `\texttt{data}' slot containing data frames, meteorological data is in different form in each class. In objects of \texttt{SpatialPointsMeteorology}, there is one data frame for each point where variables are in columns and dates are in rows. In objects of \texttt{SpatialGridMeteorology}, each data frame describes the meteorology over the grid for a single day. In this case, the data frame has grid cells in rows and variables in columns.
+
+The package provides two functions to extract/reshape meteorological data from these structures:
+\begin{itemize}
+\item{Function \texttt{extractgridpoints()} extracts the meteorology of particular points in a grid (it returns an object of \texttt{SpatialPointsMeteorology}).}
+\item{Function \texttt{extractpointdates()} extracts the meteorology of a set of dates from an object of class \texttt{SpatialPointsMeteorology}. It returns one data frame for each date, with points in rows and meteorology variables in columns.}
+\end{itemize}
 
 \subsection{Reading and writing meteorological data}
 \subsubsection{Point meteorology}
@@ -130,50 +130,26 @@ showClass("MeteorologyInterpolationData")
 @
 When calling functions \texttt{interpolationpoints()} or \texttt{interpolationgrid()}, the user may require interpolation outputs to be written into the file system, instead of being returned in memory. If \texttt{interpolationpoints()} is called with \texttt{export = TRUE}, the function will write the data frame produced for each point into an \textbf{ascii} text file. If \texttt{interpolationgrid()} is called with \texttt{export = TRUE}, the function will write an \textbf{netCDF} file for each day. Metadata files will also be written, so that results can later be loaded in memory.
 
-\subsubsection{Statistical downscaling}
-Analogously to interpolation, two functions are available for statistical downscaling of coarse-scale meteorological data (i.e., one function for each data structure):
+\subsubsection{Statistical correction}
+Analogously to interpolation, two functions are available for statistical correction of meteorological data series (i.e., one function for each data structure):
 \begin{itemize}
-\item{Function \texttt{downscalingpoints()} performs statistical downscaling of coarse-scale weather data on a set of locations and it returns an object of class \texttt{SpatialPointsMeteorology} containing corrected weather predictions.}
-\item{Function \texttt{downscalinggrid()} performs statistical downscaling of coarse-scale weather data over a grid and it returns an object of class \texttt{SpatialPointsMeteorology} containing corrected weather predictions.}
+\item{Function \texttt{correctionpoints()} performs statistical correction of weather data series on a set of locations and it returns an object of class \texttt{SpatialPointsMeteorology} containing corrected weather predictions.}
+\item{Function \texttt{correctiongrid()} performs statistical correction of weather data series over a grid and it returns an object of class \texttt{SpatialPointsMeteorology} containing corrected weather predictions.}
 \end{itemize}
-Donwscaling functions require an object of class \texttt{`MeteorologyDownscalingData'}, which contains the X-Y coordinates and the coarse-scale meteorological data to be downscaled, which includes a historical (reference) period and future (projected) period:
+Statistical correction functions require an object of class \texttt{`MeteorologyUncorrectedData'}, which contains the X-Y coordinates and the coarse-scale meteorological data to be corrected, which includes a reference (historic) period and projected (e.g. future) period:
 <<echo=FALSE>>=
-showClass("MeteorologyDownscalingData")
+showClass("MeteorologyUncorrectedData")
 @
-The historical (reference) period is compared with fine-scale meteorological data of the same period, and the routine uses this information to correct the future (projected) period. Therefore, apart from the \texttt{`MeteorologyDownscalingData'} object, the dowscaling functions require fine-scale historical data (for a set of spatial points or a grid). Normally, these data will be the result of spatial interpolation.
+The reference (historical) period is compared with observed meteorological data of the same period, and the routine uses this information to correct the projected (e.g. future) period. Therefore, apart from the \texttt{`MeteorologyUncorrectedData'} object, the correction functions require accurate meteorological data (for a set of spatial points or a grid). Normally, these data will be the result of spatial interpolation.
 
-As before, when calling functions \texttt{downscalingpoints()} or \texttt{downscalinggrid()}, the user may require the outputs to be written into the file system, instead of being returned in memory. If \texttt{downscalingpoints()} is called with \texttt{export = TRUE}, the function will write the data frame produced for each point into an \textbf{ascii} text file. If \texttt{downscalinggrid()} is called with \texttt{export = TRUE}, the function will write a \textbf{netCDF} file for each day. Metadata files will also be written, so that results can later be loaded in memory.
+As before, when calling functions \texttt{correctionpoints()} or \texttt{correctiongrid()}, the user may require the outputs to be written into the file system, instead of being returned in memory. If \texttt{correctionpoints()} is called with \texttt{export = TRUE}, the function will write the data frame produced for each point into an \textbf{ascii} text file. If \texttt{correctiongrid()} is called with \texttt{export = TRUE}, the function will write a \textbf{netCDF} file for each day. Metadata files will also be written, so that results can later be loaded in memory.
 
 
 \section{Spatial interpolation of weather records}
 \subsection{Overview}
-Landscape research studies conducted for historical periods can be perfomed using meteorological records obtained from surface weather stations of the area under study. For any target point, minimum temperature, maximum temperature and precipitation are interpolated from weather records using truncated Gaussian filters, while accounting for the relationship between these variables and elevation (Thornton et al. 1997). Relative humidity can be either interpolated (in fact, dew-point temperature is the variable being interpolated) or predicted from temperature estimates, depending on whether it has been measured in weather stations or not. Potential (i.e. top-of-atmosphere) solar radiation is estimated taking into account latitude, seasonality, aspect and slope, following Granier \& Ohmura (1968). Potential solar radiation is then corrected to account for atmosphere transmittance using the predictions of temperature range, relative humidity and precipitation (Thornton \& Running 1999). Finally, the wind vector (wind direction and wind speed) is interpolated by using weather station records and static wind fields. 
+Ecological research studies conducted for historical periods can be perfomed using meteorological records obtained from surface weather stations of the area under study. The general procedure for interpolation is very similar to the one that underpins the U.S. DAYMET dataset (https://daymet.ornl.gov/). For any target point, minimum temperature, maximum temperature and precipitation are interpolated from weather records using truncated Gaussian filters, while accounting for the relationship between these variables and elevation (Thornton et al. 1997). Relative humidity can be either interpolated (in fact, dew-point temperature is the variable being interpolated) or predicted from temperature estimates, depending on whether it has been measured in weather stations or not. Potential (i.e. top-of-atmosphere) solar radiation is estimated taking into account latitude, seasonality, aspect and slope, following Granier \& Ohmura (1968). Potential solar radiation is then corrected to account for atmosphere transmittance using the predictions of temperature range, relative humidity and precipitation (Thornton \& Running 1999). Finally, the wind vector (wind direction and wind speed) is interpolated by using weather station records and static wind fields. 
 
 In the following subsections we detail the general algorithm used to obtain interpolation weights and the interpolation procedure for temperature, precipitation, relative humidity and wind. The estimation of potential and actual solar radiation is explained in next section.
-
-<<echo=FALSE>>=
-data(examplegridtopography)
-data(exampleinterpolationdata)
-
-#Interpolation of meteorology over a grid for two days
-examplegridtopography@proj4string = exampleinterpolationdata@proj4string
-ml = interpolationgrid(exampleinterpolationdata, examplegridtopography,
-                       as.Date(c("2000-03-23","2001-02-03", "2001-06-03")), verbose=FALSE)
-
-#Creates spatial topography points from the grid
-p = 1:2
-points = as(examplegridtopography,"SpatialPoints")[p]
-points = spTransform(points, exampleinterpolationdata@proj4string)
-spt = SpatialPointsTopography(points, examplegridtopography$elevation[p],
-                              examplegridtopography$slope[p],
-                              examplegridtopography$aspect[p])
-
-dates = seq(as.Date("2002-01-01"), as.Date("2003-12-31"), by="day")
-#Interpolation of two points for the whole time period (2000-2003)
-mp = interpolationpoints(exampleinterpolationdata, spt, dates = dates, verbose=FALSE)
-
-examplemeteo = mp@data[[1]]
-@
 
 \subsection{Interpolation weights}
 Thornton et al. (1997) suggested interpolating meteorological data using a truncated Gaussian filter. Its form with respect to a central point $p$ is:
@@ -191,9 +167,10 @@ gf1[r>R_p] = 0
 gf2[r>R_p] = 0
 plot(r, gf1, type="l", ylab = "W(r)", xlab ="r")
 lines(r, gf2, lty=2)
+legend("topright", legend = c("alpha = 3", "alpha = 6.25"), lty=c(1,2), bty="n")
 @
 \end{center}
-$R_p$ is estimated so that it has lower values in data-rich regions and is increased in data-poor regions. We require the user to specify $N$, the average number of observations to be included for each target point. $R_p$ is then varied as a smooth function of the local density in such a way that this average is achieved over the spatial domain. Estimation of $R_p$ is as follows:
+$R_p$ is automatically adjusted so that it has lower values in data-rich regions and is increased in data-poor regions. The method, however, requires the user to specify $N$, the average number of observations to be included for each target point. $R_p$ is then varied as a smooth function of the local density in such a way that this average is achieved over the spatial domain. Estimation of $R_p$ is as follows:
 \begin{enumerate}
 \item{A user-specified value is used to initialize $R_p$.}
 \item{Interpolation weights $W_i$ are calculated for all $i = (1, ..., n)$ stations, and the local station density is calculated as:
@@ -213,7 +190,7 @@ where $N^* = 2N$ for the first $I - 1$ iterations, and $N^* = N$ for the final i
 }
 \item{ The new $R_p$ is substituted in step (2) and steps (2-4) are iterated a specified number of times $I$. The final $R_p$ value is used to generate interpolation weights $W_i$.}
 \end{enumerate}
-Thornton et al. (1997) suggested to use this algorithm only once per point (and variable to be estimated), but since missing meteorological values can occur only in some days, we apply the algorithm for each target point and day. The interpolation method for a given set of observations is defined by four parameters $R$, $I$, $N$ and $\alpha$. Following Thornton et al. (1997), we set $R = 140000$ meters and $I = 3$ by default (see parameters \texttt{initial\_Rp} and \texttt{iterations} given in function \texttt{defaultInterpolationParams()}). The other parameters ($N$ and $\alpha$) depend on the variable to be interpolated.
+Thornton et al. (1997) suggested to use this algorithm only once per point (and variable to be estimated), but since missing meteorological values can occur only in some days, we apply the algorithm for each target point and day. The interpolation method for a given set of observations is defined by four parameters $R$, $I$, $N$ and $\alpha$. Following Thornton et al. (1997), we set $R = 140000$ meters and $I = 3$ by default (see parameters '\texttt{initial\_Rp}' and '\texttt{iterations}' given in function \texttt{defaultInterpolationParams()}). The other parameters ($N$ and $\alpha$) depend on the variable to be interpolated.
 
 \subsection{Temperature}
 Predictions for minimum temperature and maximum temperature are done in the same way, so we refer to a general variable $T$. We focus on the prediction of $T_p$, the temperature at a single target point $p$ and for a single day, based on observations $T_i$ and interpolation weights $W_i$ for the $i = (1, ..., n)$ weather stations. Prediction of $T_p$ requires a correction for the effects of elevation differences between observation points $z_1, ..., z_n$ and the prediction point $z_p$. Thornton et al. (1997) established the relationship between elevation and temperature using transformed variables (temporal or spatial moving window averages) for temperature and elevation, instead of the original variables, but we did not implement this feature here. A weighted least-squares regression is used to assess the relationship between temperature and elevation. Instead of regressing $z_i$ on $T_i$, the independent variable is the difference in elevations associated with a pair of stations, and the dependent variable is the corresponding difference in temperatures. This gives a regression of the form:
@@ -226,23 +203,8 @@ T_{p} = \frac{\sum_{i=1}^{n}{W_i\cdot (T_i + \beta_0 + \beta_1 \cdot(z_p - z_i))
 \end{equation}
 where $z_p$ is the elevation of the target point and $z_i$ is the elevation of the weather station.
 
-The following figure shows an example of interpolating mean temperature for all grid cells of the landscape shown above:
-\begin{center}
-<<fig=TRUE, echo=FALSE, width = 4, height = 4>>=
-spplot(ml,1,"MeanTemperature")
-@
-\end{center}
-And the minimum/average/maximum temperature daily series for a single point:
-\begin{center}
-<<fig=TRUE, echo=FALSE, width = 4, height = 3.5>>=
-meteoplot(mp,1,"MeanTemperature", xlab="", ylab="Temperature (ºC)", ylim=c(-10,40))
-meteoplot(mp,1,"MinTemperature", add=TRUE, col="gray")
-meteoplot(mp,1,"MaxTemperature", add=TRUE, col="gray")
-@
-\end{center}
-
 \subsection{Relative humidity}
-Relative humidity is a parameter not always recorded in weather stations. When input station weather data does not include relative humidity, \texttt{meteoland} allows estimating it directly from minimum and maximum temperature (Thornton et al. 1997). Assuming that minimum daily air temperature $T_{min,p}$ at the target point is a good surrogate of dew-point temperature $T_{d,p}$ (i.e. $T_{d,p} = T_{min,p}$; note that this assumption may not be valid in arid climates), one can estimate actual vapor pressure $e_{p}$ (in kPa) as:
+Relative humidity is a parameter not always recorded in weather stations. When input station weather data does not include relative humidity, \texttt{meteoland} estimates it directly from minimum and maximum temperature (Thornton et al. 1997). Assuming that minimum daily air temperature $T_{min,p}$ at the target point is a good surrogate of dew-point temperature $T_{d,p}$ (i.e. $T_{d,p} = T_{min,p}$; note that this assumption may not be valid in arid climates), one can estimate actual vapor pressure $e_{p}$ (in kPa) as:
 \begin{equation}
 e_{p} = 0.61078 \cdot e^{\left(\frac{17.269\cdot T_{d,p}}{237.3+T_{d,p}}\right)}
 \end{equation}
@@ -255,7 +217,7 @@ where $T_{a,p} = 0.606 \cdot T_{max,p} + 0.394 \cdot T_{min,p}$ is the average d
 RH_p = 100 \cdot \frac{e_{p}}{e_{s,p}}
 \end{equation}
 
-When relative humidity has been measured at weather stations, interpolation should be preferred to estimation from minimum and maximum temperature. However, because relative humidity cannot be corrected for elevation differences between the station and the target climatic grid cell, relative humidity $RH_i$ of each weather station $i$ has to be converted to dew-point temperature $T_{d,i}$ before interpolation (Tymstra et al. 2010). To obtain the dew-point temperature one first needs to calculate vapor pressure:
+When relative humidity has been measured at weather stations, interpolation should be preferred to estimation from minimum and maximum temperature. However, because relative humidity depends on temperature, relative humidity $RH_i$ of each weather station $i$ has to be converted to dew-point temperature $T_{d,i}$ before interpolation (Tymstra et al. 2010). To obtain the dew-point temperature one first needs to calculate vapor pressure:
 \begin{equation}
 e_i = e_{s,i} \cdot (RH_i / 100)
 \end{equation}
@@ -263,38 +225,21 @@ where $e_{s,i}$ is the saturated water vapor pressure of station $i$, calculated
 \begin{equation}
 T_{d,i} = \frac{237.3\cdot \ln(e_i/0.61078)}{17.269 - \ln(e_i/0.61078)}
 \end{equation}
-As for temperature, a weighted least-squares regression is used to assess the relationship between dew-point temperature and elevation. Again, the independent variable is the difference in elevations associated with a pair of stations, and the dependent variable is the corresponding difference in dew-point temperature. This gives a regression of the form:
+Unlike temperature, weighted regression is not used. The dew-point temperature for the target point, $T_{d,p}$ is predicted as:
 \begin{equation}
-(T_{d,1} - T_{d,2}) = \beta_0 + \beta_1 \cdot (z_1 - z_2)
+T_{d,p} = \frac{\sum_{i=1}^{n}{W_i\cdot T_{d,i}}}{\sum_{i=1}^{n}{W_i}}
 \end{equation}
-where subscripts $1$ and $2$ indicate the two stations of a pair and $\beta_0$ and $\beta_1$ are the regression coefficients. The dew-point temperature for the target point, $T_{d,p}$ is predicted as:
-\begin{equation}
-T_{d,p} = \frac{\sum_{i=1}^{n}{W_i\cdot (T_{d,i} + \beta_0 + \beta_1 \cdot(z_p - z_i))}}{\sum_{i=1}^{n}{W_i}}
-\end{equation}
-where $z_p$ is the elevation of the target point and $z_i$ is the elevation of the weather station. From the interpolated dew-point temperature one can obtain actual vapour pressure $e_{p}$ and, together with saturated vapour pressure at point $p$, one calculates relative humidity as indicated above. If saturated vapour pressure is referred to average temperature $T_{a,p}$, then relative humidity is average relative humidity $RH_{a,p}$. If, instead, one refers saturated vapour pressure to minimum and maximum daily temperatures one obtains, respectively, maximum and minimum relative humidity values ($RH_{max,p}$, $RH_{min,p}$). Because of the regression step, one must check that the predicted relative humidity value stays within the physical limits 0\% and 100\%.
+From the interpolated dew-point temperature one can obtain actual vapour pressure $e_{p}$ and, together with saturated vapour pressure at point $p$, one calculates relative humidity as indicated above. If saturated vapour pressure is referred to average temperature $T_{a,p}$, then relative humidity is average relative humidity $RH_{a,p}$. If, instead, one refers saturated vapour pressure to minimum and maximum daily temperatures one obtains, respectively, maximum and minimum relative humidity values ($RH_{max,p}$, $RH_{min,p}$). After their estimation, the routine checks that the predicted maximum and minimum relative humidity values stay within the physical limits 0\% and 100\%.
 
-
-The following figure shows an example interpolating mean relative humidity (i.e. $RH_{a,p}$) for all grid cells of the landscape shown above:
-\begin{center}
-<<fig=TRUE, echo=FALSE, width = 3.5, height = 3.5>>=
-spplot(ml,1,"MeanRelativeHumidity")
-@
-\end{center}
-And the relative humidity daily series for a single point:
-\begin{center}
-<<fig=TRUE, echo=FALSE, width = 4, height = 3.5>>=
-meteoplot(mp,1,"MeanRelativeHumidity", xlab="", ylab="Relative humidity (%)", ylim=c(20,100))
-meteoplot(mp,1,"MinRelativeHumidity", add=TRUE, col="gray", lty=1)
-meteoplot(mp,1,"MaxRelativeHumidity", add=TRUE, col="gray", lty=1)
-@
-\end{center}
 
 \subsection{Precipitation}
-Predictions of precipitation are complicated by the need to predict both daily occurrence and, conditioned on this, daily total precipitation. Thornton et al. (1997) define a binomial predictor of spatial precipitation occurrence as a function of the weighted occurrence at surrounding stations. The precipitation occurrence probability $POP_p$ is:
+Predictions of precipitation are complicated by the need to predict both daily occurrence and, conditioned on this, daily precipitation amount. Thornton et al. (1997) define a binomial predictor of spatial precipitation occurrence as a function of the weighted occurrence at surrounding stations. The precipitation occurrence probability $POP_p$ is:
 \begin{equation}
 POP_p = \frac{\sum_{i=1}^{n}{W_{o,i}\cdot PO_i}}{\sum_{i=1}^{n}{W_{o,i}}}
 \end{equation}
-where $PO_i$ is the binomial precipitation occurrence in station $i$ (i.e., $PO_i = 0$ if $P_i = 0$ and $PO_i = 1$ if $P_i > 0$) and $W_{o,i}$ is the interpolation weight for precipitation occurrence. Once $POP_p$ is calculated, then precipitation occurs if $POP_p$ is smaller than a critical value (i.e. $PO_p = 1$ if $POP_p < POP_{crit}$ and $PO_p = 0$ otherwise). Conditional on precipitation occurrence we calculate the prediction of daily total precipitation, $P_p$. Like with temperature, Thornton et al. (1997) established the relationship between elevation and precipitation using transformed variables (temporal or spatial moving window averages) for precipitation and elevation. Following their results, we transform precipitation values using a temporal window with side of 5 days. Weighted least-squares, where the weight associated with each point is the product of the interpolation weights associated with the stations in a pair, is used to account for elevation effects on precipitation. Unlike Thornton et al. (1997), who used the same set of interpolation weights (i.e. $W_{o,i}$) for precipitation occurrence and regression, we use a second set of interpolation weights $W_{r,i}$ for the calculation of regression weights. The dependent variable in the regression function is defined as the normalized difference of the precipitation observations $P_i$ for any given pair of stations:
+where $PO_i$ is the binomial precipitation occurrence in station $i$ (i.e., $PO_i = 0$ if $P_i = 0$ and $PO_i = 1$ if $P_i > 0$) and $W_{o,i}$ is the interpolation weight for precipitation occurrence. Once $POP_p$ is calculated, then precipitation occurs if $POP_p$ is smaller than a critical value (i.e. $PO_p = 1$ if $POP_p < POP_{crit}$ and $PO_p = 0$ otherwise). 
+
+Conditional on precipitation occurrence we calculate the prediction of daily total precipitation, $P_p$. Like with temperature, Thornton et al. (1997) established the relationship between elevation and precipitation using transformed variables (temporal or spatial moving window averages) for precipitation and elevation. Following their results, we transform precipitation values using a temporal window with side of 5 days. Weighted least-squares, where the weight associated with each point is the product of the interpolation weights associated with the stations in a pair, is used to account for elevation effects on precipitation. Unlike Thornton et al. (1997), who use the same set of interpolation weights (i.e. $W_{o,i}$) for precipitation occurrence and regression, we use a second set of interpolation weights $W_{r,i}$ for the calculation of regression weights. The dependent variable in the regression function is defined as the normalized difference of the precipitation observations $P_i$ for any given pair of stations:
 \begin{equation}
 \left(\frac{P_1 - P_2}{P_1 + P_2}\right) = \beta_0 + \beta_1 \cdot (z_1 - z_2)
 \end{equation}
@@ -304,23 +249,23 @@ P_p = \frac{\sum_{i=1}^{n}{W_{o,i}\cdot P_i \cdot PO_i \cdot \left(\frac{1 + f}{
 \end{equation}
 where $f = \beta_0 + \beta_1 \cdot (z_p - z_i)$. Note the usage of interpolation weight $W_{o,i}$ (and not $W_{r,i}$). The form of prediction requires that $\lvert f \rvert < 1$. A parameter $f_{max}$ (with default $f_{max} = 0.95$ ) is introduced to force $\lvert f \rvert  = f_{max}$ whenever $\lvert f \rvert  > f_{max}$.
 
-The following figure shows an example interpolating precipitation for all grid cells of the landscape shown above:
-
-\begin{center}
-<<fig=TRUE, echo=FALSE, width = 4, height = 4>>=
-spplot(ml,1,"Precipitation")
-@
-\end{center}
-And the precipitation daily series for a single point:
-\begin{center}
-<<fig=TRUE, echo=FALSE, width = 4, height = 3.5>>=
-meteoplot(mp,1,"Precipitation", xlab="", ylab="Precipitation (mm)")
-@
-\end{center}
 
 \subsection{Wind}
-\subsubsection{Simple wind interpolation}
-Simple wind interpolation for a target point $p$ is as follows. Let $\mathbf{v}_{i}$ be the wind vector in weather station $i$. $\mathbf{v}_{i}$ is initially expressed using polar coordinates. Indeed, we have $u_{i}$ and $\theta_{i}$, the wind speed and wind direction, respectively. If we express $\mathbf{v}_{i}$ in cartesian coordinates we have:
+Interpolation of wind characteristics depends on the amount of information available:
+\begin{itemize}
+\item{Interpolation of wind speed only}
+\item{Interpolation of wind vectors (speed and direction)}
+\item{Interpolation of wind vectors using wind fields}
+\end{itemize}
+
+In the following we detail the calculations in each case.
+\subsubsection{Interpolation of wind speed}
+The predicted wind speed $u_{p}$ for a target point $p$ is the weighted average of station wind speed values $\{u_{i}\}$  $i=(1,... , n)$ using the interpolation weights $W_i$ determined from the truncated Gaussian filter:
+\begin{equation}
+u_{p} = \frac{\sum_{i=1}^{n}{W_i \cdot u_{i}}}{\sum_{i=1}^{n}{W_i}}
+\end{equation}
+\subsubsection{Interpolation of wind vectors}
+Interpolation of wind vectors for a target point $p$ is as follows. Let $\mathbf{v}_{i}$ be the wind vector in weather station $i$. $\mathbf{v}_{i}$ is initially expressed using polar coordinates. Indeed, we have $u_{i}$ and $\theta_{i}$, the wind speed and wind direction, respectively. If we express $\mathbf{v}_{i}$ in cartesian coordinates we have:
 \begin{equation}
 x_{i} = u_{i}\cdot \sin(\theta_{i}) \quad y_{i} = u_{i}\cdot \cos(\theta_{i})
 \end{equation}
@@ -333,15 +278,8 @@ The polar coordinates of the predicted wind vector $\mathbf{v}_{p}$  are:
 u_{p} = \sqrt{x^{2}_{p} + y^{2}_{p}} \quad \theta_{p} = \tan^{-1}(x_{p}/y_{p})
 \end{equation}
 
-The following figure shows an example interpolating wind speed for all grid cells of the landscape shown above:
-
-\begin{center}
-<<fig=TRUE, echo=FALSE, width = 4, height = 3.5>>=
-meteoplot(mp,1,"WindSpeed", ylab=" Wind speed (m/s)", xlab="")
-@
-\end{center}
-\subsubsection{Interpolation using wind fields}
-More precise wind interpolation requires a set of static wind fields covering the landscape of interest. Each of these wind fields has been calculated assuming a domain-level combination of wind speed and wind direction. The set of domain-level combinations should cover all possible winds in the landscape under study. For example, one could decide to include the combinations of eight different wind directions (i.e., N, NE, E, SE, ...) and three wind speed classes. The wind estimation of a given target point depends on both the wind observations at weather stations and these static wind fields.
+\subsubsection{Interpolation of wind vectors using wind fields}
+More precise wind interpolation of wind vectors requires a set of static wind fields covering the landscape of interest. Each of these wind fields has been calculated assuming a domain-level combination of wind speed and wind direction. The set of domain-level combinations should cover all possible winds in the landscape under study. For example, one could decide to include the combinations of eight different wind directions (i.e., N, NE, E, SE, ...) and three wind speed classes. The wind estimation of a given target point depends on both the wind observations at weather stations and these static wind fields.
 
 In a given day (and before processing target points) we begin by identifying, for each weather station $i = (1, ... ,n)$, the wind field $m_i$ corresponding to a minimum difference between the observed wind vector $\mathbf{v}_i$ and the wind vector of the station in the wind field (i.e., minimum distance between the corresponding cartesian coordinates). The set of wind fields $\{m_i\}$ $i = (1, ... ,n)$ chosen for each weather station conform the information for wind interpolation in a given day.
 
@@ -693,19 +631,7 @@ B = b_0 + b_1 \cdot e^{-b_2 \cdot {\hat{\Delta T}}}
 \end{equation}
 with $b_0 = 0.031$, $b_1 = 0.201$ and $b_2 = 0.185$. In this last equation,  $\hat{\Delta T}$ is a 30-day moving average for the temperature range $\Delta T$. For computational reasons, we do not estimate $\hat{\Delta T}$ from the 30-day moving window average of predicted $\Delta T$ values, but from the interpolation of pre-calculated $\hat{\Delta T}$ values in weather stations. On wet days (i.e. if $P_p > 0$) the estimation of $T_{f,max}$ is multiplied by a factor of $0.75$ to account for clouds.
 
-Although the calculation of incident solar radiation can be done independently of interpolation (see function \texttt{radiation\_solarRadiation()}, it is automatically done in functions \texttt{interpolationpoints()} and \texttt{interpolationgrid()}. The following figure shows an example of calculating incident solar radiation for all grid cells of the landscape shown above, after interpolation of the other variables:
-
-\begin{center}
-<<fig=TRUE, echo=FALSE, width = 4, height = 4>>=
-spplot(ml,1,"Radiation")
-@
-\end{center}
-And the precipitation daily series for a single point:
-\begin{center}
-<<fig=TRUE, echo=FALSE, width = 4, height = 4>>=
-meteoplot(mp,1,"Radiation", xlab="", ylab="Solar radiation (MJ·m-2·d-1)")
-@
-\end{center}
+Although the calculation of incident solar radiation can be done independently of interpolation (see function \texttt{radiation\_solarRadiation()}, it is automatically done in functions \texttt{interpolationpoints()} and \texttt{interpolationgrid()}. 
 
 \subsection{Outgoing longwave radiation and net radiation}
 Potential and actual evapotranspiration calculations require estimating the energy actually absorved by evaporating surfaces. Daily net radiation $R_n$ (in $MJ\cdot m^{-2}\cdot day^{-1}$) is calculated using:
@@ -725,6 +651,22 @@ where $e$ is the actual vapor pressure (kPa), $T_{\max}$ and $T_{\min}$ are the 
 The following figure shows an example of radiation balance for a whole year for a single site (see functions \texttt{radiation\_outgoingLongwaveRadiation()} and \texttt{radiation\_netRadiation()}):
 \begin{center}
 <<fig =TRUE, echo=FALSE, width=4, height =4>>=
+library(meteoland)
+data(examplegridtopography)
+data(exampleinterpolationdata)
+
+#Creates spatial topography points from the grid
+p = 1:2
+points = as(examplegridtopography,"SpatialPoints")[p]
+points = spTransform(points, exampleinterpolationdata@proj4string)
+spt = SpatialPointsTopography(points, examplegridtopography$elevation[p],
+                              examplegridtopography$slope[p],
+                              examplegridtopography$aspect[p])
+
+#Interpolation of two points for the whole time period (2000)
+mp = interpolationpoints(exampleinterpolationdata, spt, verbose=FALSE)
+
+examplemeteo = mp@data[[1]]
 R_s = examplemeteo$Radiation
 tmin = examplemeteo$MinTemperature
 tmax = examplemeteo$MaxTemperature
@@ -747,21 +689,21 @@ vpa = utils_averageDailyVP(tmin[i], tmax[i], rhmin[i], rhmax[i])
 R_nl[i] = radiation_outgoingLongwaveRadiation(latradp, elevationp, sloradp,aspradp, J[i], vpa, tmin[i], tmax[i], R_s[i])
 R_net[i] = radiation_netRadiation(latradp, elevationp, sloradp,aspradp, J[i], vpa, tmin[i], tmax[i], R_s[i])
 }
-plot(dates, R_s, type="l", xlab="", ylab = "Daily radiation (MJ·m-2)", ylim=c(0,40))
-lines(dates, R_nl, col="blue")
-lines(dates, R_net, col="red")
+plot(dates[1:365], R_s[1:365], type="l", xlab="", ylab = "Daily radiation (MJ·m-2)", ylim=c(0,40))
+lines(dates[1:365], R_nl[1:365], col="blue")
+lines(dates[1:365], R_net[1:365], col="red")
 legend("topleft", col=c("black","blue","red"), legend = c("Solar radiation", "Outgoing longwave radiation", "Net shortwave radiation"), bty="n", cex=0.8, lty=1)
 @
 \end{center}
 
-\section{Statistical downscaling of coarse-scale weather data}
+\section{Statistical correction of coarse-scale weather data}
 <<echo=FALSE>>=
 data(exampleinterpolationdata)
-#Downscaling of future predictions (RCM models, period 2020-2023)
-bc_dates = seq(as.Date("2022-01-01"), as.Date("2023-12-31"), by="day")
-predicted = downscalingpoints(exampledownscalingdata, mp, spt@data, dates = bc_dates, verbose=FALSE)
+#Downscaling of future predictions (RCM models, year 2023)
+bc_dates = seq(as.Date("2023-01-01"), as.Date("2023-12-31"), by="day")
+predicted = correctionpoints(examplecorrectiondata, mp, spt@data, dates = bc_dates, verbose=FALSE)
 @
-Statistical downscaling is necessary when meteorological data is available at a spatial scale that is too coarse for landscape-level analysis. This is usually the case when taking predictions from global or regional climate models. The general idea of downscaling to the landscape level is that a fine-scale meteorological series is to be compared to coarse-scale series for the a historical (reference) period. The result of this comparison can be used to correct coarse-scale meteorological series for other periods (normally future projections). In the case of most meteorological variables, the comparison consists in calculating a bias using the reference period and applying this bias to the future period. However, in the case of precipitation a different procedure is needed.
+Statistical correction is necessary when meteorological data is available at a spatial scale that is too coarse for landscape-level analysis. This is usually the case when taking predictions from global or regional climate models. The general idea of correction to the landscape level is that a fine-scale meteorological series is to be compared to coarse-scale series for the a historical (reference) period. The result of this comparison can be used to correct coarse-scale meteorological series for other periods (normally future projections). In the case of most meteorological variables, the comparison consists in calculating a bias using the reference period and applying this bias to the future period. However, in the case of precipitation a different procedure is needed.
 
 \subsection{Precipitation}
 There are several approaches to correct precipitation predictions of climate models. Among the most popular approaches are statistical transformations that that aim to adjust aspects of the distribution of predicted values so that the new distribution resembles observations. A common approach is to use cumulative distribution function (CDF) of observed and modelled values. In \texttt{meteoland} we perform quantile mapping by calling the functions implemented in package \texttt{qmap} (Gudmundsson et al. 2012). In short, the empirical CDFs are approximated using tables of empirical percentiles. Values in between the percentiles are approximated using linear interpolation. If new model values (e.g. from climate projections) are larger than the training values used to estimate the empirical CDF, the correction found for the highest quantile of the training period is used. 
@@ -773,10 +715,10 @@ par(mfrow=c(1,2), mar=c(5,5,1,1))
 meteoplot(predicted, 1, "Precipitation", ylab="Precipitation (mm)", ylim=c(0,80))
 #Add uncorrected mean temperature data (cell #5)
 lines(bc_dates,
-      exampledownscalingdata@futuredata[[5]][as.character(bc_dates),"Precipitation"],
+      examplecorrectiondata@projection_data[[3]][as.character(bc_dates),"Precipitation"],
       col="red", lty=3)
 legend("topleft", legend=c("corrected","uncorrected"), col=c("black","red"), lty=c(1,3), bty="n")
-plot(exampledownscalingdata@futuredata[[5]][as.character(bc_dates),"Precipitation"], ylim=c(0,60), xlim=c(0,60),
+plot(examplecorrectiondata@projection_data[[3]][as.character(bc_dates),"Precipitation"], ylim=c(0,60), xlim=c(0,60),
      predicted@data[[1]]$Precipitation, cex=0.1, asp=1,
      ylab="Corrected precipitation (mm)", xlab="Uncorrected precipitation (mm)")
 abline(a=0,b=1,col="gray")
@@ -804,23 +746,23 @@ par(mfrow=c(2,2), mar=c(5,5,1,1))
 meteoplot(predicted, 1, "MeanTemperature", ylab="Mean temperature (Celsius)", ylim=c(-5,40))
 #Add uncorrected mean temperature data (cell #5)
 lines(bc_dates,
-      exampledownscalingdata@futuredata[[5]][as.character(bc_dates),"MeanTemperature"],
+      examplecorrectiondata@projection_data[[3]][as.character(bc_dates),"MeanTemperature"],
       col="red")
 legend("topright", legend=c("corrected","uncorrected"), col=c("black","red"), lty=c(1,1), bty="n")
 
 #Scatter plot
-plot(exampledownscalingdata@futuredata[[5]][as.character(bc_dates),"MeanTemperature"],
+plot(examplecorrectiondata@projection_data[[3]][as.character(bc_dates),"MeanTemperature"],
      predicted@data[[1]]$MeanTemperature, cex=0.1, asp=1,
      ylab="Corrected mean temperature", xlab="Uncorrected mean temperature")
 abline(a=0,b=1,col="gray")
 meteoplot(predicted, 1, "Radiation", ylab="Radiation (MJ·m-2)", ylim=c(0,40))
 #Add uncorrected mean temperature data (cell #5)
 lines(bc_dates,
-      exampledownscalingdata@futuredata[[5]][as.character(bc_dates),"Radiation"],
+      examplecorrectiondata@projection_data[[3]][as.character(bc_dates),"Radiation"],
       col="red")
 legend("topright", legend=c("corrected","uncorrected"), col=c("black","red"), lty=c(1,1), bty="n")
 #Scatter plot
-plot(exampledownscalingdata@futuredata[[5]][as.character(bc_dates),"Radiation"],
+plot(examplecorrectiondata@projection_data[[3]][as.character(bc_dates),"Radiation"],
      predicted@data[[1]]$Radiation, cex=0.1, asp=1,
      ylab="Corrected radiation", xlab="Uncorrected radiation")
 abline(a=0,b=1,col="gray")
@@ -830,7 +772,7 @@ abline(a=0,b=1,col="gray")
 
 
 \section{Estimation of potential evapo-transpiration}
-Package \texttt{meteoland} allows calculating potential evapo-transpiration (PET) using Penman's formulation (Penman 1948; 1956) or Penman-Monteith formulation. PET is automatically calculated after meteorological data have been interpolated (i.e. within functions \texttt{interpolationpoints()} and \texttt{interpolationgrid()}) or downscaled (i.e. within functions \texttt{downscalingpoints()} and \texttt{downscalinggrid()}), but PET values can also be calculated for a single point using functions \texttt{penman()} or \texttt{penmanmonteith()}. For other formulations of PET, the reader is referred to package \texttt{`Evapotranspiration'}.
+Package \texttt{meteoland} allows calculating potential evapo-transpiration (PET) using Penman's formulation (Penman 1948; 1956) or Penman-Monteith formulation. PET is automatically calculated after meteorological data have been interpolated (i.e. within functions \texttt{interpolationpoints()} and \texttt{interpolationgrid()}) or downscaled (i.e. within functions \texttt{correctionpoints()} and \texttt{correctiongrid()}), but PET values can also be calculated for a single point using functions \texttt{penman()} or \texttt{penmanmonteith()}. For other formulations of PET, the reader is referred to package \texttt{`Evapotranspiration'}.
 
 \subsection{Penman formulation}
 Penman (1948) proposed an equation to calculate potential evaporation that combined an energy equation based on net incoming radiation with an aerodynamic approach. The Penman or Penman combination equation is:
@@ -852,18 +794,6 @@ PET \simeq 0.047\cdot R_s \cdot (T_a+9.5)^{0.5}-2.4\cdot (\frac{R_s}{R_{pot}})^2
 \end{equation}
 where $R_s$ is the incoming solar radiation (in $MJ\cdot m^{-2}\cdot day^{-1}$), $T_a$ is the mean daily temperature (in $\degree C$), $R_{pot}$ is the potential (i.e. extraterrestrial) solar radiation (in $MJ\cdot m^{-2}\cdot day^{-1}$) and $RH_{mean}$ is the mean relative humidity (in percent). 
 
-The following figure shows an example of calculating Penman's PET for all grid cells of the landscape shown above, after interpolation/estimation of the other variables:
-\begin{center}
-<<fig=TRUE, echo=FALSE, width = 4, height = 4>>=
-spplot(ml,1,"PET")
-@
-\end{center}
-and the PET daily series for a single point:
-\begin{center}
-<<fig=TRUE, echo=FALSE, width = 4, height = 3.5>>=
-meteoplot(mp,1,"PET", xlab="", ylab="PET (mm)")
-@
-\end{center}
 
 \subsection{Penman-Monteith formulation}
 The Penman-Monteith combination equation:

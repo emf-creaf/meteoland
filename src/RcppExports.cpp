@@ -286,6 +286,36 @@ RcppExport SEXP meteoland_solarDeclination(SEXP JSEXP) {
     UNPROTECT(1);
     return rcpp_result_gen;
 }
+// solarConstant
+double solarConstant(int J);
+static SEXP meteoland_solarConstant_try(SEXP JSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< int >::type J(JSEXP);
+    rcpp_result_gen = Rcpp::wrap(solarConstant(J));
+    return rcpp_result_gen;
+END_RCPP_RETURN_ERROR
+}
+RcppExport SEXP meteoland_solarConstant(SEXP JSEXP) {
+    SEXP rcpp_result_gen;
+    {
+        Rcpp::RNGScope rcpp_rngScope_gen;
+        rcpp_result_gen = PROTECT(meteoland_solarConstant_try(JSEXP));
+    }
+    Rboolean rcpp_isInterrupt_gen = Rf_inherits(rcpp_result_gen, "interrupted-error");
+    if (rcpp_isInterrupt_gen) {
+        UNPROTECT(1);
+        Rf_onintr();
+    }
+    Rboolean rcpp_isError_gen = Rf_inherits(rcpp_result_gen, "try-error");
+    if (rcpp_isError_gen) {
+        SEXP rcpp_msgSEXP_gen = Rf_asChar(rcpp_result_gen);
+        UNPROTECT(1);
+        Rf_error(CHAR(rcpp_msgSEXP_gen));
+    }
+    UNPROTECT(1);
+    return rcpp_result_gen;
+}
 // sunRiseSet
 NumericVector sunRiseSet(double latrad, double slorad, double asprad, double delta);
 static SEXP meteoland_sunRiseSet_try(SEXP latradSEXP, SEXP sloradSEXP, SEXP aspradSEXP, SEXP deltaSEXP) {
@@ -304,6 +334,38 @@ RcppExport SEXP meteoland_sunRiseSet(SEXP latradSEXP, SEXP sloradSEXP, SEXP aspr
     {
         Rcpp::RNGScope rcpp_rngScope_gen;
         rcpp_result_gen = PROTECT(meteoland_sunRiseSet_try(latradSEXP, sloradSEXP, aspradSEXP, deltaSEXP));
+    }
+    Rboolean rcpp_isInterrupt_gen = Rf_inherits(rcpp_result_gen, "interrupted-error");
+    if (rcpp_isInterrupt_gen) {
+        UNPROTECT(1);
+        Rf_onintr();
+    }
+    Rboolean rcpp_isError_gen = Rf_inherits(rcpp_result_gen, "try-error");
+    if (rcpp_isError_gen) {
+        SEXP rcpp_msgSEXP_gen = Rf_asChar(rcpp_result_gen);
+        UNPROTECT(1);
+        Rf_error(CHAR(rcpp_msgSEXP_gen));
+    }
+    UNPROTECT(1);
+    return rcpp_result_gen;
+}
+// solarElevation
+double solarElevation(double latrad, double delta, double hrad);
+static SEXP meteoland_solarElevation_try(SEXP latradSEXP, SEXP deltaSEXP, SEXP hradSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< double >::type latrad(latradSEXP);
+    Rcpp::traits::input_parameter< double >::type delta(deltaSEXP);
+    Rcpp::traits::input_parameter< double >::type hrad(hradSEXP);
+    rcpp_result_gen = Rcpp::wrap(solarElevation(latrad, delta, hrad));
+    return rcpp_result_gen;
+END_RCPP_RETURN_ERROR
+}
+RcppExport SEXP meteoland_solarElevation(SEXP latradSEXP, SEXP deltaSEXP, SEXP hradSEXP) {
+    SEXP rcpp_result_gen;
+    {
+        Rcpp::RNGScope rcpp_rngScope_gen;
+        rcpp_result_gen = PROTECT(meteoland_solarElevation_try(latradSEXP, deltaSEXP, hradSEXP));
     }
     Rboolean rcpp_isInterrupt_gen = Rf_inherits(rcpp_result_gen, "interrupted-error");
     if (rcpp_isInterrupt_gen) {
@@ -386,23 +448,24 @@ RcppExport SEXP meteoland_daylengthseconds(SEXP latradSEXP, SEXP sloradSEXP, SEX
     return rcpp_result_gen;
 }
 // RpotDay
-double RpotDay(double latrad, double slorad, double asprad, double delta);
-static SEXP meteoland_RpotDay_try(SEXP latradSEXP, SEXP sloradSEXP, SEXP aspradSEXP, SEXP deltaSEXP) {
+double RpotDay(double solarConstant, double latrad, double slorad, double asprad, double delta);
+static SEXP meteoland_RpotDay_try(SEXP solarConstantSEXP, SEXP latradSEXP, SEXP sloradSEXP, SEXP aspradSEXP, SEXP deltaSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< double >::type solarConstant(solarConstantSEXP);
     Rcpp::traits::input_parameter< double >::type latrad(latradSEXP);
     Rcpp::traits::input_parameter< double >::type slorad(sloradSEXP);
     Rcpp::traits::input_parameter< double >::type asprad(aspradSEXP);
     Rcpp::traits::input_parameter< double >::type delta(deltaSEXP);
-    rcpp_result_gen = Rcpp::wrap(RpotDay(latrad, slorad, asprad, delta));
+    rcpp_result_gen = Rcpp::wrap(RpotDay(solarConstant, latrad, slorad, asprad, delta));
     return rcpp_result_gen;
 END_RCPP_RETURN_ERROR
 }
-RcppExport SEXP meteoland_RpotDay(SEXP latradSEXP, SEXP sloradSEXP, SEXP aspradSEXP, SEXP deltaSEXP) {
+RcppExport SEXP meteoland_RpotDay(SEXP solarConstantSEXP, SEXP latradSEXP, SEXP sloradSEXP, SEXP aspradSEXP, SEXP deltaSEXP) {
     SEXP rcpp_result_gen;
     {
         Rcpp::RNGScope rcpp_rngScope_gen;
-        rcpp_result_gen = PROTECT(meteoland_RpotDay_try(latradSEXP, sloradSEXP, aspradSEXP, deltaSEXP));
+        rcpp_result_gen = PROTECT(meteoland_RpotDay_try(solarConstantSEXP, latradSEXP, sloradSEXP, aspradSEXP, deltaSEXP));
     }
     Rboolean rcpp_isInterrupt_gen = Rf_inherits(rcpp_result_gen, "interrupted-error");
     if (rcpp_isInterrupt_gen) {
@@ -419,10 +482,11 @@ RcppExport SEXP meteoland_RpotDay(SEXP latradSEXP, SEXP sloradSEXP, SEXP aspradS
     return rcpp_result_gen;
 }
 // RDay
-double RDay(double latrad, double elevation, double slorad, double asprad, double delta, double diffTemp, double diffTempMonth, double vpa, double precipitation);
-static SEXP meteoland_RDay_try(SEXP latradSEXP, SEXP elevationSEXP, SEXP sloradSEXP, SEXP aspradSEXP, SEXP deltaSEXP, SEXP diffTempSEXP, SEXP diffTempMonthSEXP, SEXP vpaSEXP, SEXP precipitationSEXP) {
+double RDay(double solarConstant, double latrad, double elevation, double slorad, double asprad, double delta, double diffTemp, double diffTempMonth, double vpa, double precipitation);
+static SEXP meteoland_RDay_try(SEXP solarConstantSEXP, SEXP latradSEXP, SEXP elevationSEXP, SEXP sloradSEXP, SEXP aspradSEXP, SEXP deltaSEXP, SEXP diffTempSEXP, SEXP diffTempMonthSEXP, SEXP vpaSEXP, SEXP precipitationSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< double >::type solarConstant(solarConstantSEXP);
     Rcpp::traits::input_parameter< double >::type latrad(latradSEXP);
     Rcpp::traits::input_parameter< double >::type elevation(elevationSEXP);
     Rcpp::traits::input_parameter< double >::type slorad(sloradSEXP);
@@ -432,15 +496,90 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< double >::type diffTempMonth(diffTempMonthSEXP);
     Rcpp::traits::input_parameter< double >::type vpa(vpaSEXP);
     Rcpp::traits::input_parameter< double >::type precipitation(precipitationSEXP);
-    rcpp_result_gen = Rcpp::wrap(RDay(latrad, elevation, slorad, asprad, delta, diffTemp, diffTempMonth, vpa, precipitation));
+    rcpp_result_gen = Rcpp::wrap(RDay(solarConstant, latrad, elevation, slorad, asprad, delta, diffTemp, diffTempMonth, vpa, precipitation));
     return rcpp_result_gen;
 END_RCPP_RETURN_ERROR
 }
-RcppExport SEXP meteoland_RDay(SEXP latradSEXP, SEXP elevationSEXP, SEXP sloradSEXP, SEXP aspradSEXP, SEXP deltaSEXP, SEXP diffTempSEXP, SEXP diffTempMonthSEXP, SEXP vpaSEXP, SEXP precipitationSEXP) {
+RcppExport SEXP meteoland_RDay(SEXP solarConstantSEXP, SEXP latradSEXP, SEXP elevationSEXP, SEXP sloradSEXP, SEXP aspradSEXP, SEXP deltaSEXP, SEXP diffTempSEXP, SEXP diffTempMonthSEXP, SEXP vpaSEXP, SEXP precipitationSEXP) {
     SEXP rcpp_result_gen;
     {
         Rcpp::RNGScope rcpp_rngScope_gen;
-        rcpp_result_gen = PROTECT(meteoland_RDay_try(latradSEXP, elevationSEXP, sloradSEXP, aspradSEXP, deltaSEXP, diffTempSEXP, diffTempMonthSEXP, vpaSEXP, precipitationSEXP));
+        rcpp_result_gen = PROTECT(meteoland_RDay_try(solarConstantSEXP, latradSEXP, elevationSEXP, sloradSEXP, aspradSEXP, deltaSEXP, diffTempSEXP, diffTempMonthSEXP, vpaSEXP, precipitationSEXP));
+    }
+    Rboolean rcpp_isInterrupt_gen = Rf_inherits(rcpp_result_gen, "interrupted-error");
+    if (rcpp_isInterrupt_gen) {
+        UNPROTECT(1);
+        Rf_onintr();
+    }
+    Rboolean rcpp_isError_gen = Rf_inherits(rcpp_result_gen, "try-error");
+    if (rcpp_isError_gen) {
+        SEXP rcpp_msgSEXP_gen = Rf_asChar(rcpp_result_gen);
+        UNPROTECT(1);
+        Rf_error(CHAR(rcpp_msgSEXP_gen));
+    }
+    UNPROTECT(1);
+    return rcpp_result_gen;
+}
+// directDiffuseInstant
+NumericVector directDiffuseInstant(double solarConstant, double latrad, double slorad, double asprad, double delta, double hrad, double R_p, double R_s, bool clearday);
+static SEXP meteoland_directDiffuseInstant_try(SEXP solarConstantSEXP, SEXP latradSEXP, SEXP sloradSEXP, SEXP aspradSEXP, SEXP deltaSEXP, SEXP hradSEXP, SEXP R_pSEXP, SEXP R_sSEXP, SEXP cleardaySEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< double >::type solarConstant(solarConstantSEXP);
+    Rcpp::traits::input_parameter< double >::type latrad(latradSEXP);
+    Rcpp::traits::input_parameter< double >::type slorad(sloradSEXP);
+    Rcpp::traits::input_parameter< double >::type asprad(aspradSEXP);
+    Rcpp::traits::input_parameter< double >::type delta(deltaSEXP);
+    Rcpp::traits::input_parameter< double >::type hrad(hradSEXP);
+    Rcpp::traits::input_parameter< double >::type R_p(R_pSEXP);
+    Rcpp::traits::input_parameter< double >::type R_s(R_sSEXP);
+    Rcpp::traits::input_parameter< bool >::type clearday(cleardaySEXP);
+    rcpp_result_gen = Rcpp::wrap(directDiffuseInstant(solarConstant, latrad, slorad, asprad, delta, hrad, R_p, R_s, clearday));
+    return rcpp_result_gen;
+END_RCPP_RETURN_ERROR
+}
+RcppExport SEXP meteoland_directDiffuseInstant(SEXP solarConstantSEXP, SEXP latradSEXP, SEXP sloradSEXP, SEXP aspradSEXP, SEXP deltaSEXP, SEXP hradSEXP, SEXP R_pSEXP, SEXP R_sSEXP, SEXP cleardaySEXP) {
+    SEXP rcpp_result_gen;
+    {
+        Rcpp::RNGScope rcpp_rngScope_gen;
+        rcpp_result_gen = PROTECT(meteoland_directDiffuseInstant_try(solarConstantSEXP, latradSEXP, sloradSEXP, aspradSEXP, deltaSEXP, hradSEXP, R_pSEXP, R_sSEXP, cleardaySEXP));
+    }
+    Rboolean rcpp_isInterrupt_gen = Rf_inherits(rcpp_result_gen, "interrupted-error");
+    if (rcpp_isInterrupt_gen) {
+        UNPROTECT(1);
+        Rf_onintr();
+    }
+    Rboolean rcpp_isError_gen = Rf_inherits(rcpp_result_gen, "try-error");
+    if (rcpp_isError_gen) {
+        SEXP rcpp_msgSEXP_gen = Rf_asChar(rcpp_result_gen);
+        UNPROTECT(1);
+        Rf_error(CHAR(rcpp_msgSEXP_gen));
+    }
+    UNPROTECT(1);
+    return rcpp_result_gen;
+}
+// directDiffuseDay
+DataFrame directDiffuseDay(double solarConstant, double latrad, double slorad, double asprad, double delta, double R_s, bool clearday, int nsteps);
+static SEXP meteoland_directDiffuseDay_try(SEXP solarConstantSEXP, SEXP latradSEXP, SEXP sloradSEXP, SEXP aspradSEXP, SEXP deltaSEXP, SEXP R_sSEXP, SEXP cleardaySEXP, SEXP nstepsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< double >::type solarConstant(solarConstantSEXP);
+    Rcpp::traits::input_parameter< double >::type latrad(latradSEXP);
+    Rcpp::traits::input_parameter< double >::type slorad(sloradSEXP);
+    Rcpp::traits::input_parameter< double >::type asprad(aspradSEXP);
+    Rcpp::traits::input_parameter< double >::type delta(deltaSEXP);
+    Rcpp::traits::input_parameter< double >::type R_s(R_sSEXP);
+    Rcpp::traits::input_parameter< bool >::type clearday(cleardaySEXP);
+    Rcpp::traits::input_parameter< int >::type nsteps(nstepsSEXP);
+    rcpp_result_gen = Rcpp::wrap(directDiffuseDay(solarConstant, latrad, slorad, asprad, delta, R_s, clearday, nsteps));
+    return rcpp_result_gen;
+END_RCPP_RETURN_ERROR
+}
+RcppExport SEXP meteoland_directDiffuseDay(SEXP solarConstantSEXP, SEXP latradSEXP, SEXP sloradSEXP, SEXP aspradSEXP, SEXP deltaSEXP, SEXP R_sSEXP, SEXP cleardaySEXP, SEXP nstepsSEXP) {
+    SEXP rcpp_result_gen;
+    {
+        Rcpp::RNGScope rcpp_rngScope_gen;
+        rcpp_result_gen = PROTECT(meteoland_directDiffuseDay_try(solarConstantSEXP, latradSEXP, sloradSEXP, aspradSEXP, deltaSEXP, R_sSEXP, cleardaySEXP, nstepsSEXP));
     }
     Rboolean rcpp_isInterrupt_gen = Rf_inherits(rcpp_result_gen, "interrupted-error");
     if (rcpp_isInterrupt_gen) {
@@ -457,10 +596,11 @@ RcppExport SEXP meteoland_RDay(SEXP latradSEXP, SEXP elevationSEXP, SEXP sloradS
     return rcpp_result_gen;
 }
 // outgoingLongwaveRadiation
-double outgoingLongwaveRadiation(double latrad, double elevation, double slorad, double asprad, double delta, double vpa, double tmin, double tmax, double R_s);
-static SEXP meteoland_outgoingLongwaveRadiation_try(SEXP latradSEXP, SEXP elevationSEXP, SEXP sloradSEXP, SEXP aspradSEXP, SEXP deltaSEXP, SEXP vpaSEXP, SEXP tminSEXP, SEXP tmaxSEXP, SEXP R_sSEXP) {
+double outgoingLongwaveRadiation(double solarConstant, double latrad, double elevation, double slorad, double asprad, double delta, double vpa, double tmin, double tmax, double R_s);
+static SEXP meteoland_outgoingLongwaveRadiation_try(SEXP solarConstantSEXP, SEXP latradSEXP, SEXP elevationSEXP, SEXP sloradSEXP, SEXP aspradSEXP, SEXP deltaSEXP, SEXP vpaSEXP, SEXP tminSEXP, SEXP tmaxSEXP, SEXP R_sSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< double >::type solarConstant(solarConstantSEXP);
     Rcpp::traits::input_parameter< double >::type latrad(latradSEXP);
     Rcpp::traits::input_parameter< double >::type elevation(elevationSEXP);
     Rcpp::traits::input_parameter< double >::type slorad(sloradSEXP);
@@ -470,15 +610,15 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< double >::type tmin(tminSEXP);
     Rcpp::traits::input_parameter< double >::type tmax(tmaxSEXP);
     Rcpp::traits::input_parameter< double >::type R_s(R_sSEXP);
-    rcpp_result_gen = Rcpp::wrap(outgoingLongwaveRadiation(latrad, elevation, slorad, asprad, delta, vpa, tmin, tmax, R_s));
+    rcpp_result_gen = Rcpp::wrap(outgoingLongwaveRadiation(solarConstant, latrad, elevation, slorad, asprad, delta, vpa, tmin, tmax, R_s));
     return rcpp_result_gen;
 END_RCPP_RETURN_ERROR
 }
-RcppExport SEXP meteoland_outgoingLongwaveRadiation(SEXP latradSEXP, SEXP elevationSEXP, SEXP sloradSEXP, SEXP aspradSEXP, SEXP deltaSEXP, SEXP vpaSEXP, SEXP tminSEXP, SEXP tmaxSEXP, SEXP R_sSEXP) {
+RcppExport SEXP meteoland_outgoingLongwaveRadiation(SEXP solarConstantSEXP, SEXP latradSEXP, SEXP elevationSEXP, SEXP sloradSEXP, SEXP aspradSEXP, SEXP deltaSEXP, SEXP vpaSEXP, SEXP tminSEXP, SEXP tmaxSEXP, SEXP R_sSEXP) {
     SEXP rcpp_result_gen;
     {
         Rcpp::RNGScope rcpp_rngScope_gen;
-        rcpp_result_gen = PROTECT(meteoland_outgoingLongwaveRadiation_try(latradSEXP, elevationSEXP, sloradSEXP, aspradSEXP, deltaSEXP, vpaSEXP, tminSEXP, tmaxSEXP, R_sSEXP));
+        rcpp_result_gen = PROTECT(meteoland_outgoingLongwaveRadiation_try(solarConstantSEXP, latradSEXP, elevationSEXP, sloradSEXP, aspradSEXP, deltaSEXP, vpaSEXP, tminSEXP, tmaxSEXP, R_sSEXP));
     }
     Rboolean rcpp_isInterrupt_gen = Rf_inherits(rcpp_result_gen, "interrupted-error");
     if (rcpp_isInterrupt_gen) {
@@ -495,10 +635,11 @@ RcppExport SEXP meteoland_outgoingLongwaveRadiation(SEXP latradSEXP, SEXP elevat
     return rcpp_result_gen;
 }
 // netRadiation
-double netRadiation(double latrad, double elevation, double slorad, double asprad, double delta, double vpa, double tmin, double tmax, double R_s, double alpha);
-static SEXP meteoland_netRadiation_try(SEXP latradSEXP, SEXP elevationSEXP, SEXP sloradSEXP, SEXP aspradSEXP, SEXP deltaSEXP, SEXP vpaSEXP, SEXP tminSEXP, SEXP tmaxSEXP, SEXP R_sSEXP, SEXP alphaSEXP) {
+double netRadiation(double solarConstant, double latrad, double elevation, double slorad, double asprad, double delta, double vpa, double tmin, double tmax, double R_s, double alpha);
+static SEXP meteoland_netRadiation_try(SEXP solarConstantSEXP, SEXP latradSEXP, SEXP elevationSEXP, SEXP sloradSEXP, SEXP aspradSEXP, SEXP deltaSEXP, SEXP vpaSEXP, SEXP tminSEXP, SEXP tmaxSEXP, SEXP R_sSEXP, SEXP alphaSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< double >::type solarConstant(solarConstantSEXP);
     Rcpp::traits::input_parameter< double >::type latrad(latradSEXP);
     Rcpp::traits::input_parameter< double >::type elevation(elevationSEXP);
     Rcpp::traits::input_parameter< double >::type slorad(sloradSEXP);
@@ -509,15 +650,15 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< double >::type tmax(tmaxSEXP);
     Rcpp::traits::input_parameter< double >::type R_s(R_sSEXP);
     Rcpp::traits::input_parameter< double >::type alpha(alphaSEXP);
-    rcpp_result_gen = Rcpp::wrap(netRadiation(latrad, elevation, slorad, asprad, delta, vpa, tmin, tmax, R_s, alpha));
+    rcpp_result_gen = Rcpp::wrap(netRadiation(solarConstant, latrad, elevation, slorad, asprad, delta, vpa, tmin, tmax, R_s, alpha));
     return rcpp_result_gen;
 END_RCPP_RETURN_ERROR
 }
-RcppExport SEXP meteoland_netRadiation(SEXP latradSEXP, SEXP elevationSEXP, SEXP sloradSEXP, SEXP aspradSEXP, SEXP deltaSEXP, SEXP vpaSEXP, SEXP tminSEXP, SEXP tmaxSEXP, SEXP R_sSEXP, SEXP alphaSEXP) {
+RcppExport SEXP meteoland_netRadiation(SEXP solarConstantSEXP, SEXP latradSEXP, SEXP elevationSEXP, SEXP sloradSEXP, SEXP aspradSEXP, SEXP deltaSEXP, SEXP vpaSEXP, SEXP tminSEXP, SEXP tmaxSEXP, SEXP R_sSEXP, SEXP alphaSEXP) {
     SEXP rcpp_result_gen;
     {
         Rcpp::RNGScope rcpp_rngScope_gen;
-        rcpp_result_gen = PROTECT(meteoland_netRadiation_try(latradSEXP, elevationSEXP, sloradSEXP, aspradSEXP, deltaSEXP, vpaSEXP, tminSEXP, tmaxSEXP, R_sSEXP, alphaSEXP));
+        rcpp_result_gen = PROTECT(meteoland_netRadiation_try(solarConstantSEXP, latradSEXP, elevationSEXP, sloradSEXP, aspradSEXP, deltaSEXP, vpaSEXP, tminSEXP, tmaxSEXP, R_sSEXP, alphaSEXP));
     }
     Rboolean rcpp_isInterrupt_gen = Rf_inherits(rcpp_result_gen, "interrupted-error");
     if (rcpp_isInterrupt_gen) {
@@ -1216,13 +1357,17 @@ static int meteoland_RcppExport_validate(const char* sig) {
         signatures.insert("int(*radiation_julianDay)(int,int,int)");
         signatures.insert("IntegerVector(*radiation_dateStringToJulianDays)(CharacterVector)");
         signatures.insert("double(*radiation_solarDeclination)(int)");
+        signatures.insert("double(*radiation_solarConstant)(int)");
         signatures.insert("NumericVector(*radiation_sunRiseSet)(double,double,double,double)");
+        signatures.insert("double(*radiation_solarElevation)(double,double,double)");
         signatures.insert("double(*radiation_daylength)(double,double,double,double)");
         signatures.insert("double(*radiation_daylengthseconds)(double,double,double,double)");
-        signatures.insert("double(*radiation_potentialRadiation)(double,double,double,double)");
-        signatures.insert("double(*radiation_solarRadiation)(double,double,double,double,double,double,double,double,double)");
-        signatures.insert("double(*radiation_outgoingLongwaveRadiation)(double,double,double,double,double,double,double,double,double)");
-        signatures.insert("double(*radiation_netRadiation)(double,double,double,double,double,double,double,double,double,double)");
+        signatures.insert("double(*radiation_potentialRadiation)(double,double,double,double,double)");
+        signatures.insert("double(*radiation_solarRadiation)(double,double,double,double,double,double,double,double,double,double)");
+        signatures.insert("NumericVector(*radiation_directDiffuseInstant)(double,double,double,double,double,double,double,double,bool)");
+        signatures.insert("DataFrame(*radiation_directDiffuseDay)(double,double,double,double,double,double,bool,int)");
+        signatures.insert("double(*radiation_outgoingLongwaveRadiation)(double,double,double,double,double,double,double,double,double,double)");
+        signatures.insert("double(*radiation_netRadiation)(double,double,double,double,double,double,double,double,double,double,double)");
         signatures.insert("NumericVector(*.potentialRadiationSeries)(double,double,double,NumericVector)");
         signatures.insert("NumericVector(*.potentialRadiationPoints)(double,NumericVector,NumericVector,int)");
         signatures.insert("NumericVector(*.radiationSeries)(double,double,double,double,NumericVector,NumericVector,NumericVector,NumericVector,NumericVector)");
@@ -1247,11 +1392,15 @@ RcppExport SEXP meteoland_RcppExport_registerCCallable() {
     R_RegisterCCallable("meteoland", "meteoland_radiation_julianDay", (DL_FUNC)meteoland_julianDay_try);
     R_RegisterCCallable("meteoland", "meteoland_radiation_dateStringToJulianDays", (DL_FUNC)meteoland_dateStringToJulianDays_try);
     R_RegisterCCallable("meteoland", "meteoland_radiation_solarDeclination", (DL_FUNC)meteoland_solarDeclination_try);
+    R_RegisterCCallable("meteoland", "meteoland_radiation_solarConstant", (DL_FUNC)meteoland_solarConstant_try);
     R_RegisterCCallable("meteoland", "meteoland_radiation_sunRiseSet", (DL_FUNC)meteoland_sunRiseSet_try);
+    R_RegisterCCallable("meteoland", "meteoland_radiation_solarElevation", (DL_FUNC)meteoland_solarElevation_try);
     R_RegisterCCallable("meteoland", "meteoland_radiation_daylength", (DL_FUNC)meteoland_daylength_try);
     R_RegisterCCallable("meteoland", "meteoland_radiation_daylengthseconds", (DL_FUNC)meteoland_daylengthseconds_try);
     R_RegisterCCallable("meteoland", "meteoland_radiation_potentialRadiation", (DL_FUNC)meteoland_RpotDay_try);
     R_RegisterCCallable("meteoland", "meteoland_radiation_solarRadiation", (DL_FUNC)meteoland_RDay_try);
+    R_RegisterCCallable("meteoland", "meteoland_radiation_directDiffuseInstant", (DL_FUNC)meteoland_directDiffuseInstant_try);
+    R_RegisterCCallable("meteoland", "meteoland_radiation_directDiffuseDay", (DL_FUNC)meteoland_directDiffuseDay_try);
     R_RegisterCCallable("meteoland", "meteoland_radiation_outgoingLongwaveRadiation", (DL_FUNC)meteoland_outgoingLongwaveRadiation_try);
     R_RegisterCCallable("meteoland", "meteoland_radiation_netRadiation", (DL_FUNC)meteoland_netRadiation_try);
     R_RegisterCCallable("meteoland", "meteoland_.potentialRadiationSeries", (DL_FUNC)meteoland_potentialRadiationSeries_try);

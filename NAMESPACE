@@ -6,7 +6,26 @@ import(rgdal)
 import(qmap)
 import(methods)
 useDynLib(meteoland)
-exportPattern("^[[:alpha:]]+")
+export(radiation_julianDay, radiation_solarDeclination, radiation_solarConstant, radiation_daylength,
+              radiation_dateStringToJulianDays, radiation_sunRiseSet, radiation_daylengthseconds,
+              radiation_potentialRadiation, radiation_solarElevation, radiation_solarRadiation, 
+              radiation_directDiffuseInstant, radiation_directDiffuseDay, 
+              radiation_outgoingLongwaveRadiation,radiation_netRadiation, 
+              SpatialPointsTopography, SpatialGridTopography,
+              interpolationpoints, interpolationgrid, correctionpoints, correctiongrid,
+              utils_saturationVP, utils_averageDailyVP, utils_atmosphericPressure,
+              utils_airDensity, utils_averageDaylightTemperature, utils_latentHeatVaporisation,
+              utils_latentHeatVaporisationMol,utils_psychrometricConstant,
+              utils_saturationVaporPressureCurveSlope, penman, penmanmonteith,
+              meteoplot, defaultCorrectionParams, defaultInterpolationParams, downloadAEMETcurrentday,
+              downloadAEMETpoints, downloadAEMETstationdata, extractgridpoints, extractNetCDF, extractpointdates,
+              interpolation.calibration, interpolation.coverage, interpolation.cv, 
+              readmeteorologygrid,readmeteorologypoint,readmeteorologypointfiles , 
+              readmeteorologygrid, readmeteorologygridfiles, readmeteorologygridcells, 
+              readWindNinjaWindFields, SpatialGridMeteorology, SpatialPointsMeteorology,
+              summary.interpolation.cv, summarygrid, summarypoints, writemeteorologygrid, writemeteorologygridfiles,
+              writemeteorologypoint, writemeteorologypointfiles, subsample)
+
 importFrom(Rcpp, evalCpp)
 importFrom("curl","new_handle", "handle_setheaders", "handle_setopt","curl_fetch_memory")
 importFrom("qmap","fitQmap","doQmap","fitQmapQUANT")

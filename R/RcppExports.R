@@ -53,8 +53,16 @@ radiation_solarDeclination <- function(J) {
     .Call('meteoland_solarDeclination', PACKAGE = 'meteoland', J)
 }
 
+radiation_solarConstant <- function(J) {
+    .Call('meteoland_solarConstant', PACKAGE = 'meteoland', J)
+}
+
 radiation_sunRiseSet <- function(latrad, slorad, asprad, delta) {
     .Call('meteoland_sunRiseSet', PACKAGE = 'meteoland', latrad, slorad, asprad, delta)
+}
+
+radiation_solarElevation <- function(latrad, delta, hrad) {
+    .Call('meteoland_solarElevation', PACKAGE = 'meteoland', latrad, delta, hrad)
 }
 
 radiation_daylength <- function(latrad, slorad, asprad, delta) {
@@ -65,20 +73,28 @@ radiation_daylengthseconds <- function(latrad, slorad, asprad, delta) {
     .Call('meteoland_daylengthseconds', PACKAGE = 'meteoland', latrad, slorad, asprad, delta)
 }
 
-radiation_potentialRadiation <- function(latrad, slorad, asprad, delta) {
-    .Call('meteoland_RpotDay', PACKAGE = 'meteoland', latrad, slorad, asprad, delta)
+radiation_potentialRadiation <- function(solarConstant, latrad, slorad, asprad, delta) {
+    .Call('meteoland_RpotDay', PACKAGE = 'meteoland', solarConstant, latrad, slorad, asprad, delta)
 }
 
-radiation_solarRadiation <- function(latrad, elevation, slorad, asprad, delta, diffTemp, diffTempMonth, vpa, precipitation) {
-    .Call('meteoland_RDay', PACKAGE = 'meteoland', latrad, elevation, slorad, asprad, delta, diffTemp, diffTempMonth, vpa, precipitation)
+radiation_solarRadiation <- function(solarConstant, latrad, elevation, slorad, asprad, delta, diffTemp, diffTempMonth, vpa, precipitation) {
+    .Call('meteoland_RDay', PACKAGE = 'meteoland', solarConstant, latrad, elevation, slorad, asprad, delta, diffTemp, diffTempMonth, vpa, precipitation)
 }
 
-radiation_outgoingLongwaveRadiation <- function(latrad, elevation, slorad, asprad, delta, vpa, tmin, tmax, R_s) {
-    .Call('meteoland_outgoingLongwaveRadiation', PACKAGE = 'meteoland', latrad, elevation, slorad, asprad, delta, vpa, tmin, tmax, R_s)
+radiation_directDiffuseInstant <- function(solarConstant, latrad, slorad, asprad, delta, hrad, R_p, R_s, clearday) {
+    .Call('meteoland_directDiffuseInstant', PACKAGE = 'meteoland', solarConstant, latrad, slorad, asprad, delta, hrad, R_p, R_s, clearday)
 }
 
-radiation_netRadiation <- function(latrad, elevation, slorad, asprad, delta, vpa, tmin, tmax, R_s, alpha = 0.08) {
-    .Call('meteoland_netRadiation', PACKAGE = 'meteoland', latrad, elevation, slorad, asprad, delta, vpa, tmin, tmax, R_s, alpha)
+radiation_directDiffuseDay <- function(solarConstant, latrad, slorad, asprad, delta, R_s, clearday, nsteps = 24L) {
+    .Call('meteoland_directDiffuseDay', PACKAGE = 'meteoland', solarConstant, latrad, slorad, asprad, delta, R_s, clearday, nsteps)
+}
+
+radiation_outgoingLongwaveRadiation <- function(solarConstant, latrad, elevation, slorad, asprad, delta, vpa, tmin, tmax, R_s) {
+    .Call('meteoland_outgoingLongwaveRadiation', PACKAGE = 'meteoland', solarConstant, latrad, elevation, slorad, asprad, delta, vpa, tmin, tmax, R_s)
+}
+
+radiation_netRadiation <- function(solarConstant, latrad, elevation, slorad, asprad, delta, vpa, tmin, tmax, R_s, alpha = 0.08) {
+    .Call('meteoland_netRadiation', PACKAGE = 'meteoland', solarConstant, latrad, elevation, slorad, asprad, delta, vpa, tmin, tmax, R_s, alpha)
 }
 
 .potentialRadiationSeries <- function(latrad, slorad, asprad, J) {

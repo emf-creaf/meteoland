@@ -26,7 +26,7 @@ meteoplot<-function(object, index, var="MeanTemperature",
     vec = numeric(length(dates))
     for(i in 1:length(dates)) {
       idate = which(object@dates == dates[i])
-      vec[i] = object@data[[idate]][index,var]
+      vec[i] = object@data[[index]][idate,var]
     }
   }
   if((!is.null(fun)) && (!is.null(freq))) {

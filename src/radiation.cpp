@@ -63,6 +63,23 @@ double solarDeclination(int J) {
   return(delta);
 }
 
+
+/**
+ * Calculates the earth radius vector (from package 'insol') to correct solar constant
+ * Code from package 'insol' (J. G. Corripio)
+ */
+// [[Rcpp::export("radiation_solarConstant")]]
+double solarConstant(int J) {
+  double jdc = (((double)J) - 2451545.0)/36525.0; //julian century
+  double ecc = 0.016708634 - jdc * (4.2037e-05 + 1.267e-07 * jdc);
+  double gmasr = (PI/180.0)*(357.52911 + jdc * (35999.05029 - 0.0001537 * jdc));
+  double seqc = sin(gmasr) * (1.914602 - jdc * (0.004817 + 1.4e-05 * 
+    jdc)) + sin(2.0 * gmasr) * (0.019993 - 0.000101 * jdc) + 
+    sin(3.0 * gmasr) * 0.000289;
+  double star = gmasr + (PI/180.0)*seqc;
+  double sunrv = (1.000001018 * (1.0 - pow(ecc,2.0)))/(1.0 + ecc * cos(star));
+  return(GSC_kWm2*(1.0/sunrv));
+}
 /**
  * Returns the sunrise and sunset hours in hour angle (radians)
  * 
@@ -91,6 +108,18 @@ NumericVector sunRiseSet(double latrad, double slorad, double asprad, double del
   return(NumericVector::create(T2,T3));
 }
 
+/**
+ * Calculates solar elevation angle (in radians)
+ * 
+ * latrad - Latitude (in radians)
+ * delta - Solar declination (in radians)
+ * hrad - Solar hour angle (in radians)
+ */
+// [[Rcpp::export("radiation_solarElevation")]]
+double solarElevation(double latrad, double delta, double hrad) {
+  double sinb = sin(latrad)*sin(delta)+cos(latrad)*cos(delta)*cos(hrad);
+  return(asin(sinb));
+}
 
 /**
  *  Calculates day length (in hours)
@@ -125,16 +154,18 @@ double daylengthseconds(double latrad, double slorad, double asprad, double delt
  * Returns instant radiation (in kW/m2). From Granier & Ohmura (1968)
  * Garnier, B.J., Ohmura, A., 1968. A method of calculating the direct shortwave radiation income of slopes. J. Appl. Meteorol. 7: 796-800
  *
+ *  solarConstant - Solar constant (in kW/m2)
  *  latrad - latitude of the slope, in radians
  *  A - Azimuth of slope, in radians from north
  *  Zx - Zenith angle of the vector normal to the slope (= slope?), in radians
  *  delta - Solar declination, in radians
  *  H - hour angle measured from solar noon, in radians
+ *  
  */
-double RpotInstant(double latrad, double slorad, double asprad, double delta, double H) {
+double RpotInstant(double solarConstant, double latrad, double slorad, double asprad, double delta, double H) {
   double t1 = (sin(latrad)*cos(H))*(-1.0*cos(asprad)*sin(slorad)) -1.0*sin(H)*(sin(asprad)*sin(slorad)) + (cos(latrad)*cos(H))*cos(slorad);
   double t2 = cos(latrad)*(cos(asprad)*sin(slorad)) + sin(latrad)*cos(slorad);
-  return(GSC_kWm2*(t1*cos(delta)+ t2*sin(delta)));
+  return(solarConstant*(t1*cos(delta)+ t2*sin(delta)));
 }
 
 
@@ -142,6 +173,7 @@ double RpotInstant(double latrad, double slorad, double asprad, double delta, do
 * One-day potential solar radiation (in MJ/m2). From Granier & Ohmura (1968)
 * Garnier, B.J., Ohmura, A., 1968. A method of calculating the direct shortwave radiation income of slopes. J. Appl. Meteorol. 7: 796-800
 *
+*  solarConstant - Solar constant (in kW/m2)
 *  latrad - latitude of the slope, in radians
 *  asprad - Azimuth of slope, in radians from north
 *  slorad - Zenith angle of the vector normal to the slope (= slope) in radians
@@ -149,13 +181,13 @@ double RpotInstant(double latrad, double slorad, double asprad, double delta, do
 *  step - Number of seconds step (for integration of instant radiation)
 */
 // [[Rcpp::export("radiation_potentialRadiation")]]
-double RpotDay(double latrad,  double slorad, double asprad, double delta) {
-  double step = 1200.0;
+double RpotDay(double solarConstant, double latrad,  double slorad, double asprad, double delta) {
+  double step = 600.0; //10 min = 600 s step
   double hradstep = step*(5.0/1200.0)*(PI/180.0);
   double Rpot = 0.0;
   NumericVector srs = sunRiseSet(latrad, slorad, asprad, delta);
-  for(double hrad=srs[0];hrad<srs[1];hrad+=hradstep) { //72 steps (3 per hour)
-    Rpot += step*std::max(0.0, RpotInstant(latrad, slorad, asprad, delta, hrad));
+  for(double hrad=srs[0];hrad<srs[1];hrad+=hradstep) {
+    Rpot += step*std::max(0.0, RpotInstant(solarConstant, latrad, slorad, asprad, delta, hrad));
   }
   return(Rpot/1000.0);
 }
@@ -165,6 +197,7 @@ double RpotDay(double latrad,  double slorad, double asprad, double delta) {
 /**
  * One-day solar radiation (in MJ/m2). From Thornton & Running (1999)
  *
+ *  solarConstant - Solar constant (in kW/m2)
  *  latrad - latitude of the slope, in radians
  *  elevation - Elevation from sea level (in meters)
  *  slorad - Zenith angle of the vector normal to the slope (= slope?) in radians
@@ -180,34 +213,141 @@ double RpotDay(double latrad,  double slorad, double asprad, double delta) {
  *  Pearcy, R.W., Ehleringer, J.R., Mooney, H.A., Rundel, P.W., 1991. Plant Physiological Ecology: Field Methods and Instrumentation. Chapman & Hall, New York 455 pp.
  */
 // [[Rcpp::export("radiation_solarRadiation")]]
-double RDay(double latrad, double elevation, double slorad, double asprad, double delta,
+double RDay(double solarConstant, double latrad, double elevation, double slorad, double asprad, double delta,
             double diffTemp, double diffTempMonth, double vpa, double precipitation) {
   //Number of seconds step (for integration of instant potential radiation and maximum transmittance)
-  double step = 1200.0;
+  double step = 600.0; //10 min = 600 s step
   double Rpot = 0.0;
   double B = 0.031+0.201*exp(-0.185*diffTempMonth);
   double Tfmax = 1.0-0.9*exp(-B*pow(diffTemp,1.5));
   if(precipitation>0.0) Tfmax *=0.75; //Correction for wet days
-  double Ttmax = 0.0, RpotInst = 0.0, theta=0.0;
+  double Ttmax = 0.0, RpotInst = 0.0, costheta=0.0;
   double pratio = pow(1.0 -2.2569e-5*elevation,5.2553); // from Pearcy et al. 1991
   double hradstep = step*(5.0/1200.0)*(PI/180.0);
   NumericVector srs = sunRiseSet(latrad, slorad, asprad, delta);
-  for(double hrad=srs[0];hrad<srs[1];hrad+=hradstep) { //72 steps (3 per hour)
-    RpotInst = RpotInstant(latrad, slorad, asprad, delta, hrad);
+  for(double hrad=srs[0];hrad<srs[1];hrad+=hradstep) { 
+    RpotInst = RpotInstant(solarConstant, latrad, slorad, asprad, delta, hrad);
     if(RpotInst>0.0) {
-      //Solar zenith angle
-      theta = sin(latrad)*sin(delta)+cos(latrad)*cos(delta)*cos(hrad);
-      Ttmax +=step*RpotInst*pow(0.87,pratio*(1.0/cos(theta)));
+      //Solar zenith angle = 90º - solar elevation angle
+      //cos(solar zenith angle) = sin(solar elevation angle)
+      costheta = sin(solarElevation(latrad,delta, hrad));
+      Ttmax +=step*RpotInst*pow(0.87,pratio*(1.0/costheta));
       Rpot += step*RpotInst;
     }
   }
   Ttmax = (Ttmax/Rpot) -6.1e-2*vpa; //vpa in kPa
   //  Rcout<<Rpot<<" "<<Ttmax<<" "<<Tfmax<<"\n";
   if(Rpot==0.0) return(0.0);
-  return(Rpot*Ttmax*Tfmax/1000.0); //Radiation in MJ/m2
+  return((Rpot/1000.0)*Ttmax*Tfmax); //Radiation in MJ/m2
 }
 
 
+/**
+ * Calculates instantaneous direct and diffuse radiation (in kW) from daily global radiation
+ * 
+ *  solarConstant - Solar constant (in kW/m2)
+ *  latrad - Latitude (in radians)
+ *  slorad - Zenith angle of the vector normal to the slope (= slope?) in radians
+ *  asprad - Azimuth of slope, in radians from north
+ *  delta - Solar declination (in radians)
+ *  hrad - Solar hour (in radians)
+ *  R_p - Potential daily solar radiation (MJ·m-2)
+ *  R_s - Global daily solar radiation (MJ·m-2)
+ *  clearday - Boolean to indicate that is a clearsky (TRUE) vs overcast (FALSE)
+ *  
+ * Spitters, C.J.T., Toussaint, H.A.J.M. & Goudriaan, J. (1986). Separating the diffuse and direct components of global radiation and its implications for modeling canopy photosynthesis. I. Components of incoming radiation. 
+ * Agricultural and Forest Meteoroloogy, 38, 231–242.
+ */
+// [[Rcpp::export("radiation_directDiffuseInstant")]]
+NumericVector directDiffuseInstant(double solarConstant, double latrad, double slorad, double asprad, double delta, 
+                                   double hrad, double R_p, double R_s, bool clearday) {
+  //Instantaneous potential radiation
+  double Rpotinst = std::max(0.0,RpotInstant(solarConstant, latrad, slorad, asprad, delta, hrad));//kW
+  //Solar elevation (for corrections)
+  double beta = solarElevation(latrad, delta, hrad);
+  double SgSoday = R_s/R_p;
+  double SdfSgday = NA_REAL;
+  if(SgSoday<0.07){
+    SdfSgday = 1.0;
+  } else if(SgSoday<0.35) {
+    SdfSgday = 1.0 - 2.3*pow(SgSoday-0.07,2.0);
+  } else if(SgSoday<0.75) {
+    SdfSgday = 1.33 -1.46*SgSoday;
+  } else {
+    SdfSgday = 0.23;
+  }
+  double SdfSgday2 = SdfSgday;
+  //If clear day (e.g. not rainy) modify for circumsolar part of diffuse radiation
+  if(clearday) {
+    SdfSgday2 = SdfSgday/(1.0+(1.0-pow(SdfSgday,2.0))*pow(cos(PI/4.0-beta),2.0)*pow(cos(beta),3.0));
+  }
+  double PARday = R_s*0.5; //Daily PAR radiation (MJ)
+  double SdfSdPAR = (1.0+0.3*(1.0-pow(SdfSgday,2.0)))*SdfSgday2;
+  double Sdfday = SdfSgday2*R_s; //MJ
+  double Sginst = (R_s*1000.0)*(Rpotinst/(R_p*1000.0));//kW
+  double Sdfinst = std::min((Sdfday*1000.0)*(Rpotinst/(R_p*1000.0)), Sginst);//kW
+  double Sdrinst = Sginst-Sdfinst;
+  double SdfdayPAR = SdfSdPAR*PARday;
+  double SginstPAR = Sginst*0.5;
+  double SdfinstPAR = std::min((SdfdayPAR*1000.0)*(Rpotinst/(R_p*1000.0)), SginstPAR);//kW
+  double SdrinstPAR = SginstPAR-SdfinstPAR;
+  
+  NumericVector res = NumericVector::create(Named("SolarElevation") = beta,
+                                            Named("Rpot") = Rpotinst,
+                                            Named("Rg") = Sginst,
+                                            Named("SWR_direct") = Sdrinst,
+                          Named("SWR_diffuse") = Sdfinst,
+                          Named("PAR_direct") = SdrinstPAR,
+                          Named("PAR_diffuse") = SdfinstPAR);
+  return(res);
+}
+
+
+
+/**
+ * Calculates daily variation of direct and diffuse radiation (in kW) from daily global radiation
+ * 
+ *  solarConstant - Solar constant (in kW/m2)
+ *  latrad - Latitude (in radians)
+ *  slorad - Zenith angle of the vector normal to the slope (= slope?) in radians
+ *  asprad - Azimuth of slope, in radians from north
+ *  delta - Solar declination (in radians)
+ *  R_s - Global daily solar radiation (MJ·m-2)
+ *  clearday - Boolean to indicate that is a clearsky (TRUE) vs overcast (FALSE)
+ *  nsteps - Number of steps to divide the day
+ *  
+ * Spitters, C.J.T., Toussaint, H.A.J.M. & Goudriaan, J. (1986). Separating the diffuse and direct components of global radiation and its implications for modeling canopy photosynthesis. I. Components of incoming radiation. 
+ * Agricultural and Forest Meteoroloogy, 38, 231–242.
+ */
+// [[Rcpp::export("radiation_directDiffuseDay")]]
+DataFrame directDiffuseDay(double solarConstant, double latrad, double slorad, double asprad, double delta, 
+                           double R_s, bool clearday, int nsteps = 24) {
+  double rpotday = RpotDay(solarConstant, latrad, slorad, asprad, delta);
+  NumericVector Rpot(nsteps), Rg(nsteps), SWR_direct(nsteps), SWR_diffuse(nsteps), PAR_direct(nsteps), PAR_diffuse(nsteps);
+  NumericVector Hrad(nsteps), beta(nsteps);
+  for(int i=0;i<nsteps;i++) {
+    Hrad[i] = -PI + (((double)i)+0.5)*(2.0*PI/((double)nsteps));
+    NumericVector ddi = directDiffuseInstant(solarConstant, latrad,slorad,asprad,delta, Hrad[i], 
+                                             rpotday, R_s, clearday);
+    beta[i] = ddi["SolarElevation"];
+    Rpot[i] = ddi["Rpot"];
+    Rg[i] = ddi["Rg"];
+    SWR_direct[i] = ddi["SWR_direct"];
+    SWR_diffuse[i] = ddi["SWR_diffuse"];
+    PAR_direct[i] = ddi["PAR_direct"];
+    PAR_diffuse[i] = ddi["PAR_diffuse"];
+  }
+  
+  DataFrame res = DataFrame::create(Named("SolarHour") = Hrad,
+                                    Named("SolarElevation") = beta,
+                                    Named("Rpot") = Rpot,
+                                    Named("Rg") = Rg,
+                                    Named("SWR_direct") = SWR_direct,
+                                    Named("SWR_diffuse") = SWR_diffuse,
+                                    Named("PAR_direct") = PAR_direct,
+                                    Named("PAR_diffuse") = PAR_diffuse);
+  return(res);
+}
 
 /**
 *   Estimates daily net outgoing longwave radiation from incoming solar radiation data
@@ -217,6 +357,7 @@ double RDay(double latrad, double elevation, double slorad, double asprad, doubl
 *   Hydrology & Earth System Sciences
 *   See also:  http://www.fao.org/docrep/x0490e/x0490e06.htm
 *   
+*  solarConstant - Solar constant (in kW/m2)
 *  latrad - Latitude (radians)
 *  elevation - Elevation (m)
 *  slorad - Slope in radians
@@ -228,9 +369,9 @@ double RDay(double latrad, double elevation, double slorad, double asprad, doubl
 *  R_s - Incident solar radiation (MJ/m2)
 */
 // [[Rcpp::export("radiation_outgoingLongwaveRadiation")]]
-double outgoingLongwaveRadiation(double latrad, double elevation,  double slorad,  double asprad, double delta, 
+double outgoingLongwaveRadiation(double solarConstant, double latrad, double elevation,  double slorad,  double asprad, double delta, 
                                  double vpa, double tmin, double tmax, double R_s){
-  double R_a = RpotDay(latrad,  slorad, asprad, delta); //Extraterrestrial (potential) radiation
+  double R_a = RpotDay(solarConstant, latrad,  slorad, asprad, delta); //Extraterrestrial (potential) radiation
   double R_so = (0.75 + (2.0 * 0.00001) * elevation) * R_a; //Clear sky radiation
   // Rcout<<R_s<<" "<<R_so<<" "<<R_s/R_so<<"\n";
   //Net outgoing longwave radiation (MJ.m^-2.day^-1)
@@ -248,6 +389,7 @@ double outgoingLongwaveRadiation(double latrad, double elevation,  double slorad
 *   Hydrology & Earth System Sciences
 *   See also:  http://www.fao.org/docrep/x0490e/x0490e06.htm
 *   
+*  solarConstant - Solar constant (in kW/m2)
 *  latrad - Latitude (radians)
 *  elevation - Elevation (m)
 *  slorad - Slope in radians
@@ -260,12 +402,12 @@ double outgoingLongwaveRadiation(double latrad, double elevation,  double slorad
 *  alpha - Albedo (from 0 to 1)
 */
 // [[Rcpp::export("radiation_netRadiation")]]
-double netRadiation(double latrad,  double elevation, double slorad, double asprad, double delta, 
+double netRadiation(double solarConstant, double latrad,  double elevation, double slorad, double asprad, double delta, 
                     double vpa, double tmin, double tmax, double R_s, 
                     double alpha = 0.08) {
   
   //Net outgoing longwave radiation (MJ.m^-2.day^-1)
-  double R_nl = outgoingLongwaveRadiation(latrad, elevation, slorad, asprad, delta, 
+  double R_nl = outgoingLongwaveRadiation(solarConstant, latrad, elevation, slorad, asprad, delta, 
                                           vpa, tmin, tmax, R_s);
   //Net incoming shortwave radiation (MJ.m^-2.day^-1, after acounting for surface albedo)
   double R_ns = (1.0 - alpha) * R_s; 
@@ -286,7 +428,7 @@ double netRadiation(double latrad,  double elevation, double slorad, double aspr
 NumericVector potentialRadiationSeries(double latrad, double slorad,  double asprad, NumericVector J) {
   NumericVector Rpot(J.size());
   for(int i=0;i<J.size(); i++) {
-    Rpot[i] = RpotDay(latrad,slorad, asprad, solarDeclination(J[i]));
+    Rpot[i] = RpotDay(solarConstant(J[i]),latrad,slorad, asprad, solarDeclination(J[i]));
   }
   return(Rpot);
 }
@@ -294,8 +436,9 @@ NumericVector potentialRadiationSeries(double latrad, double slorad,  double asp
 NumericVector potentialRadiationPoints(double latrad, NumericVector slorad, NumericVector asprad, int J) {
   NumericVector Rpot(slorad.size());
   double delta = solarDeclination(J);
+  double Gsc = solarConstant(J);
   for(int i=0;i<slorad.size(); i++) {
-    Rpot[i] = RpotDay(latrad,slorad[i], asprad[i], delta);
+    Rpot[i] = RpotDay(Gsc,latrad,slorad[i], asprad[i], delta);
   }
   return(Rpot);
 }
@@ -314,7 +457,7 @@ NumericVector radiationSeries(double latrad, double elevation, double slorad, do
                               NumericVector diffTemp, NumericVector diffTempMonth, NumericVector VP, NumericVector P) {
   NumericVector Rpot(J.size());
   for(int i=0;i<J.size(); i++) {
-    Rpot[i] = RDay(latrad,elevation, slorad,asprad, solarDeclination(J[i]), 
+    Rpot[i] = RDay(solarConstant(J[i]), latrad,elevation, slorad,asprad, solarDeclination(J[i]), 
                    diffTemp[i], diffTempMonth[i], VP[i], P[i]);
   }
   return(Rpot);
@@ -325,8 +468,10 @@ NumericVector radiationPoints(NumericVector latrad, NumericVector elevation, Num
                               NumericVector diffTemp, NumericVector diffTempMonth, NumericVector VP, NumericVector P) {
   int npoints = slorad.size();
   NumericVector Rpot(npoints);
+  double delta = solarDeclination(J);
+  double Gsc = solarConstant(J);
   for(int i=0;i<npoints; i++) {
-    Rpot[i] = RDay(latrad[i],elevation[i], slorad[i],asprad[i],solarDeclination(J), 
+    Rpot[i] = RDay(Gsc, latrad[i],elevation[i], slorad[i],asprad[i],delta, 
                    diffTemp[i], diffTempMonth[i],VP[i], P[i]);
   }
   return(Rpot);

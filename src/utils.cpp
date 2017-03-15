@@ -1,7 +1,7 @@
 // [[Rcpp::interfaces(r,cpp)]]
 
 #include <Rcpp.h>
-#include "Radiation.h"
+#include "radiation.h"
 using namespace Rcpp;
 
 const double Cp_MJKG = 0.00101386;// MJ * kg^-1 * ºC^-1
@@ -175,6 +175,8 @@ double PenmanPET(double latrad, double elevation, double slorad, double asprad, 
   double gamma = psychrometricConstant(Tday, Patm);
   //Solar declination
   double delta2 =  solarDeclination(J);
+  //Solar constant
+  double Gsc = solarConstant(J);
   // double d_r2 = 1.0 + 0.033 * cos(2.0 * PI/365.0 * ((double)J));
   // double w_s = acos(-tan(latitude) * tan(delta2));
   // double N = 24.0/PI*w_s; (N not used)
@@ -186,7 +188,7 @@ double PenmanPET(double latrad, double elevation, double slorad, double asprad, 
     double vs_Tmin = saturationVapourPressure(Tmin);
     double vas = (vs_Tmax + vs_Tmin)/2.0;
     double vpa = (vs_Tmin * (RHmax/100.0) + vs_Tmax * (RHmin/100.0))/2.0;
-    double R_n = netRadiation(latrad, elevation, slorad, asprad, delta2, 
+    double R_n = netRadiation(Gsc, latrad, elevation, slorad, asprad, delta2, 
                               vpa, Tmin, Tmax, R_s, 
                               alpha);//Net radiation
     double Ea = (vas - vpa); //Saturation vapor deficit
@@ -199,7 +201,7 @@ double PenmanPET(double latrad, double elevation, double slorad, double asprad, 
   } else {
     //Equation by Valiantzas (2006, eq 33) for situations where wind is not available
     //Valiantzas JD (2006) Simplified versions for the Penman evaporation equation using routine weather data. Journal of Hydrology 331, 690–702. doi:10.1016/j.jhydrol.2006.06.012.
-    double R_a = RpotDay(latrad,  slorad, asprad, delta2); //Extraterrestrial (potential) radiation
+    double R_a = RpotDay(Gsc, latrad,  slorad, asprad, delta2); //Extraterrestrial (potential) radiation
     PET = 0.047 * R_s * sqrt(Tday + 9.5) - 2.4 * pow(R_s/R_a,2.0) + 0.09 * (Tday + 20.0) * (1.0 - RHmean/100.0);
   }
   if(PET<0.0) PET = 0.0;

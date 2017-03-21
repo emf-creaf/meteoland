@@ -67,12 +67,20 @@ historical = interpolationpoints(exampleinterpolationdata, spt)
 predicted = correctionpoints(examplecorrectiondata, historical, spt@data)
 
 #Plot predicted mean temperature for point 1
-meteoplot(predicted, 1, "MeanTemperature", ylab="Mean temperature (Celsius)", ylim=c(-5,40))
+meteoplot(predicted, 1, "MeanTemperature", ylab="Temperature (Celsius)", ylim=c(-5,40))
+meteoplot(predicted, 1, "MinTemperature", add=TRUE, col="blue")
+meteoplot(predicted, 1, "MaxTemperature", add=TRUE, col="red")
 #Add uncorrected mean temperature data (cell #3)
 lines(examplecorrectiondata@dates,
       examplecorrectiondata@projection_data[[3]]$MeanTemperature,
-      col="red")
-legend("topright", legend=c("corrected","uncorrected"), col=c("black","red"), lty=c(1,1), bty="n")
+      lty=3)
+lines(examplecorrectiondata@dates,
+      examplecorrectiondata@projection_data[[3]]$MinTemperature,
+      col="blue", lty=3)
+lines(examplecorrectiondata@dates,
+      examplecorrectiondata@projection_data[[3]]$MaxTemperature,
+      col="red", lty=3)
+legend("topright", legend=c("corrected","uncorrected", "Maximum", "Mean", "Minimum"), col=c("black","black", "red","black","blue"), lty=c(1,3,1,1,1), bty="n")
 
 #Scatter plot
 plot(examplecorrectiondata@projection_data[[3]]$MeanTemperature,

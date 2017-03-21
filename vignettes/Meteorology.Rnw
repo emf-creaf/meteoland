@@ -302,12 +302,14 @@ options(width=67)
 library(meteoland)
 @
 
-\subsection{Solar declination}
-The declination of the sun $\delta$ is the angle between the rays of the sun and the plan of the Earth's equator. Solar declination varies with years and seasons. However, the Earth's axial tilt changes slowly over thousands of years but it is nearly constant for shorter periods, so the change in solar declination during one year is nearly the same as during the next year. In \texttt{meteoland}, solar declination is calculated from Julian day ($J$), the latter being the number of days number of days since January 1, 4713 BCE at noon UTC. In \texttt{meteoland}, julian days and solar declination are calculated using an adaptation of the code as in package \texttt{insol} (by J.G. Corripio), which is based on Danby (1988) and Reda \& Andreas (2003). The following figure shows solar declination over the year (see function \texttt{radiation\_solarDeclination()}):
+\subsection{Solar declination and solar constant}
+The declination of the sun $\delta$ is the angle between the rays of the sun and the plan of the Earth's equator. Solar declination varies with years and seasons. However, the Earth's axial tilt changes slowly over thousands of years but it is nearly constant for shorter periods, so the change in solar declination during one year is nearly the same as during the next year. Solar constant ($I_0$) is normally given a nominal value of 1.361 kW·m$^{-2}$ but in fact it also varies through the year and over years. Both can be calculated from Julian day ($J$), the number of days number of days since January 1, 4713 BCE at noon UTC. from Julian day. In \texttt{meteoland}, julian days, solar declination and solar constant are calculated using an adaptation of the code as in package \texttt{insol} (by J.G. Corripio), which is based on Danby (1988) and Reda \& Andreas (2003). 
+
+The following figures show the variation of solar declination and the value of solar constant over a year (see functions \texttt{radiation\_solarDeclination()} and \texttt{radiation\_solarConstant()}):
 
 \begin{center}
-<<echo=FALSE, fig=TRUE, width=6, height=3.5>>=
-par(mar=c(5,5,1,5))
+<<echo=FALSE, fig=TRUE, width=7, height=3.5>>=
+par(mar=c(3,4,1,3), mfrow=c(1,2))
 dates = seq(as.Date("2012-01-01"), as.Date("2012-12-31"), by="day")[1:365]
 J = radiation_julianDay(2012,1,1)+0:364
 delta = unlist(lapply(J,radiation_solarDeclination))
@@ -321,9 +323,24 @@ lines(dates, delta2, col="blue", lty=3)
 J4 = radiation_julianDay(3012,1,1)+0:364
 delta2 = unlist(lapply(J4,radiation_solarDeclination))
 lines(dates, delta2, col="brown", lty=4)
-legend("topright", legend = paste0(c(3012,2012,1012,12), " AD"), col=c("brown","black","red","blue"), cex=0.8, lty=c(4,1,2,3), lwd=c(1,1.5,1,1), bty="n")
+legend("bottom", legend = paste0(c(3012,2012,1012,12), " AD"), col=c("brown","black","red","blue"), cex=0.8, lty=c(4,1,2,3), lwd=c(1,1.5,1,1), bty="n")
 axis(4, at=seq(-0.4, 0.4, by=0.2), labels=round(seq(-0.4, 0.4, by=0.2)*180/pi))
 mtext("Declination (degrees)", side=4, line=2)
+
+dates = seq(as.Date("2012-01-01"), as.Date("2012-12-31"), by="day")[1:365]
+J = radiation_julianDay(2012,1,1)+0:364
+sc = unlist(lapply(J,radiation_solarConstant))
+plot(dates,sc, type="l", xlab="", ylab="Solar constant (kw/m2)", cex=0.8, lwd=1.5)
+J2 = radiation_julianDay(1012,1,1)+0:364
+sc2 = unlist(lapply(J2,radiation_solarConstant))
+lines(dates, sc2, col="red", lty=2)
+J3 = radiation_julianDay(12,1,1)+0:364
+sc2 = unlist(lapply(J3,radiation_solarConstant))
+lines(dates, sc2, col="blue", lty=3)
+J4 = radiation_julianDay(3012,1,1)+0:364
+sc2 = unlist(lapply(J4,radiation_solarConstant))
+lines(dates, sc2, col="brown", lty=4)
+legend("top", legend = paste0(c(3012,2012,1012,12), " AD"), col=c("brown","black","red","blue"), cex=0.8, lty=c(4,1,2,3), lwd=c(1,1.5,1,1), bty="n")
 @
 \end{center}
 
@@ -533,17 +550,21 @@ legend("bottomright",c("flat", "N","E","S","W"), col=c("black",rep("gray",4)), l
 \end{center}
 
 \subsection{Potential radiation}
-Potential solar radiation is the radiation that a surface on earth would receive if atmosphere was not present (i.e. without the effects of cloud reflection, scattering, ...). In \texttt{meteoland}, potential solar radiation is estimated from solar declination, latitude, aspect and slope according to Granier \& Ohmura (1968). Daily potential radiation, $R_{pot}$, is calculated by integrating instantaneous potential radiation $R_{pot,s}$ over the day between sunrise ($sr$) and sunset ($ss$), using 20 min (i.e. 1200 sec) intervals:
+Potential solar radiation is the radiation that a surface on earth would receive if atmosphere was not present (i.e. without the effects of cloud reflection, scattering, ...). In \texttt{meteoland}, potential solar radiation is estimated from solar declination, latitude, aspect and slope according to Granier \& Ohmura (1968). Daily potential radiation ($R_{pot}$, in MJ·m$^{-2}$) is calculated by integrating instantaneous potential radiation $R_{pot,s}$ (in kW·m$^{-2}$) over the day between sunrise ($sr$) and sunset ($ss$), using 10 min (i.e. 600 sec) intervals:
 \begin{equation}
-R_{pot} = \sum_{s = sr}^{ss}{1200 \cdot R_{pot,s}}
+R_{pot} = \frac{1}{1000}\cdot \sum_{s = sr}^{ss}{600 \cdot R_{pot,s}}
 \end{equation}
 In turn, instantaneous potential solar radiation $R_{pot,s}$ is calculated using:
 \begin{eqnarray}
-R_{pot,s} &=& I_0 [(\sin{\phi}\cdot \cos{H})(-\cos{A}\cdot \sin{Z_x})  -\sin{H}\cdot (\sin{A}\cdot \sin{Z_x}) \nonumber \\
- & & + (\cos{\phi}\cdot \cos{H})\cdot \cos{Z_x}]\cdot \cos{\delta} \nonumber \\
- & & + [\cos{\phi}\cdot (\cos{A}\cdot \sin{Z_x})+ \sin{\phi}\cdot \cos{Z_x}]\cdot \sin{\delta}
+R_{pot,s} &=& I_0 \cdot [(\sin{\phi}\cdot \cos{H})(-\cos{A}\cdot \sin{Z_x})  -\sin{H}\cdot (\sin{A}\cdot \sin{Z_x}) \nonumber \\
+ & & + [(\cos{\phi}\cdot \cos{H})\cdot \cos{Z_x}]\cdot \cos{\delta} \nonumber \\
+ & & + [\cos{\phi}\cdot (\cos{A}\cdot \sin{Z_x})+ \sin{\phi}\cdot \cos{Z_x}]\cdot \sin{\delta}]
 \end{eqnarray}
-where $\phi$ is the latitude, $H$ is the hour angle measured from solar noon, positively towards the west, $A$ is the azimuth of the slope (aspect), $Z_x$ is the zenith angle of the vector normal to the slope (equal to the slope angle) and $\delta$ is the sun's declination.
+where $I_0$ is the solar constant, $\phi$ is the latitude, $H$ is the hour angle measured from solar noon, positively towards the west, $A$ is the azimuth of the slope (aspect), $Z_x$ is the zenith angle of the vector normal to the slope (equal to the slope angle) and $\delta$ is the sun's declination. Note that in the case of a flat surface the previous equation reduces to:
+\begin{equation}
+R_{pot,s} = I_0 \cdot [\cos{\phi}\cdot \cos{H}\cdot \cos{\delta} + \sin{\phi}\cdot \sin{\delta}]= I_0 \cdot \sin{\beta}
+\end{equation}
+where $\beta$ is called the solar elevation angle.
 
 The following figures illustrate seasonal variation of potential solar radiation for the horizontal inclinated surfaces presented above (see function \texttt{radiation\_potentialRadiation()}):
 
@@ -554,9 +575,9 @@ inl1 = rep(NA, length(delta))
 inl2 = rep(NA, length(delta))
 inl3 = rep(NA, length(delta))
 for(i in 1:length(delta)) {
-  inl1[i]=radiation_potentialRadiation(latrad1, 0, 0, delta[i])
-  inl2[i]=radiation_potentialRadiation(latrad2, 0, 0, delta[i])
-  inl3[i]=radiation_potentialRadiation(latrad3, 0, 0, delta[i])
+  inl1[i]=radiation_potentialRadiation(sc[i],latrad1, 0, 0, delta[i])
+  inl2[i]=radiation_potentialRadiation(sc[i],latrad2, 0, 0, delta[i])
+  inl3[i]=radiation_potentialRadiation(sc[i],latrad3, 0, 0, delta[i])
 }
 plot(dates, inl1, type="l", xlab="", ylab="Potential radiation (MJ·m-2·d-1)", main="Horizontal surfaces")
 lines(dates, inl2, lty=2)
@@ -567,10 +588,10 @@ in2 = rep(NA, length(delta))
 in3 = rep(NA, length(delta))
 in4 = rep(NA, length(delta))
 for(i in 1:length(delta)) {
-  in1[i]=radiation_potentialRadiation(latrad1, slorad, asprad1, delta[i])
-  in2[i]=radiation_potentialRadiation(latrad1, slorad, asprad2, delta[i])
-  in3[i]=radiation_potentialRadiation(latrad1, slorad, asprad3, delta[i])
-  in4[i]=radiation_potentialRadiation(latrad1, slorad, asprad4, delta[i])
+  in1[i]=radiation_potentialRadiation(sc[i],latrad1, slorad, asprad1, delta[i])
+  in2[i]=radiation_potentialRadiation(sc[i],latrad1, slorad, asprad2, delta[i])
+  in3[i]=radiation_potentialRadiation(sc[i],latrad1, slorad, asprad3, delta[i])
+  in4[i]=radiation_potentialRadiation(sc[i],latrad1, slorad, asprad4, delta[i])
 }
 plot(dates, inl1, type="l", xlab="", ylab="Potential radiation (MJ·m-2·d-1)",
      main = "Slopes at 40ºNorth", ylim=c(0,45))
@@ -580,10 +601,10 @@ lines(dates, in3, lty=3, col="gray")
 lines(dates, in4, lty=4, col="gray")
 legend("bottom",c("flat", "N","E","S","W"), col=c("black",rep("gray",4)), lty=c(1,1:4), bty="n")
 for(i in 1:length(delta)) {
-  in1[i]=radiation_potentialRadiation(latrad2, slorad, asprad1, delta[i])
-  in2[i]=radiation_potentialRadiation(latrad2, slorad, asprad2, delta[i])
-  in3[i]=radiation_potentialRadiation(latrad2, slorad, asprad3, delta[i])
-  in4[i]=radiation_potentialRadiation(latrad2, slorad, asprad4, delta[i])
+  in1[i]=radiation_potentialRadiation(sc[i],latrad2, slorad, asprad1, delta[i])
+  in2[i]=radiation_potentialRadiation(sc[i],latrad2, slorad, asprad2, delta[i])
+  in3[i]=radiation_potentialRadiation(sc[i],latrad2, slorad, asprad3, delta[i])
+  in4[i]=radiation_potentialRadiation(sc[i],latrad2, slorad, asprad4, delta[i])
 }
 plot(dates, inl2, type="l", xlab="", main = "Slopes at the Equator", ylab="Potential radiation (MJ·m-2·d-1)", ylim=c(0,45))
 lines(dates, in1, lty=1, col="gray")
@@ -592,10 +613,10 @@ lines(dates, in3, lty=3, col="gray")
 lines(dates, in4, lty=4, col="gray")
 legend("bottom",c("flat", "N","E","S","W"), col=c("black",rep("gray",4)), lty=c(1,1:4), bty="n")
 for(i in 1:length(delta)) {
-  in1[i]=radiation_potentialRadiation(latrad3, slorad, asprad1, delta[i])
-  in2[i]=radiation_potentialRadiation(latrad3, slorad, asprad2, delta[i])
-  in3[i]=radiation_potentialRadiation(latrad3, slorad, asprad3, delta[i])
-  in4[i]=radiation_potentialRadiation(latrad3, slorad, asprad4, delta[i])
+  in1[i]=radiation_potentialRadiation(sc[i],latrad3, slorad, asprad1, delta[i])
+  in2[i]=radiation_potentialRadiation(sc[i],latrad3, slorad, asprad2, delta[i])
+  in3[i]=radiation_potentialRadiation(sc[i],latrad3, slorad, asprad3, delta[i])
+  in4[i]=radiation_potentialRadiation(sc[i],latrad3, slorad, asprad4, delta[i])
 }
 plot(dates, inl3, type="l", xlab="", ylab="Potential radiation (MJ·m-2·d-1)", 
      main = "Slopes at 40ºSouth", ylim=c(0,45))
@@ -617,7 +638,7 @@ where $T_{t,max}$ is the maximum (cloud-free) daily total transmittance and $T_{
 \begin{equation}
 T_{t,max} = \left[\frac{\sum_{s = sr}^{ss}{R_{pot,s} \cdot \tau^{(P_z/P_0)\cdot m_{\theta}}}}{\sum_{s = sr}^{ss}{R_{pot,s}}}\right] + (\alpha_{e_p} \cdot {e_p})
 \end{equation}
-where $\tau = 0.87$ is the instantaneous transmittance at sea level, at nadir, for a dry atmosphere; ${e_p}$ is the actual water vapor pressure (in kPa), estimated as explained before; $\alpha_{e_p} = -6.1\cdot 10^{-2}$kPa$^{-1}$ is a parameter describing the effect of vapour pressure on $T_{t,max}$; $m_{\theta} = 1/\cos{\theta}$ is the optical air mass at solar zenith angle $\theta = \sin{\phi}\cdot \sin{\delta}+\cos{\phi}\cdot \cos{\delta} \cdot \cos{H}$; and $P_z/P_0$ is the ratio between air pressure at elevation $z_p$ and air pressure at the sea level, calculated as:
+where $\tau = 0.87$ is the instantaneous transmittance at sea level, at nadir, for a dry atmosphere; ${e_p}$ is the actual water vapor pressure (in kPa), estimated as explained before; $\alpha_{e_p} = -6.1\cdot 10^{-2}$kPa$^{-1}$ is a parameter describing the effect of vapour pressure on $T_{t,max}$; $m_{\theta} = 1/\cos{\theta}$ is the optical air mass at solar zenith angle $\cos(\theta) = \sin{\phi}\cdot \sin{\delta}+\cos{\phi}\cdot \cos{\delta} \cdot \cos{H}$; and $P_z/P_0$ is the ratio between air pressure at elevation $z_p$ and air pressure at the sea level, calculated as:
 \begin{equation}
 (P_z/P_0) = (1.0 -2.2569\cdot 10^{-5}\cdot z_p)^{5.2553}
 \end{equation}
@@ -631,7 +652,7 @@ B = b_0 + b_1 \cdot e^{-b_2 \cdot {\hat{\Delta T}}}
 \end{equation}
 with $b_0 = 0.031$, $b_1 = 0.201$ and $b_2 = 0.185$. In this last equation,  $\hat{\Delta T}$ is a 30-day moving average for the temperature range $\Delta T$. For computational reasons, we do not estimate $\hat{\Delta T}$ from the 30-day moving window average of predicted $\Delta T$ values, but from the interpolation of pre-calculated $\hat{\Delta T}$ values in weather stations. On wet days (i.e. if $P_p > 0$) the estimation of $T_{f,max}$ is multiplied by a factor of $0.75$ to account for clouds.
 
-Although the calculation of incident solar radiation can be done independently of interpolation (see function \texttt{radiation\_solarRadiation()}, it is automatically done in functions \texttt{interpolationpoints()} and \texttt{interpolationgrid()}. 
+Although the calculation of incident solar radiation can be done independently of interpolation (see function \texttt{radiation\_solarRadiation()}), it is automatically done in functions \texttt{interpolationpoints()} and \texttt{interpolationgrid()}. 
 
 \subsection{Outgoing longwave radiation and net radiation}
 Potential and actual evapotranspiration calculations require estimating the energy actually absorved by evaporating surfaces. Daily net radiation $R_n$ (in $MJ\cdot m^{-2}\cdot day^{-1}$) is calculated using:
@@ -677,7 +698,11 @@ years = as.numeric(format(dates,"%Y"))
 months = as.numeric(format(dates,"%m"))
 days = as.numeric(format(dates,"%d"))
 J =rep(NA, length(years))
-for(i in 1:length(years)) J[i] = radiation_julianDay(years[i],months[i],days[i])
+for(i in 1:length(years)) {
+  J[i] = radiation_julianDay(years[i],months[i],days[i])
+  sc[i] = radiation_solarConstant(J[i])
+  delta[i] = radiation_solarDeclination(J[i])
+}
 R_nl = rep(0, length(J))
 R_net = rep(0, length(J))
 latradp = 42*(pi/180)
@@ -686,8 +711,8 @@ sloradp = spt@data$slope[1]*(pi/180)
 aspradp = spt@data$aspect[1]*(pi/180)
 for(i in 1:length(J)) {
 vpa = utils_averageDailyVP(tmin[i], tmax[i], rhmin[i], rhmax[i])
-R_nl[i] = radiation_outgoingLongwaveRadiation(latradp, elevationp, sloradp,aspradp, J[i], vpa, tmin[i], tmax[i], R_s[i])
-R_net[i] = radiation_netRadiation(latradp, elevationp, sloradp,aspradp, J[i], vpa, tmin[i], tmax[i], R_s[i])
+R_nl[i] = radiation_outgoingLongwaveRadiation(sc[i],latradp, elevationp, sloradp,aspradp, delta[i], vpa, tmin[i], tmax[i], R_s[i])
+R_net[i] = radiation_netRadiation(sc[i],latradp, elevationp, sloradp,aspradp, delta[i], vpa, tmin[i], tmax[i], R_s[i])
 }
 plot(dates[1:365], R_s[1:365], type="l", xlab="", ylab = "Daily radiation (MJ·m-2)", ylim=c(0,40))
 lines(dates[1:365], R_nl[1:365], col="blue")
@@ -696,7 +721,61 @@ legend("topleft", col=c("black","blue","red"), legend = c("Solar radiation", "Ou
 @
 \end{center}
 
-\section{Statistical correction of coarse-scale weather data}
+\subsection{Diurnal trends in diffuse and direct radiation}
+Ecological studies sometimes require radiation information at a subdaily scale. This is particularly true for modeling studies that need to calculate canopy photosynthesis. Although meteoland has been designed to assist studies requiring meteorological data at daily scale, a function called \texttt{radiation\_directDiffuseDay()} is provided to divide daily radiation into instantaneous direct and diffuse radiation. Values of instantaneous direct and diffuse radiation (shortwave and photosynthetic active radiation) are calculated following Spitters et al. (1986). First, the ratio between daily diffuse and global radiation ($R_{d}/R_{g}$) is inferred from the ratio between daily potential and global radiation ($R_{g}/R_{pot}$):
+\begin{eqnarray}
+R_{d}/R_{g} = 1 & & R_{g}/R_{pot}<0.07\\
+R_{d}/R_{g} = 1-2.3\cdot (R_{g}/R_{pot}-0.7)^2 & & 0.07\leq R_{g}/R_{pot} <0.35\\
+R_{d}/R_{g} = 1.33-1.46\cdot R_{g}/R_{pot} & & 0.35\leq R_{g}/R_{pot} <0.75\\
+R_{d}/R_{g} = 0.23 & & 0.75\leq R_{g}/R_{pot}
+\end{eqnarray}
+In a clear day (e.g. not rainy) the ratio is modified to account for the circumsolar part of diffuse radiation:
+\begin{equation}
+R'_{d}/R_{g} = \frac{R_{d}/R_{g}}{1+(1- (R_{d}/R_{g})^2)\cdot \cos^2(\pi/4-\beta)\cdot \cos^3\beta} 
+\end{equation}
+Otherwise $R'_{d}/R_{g} = R_{d}/R_{g}$. The daily diffuse shortwave radiation ($R_{d}$) is found by multiplying global radiation by the (modified) ratio:
+\begin{equation}
+R_{d} = R_{g} \cdot (R'_{d}/R_{g}) 
+\end{equation}
+The diurnal trend of the irradiance is derived from the daily global radiation and the daily course of extra-terrestrial radaition. If we assume that the atmospheric transmission is constant during the daylight period:
+\begin{equation}
+R_{g,s}/R_{pot,s} =R_{g}/R_{pot}
+\end{equation}
+this leads to an estimation of the instantaneous global radiation (assuming compatible units):
+\begin{equation}
+R_{g,s} = R_{g}\cdot (R_{pot,s}/R_{pot})
+\end{equation}
+and the instantaneous diffuse and direct beam fluxes are estimated using:
+\begin{eqnarray}
+R_{d,s} &=& R_{d}\cdot (R_{pot,s}/R_{pot}) \\
+R_{b,s} &=& R_{g,s} - R_{d,s}
+\end{eqnarray}
+Instantaneous diffuse radiation is obtained
+For example, for a flat terrain located at 42ºN latitude and 100 m.a.s.l, having 30 MJ·m$^{-2}$ of daily global radiation on the 2001/June/01, the hourly variation in diffuse and direct radiation would be:
+\begin{center}
+<<echo=FALSE, fig=TRUE, width=7, height=7>>=
+par(mar=c(4,4,1,1), mfrow=c(2,2))
+latrad = 0.73
+elevation = 100
+J = radiation_julianDay(2001,6,1)
+gsc = radiation_solarConstant(J)
+delta = radiation_solarDeclination(J)
+a=radiation_directDiffuseDay(gsc, latrad,0,0,delta, 30, TRUE, 100)
+se = a$SolarElevation*(180/pi)
+se[a$Rpot==0]=NA
+plot(a$SolarHour*12/pi, se, type="l", ylim=c(0,70), ylab="Solar elevation (º)", xlab="Solar hour")
+plot(a$SolarHour*12/pi, a$Rpot, type="l", ylab="Radiation (W·m-2)", xlab="Solar hour")
+lines(a$SolarHour*12/pi, a$Rg,  lty=2)
+legend("topleft", legend=c("Potential", "Global"), lty=c(1,2), bty="n")
+plot(a$SolarHour*12/pi, a$SWR_direct, type="l", ylab="SWR radiation (W·m-2)", xlab="Solar hour")
+lines(a$SolarHour*12/pi, a$SWR_diffuse,  lty=2)
+legend("topleft", legend=c("Direct", "Diffuse"), lty=c(1,2), bty="n")
+plot(a$SolarHour*12/pi, a$PAR_direct, type="l", ylab="PAR radiation (W·m-2)", xlab="Solar hour")
+lines(a$SolarHour*12/pi, a$PAR_diffuse,  lty=2)
+legend("topleft", legend=c("Direct", "Diffuse"), lty=c(1,2), bty="n")
+@
+\end{center}
+\section{Statistical correction of weather data}
 <<echo=FALSE>>=
 data(exampleinterpolationdata)
 #Downscaling of future predictions (RCM models, year 2023)
@@ -772,10 +851,10 @@ abline(a=0,b=1,col="gray")
 
 
 \section{Estimation of potential evapo-transpiration}
-Package \texttt{meteoland} allows calculating potential evapo-transpiration (PET) using Penman's formulation (Penman 1948; 1956) or Penman-Monteith formulation. PET is automatically calculated after meteorological data have been interpolated (i.e. within functions \texttt{interpolationpoints()} and \texttt{interpolationgrid()}) or downscaled (i.e. within functions \texttt{correctionpoints()} and \texttt{correctiongrid()}), but PET values can also be calculated for a single point using functions \texttt{penman()} or \texttt{penmanmonteith()}. For other formulations of PET, the reader is referred to package \texttt{`Evapotranspiration'}.
+Package \texttt{meteoland} allows calculating daily potential evapo-transpiration (PET) using Penman's formulation (Penman 1948; 1956) or Penman-Monteith formulation. PET is automatically calculated after meteorological data have been interpolated (i.e. within functions \texttt{interpolationpoints()} and \texttt{interpolationgrid()}) or downscaled (i.e. within functions \texttt{correctionpoints()} and \texttt{correctiongrid()}), but PET values can also be calculated for a single point using functions \texttt{penman()} or \texttt{penmanmonteith()}. For other formulations of PET, the reader is referred to package \texttt{`Evapotranspiration'}.
 
 \subsection{Penman formulation}
-Penman (1948) proposed an equation to calculate potential evaporation that combined an energy equation based on net incoming radiation with an aerodynamic approach. The Penman or Penman combination equation is:
+Penman (1948) proposed an equation to calculate daily potential evaporation that combined an energy equation based on net incoming radiation with an aerodynamic approach. The Penman or Penman combination equation is:
 \begin{equation}
 E_{pot} = \frac{\Delta}{\Delta+\gamma}\cdot \frac{R_n}{\lambda}+\frac{\lambda}{\Delta + \lambda}\cdot E_a
 \end{equation}
@@ -805,7 +884,7 @@ where  $D$ is the vapour pressure deficit (in kPa), $\Delta$  is the slope of th
 \section{Miscellaneous functions}
 \subsection{Downloading data from AEMET}
 
-National meteorological agencies are now entering into the open data philosophy and one of them is the Spanish meteorological agency (Agencia Española de Meteorología, AEMET). In \texttt{meteoland} we provide two functions that retrieve AEMET data using their OpenData API (API keys need to be obtained from AEMET):
+National meteorological agencies are increasingly adopting an open data philosophy and one of them is the Spanish meteorological agency (Agencia Española de Meteorología, AEMET). In \texttt{meteoland} we provide two functions that retrieve AEMET data using their OpenData API (API keys need to be obtained from AEMET):
 \begin{itemize}
 \item{\texttt{downloadAEMETstationlist()} : Gets the list of stations from which daily meteorological data is available.}
 \item{\texttt{downloadAEMETpoints()} : Downloads historical daily meteorological data corresponding to a input set of stations and period.}

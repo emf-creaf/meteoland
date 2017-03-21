@@ -25,8 +25,12 @@
     corrPrec[[m]]<-fitQmap(DatTemp[,"Precipitation"],ModelTempHist[,"Precipitation"],method=c("QUANT"))
     corrRad[[m]]<-mean(ModelTempHist[,"Radiation"]-DatTemp[,"Radiation"], na.rm=TRUE)
     corrTmean[[m]]<-mean(ModelTempHist[,"MeanTemperature"]-DatTemp[,"MeanTemperature"], na.rm=TRUE)
-    corrTmin[[m]]<-mean(ModelTempHist[,"MinTemperature"]-DatTemp[,"MinTemperature"], na.rm=TRUE)
-    corrTmax[[m]]<-mean(ModelTempHist[,"MaxTemperature"]-DatTemp[,"MaxTemperature"], na.rm=TRUE)
+    difTminHist = (ModelTempHist[,"MinTemperature"]-ModelTempHist[,"MeanTemperature"])
+    difTminDat = (DatTemp[,"MinTemperature"]-DatTemp[,"MeanTemperature"])
+    corrTmin[[m]]<-mean(difTminHist-difTminDat, na.rm=TRUE)
+    difTmaxHist = (ModelTempHist[,"MaxTemperature"]-ModelTempHist[,"MeanTemperature"])
+    difTmaxDat = (DatTemp[,"MaxTemperature"]-DatTemp[,"MeanTemperature"])
+    corrTmax[[m]]<-mean(difTmaxHist-difTmaxDat, na.rm=TRUE)
     corrWS[[m]]<-mean(ModelTempHist[,"WindSpeed"]-DatTemp[,"WindSpeed"], na.rm=TRUE)
     HSData<-.HRHS(Tc=DatTemp[,"MeanTemperature"] ,HR=DatTemp[,"MeanRelativeHumidity"])
     HSmodelHist<-.HRHS(Tc=ModelTempHist[,"MeanTemperature"] ,HR=ModelTempHist[,"MeanRelativeHumidity"])
@@ -77,10 +81,10 @@
     ModelTempFut.TM.cor<-ModelTempFut$MeanTemperature-(mbias$corrTmean[[m]])
 
     #Correction Tmin
-    ModelTempFut.TN.cor<-ModelTempFut$MinTemperature-(mbias$corrTmin[[m]])
+    ModelTempFut.TN.cor<-ModelTempFut.TM.cor + pmin(0,(ModelTempFut$MinTemperature-ModelTempFut$MeanTemperature) - (mbias$corrTmin[[m]]))
 
-    #Correction Tmax
-    ModelTempFut.TX.cor<-ModelTempFut$MaxTemperature-(mbias$corrTmax[[m]])
+    #Correction Tmax = Tmean_corrected + 
+    ModelTempFut.TX.cor<-ModelTempFut.TM.cor + pmax(0, (ModelTempFut$MaxTemperature-ModelTempFut$MeanTemperature) - (mbias$corrTmax[[m]]))
 
     #Correction WS (if NA then use input WS)
     if(!is.na(mbias$corrWS[[m]])) ModelTempFut.WS.cor<-ModelTempFut$WindSpeed-(mbias$corrWS[[m]])
@@ -103,9 +107,9 @@
     ModelTempFut.RHN.cor[ModelTempFut.RHN.cor>100]<-100
 
     #Check Tmin < = Tmean <= Tmax and RHmin <= RHmean <= RHmax
-    ModelTempFut.TN.cor = pmin(ModelTempFut.TN.cor, ModelTempFut.TX.cor)
-    ModelTempFut.TX.cor = pmax(ModelTempFut.TN.cor, ModelTempFut.TX.cor)
-    ModelTempFut.TM.cor = pmin(pmax(ModelTempFut.TM.cor, ModelTempFut.TN.cor),ModelTempFut.TX.cor)
+    # ModelTempFut.TN.cor = pmin(ModelTempFut.TN.cor, ModelTempFut.TX.cor)
+    # ModelTempFut.TX.cor = pmax(ModelTempFut.TN.cor, ModelTempFut.TX.cor)
+    # ModelTempFut.TM.cor = pmin(pmax(ModelTempFut.TM.cor, ModelTempFut.TN.cor),ModelTempFut.TX.cor)
     ModelTempFut.RHN.cor = pmin(ModelTempFut.RHN.cor, ModelTempFut.RHX.cor)
     ModelTempFut.RHX.cor = pmax(ModelTempFut.RHN.cor, ModelTempFut.RHX.cor)
     ModelTempFut.RHM.cor = pmin(pmax(ModelTempFut.RHM.cor, ModelTempFut.RHN.cor),ModelTempFut.RHX.cor)

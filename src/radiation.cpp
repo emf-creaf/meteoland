@@ -231,8 +231,10 @@ double RDay(double solarConstant, double latrad, double elevation, double slorad
       //Solar zenith angle = 90º - solar elevation angle
       //cos(solar zenith angle) = sin(solar elevation angle)
       costheta = sin(solarElevation(latrad,delta, hrad));
-      Ttmax +=step*RpotInst*pow(0.87,pratio*(1.0/costheta));
-      Rpot += step*RpotInst;
+      if(costheta>0.0) {
+        Ttmax +=step*RpotInst*pow(0.87,pratio*(1.0/costheta));
+        Rpot += step*RpotInst;
+      }
     }
   }
   Ttmax = (Ttmax/Rpot) -6.1e-2*vpa; //vpa in kPa

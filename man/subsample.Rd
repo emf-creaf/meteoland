@@ -9,12 +9,13 @@
  Generates a spatial and/or temporal subset of procedure data
 }
 \usage{
-\S4method{subsample}{MeteorologyUncorrectedData}(object, bbox = NULL, dates = NULL, buffer = 0)
-\S4method{subsample}{MeteorologyInterpolationData}(object, bbox = NULL, dates = NULL, buffer = 0)
+\S4method{subsample}{MeteorologyUncorrectedData}(object, bbox = NULL, stations = NULL, dates = NULL, buffer = 0)
+\S4method{subsample}{MeteorologyInterpolationData}(object, bbox = NULL, stations = NULL, dates = NULL, buffer = 0)
 }
 \arguments{
 \item{object}{An object of a sub-class \code{\link{MeteorologyProcedureData-class}}.}
-\item{bbox}{A 2x2 numeric matrix with the boundaries of the target area. If \code{NULL}, the original boundary box is kept.}
+\item{bbox}{A 2x2 numeric matrix with the boundaries of the target area. If \code{NULL}, the original boundary box is kept (except if \code{stations} is specified).}
+\item{stations}{A numeric, character or logical vector specifying a subset of weather stations. If \code{NULL} all original weather stations are kept (except if \code{bbox} is specified).}
 \item{dates}{A vector of \code{\link{Date}} with the subset of dates of interest. If \code{NULL}, all dates are kept.}
 \item{buffer}{A buffer to put around bbox for the spatial selection of data.}
 }

@@ -350,7 +350,7 @@ Calculation of sunrise and sunset on a horizontal surface is rather straightforw
 sr &=& T_1 = \cos^{-1}\left(\max(\min(-\tan(\phi) \cdot \tan(\delta),1),-1)\right) \\
 ss &=& T_0 = - T_1
 \end{eqnarray}
-Knowing that each hour corresponds to 15 degrees of rotation, hour angles can be transformed to solar hours. The following figures show the seasonal variation of sunrise and sunset hours, as well as day length, for horizontal surfaces in three latitudes (40ºNorth, equator and 40ºSouth) (see functions \texttt{radiation\_sunRiseSet()} and  \texttt{radiation\_daylength()}):
+Knowing that each hour corresponds to 15 degrees of rotation, hour angles can be transformed to solar hours. The following figures show the seasonal variation of sunrise and sunset hours, as well as day length, for horizontal surfaces in three latitudes (40North, equator and 40South) (see functions \texttt{radiation\_sunRiseSet()} and  \texttt{radiation\_daylength()}):
 \begin{center}
 <<echo=FALSE, fig=TRUE, width=7.5, height=4>>=
 par(mfrow=c(1,3))
@@ -380,15 +380,15 @@ for(i in 1:length(delta)) {
 plot(dates, srl1, type="l", xlab="", ylab="Sunrise (solar hour)")
 lines(dates, srl2, lty=2)
 lines(dates, srl3, lty=3)
-legend("topright", legend = c("40ºN","0º (equator)","40ºS"), cex=0.8, lty=1:3, bty="n")
+legend("topright", legend = c("40N","0 (equator)","40S"), cex=0.8, lty=1:3, bty="n")
 plot(dates, ssl1, type="l", xlab="", ylab="Sunset (solar hour)")
 lines(dates, ssl2, lty=2)
 lines(dates, ssl3, lty=3)
-legend("topright", legend = c("40ºN","0º (equator)","40ºS"), cex=0.8, lty=1:3, bty="n")
+legend("topright", legend = c("40N","0 (equator)","40S"), cex=0.8, lty=1:3, bty="n")
 plot(dates, dll1, type="l", xlab="", ylab="Hours of sunlight")
 lines(dates, dll2, lty=2)
 lines(dates, dll3, lty=3)
-legend("topright", legend = c("40ºN","0º (equator)","40ºS"), cex=0.8, lty=1:3, bty="n")
+legend("topright", legend = c("40N","0 (equator)","40S"), cex=0.8, lty=1:3, bty="n")
 @
 \end{center}
 
@@ -417,7 +417,7 @@ and the hour angles of sunrise ($sr$) and sunset ($ss$) on the slope (both in ra
   ss &=& \min(T_1,T_7)
 \end{eqnarray}
 
-The following three figures show the seasonal variation of sunrise and sunset hours, as well as day length, for slopes of 30º inclination, facing to the four cardinal points. Curves for flat surfaces are shown for comparison. If the slopes are at latitude 40ºNorth:
+The following three figures show the seasonal variation of sunrise and sunset hours, as well as day length, for slopes of 30 inclination, facing to the four cardinal points. Curves for flat surfaces are shown for comparison. If the slopes are at latitude 40North:
 \begin{center}
 <<echo=FALSE, fig=TRUE, width=7.5, height=4>>=
 par(mfrow=c(1,3))
@@ -510,7 +510,7 @@ lines(dates, dl4, lty=4, col="gray")
 legend("top",c("flat", "N","E","S","W"), col=c("black",rep("gray",4)), lty=c(1,1:4), bty="n")
 @
 \end{center}
-and if they are at latitude 40ºSouth:
+and if they are at latitude 40South:
 \begin{center}
 <<echo=FALSE, fig=TRUE, width=7.5, height=4>>=
 par(mfrow=c(1,3))
@@ -579,10 +579,10 @@ for(i in 1:length(delta)) {
   inl2[i]=radiation_potentialRadiation(sc[i],latrad2, 0, 0, delta[i])
   inl3[i]=radiation_potentialRadiation(sc[i],latrad3, 0, 0, delta[i])
 }
-plot(dates, inl1, type="l", xlab="", ylab="Potential radiation (MJ·m-2·d-1)", main="Horizontal surfaces")
+plot(dates, inl1, type="l", xlab="", ylab="Potential radiation (MJ m-2 d-1)", main="Horizontal surfaces")
 lines(dates, inl2, lty=2)
 lines(dates, inl3, lty=3)
-legend("topright", legend = c("40ºN","0º (equator)","40ºS"), cex=0.8, lty=1:3, bty="n")
+legend("topright", legend = c("40N","0 (equator)","40S"), cex=0.8, lty=1:3, bty="n")
 in1 = rep(NA, length(delta))
 in2 = rep(NA, length(delta))
 in3 = rep(NA, length(delta))
@@ -593,8 +593,8 @@ for(i in 1:length(delta)) {
   in3[i]=radiation_potentialRadiation(sc[i],latrad1, slorad, asprad3, delta[i])
   in4[i]=radiation_potentialRadiation(sc[i],latrad1, slorad, asprad4, delta[i])
 }
-plot(dates, inl1, type="l", xlab="", ylab="Potential radiation (MJ·m-2·d-1)",
-     main = "Slopes at 40ºNorth", ylim=c(0,45))
+plot(dates, inl1, type="l", xlab="", ylab="Potential radiation (MJ m-2 d-1)",
+     main = "Slopes at 40North", ylim=c(0,45))
 lines(dates, in1, lty=1, col="gray")
 lines(dates, in2, lty=2, col="gray")
 lines(dates, in3, lty=3, col="gray")
@@ -606,7 +606,7 @@ for(i in 1:length(delta)) {
   in3[i]=radiation_potentialRadiation(sc[i],latrad2, slorad, asprad3, delta[i])
   in4[i]=radiation_potentialRadiation(sc[i],latrad2, slorad, asprad4, delta[i])
 }
-plot(dates, inl2, type="l", xlab="", main = "Slopes at the Equator", ylab="Potential radiation (MJ·m-2·d-1)", ylim=c(0,45))
+plot(dates, inl2, type="l", xlab="", main = "Slopes at the Equator", ylab="Potential radiation (MJ m-2 d-1)", ylim=c(0,45))
 lines(dates, in1, lty=1, col="gray")
 lines(dates, in2, lty=2, col="gray")
 lines(dates, in3, lty=3, col="gray")
@@ -618,8 +618,8 @@ for(i in 1:length(delta)) {
   in3[i]=radiation_potentialRadiation(sc[i],latrad3, slorad, asprad3, delta[i])
   in4[i]=radiation_potentialRadiation(sc[i],latrad3, slorad, asprad4, delta[i])
 }
-plot(dates, inl3, type="l", xlab="", ylab="Potential radiation (MJ·m-2·d-1)", 
-     main = "Slopes at 40ºSouth", ylim=c(0,45))
+plot(dates, inl3, type="l", xlab="", ylab="Potential radiation (MJ m-2 d-1)", 
+     main = "Slopes at 40South", ylim=c(0,45))
 lines(dates, in1, lty=1, col="gray")
 lines(dates, in2, lty=2, col="gray")
 lines(dates, in3, lty=3, col="gray")
@@ -714,7 +714,7 @@ vpa = utils_averageDailyVP(tmin[i], tmax[i], rhmin[i], rhmax[i])
 R_nl[i] = radiation_outgoingLongwaveRadiation(sc[i],latradp, elevationp, sloradp,aspradp, delta[i], vpa, tmin[i], tmax[i], R_s[i])
 R_net[i] = radiation_netRadiation(sc[i],latradp, elevationp, sloradp,aspradp, delta[i], vpa, tmin[i], tmax[i], R_s[i])
 }
-plot(dates[1:365], R_s[1:365], type="l", xlab="", ylab = "Daily radiation (MJ·m-2)", ylim=c(0,40))
+plot(dates[1:365], R_s[1:365], type="l", xlab="", ylab = "Daily radiation (MJ m-2)", ylim=c(0,40))
 lines(dates[1:365], R_nl[1:365], col="blue")
 lines(dates[1:365], R_net[1:365], col="red")
 legend("topleft", col=c("black","blue","red"), legend = c("Solar radiation", "Outgoing longwave radiation", "Net shortwave radiation"), bty="n", cex=0.8, lty=1)
@@ -733,11 +733,11 @@ In a clear day (e.g. not rainy) the ratio is modified to account for the circums
 \begin{equation}
 R'_{d}/R_{g} = \frac{R_{d}/R_{g}}{1+(1- (R_{d}/R_{g})^2)\cdot \cos^2(\pi/4-\beta)\cdot \cos^3\beta} 
 \end{equation}
-Otherwise $R'_{d}/R_{g} = R_{d}/R_{g}$. The daily diffuse shortwave radiation ($R_{d}$) is found by multiplying global radiation by the (modified) ratio:
+where $\beta$ is the solar elevation angle. Otherwise $R'_{d}/R_{g} = R_{d}/R_{g}$. The daily diffuse shortwave radiation ($R_{d}$) is found by multiplying global radiation by the (modified) ratio:
 \begin{equation}
 R_{d} = R_{g} \cdot (R'_{d}/R_{g}) 
 \end{equation}
-The diurnal trend of the irradiance is derived from the daily global radiation and the daily course of extra-terrestrial radaition. If we assume that the atmospheric transmission is constant during the daylight period:
+The diurnal trend of the irradiance is derived from the daily global radiation and the daily course of potential (i.e. extra-terrestrial) radiation. If we assume that the atmospheric transmission is constant during the daylight period:
 \begin{equation}
 R_{g,s}/R_{pot,s} =R_{g}/R_{pot}
 \end{equation}
@@ -750,8 +750,15 @@ and the instantaneous diffuse and direct beam fluxes are estimated using:
 R_{d,s} &=& R_{d}\cdot (R_{pot,s}/R_{pot}) \\
 R_{b,s} &=& R_{g,s} - R_{d,s}
 \end{eqnarray}
-Instantaneous diffuse radiation is obtained
-For example, for a flat terrain located at 42ºN latitude and 100 m.a.s.l, having 30 MJ·m$^{-2}$ of daily global radiation on the 2001/June/01, the hourly variation in diffuse and direct radiation would be:
+The whole procedure to calculate direct and diffuse radiation depends on the solar elevation angle, which changes through the day. Although $R'_{d}/R_{g}$ is formulated as a ratio of daily values, the ratio needs to be calculated for every instant, as $R_{pot,s}$.
+
+The procedure for photosynthetic active radiation (PAR) is similar. Daily PAR is assumed to be half of daily global radiation (i.e. $R_{PAR} = 0.5 \cdot R_{g}$. The scattered diffuse component of PAR is bigger than that of global radiation, and the ratio of diffuse over total PAR radiation is:
+\begin{equation}
+R_{PAR,d}/R_{PAR} = \left[1+0.3 \cdot (1- (R_{d}/R_{g})^2)\right]\cdot  (R'_{d}/R_{g})
+\end{equation}
+The ratio $R_{PAR,d}/R_{PAR}$ is used to determine daily diffuse PAR and the calculation of instant rates are the same as for global radiation.
+
+To illustrate the above calculations, we assume a target location in a flat terrain located at 42N latitude and 100 m.a.s.l, having 30 MJ·m$^{-2}$ of daily global radiation on the 2001/June/01, the hourly variation in diffuse and direct radiation would be:
 \begin{center}
 <<echo=FALSE, fig=TRUE, width=7, height=7>>=
 par(mar=c(4,4,1,1), mfrow=c(2,2))
@@ -763,14 +770,14 @@ delta = radiation_solarDeclination(J)
 a=radiation_directDiffuseDay(gsc, latrad,0,0,delta, 30, TRUE, 100)
 se = a$SolarElevation*(180/pi)
 se[a$Rpot==0]=NA
-plot(a$SolarHour*12/pi, se, type="l", ylim=c(0,70), ylab="Solar elevation (º)", xlab="Solar hour")
-plot(a$SolarHour*12/pi, a$Rpot, type="l", ylab="Radiation (W·m-2)", xlab="Solar hour")
+plot(a$SolarHour*12/pi, se, type="l", ylim=c(0,70), ylab="Solar elevation (degrees)", xlab="Solar hour")
+plot(a$SolarHour*12/pi, a$Rpot, type="l", ylab="Radiation (W m-2)", xlab="Solar hour")
 lines(a$SolarHour*12/pi, a$Rg,  lty=2)
 legend("topleft", legend=c("Potential", "Global"), lty=c(1,2), bty="n")
-plot(a$SolarHour*12/pi, a$SWR_direct, type="l", ylab="SWR radiation (W·m-2)", xlab="Solar hour")
+plot(a$SolarHour*12/pi, a$SWR_direct, type="l", ylab="SWR radiation (W m-2)", xlab="Solar hour")
 lines(a$SolarHour*12/pi, a$SWR_diffuse,  lty=2)
 legend("topleft", legend=c("Direct", "Diffuse"), lty=c(1,2), bty="n")
-plot(a$SolarHour*12/pi, a$PAR_direct, type="l", ylab="PAR radiation (W·m-2)", xlab="Solar hour")
+plot(a$SolarHour*12/pi, a$PAR_direct, type="l", ylab="PAR radiation (W m-2)", xlab="Solar hour")
 lines(a$SolarHour*12/pi, a$PAR_diffuse,  lty=2)
 legend("topleft", legend=c("Direct", "Diffuse"), lty=c(1,2), bty="n")
 @
@@ -787,11 +794,11 @@ Statistical correction is necessary when meteorological data is available at a s
 \subsection{Precipitation}
 There are several approaches to correct precipitation predictions of climate models. Among the most popular approaches are statistical transformations that that aim to adjust aspects of the distribution of predicted values so that the new distribution resembles observations. A common approach is to use cumulative distribution function (CDF) of observed and modelled values. In \texttt{meteoland} we perform quantile mapping by calling the functions implemented in package \texttt{qmap} (Gudmundsson et al. 2012). In short, the empirical CDFs are approximated using tables of empirical percentiles. Values in between the percentiles are approximated using linear interpolation. If new model values (e.g. from climate projections) are larger than the training values used to estimate the empirical CDF, the correction found for the highest quantile of the training period is used. 
 
-Quantile mapping is done month by month, to account for seasonal variation of precipitation distribution in the target area. The following figures show the correction of RCM precipitation predictions for the future period 2022-2023 using interpolated data from 2002-2003 as observations for the reference period. Note that at least 15 years of observations (and not two!) would be needed for a correct estimation of monthly CDFs.
+Quantile mapping is done month by month, to account for seasonal variation of precipitation distribution in the target area. The following figures show the correction of RCM precipitation predictions for 2023 using interpolated data from 2002-2003 as observations for the reference period. Note that at least 15 years of observations (and not two!) would be needed for a correct estimation of monthly CDFs.
 \begin{center}
 <<echo = FALSE, fig = TRUE, width=7, height=3.5>>=
 par(mfrow=c(1,2), mar=c(5,5,1,1))
-meteoplot(predicted, 1, "Precipitation", ylab="Precipitation (mm)", ylim=c(0,80))
+meteoplot(predicted, 1, "Precipitation", ylab="Precipitation (mm)", xlab="",ylim=c(0,80))
 #Add uncorrected mean temperature data (cell #5)
 lines(bc_dates,
       examplecorrectiondata@projection_data[[3]][as.character(bc_dates),"Precipitation"],
@@ -803,9 +810,8 @@ plot(examplecorrectiondata@projection_data[[3]][as.character(bc_dates),"Precipit
 abline(a=0,b=1,col="gray")
 @
 \end{center}
-
-\subsection{Other variables}
-Other meteorological variables (temperature, relative humidity, radiation and wind) are downscaled by simple bias correction applied monthly. Let $x$ be the meteorological variable observed for the target point in the reference period, and $u$ the same variable, but estimated at the coarse-scale for the reference period. Month $m$ bias of the coarse-scale data ($\theta_{m}$) is the average of the difference between $u$ and $x$ over all $n_m$ days of month $m$ in the reference period:
+\subsection{Temperature}
+Let $x$ be the meteorological variable observed for the target point in the reference period, and $u$ the same variable, but estimated at the coarse-scale for the reference period. Month $m$ bias of the coarse-scale data ($\theta_{m}$) is the average of the difference between $u$ and $x$ over all $n_m$ days of month $m$ in the reference period:
 \begin{equation}
 \theta_{m} = \sum_{i=1}^{n_m}{(u_i-x_i)}/n_m
 \end{equation}
@@ -815,26 +821,69 @@ c_i = u_i - \theta_{m(i)}
 \end{equation}
 where $m(i)$ is the month of day $i$.
 
-Mean temperature, minimum temperature, maximum temperature, radiation and wind speed are downscaled using this general bias correction procedure. In the case of relative humidity, values are transformed to specific humidity, bias correction is applied to this variable and the result is back-transformed to relative humidity. Since historic wind data is often not available, if wind speed data is missing the coarse-scale wind estimate is taken directly without correction.
+Mean daily temperature is corrected by the simple bias correction explained above (i.e. $x = T_{mean, obs}$ and $u = T_{mean, est}$):
+\begin{equation}
+T_{mean, cor} = T_{mean, est} - \theta_{m(i)}
+\end{equation}
+To correct minimum (or maximum) temperatures bias correction is applied to the difference between minimum (or maximum) temperature and mean temperature. We will describe the process for minimum temperature and maximum temperature is analogous. First, we define $x$ and $u$ as the difference in temperature ($\delta$):
+\begin{eqnarray}
+x &=& \delta_{min, obs} = T_{min, obs} - T_{mean, obs}\\
+u &=& \delta_{min, est} = T_{min, est} - T_{mean, est}
+\end{eqnarray}
+Then, we calculate monthly biases $\theta_m$ as before. Correction is performed on the difference variable, i.e.:
+\begin{equation}
+\delta_{min, cor} = \max \{0,\, \delta_{min, est} - \theta_{m(i)} \}
+\end{equation}
+where the maximum function is used to prevent the corrected difference from becoming positive (negative in the case of maximum temperatures). Finally, the corrected difference is added to the corrected mean temperature to obtain the corrected minimum temperature:
+\begin{equation}
+T_{min, cor} = T_{mean, cor} + \delta_{min, cor}
+\end{equation}
 
-The following figures show the correction of RCM mean temperature and radiation predictions for the future period 2022-2023 using interpolated data from 2002-2003 as observations for the reference period:
+The following figures show the correction of RCM mean, minimum and maximum temperature predictions for 2023 using interpolated data from 2002-2003 as observations for the reference period:
 \begin{center}
-<<echo = FALSE, fig = TRUE, width=7, height=7>>=
-par(mfrow=c(2,2), mar=c(5,5,1,1))
+<<echo = FALSE, fig = TRUE, width=7, height=10>>=
+par(mfrow=c(3,2), mar=c(5,5,1,1))
 #Plot predicted mean temperature for point 1
-meteoplot(predicted, 1, "MeanTemperature", ylab="Mean temperature (Celsius)", ylim=c(-5,40))
+meteoplot(predicted, 1, "MeanTemperature", ylab="Mean temperature (Celsius)", xlab="",ylim=c(-5,40))
 #Add uncorrected mean temperature data (cell #5)
 lines(bc_dates,
       examplecorrectiondata@projection_data[[3]][as.character(bc_dates),"MeanTemperature"],
       col="red")
 legend("topright", legend=c("corrected","uncorrected"), col=c("black","red"), lty=c(1,1), bty="n")
-
-#Scatter plot
 plot(examplecorrectiondata@projection_data[[3]][as.character(bc_dates),"MeanTemperature"],
      predicted@data[[1]]$MeanTemperature, cex=0.1, asp=1,
      ylab="Corrected mean temperature", xlab="Uncorrected mean temperature")
 abline(a=0,b=1,col="gray")
-meteoplot(predicted, 1, "Radiation", ylab="Radiation (MJ·m-2)", ylim=c(0,40))
+
+meteoplot(predicted, 1, "MinTemperature", ylab="Minimum temperature (Celsius)", xlab="",ylim=c(-10,25))
+lines(bc_dates,
+      examplecorrectiondata@projection_data[[3]][as.character(bc_dates),"MinTemperature"],
+      col="red")
+legend("topright", legend=c("corrected","uncorrected"), col=c("black","red"), lty=c(1,1), bty="n")
+plot(examplecorrectiondata@projection_data[[3]][as.character(bc_dates),"MinTemperature"],
+     predicted@data[[1]]$MinTemperature, cex=0.1, asp=1,
+     ylab="Corrected minimum temperature", xlab="Uncorrected minimum temperature")
+abline(a=0,b=1,col="gray")
+meteoplot(predicted, 1, "MaxTemperature", ylab="Maximum temperature (Celsius)", xlab="",ylim=c(0,40))
+lines(bc_dates,
+      examplecorrectiondata@projection_data[[3]][as.character(bc_dates),"MaxTemperature"],
+      col="red")
+legend("topright", legend=c("corrected","uncorrected"), col=c("black","red"), lty=c(1,1), bty="n")
+plot(examplecorrectiondata@projection_data[[3]][as.character(bc_dates),"MaxTemperature"],
+     predicted@data[[1]]$MaxTemperature, cex=0.1, asp=1,
+     ylab="Corrected maximum temperature", xlab="Uncorrected maximum temperature")
+abline(a=0,b=1,col="gray")
+@
+\end{center}
+
+\subsection{Other variables}
+Radiation and wind speed are corrected using the general bias correction procedure used for mean temperature. In the case of relative humidity, values are transformed to specific humidity, bias correction is applied to this variable and the result is back-transformed to relative humidity. Since historic wind data is often not available, if wind speed data is missing the coarse-scale wind estimate is taken directly without correction.
+
+The following figures show the correction of RCM radiation predictions for 2023 using interpolated data from 2002-2003 as observations for the reference period:
+\begin{center}
+<<echo = FALSE, fig = TRUE, width=7, height=3.5>>=
+par(mfrow=c(1,2), mar=c(5,5,1,1))
+meteoplot(predicted, 1, "Radiation", ylab="Radiation (MJ m-2)", xlab="",ylim=c(0,40))
 #Add uncorrected mean temperature data (cell #5)
 lines(bc_dates,
       examplecorrectiondata@projection_data[[3]][as.character(bc_dates),"Radiation"],
@@ -932,10 +981,14 @@ Function \texttt{readWindNinjaOutput()} can be used to conduct this last step. T
 
 \item{Sanjuan, G., Brun, C., Cort, A., 2014. Wind field uncertainty in forest fire propagation prediction. Procedia Comput. Sci. 29, 1535–1545. doi:10.1016/j.procs.2014.05.139.}
 
-\item{Thornton, P.E., Running, S.W., White, M. a., 1997. Generating surfaces of daily meteorological variables over large regions of complex terrain. J. Hydrol. 190, 214–251. doi:10.1016/S0022-1694(96)03128-9.}
+\item{Spitters, C.J.T., Toussaint, H.A.J.M., Goudriaan, J., 1986. Separating the diffuse and direct components of global radiation and its implications for modeling canopy photosynthesis. I. Components of incoming radiation. Agricultural and Forest Meteorology, 38, 231–242.}
+
+\item{Thornton, P.E., Running, S.W., White, M. A., 1997. Generating surfaces of daily meteorological variables over large regions of complex terrain. J. Hydrol. 190, 214–251. doi:10.1016/S0022-1694(96)03128-9.}
 
 \item{Thornton, P.E., Running, S.W., 1999. An improved algorithm for estimating incident daily solar radiation from measurements of temperature, humidity, and precipitation. Agric. For. Meteorol. 93, 211–228. doi:10.1016/S0168-1923(98)00126-9.}
+
 \item{Tymstra, C., Bryce, R.W., Wotton, B.M., Taylor, S.W., Armitage, O.B., 2010. Development and Structure of Prometheus : the Canadian Wildland Fire Growth Simulation Model, Information report NOR-X-417. doi:ISBN 978-1-100-14674-4}
+
 \item{Valiantzas J.D. 2006. Simplified versions for the Penman evaporation equation using routine weather data. Journal of Hydrology 331, 690–702. doi:10.1016/j.jhydrol.2006.06.012.}
 \end{itemize}
 

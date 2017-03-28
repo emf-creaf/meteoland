@@ -80,7 +80,8 @@ lines(examplecorrectiondata@dates,
 lines(examplecorrectiondata@dates,
       examplecorrectiondata@projection_data[[3]]$MaxTemperature,
       col="red", lty=3)
-legend("topright", legend=c("corrected","uncorrected", "Maximum", "Mean", "Minimum"), col=c("black","black", "red","black","blue"), lty=c(1,3,1,1,1), bty="n")
+legend("topright", legend=c("corrected","uncorrected", "Maximum", "Mean", "Minimum"), 
+       col=c("black","black", "red","black","blue"), lty=c(1,3,1,1,1), bty="n")
 
 #Scatter plot
 plot(examplecorrectiondata@projection_data[[3]]$MeanTemperature,

@@ -27,10 +27,10 @@
     corrTmean[[m]]<-mean(ModelTempHist[,"MeanTemperature"]-DatTemp[,"MeanTemperature"], na.rm=TRUE)
     difTminHist = (ModelTempHist[,"MinTemperature"]-ModelTempHist[,"MeanTemperature"])
     difTminDat = (DatTemp[,"MinTemperature"]-DatTemp[,"MeanTemperature"])
-    corrTmin[[m]]<-mean(difTminHist-difTminDat, na.rm=TRUE)
+    corrTmin[[m]]<- as.numeric(lm(difTminDat~difTminHist-1)$coefficients) #slope of a regression through the origin
     difTmaxHist = (ModelTempHist[,"MaxTemperature"]-ModelTempHist[,"MeanTemperature"])
     difTmaxDat = (DatTemp[,"MaxTemperature"]-DatTemp[,"MeanTemperature"])
-    corrTmax[[m]]<-mean(difTmaxHist-difTmaxDat, na.rm=TRUE)
+    corrTmax[[m]]<-as.numeric(lm(difTmaxDat~difTmaxHist-1)$coefficients) #slope of a regression through the origin
     corrWS[[m]]<-mean(ModelTempHist[,"WindSpeed"]-DatTemp[,"WindSpeed"], na.rm=TRUE)
     HSData<-.HRHS(Tc=DatTemp[,"MeanTemperature"] ,HR=DatTemp[,"MeanRelativeHumidity"])
     HSmodelHist<-.HRHS(Tc=ModelTempHist[,"MeanTemperature"] ,HR=ModelTempHist[,"MeanRelativeHumidity"])
@@ -81,10 +81,10 @@
     ModelTempFut.TM.cor<-ModelTempFut$MeanTemperature-(mbias$corrTmean[[m]])
 
     #Correction Tmin
-    ModelTempFut.TN.cor<-ModelTempFut.TM.cor + pmin(0,(ModelTempFut$MinTemperature-ModelTempFut$MeanTemperature) - (mbias$corrTmin[[m]]))
+    ModelTempFut.TN.cor<-ModelTempFut.TM.cor + ((ModelTempFut$MinTemperature-ModelTempFut$MeanTemperature)*mbias$corrTmin[[m]])
 
     #Correction Tmax = Tmean_corrected + 
-    ModelTempFut.TX.cor<-ModelTempFut.TM.cor + pmax(0, (ModelTempFut$MaxTemperature-ModelTempFut$MeanTemperature) - (mbias$corrTmax[[m]]))
+    ModelTempFut.TX.cor<-ModelTempFut.TM.cor + ((ModelTempFut$MaxTemperature-ModelTempFut$MeanTemperature)*mbias$corrTmax[[m]])
 
     #Correction WS (if NA then use input WS)
     if(!is.na(mbias$corrWS[[m]])) ModelTempFut.WS.cor<-ModelTempFut$WindSpeed-(mbias$corrWS[[m]])
@@ -226,6 +226,7 @@ correctionpoints<-function(object, points, topodata = NULL, dates = NULL, export
 
     #Call statistical correction routine
     mbias = .monthbiasonepoint(obs,rcmhist, verbose)
+    # if(verbose) print(mbias)
     df = .correctiononepoint(mbias,rcmfut, dates, mPar$fill_wind, verbose)
 
     if(is.null(dates)) dates = as.Date(rownames(df))

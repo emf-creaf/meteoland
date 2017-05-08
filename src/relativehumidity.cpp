@@ -149,7 +149,7 @@ NumericVector relativeHumidityFromDewpointTemp(NumericVector T, NumericVector TD
 
 double interpolateTdewPoint(double xp, double yp, double zp, NumericVector X, NumericVector Y, NumericVector Z, NumericVector T, NumericVector zDif, NumericVector tDif,double iniRp = 140000, double alpha = 3.0, int N = 30, int iterations = 3){
   int nstations = X.size();
-  int nDif = tDif.size();
+  // int nDif = tDif.size();
   NumericVector r(nstations);
   for(int i=0;i<nstations;i++) {
     r[i] = sqrt(pow(xp-X[i],2.0)+pow(yp-Y[i],2.0));

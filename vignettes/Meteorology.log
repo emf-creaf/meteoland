@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.17 (MiKTeX 2.9 64-bit) (preloaded format=pdflatex 2016.10.20)  18 JAN 2017 14:07
+This is pdfTeX, Version 3.14159265-2.6-1.40.17 (MiKTeX 2.9 64-bit) (preloaded format=pdflatex 2016.10.20)  8 MAY 2017 15:59
 entering extended mode
 **./Meteorology.tex
 (Meteorology.tex
@@ -531,7 +531,7 @@ LaTeX Font Info:    Redeclaring font encoding OMS on input line 635.
 LaTeX Info: Redefining \[ on input line 2739.
 LaTeX Info: Redefining \] on input line 2740.
 )
-(C:/PROGRA~1/R/R-33~1.2/share/texmf/tex/latex\Sweave.sty
+(C:/PROGRA~1/R/R-34~1.0AL/share/texmf/tex/latex\Sweave.sty
 Package: Sweave 
 
 ("C:\Program Files\MiKTeX 2.9\tex\latex\base\ifthen.sty"
@@ -749,29 +749,29 @@ File: t1aer.fd 1997/11/16 Font definitions for T1/aer.
 )))) (Meteorology.aux)
 \openout1 = `Meteorology.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 18.
-LaTeX Font Info:    ... okay on input line 18.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 18.
-LaTeX Font Info:    ... okay on input line 18.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 18.
-LaTeX Font Info:    ... okay on input line 18.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 18.
-LaTeX Font Info:    ... okay on input line 18.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 18.
-LaTeX Font Info:    ... okay on input line 18.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 18.
-LaTeX Font Info:    ... okay on input line 18.
-LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 18.
-LaTeX Font Info:    ... okay on input line 18.
-LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 18.
-LaTeX Font Info:    Try loading font information for TS1+cmr on input line 18.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 19.
+LaTeX Font Info:    ... okay on input line 19.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 19.
+LaTeX Font Info:    ... okay on input line 19.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 19.
+LaTeX Font Info:    ... okay on input line 19.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 19.
+LaTeX Font Info:    ... okay on input line 19.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 19.
+LaTeX Font Info:    ... okay on input line 19.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 19.
+LaTeX Font Info:    ... okay on input line 19.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 19.
+LaTeX Font Info:    ... okay on input line 19.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 19.
+LaTeX Font Info:    Try loading font information for TS1+cmr on input line 19.
 
 ("C:\Program Files\MiKTeX 2.9\tex\latex\base\ts1cmr.fd"
 File: ts1cmr.fd 2014/09/29 v2.5h Standard LaTeX font definitions
 )
-LaTeX Font Info:    ... okay on input line 18.
+LaTeX Font Info:    ... okay on input line 19.
 \AtBeginShipoutBox=\box29
-Package hyperref Info: Link coloring OFF on input line 18.
+Package hyperref Info: Link coloring OFF on input line 19.
 
 ("C:\Program Files\MiKTeX 2.9\tex\latex\hyperref\nameref.sty"
 Package: nameref 2016/05/21 v2.44 Cross-referencing by name of section
@@ -781,9 +781,9 @@ Package: gettitlestring 2016/05/16 v1.5 Cleanup title references (HO)
 )
 \c@section@level=\count117
 )
-LaTeX Info: Redefining \ref on input line 18.
-LaTeX Info: Redefining \pageref on input line 18.
-LaTeX Info: Redefining \nameref on input line 18.
+LaTeX Info: Redefining \ref on input line 19.
+LaTeX Info: Redefining \pageref on input line 19.
+LaTeX Info: Redefining \nameref on input line 19.
 
 (Meteorology.out) (Meteorology.out)
 \@outlinefile=\write4
@@ -791,15 +791,15 @@ LaTeX Info: Redefining \nameref on input line 18.
 
 \symgns@font=\mathgroup4
 LaTeX Font Info:    Overwriting symbol font `gns@font' in version `bold'
-(Font)                  TS1/aer/m/n --> TS1/aer/bx/n on input line 18.
-Package gensymb Info: Math companion symbols declared on input line 18.
-LaTeX Info: Redefining \degree on input line 18.
-LaTeX Info: Redefining \celsius on input line 18.
+(Font)                  TS1/aer/m/n --> TS1/aer/bx/n on input line 19.
+Package gensymb Info: Math companion symbols declared on input line 19.
+LaTeX Info: Redefining \degree on input line 19.
+LaTeX Info: Redefining \celsius on input line 19.
 Package gensymb Info: Using text companion symbols for \degree, \celsius and \p
-erthousand on input line 18.
-LaTeX Info: Redefining \ohm on input line 18.
-Package gensymb Info: Using \textohm for \ohm on input line 18.
-Package gensymb Info: Using \textmu for \micro on input line 18.
+erthousand on input line 19.
+LaTeX Info: Redefining \ohm on input line 19.
+Package gensymb Info: Using \textohm for \ohm on input line 19.
+Package gensymb Info: Using \textmu for \micro on input line 19.
 
 ("C:\Program Files\MiKTeX 2.9\tex\context\base\supp-pdf.mkii"
 [Loading MPS to PDF converter (version 2006.09.02).]
@@ -828,17 +828,17 @@ G,.JBIG2,.JB2,.eps]
 (grfext)             \AppendGraphicsExtensions on input line 456.
 )
 (Meteorology-concordance.tex)
-LaTeX Font Info:    Try loading font information for TS1+aer on input line 22.
+LaTeX Font Info:    Try loading font information for TS1+aer on input line 23.
 
-(C:/PROGRA~1/R/R-33~1.2/share/texmf/tex/latex\ts1aer.fd
+(C:/PROGRA~1/R/R-34~1.0AL/share/texmf/tex/latex\ts1aer.fd
 File: ts1aer.fd 
 )
 LaTeX Font Info:    Font shape `TS1/aer/m/n' in size <12> not available
-(Font)              Font shape `TS1/cmr/m/n' tried instead on input line 22.
+(Font)              Font shape `TS1/cmr/m/n' tried instead on input line 23.
 LaTeX Font Info:    Font shape `TS1/aer/m/n' in size <8> not available
-(Font)              Font shape `TS1/cmr/m/n' tried instead on input line 22.
+(Font)              Font shape `TS1/cmr/m/n' tried instead on input line 23.
 LaTeX Font Info:    Font shape `TS1/aer/m/n' in size <6> not available
-(Font)              Font shape `TS1/cmr/m/n' tried instead on input line 22.
+(Font)              Font shape `TS1/cmr/m/n' tried instead on input line 23.
  (Meteorology.toc
 LaTeX Font Info:    Font shape `TS1/aer/m/n' in size <10.95> not available
 (Font)              Font shape `TS1/cmr/m/n' tried instead on input line 2.
@@ -850,237 +850,180 @@ LaTeX Font Info:    Font shape `TS1/aer/m/n' in size <10.95> not available
 \openout5 = `Meteorology.toc'.
 
  [2]
-LaTeX Font Info:    Try loading font information for T1+aett on input line 30.
+LaTeX Font Info:    Try loading font information for T1+aett on input line 32.
 
 ("C:\Program Files\MiKTeX 2.9\tex\latex\ae\t1aett.fd"
 File: t1aett.fd 1997/11/16 Font definitions for T1/aett.
 ) [3]
-Overfull \hbox (8.00534pt too wide) in paragraph at lines 58--60
+Overfull \hbox (8.00534pt too wide) in paragraph at lines 61--63
 []\T1/aett/m/n/10.95 SpatialPointsTopography \T1/aer/m/n/10.95 ex-tends \T1/aet
 t/m/n/10.95 Spa-tial-Points-DataFrame \T1/aer/m/n/10.95 and rep-
  []
 
-
-Overfull \hbox (7.5706pt too wide) in paragraph at lines 93--94
-\T1/aer/m/n/10.95 only three vari-ables: `\T1/aer/bx/n/10.95 elevation\T1/aer/m
-/n/10.95 ' (in me-ters), `\T1/aer/bx/n/10.95 slope\T1/aer/m/n/10.95 ' (in de-gr
-ees) and `\T1/aer/bx/n/10.95 aspect\T1/aer/m/n/10.95 '
- []
-
-[4] <Meteorology-004.pdf, id=212, 289.08pt x 289.08pt>
-File: Meteorology-004.pdf Graphic file (type pdf)
-
-<use Meteorology-004.pdf>
-Package pdftex.def Info: Meteorology-004.pdf used on input line 103.
-(pdftex.def)             Requested size: 288.0011pt x 288.01622pt.
- [5 <./Meteorology-004.pdf>]
-Overfull \hbox (9.71216pt too wide) in paragraph at lines 151--152
+[4] [5]
+Overfull \hbox (9.71216pt too wide) in paragraph at lines 150--151
 []\T1/aer/m/n/10.95 Function \T1/aett/m/n/10.95 read-me-te-o-rol-o-gy-point() \
 T1/aer/m/n/10.95 reads the me-te-o-ro-log-i-cal data stored
  []
 
 [6]
-Overfull \hbox (3.97438pt too wide) in paragraph at lines 160--161
+Overfull \hbox (3.97438pt too wide) in paragraph at lines 159--160
 []\T1/aer/m/n/10.95 Function \T1/aett/m/n/10.95 read-me-te-o-rol-o-gy-grid() \T
 1/aer/m/n/10.95 reads the me-te-o-ro-log-i-cal data stored
  []
 
 
-Overfull \hbox (4.37854pt too wide) in paragraph at lines 164--165
+Overfull \hbox (4.37854pt too wide) in paragraph at lines 163--164
 []\T1/aer/m/n/10.95 Functions \T1/aett/m/n/10.95 writeme-te-o-rol-o-gy-grid-fil
 es() \T1/aer/m/n/10.95 writes sev-eral \T1/aer/bx/n/10.95 netCDF \T1/aer/m/n/10
 .95 files
  []
 
 [7] [8]
-Overfull \hbox (9.15329pt too wide) in paragraph at lines 222--223
-[]\T1/aer/m/n/10.95 Function \T1/aett/m/n/10.95 down-scal-ing-grid() \T1/aer/m/
-n/10.95 per-forms sta-tis-ti-cal down-scal-ing of coarse-
+Overfull \hbox (9.33919pt too wide) in paragraph at lines 220--221
+[]\T1/aer/m/n/10.95 Function \T1/aett/m/n/10.95 cor-rec-tion-points() \T1/aer/m
+/n/10.95 per-forms sta-tis-ti-cal cor-rec-tion of weather
  []
 
-[9] [10] <Meteorology-010.pdf, id=251, 289.08pt x 289.08pt>
+[9]
+Overfull \hbox (9.44647pt too wide) in paragraph at lines 251--252
+\T1/aer/m/n/10.95 the one that un-der-pins the U.S. DAYMET dataset (https://day
+met.ornl.gov/).
+ []
+
+[10] <Meteorology-008.pdf, id=264, 289.08pt x 289.08pt>
+File: Meteorology-008.pdf Graphic file (type pdf)
+
+<use Meteorology-008.pdf>
+Package pdftex.def Info: Meteorology-008.pdf used on input line 262.
+(pdftex.def)             Requested size: 288.0011pt x 288.01622pt.
+ [11 <./Meteorology-008.pdf>] [12] [13] [14] [15]
+[16] <Meteorology-010.pdf, id=322, 505.89pt x 252.945pt>
 File: Meteorology-010.pdf Graphic file (type pdf)
 
 <use Meteorology-010.pdf>
-Package pdftex.def Info: Meteorology-010.pdf used on input line 261.
-(pdftex.def)             Requested size: 288.0011pt x 288.01622pt.
- [11 <./Meteorology-010.pdf>] [12]
-<Meteorology-011.pdf, id=274, 289.08pt x 289.08pt>
+Package pdftex.def Info: Meteorology-010.pdf used on input line 398.
+(pdftex.def)             Requested size: 288.0011pt x 144.0026pt.
+ [17 <./Meteorology-010.pdf>]
+<Meteorology-011.pdf, id=333, 542.025pt x 289.08pt>
 File: Meteorology-011.pdf Graphic file (type pdf)
  <use Meteorology-011.pdf>
-Package pdftex.def Info: Meteorology-011.pdf used on input line 298.
-(pdftex.def)             Requested size: 288.0011pt x 288.01622pt.
+Package pdftex.def Info: Meteorology-011.pdf used on input line 409.
+(pdftex.def)             Requested size: 288.0011pt x 153.60423pt.
 
-<Meteorology-012.pdf, id=275, 289.08pt x 252.945pt>
+[18 <./Meteorology-011.pdf>]
+<Meteorology-012.pdf, id=347, 542.025pt x 289.08pt>
 File: Meteorology-012.pdf Graphic file (type pdf)
  <use Meteorology-012.pdf>
-Package pdftex.def Info: Meteorology-012.pdf used on input line 302.
-(pdftex.def)             Requested size: 288.0011pt x 252.0142pt.
+Package pdftex.def Info: Meteorology-012.pdf used on input line 439.
+(pdftex.def)             Requested size: 288.0011pt x 153.60423pt.
 
-[13 <./Meteorology-011.pdf>] [14 <./Meteorology-012.pdf>]
-<Meteorology-013.pdf, id=301, 252.945pt x 252.945pt>
+<Meteorology-013.pdf, id=348, 542.025pt x 289.08pt>
 File: Meteorology-013.pdf Graphic file (type pdf)
  <use Meteorology-013.pdf>
-Package pdftex.def Info: Meteorology-013.pdf used on input line 340.
-(pdftex.def)             Requested size: 288.0011pt x 288.0052pt.
+Package pdftex.def Info: Meteorology-013.pdf used on input line 443.
+(pdftex.def)             Requested size: 288.0011pt x 153.60423pt.
 
-[15] <Meteorology-014.pdf, id=310, 289.08pt x 252.945pt>
+<Meteorology-014.pdf, id=349, 542.025pt x 289.08pt>
 File: Meteorology-014.pdf Graphic file (type pdf)
+ <use Meteorology-014.pdf>
+Package pdftex.def Info: Meteorology-014.pdf used on input line 447.
+(pdftex.def)             Requested size: 288.0011pt x 153.60423pt.
 
-<use Meteorology-014.pdf>
-Package pdftex.def Info: Meteorology-014.pdf used on input line 344.
-(pdftex.def)             Requested size: 288.0011pt x 252.0142pt.
- [16 <./Meteorology-013.pdf> <./Meteorology-014.pdf>]
-<Meteorology-015.pdf, id=325, 289.08pt x 289.08pt>
+[19 <./Meteorology-012.pdf> <./Meteorology-013.pdf>]
+<Meteorology-015.pdf, id=366, 542.025pt x 542.025pt>
 File: Meteorology-015.pdf Graphic file (type pdf)
  <use Meteorology-015.pdf>
-Package pdftex.def Info: Meteorology-015.pdf used on input line 365.
-(pdftex.def)             Requested size: 288.0011pt x 288.01622pt.
-
-[17] <Meteorology-016.pdf, id=333, 289.08pt x 252.945pt>
-File: Meteorology-016.pdf Graphic file (type pdf)
-
-<use Meteorology-016.pdf>
-Package pdftex.def Info: Meteorology-016.pdf used on input line 369.
-(pdftex.def)             Requested size: 288.0011pt x 252.0142pt.
- [18 <./Meteorology-015.pdf> <./Meteorology-016.pdf>]
-<Meteorology-017.pdf, id=348, 289.08pt x 252.945pt>
-File: Meteorology-017.pdf Graphic file (type pdf)
- <use Meteorology-017.pdf>
-Package pdftex.def Info: Meteorology-017.pdf used on input line 390.
-(pdftex.def)             Requested size: 288.0011pt x 252.0142pt.
-
-[19 <./Meteorology-017.pdf>] [20]
-<Meteorology-019.pdf, id=368, 433.62pt x 252.945pt>
-File: Meteorology-019.pdf Graphic file (type pdf)
- <use Meteorology-019.pdf>
-Package pdftex.def Info: Meteorology-019.pdf used on input line 416.
-(pdftex.def)             Requested size: 288.0011pt x 168.00946pt.
-
-<Meteorology-020.pdf, id=369, 542.025pt x 289.08pt>
-File: Meteorology-020.pdf Graphic file (type pdf)
- <use Meteorology-020.pdf>
-Package pdftex.def Info: Meteorology-020.pdf used on input line 427.
-(pdftex.def)             Requested size: 288.0011pt x 153.60423pt.
-
-[21 <./Meteorology-019.pdf>]
-<Meteorology-021.pdf, id=380, 542.025pt x 289.08pt>
-File: Meteorology-021.pdf Graphic file (type pdf)
- <use Meteorology-021.pdf>
-Package pdftex.def Info: Meteorology-021.pdf used on input line 457.
-(pdftex.def)             Requested size: 288.0011pt x 153.60423pt.
-
-[22 <./Meteorology-020.pdf>]
-<Meteorology-022.pdf, id=395, 542.025pt x 289.08pt>
-File: Meteorology-022.pdf Graphic file (type pdf)
- <use Meteorology-022.pdf>
-Package pdftex.def Info: Meteorology-022.pdf used on input line 461.
-(pdftex.def)             Requested size: 288.0011pt x 153.60423pt.
-
-<Meteorology-023.pdf, id=396, 542.025pt x 289.08pt>
-File: Meteorology-023.pdf Graphic file (type pdf)
- <use Meteorology-023.pdf>
-Package pdftex.def Info: Meteorology-023.pdf used on input line 465.
-(pdftex.def)             Requested size: 288.0011pt x 153.60423pt.
-
-[23 <./Meteorology-021.pdf> <./Meteorology-022.pdf> <./Meteorology-023.pdf>]
-<Meteorology-024.pdf, id=416, 542.025pt x 542.025pt>
-File: Meteorology-024.pdf Graphic file (type pdf)
- <use Meteorology-024.pdf>
-Package pdftex.def Info: Meteorology-024.pdf used on input line 484.
+Package pdftex.def Info: Meteorology-015.pdf used on input line 470.
 (pdftex.def)             Requested size: 288.0011pt x 288.00797pt.
 
-[24] [25 <./Meteorology-024.pdf>]
-<Meteorology-025.pdf, id=436, 289.08pt x 289.08pt>
-File: Meteorology-025.pdf Graphic file (type pdf)
- <use Meteorology-025.pdf>
-Package pdftex.def Info: Meteorology-025.pdf used on input line 514.
-(pdftex.def)             Requested size: 288.0011pt x 288.01622pt.
-
-[26 <./Meteorology-025.pdf>]
-<Meteorology-026.pdf, id=449, 289.08pt x 289.08pt>
-File: Meteorology-026.pdf Graphic file (type pdf)
- <use Meteorology-026.pdf>
-Package pdftex.def Info: Meteorology-026.pdf used on input line 518.
-(pdftex.def)             Requested size: 288.0011pt x 288.01622pt.
-
-Overfull \hbox (13.01917pt too wide) in paragraph at lines 536--537
+[20 <./Meteorology-014.pdf>] [21 <./Meteorology-015.pdf>]
+Overfull \hbox (13.01917pt too wide) in paragraph at lines 514--515
 \T1/aer/m/n/10.95 year for a sin-gle site (see func-tions \T1/aett/m/n/10.95 ra
 -di-a-tion_outgoingLongwaveRadiation()
  []
 
-[27 <./Meteorology-026.pdf>]
-<Meteorology-027.pdf, id=462, 289.08pt x 289.08pt>
-File: Meteorology-027.pdf Graphic file (type pdf)
- <use Meteorology-027.pdf>
-Package pdftex.def Info: Meteorology-027.pdf used on input line 538.
+<Meteorology-016.pdf, id=391, 289.08pt x 289.08pt>
+File: Meteorology-016.pdf Graphic file (type pdf)
+ <use Meteorology-016.pdf>
+Package pdftex.def Info: Meteorology-016.pdf used on input line 516.
 (pdftex.def)             Requested size: 288.0011pt x 288.01622pt.
 
-[28 <./Meteorology-027.pdf>]
-<Meteorology-029.pdf, id=472, 505.89pt x 252.945pt>
-File: Meteorology-029.pdf Graphic file (type pdf)
- <use Meteorology-029.pdf>
-Package pdftex.def Info: Meteorology-029.pdf used on input line 549.
-(pdftex.def)             Requested size: 288.0011pt x 144.0026pt.
+[22] [23 <./Meteorology-016.pdf>]
+Overfull \hbox (1.31592pt too wide) in paragraph at lines 550--551
+[]\T1/aer/m/n/10.95 The pro-ce-dure for pho-to-syn-thetic ac-tive ra-di-a-tion 
+(PAR) is sim-i-lar. Daily
+ []
 
-[29 <./Meteorology-029.pdf>]
-<Meteorology-030.pdf, id=483, 505.89pt x 505.89pt>
-File: Meteorology-030.pdf Graphic file (type pdf)
- <use Meteorology-030.pdf>
-Package pdftex.def Info: Meteorology-030.pdf used on input line 567.
+<Meteorology-017.pdf, id=412, 505.89pt x 505.89pt>
+File: Meteorology-017.pdf Graphic file (type pdf)
+ <use Meteorology-017.pdf>
+Package pdftex.def Info: Meteorology-017.pdf used on input line 558.
 (pdftex.def)             Requested size: 288.0011pt x 288.0052pt.
 
-[30 <./Meteorology-030.pdf>]
-<Meteorology-031.pdf, id=494, 289.08pt x 289.08pt>
-File: Meteorology-031.pdf Graphic file (type pdf)
- <use Meteorology-031.pdf>
-Package pdftex.def Info: Meteorology-031.pdf used on input line 597.
-(pdftex.def)             Requested size: 288.0011pt x 288.01622pt.
+[24] [25 <./Meteorology-017.pdf>]
+<Meteorology-019.pdf, id=433, 505.89pt x 252.945pt>
+File: Meteorology-019.pdf Graphic file (type pdf)
+ <use Meteorology-019.pdf>
+Package pdftex.def Info: Meteorology-019.pdf used on input line 568.
+(pdftex.def)             Requested size: 288.0011pt x 144.0026pt.
 
-[31] <Meteorology-032.pdf, id=504, 289.08pt x 252.945pt>
-File: Meteorology-032.pdf Graphic file (type pdf)
+[26 <./Meteorology-019.pdf>] <Meteorology-020.pdf, id=446, 505.89pt x 722.7pt>
+File: Meteorology-020.pdf Graphic file (type pdf)
 
-<use Meteorology-032.pdf>
-Package pdftex.def Info: Meteorology-032.pdf used on input line 601.
-(pdftex.def)             Requested size: 288.0011pt x 252.0142pt.
- [32 <./Meteorology-031.pdf> <./Meteorology-032.pdf>]
-[33]
-Overfull \hbox (0.47018pt too wide) in paragraph at lines 640--641
+<use Meteorology-020.pdf>
+Package pdftex.def Info: Meteorology-020.pdf used on input line 597.
+(pdftex.def)             Requested size: 288.0011pt x 411.436pt.
+ [27]
+<Meteorology-021.pdf, id=453, 505.89pt x 252.945pt>
+File: Meteorology-021.pdf Graphic file (type pdf)
+ <use Meteorology-021.pdf>
+Package pdftex.def Info: Meteorology-021.pdf used on input line 605.
+(pdftex.def)             Requested size: 288.0011pt x 144.0026pt.
+
+[28 <./Meteorology-020.pdf>]
+Overfull \hbox (7.58604pt too wide) in paragraph at lines 611--612
+\T1/aer/m/n/10.95 (PET) us-ing Pen-man's for-mu-la-tion (Pen-man 1948; 1956) or
+ Penman-Monteith
+ []
+
+[29 <./Meteorology-021.pdf>] [30] [31]
+Overfull \hbox (0.47018pt too wide) in paragraph at lines 670--671
 []\T1/aer/m/n/10.95 An ob-ject \T1/aett/m/n/10.95 Spa-tial-Grid-DataFrame \T1/a
 er/m/n/10.95 con-tain-ing the wind speeds (in m/s)
  []
 
-[34]
-Overfull \hbox (26.8614pt too wide) in paragraph at lines 650--651
+
+Overfull \hbox (26.8614pt too wide) in paragraph at lines 680--681
 \T1/aer/m/n/10.95 ods. Hy-drol-ogy and Earth Sys-tem Sci-ences 16, 33833390. d
 oi:10.5194/hess-
  []
 
 
-Overfull \hbox (65.10728pt too wide) in paragraph at lines 658--659
+Overfull \hbox (65.10728pt too wide) in paragraph at lines 688--689
 \T1/aer/m/n/10.95 Ap-pli-ca-tions (Re-vised). Nrel/Tp-560-34302 156. doi:10.10
 16/j.solener.2003.12.003. 
  []
 
-[35]
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 669.
- [36]
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 669.
+[32]
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 703.
+ [33]
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 703.
  (Meteorology.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 669.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 669.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 703.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 703.
 Package rerunfilecheck Info: File `Meteorology.out' has not changed.
-(rerunfilecheck)             Checksum: 872C0AFB16C84651066E7F978A025609;2646.
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 669.
+(rerunfilecheck)             Checksum: 03B6467C9996E2779103CB5DA3D72D79;2953.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 703.
  ) 
 Here is how much of TeX's memory you used:
- 7924 strings out of 493334
- 111219 string characters out of 3139218
- 193212 words of memory out of 3000000
- 11167 multiletter control sequences out of 15000+200000
- 32665 words of font info for 76 fonts, out of 3000000 for 9000
+ 7886 strings out of 493334
+ 110308 string characters out of 3139218
+ 194228 words of memory out of 3000000
+ 11129 multiletter control sequences out of 15000+200000
+ 32174 words of font info for 74 fonts, out of 3000000 for 9000
  1141 hyphenation exceptions out of 8191
- 35i,11n,28p,1424b,531s stack positions out of 5000i,500n,10000p,200000b,50000s
+ 35i,11n,28p,1285b,537s stack positions out of 5000i,500n,10000p,200000b,50000s
  <C:\Users\miquel.decaceres\AppData\Local\MiKTeX\2.9\fonts\pk\ljfour\jknappen
 \ec\dpi600\tcrm1095.pk><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts
 /cm/cmbx10.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmbx
@@ -1093,14 +1036,13 @@ nts/type1/public/amsfonts/cm/cmr10.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1
 /public/amsfonts/cm/cmr12.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/a
 msfonts/cm/cmr17.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/c
 m/cmr6.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr8.pfb
-><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmsltt10.pfb><C:/P
-rogram Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmsy10.pfb><C:/Program F
-iles/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmsy6.pfb><C:/Program Files/MiKT
-eX 2.9/fonts/type1/public/amsfonts/cm/cmsy8.pfb><C:/Program Files/MiKTeX 2.9/fo
-nts/type1/public/amsfonts/cm/cmtt10.pfb>
-Output written on Meteorology.pdf (36 pages, 938637 bytes).
+><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmsy10.pfb><C:/Pro
+gram Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmsy6.pfb><C:/Program File
+s/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmsy8.pfb><C:/Program Files/MiKTeX 
+2.9/fonts/type1/public/amsfonts/cm/cmtt10.pfb>
+Output written on Meteorology.pdf (33 pages, 626868 bytes).
 PDF statistics:
- 626 PDF objects out of 1000 (max. 8388607)
- 124 named destinations out of 1000 (max. 500000)
- 403 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 582 PDF objects out of 1000 (max. 8388607)
+ 136 named destinations out of 1000 (max. 500000)
+ 385 words of extra memory for PDF output out of 10000 (max. 10000000)
 

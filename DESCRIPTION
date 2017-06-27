@@ -1,8 +1,8 @@
 Package: meteoland
 Type: Package
 Title: Landscape Meteorology Tools
-Version: 0.5.9
-Date: 2017-03-23
+Version: 0.6.1
+Date: 2017-05-25
 Author: Miquel De Caceres, Nicolas Martin, Antoine Cabon
 Maintainer: Miquel De Caceres <miquelcaceres@gmail.com>
 Description: Functions to estimate weather variables at any position of a landscape.

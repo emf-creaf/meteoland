@@ -41,6 +41,6 @@ importFrom(grDevices, colorRampPalette, topo.colors)
 importFrom(graphics, abline, hist, lines, par)
 importFrom(utils, read.table, setTxtProgressBar,
              txtProgressBar, write.table)
-importFrom(stats, cor, var)
+importFrom(stats, cor, var, lm)
 S3method(summary,interpolation.cv)
 S3method(plot,interpolation.cv)

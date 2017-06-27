@@ -94,9 +94,18 @@ extractNetCDF<-function(ncdf_files, bbox = NULL, offset = 0, cells = NULL, expor
   dfout$dir = as.character(dfout$dir)
   dfout$filename = as.character(dfout$filename)
   rownames(dfout) = 1:ncells
-  cc = cbind(lon[sel],lat[sel])
+  cc = cbind(rep(NA, ncells), rep(NA, ncells))
   rownames(cc)<-1:ncells
   colnames(cc)<-c("lon","lat")
+  cnt = 1
+  for(xi in 1:nrow(sel)) {
+    for(yi in 1:ncol(sel)) {
+      if(sel[xi,yi]) {
+        cc[cnt,] = c(lon[xi,yi],lat[xi,yi])
+        cnt = cnt+1
+      }
+    }
+  }
   points = SpatialPoints(cc, proj4string = CRS("+proj=longlat +datum=WGS84"))
   spdf = SpatialPointsDataFrame(points, dfout)
 

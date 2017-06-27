@@ -825,18 +825,14 @@ Mean daily temperature is corrected by the simple bias correction explained abov
 \begin{equation}
 T_{mean, cor} = T_{mean, est} - \theta_{m(i)}
 \end{equation}
-To correct minimum (or maximum) temperatures bias correction is applied to the difference between minimum (or maximum) temperature and mean temperature. We will describe the process for minimum temperature and maximum temperature is analogous. First, we define $x$ and $u$ as the difference in temperature ($\delta$):
+To correct minimum (respectively maximum) temperature values, the unbiasing method described for mean temperature could lead to estimates being above (resp. below) the daily average. To avoid this source of potential inconsistency, a multiplicative scaling factor (found by regression through the origin) is instead applied to the difference between minimum (resp. maximum) temperature and mean temperature. First, we define $x$ and $u$ as the difference in temperature ($\delta$):
 \begin{eqnarray}
 x &=& \delta_{min, obs} = T_{min, obs} - T_{mean, obs}\\
 u &=& \delta_{min, est} = T_{min, est} - T_{mean, est}
 \end{eqnarray}
-Then, we calculate monthly biases $\theta_m$ as before. Correction is performed on the difference variable, i.e.:
+Then, for each month $m$ we regress $x$ on $u$ forcing a zero intercept. This gives a multiplicative (i.e. scaling) factor $\eta_{m}$ that we can use to perform the correction:
 \begin{equation}
-\delta_{min, cor} = \max \{0,\, \delta_{min, est} - \theta_{m(i)} \}
-\end{equation}
-where the maximum function is used to prevent the corrected difference from becoming positive (negative in the case of maximum temperatures). Finally, the corrected difference is added to the corrected mean temperature to obtain the corrected minimum temperature:
-\begin{equation}
-T_{min, cor} = T_{mean, cor} + \delta_{min, cor}
+T_{min, cor} = T_{mean, cor} + \delta_{min, est} \cdot \eta_{m(i)}
 \end{equation}
 
 The following figures show the correction of RCM mean, minimum and maximum temperature predictions for 2023 using interpolated data from 2002-2003 as observations for the reference period:
@@ -877,7 +873,7 @@ abline(a=0,b=1,col="gray")
 \end{center}
 
 \subsection{Other variables}
-Radiation and wind speed are corrected using the general bias correction procedure used for mean temperature. In the case of relative humidity, values are transformed to specific humidity, bias correction is applied to this variable and the result is back-transformed to relative humidity. Since historic wind data is often not available, if wind speed data is missing the coarse-scale wind estimate is taken directly without correction.
+Radiation and wind speed are corrected using the unbiasing procedure described for mean temperature. In the case of relative humidity, values are transformed to specific humidity, bias correction is applied to this variable and the result is back-transformed to relative humidity. Since historic wind data is often not available, if wind speed data is missing the coarse-scale wind estimate is taken directly without correction.
 
 The following figures show the correction of RCM radiation predictions for 2023 using interpolated data from 2002-2003 as observations for the reference period:
 \begin{center}

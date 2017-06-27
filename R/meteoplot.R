@@ -3,7 +3,7 @@ meteoplot<-function(object, index, var="MeanTemperature",
                     add = FALSE, ...){
   if(!inherits(object,"SpatialPointsMeteorology") && !inherits(object,"SpatialPointsDataFrame") &&  !inherits(object,"SpatialGridMeteorology")) stop("'object' should be of class 'SpatialPointsMeteorology' or 'SpatialGridMeteorology'.")
   
-  VARS = c("MeanTemperature", "MinTemperature","MaxTemperature", "Precipitation",
+  VARS = c("MeanTemperature", "MinTemperature","MaxTemperature","MaxMinTemperatureDiff","MaxMeanTemperatureDiff", "MinMeanTemperatureDiff","Precipitation",
            "MeanRelativeHumidity", "MinRelativeHumidity", "MaxRelativeHumidity",
            "Radiation", "WindSpeed", "WindDirection", "PET")
   var = match.arg(var, VARS)
@@ -18,15 +18,40 @@ meteoplot<-function(object, index, var="MeanTemperature",
     m = as.numeric(format(dates,"%m"))
     dates = dates[m %in% months]
   }
+  
   if(inherits(object,"SpatialPointsMeteorology")) {
-    vec = object@data[[index]][as.character(dates),var]
+    if(!(var %in% c("MaxMinTemperatureDiff","MaxMeanTemperatureDiff", "MinMeanTemperatureDiff"))) {
+      vec = object@data[[index]][as.character(dates),var]
+    } else if(var=="MaxMinTemperatureDiff") {
+      vec = object@data[[index]][as.character(dates),"MaxTemperature"] - object@data[[index]][as.character(dates),"MinTemperature"]
+    } else if(var=="MaxMeanTemperatureDiff") {
+      vec = object@data[[index]][as.character(dates),"MaxTemperature"] - object@data[[index]][as.character(dates),"MeanTemperature"]
+    } else if(var=="MinMeanTemperatureDiff") {
+      vec = object@data[[index]][as.character(dates),"MinTemperature"] - object@data[[index]][as.character(dates),"MeanTemperature"]
+    }
   } else if(inherits(object, "SpatialPointsDataFrame")) {
-    vec = df[as.character(dates),var]
+    if(!(var %in% c("MaxMinTemperatureDiff","MaxMeanTemperatureDiff", "MinMeanTemperatureDiff"))) {
+      vec = df[as.character(dates),var]
+    } else if(var=="MaxMinTemperatureDiff") {
+      vec = df[as.character(dates),"MaxTemperature"] - df[as.character(dates),"MinTemperature"]
+    } else if(var=="MaxMeanTemperatureDiff") {
+      vec = df[as.character(dates),"MaxTemperature"] - df[as.character(dates),"MeanTemperature"]
+    } else if(var=="MinMeanTemperatureDiff") {
+      vec = df[as.character(dates),"MinTemperature"] - df[as.character(dates),"MeanTemperature"]
+    }
   } else {
     vec = numeric(length(dates))
     for(i in 1:length(dates)) {
       idate = which(object@dates == dates[i])
-      vec[i] = object@data[[index]][idate,var]
+      if(!(var %in% c("MaxMinTemperatureDiff","MaxMeanTemperatureDiff", "MinMeanTemperatureDiff"))) {
+        vec[i] = object@data[[index]][idate,var]
+      } else if(var=="MaxMinTemperatureDiff") {
+        vec[i] = object@data[[index]][idate,"MaxTemperature"]-object@data[[index]][idate,"MinTemperature"]
+      } else if(var=="MaxMeanTemperatureDiff") {
+        vec[i] = object@data[[index]][idate,"MaxTemperature"]-object@data[[index]][idate,"MeanTemperature"]
+      } else if(var=="MinMeanTemperatureDiff") {
+        vec[i] = object@data[[index]][idate,"MinTemperature"]-object@data[[index]][idate,"MeanTemperature"]
+      } 
     }
   }
   if((!is.null(fun)) && (!is.null(freq))) {

@@ -10,7 +10,7 @@ This function performs correction of predicted climatic data by applying bias co
 \usage{
 correctionpoints(object, points, topodata = NULL, dates = NULL,
                   export = FALSE, exportDir = getwd(), exportFormat = "meteoland",
-                  metadatafile = "MP.txt", verbose = TRUE)
+                  metadatafile = "MP.txt", corrOut = FALSE, verbose = TRUE)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -26,15 +26,16 @@ correctionpoints(object, points, topodata = NULL, dates = NULL,
   \item{exportDir}{Output directory for downscaled meteorology.}
   \item{metadatafile}{The name of the file that will store the meta data describing all written files.}
   \item{exportFormat}{Format of meteorological data. Current accepted formats are \code{"castanea"} and \code{"meteoland"}.}
+  \item{corrOut}{Boolean flag to indicate that correction parameters (i.e. calculated biases) should be included with the output. Setting \code{corrOut = TRUE} changes the returned value.}
   \item{verbose}{Boolean flag to print process information.}
 }
 \details{
 Function \code{correctionpoints} performs statistical correction of predicted climatic data for all points supplied in \code{points}. Observed meteorological data for each point typically comes from a nearby meteorological station, but they can be the result of interpolating the meteorology of several stations (see \code{\link{MeteorologyInterpolationData}}) or they can be extracted from reanalyzed meteorology (e.g. EU-WATCH) (see \code{\link{extractNetCDF}}).
 
-For each target point, the function first determines the predicted cell where the point falls. Then it determines the dates that are shared in observed and predicted data for the historical period. These meteorological data of dates are used to conduct the correction of predicted climatic data for the future period. For temperature, wind speed and radiation, the mean bias calculated for each of the twelve months in the historical period is used to correct the corresponding month in the future period. Relative humidity is first transformed to specific humidity, then it is corrected, and finally back-transformed to relative humidity. In the case of precipitation correction is performed by applying a quantile mapping between observed and modelled data (Gudmundsson et al. 2012), also on a monthly basis.
+For each target point, the function first determines the predicted cell where the point falls. Then it determines the dates that are shared in observed and predicted data for the historical period. These meteorological data of dates are used to conduct the correction of predicted climatic data for the future period. Corrections biases are calculated and applied for the twelve months separately. The user can control the methods used for correction of each meteorological variable by changing the slot \code{params} in \code{obj} (see class \code{\link{MeteorologyUncorrectedData-class}}). Three options are allowed (see \code{\link{defaultCorrectionParams}}): (a) 'unbias' for shifting the mean; (b) 'scaling' for multiplication by a factor; and (c) 'quantmap' for empirical quantile mapping between observed and modelled data (Gudmundsson et al. 2012).
 }
 \value{
-If \code{export = FALSE}, the function returns an object of class \code{\link{SpatialPointsMeteorology-class}} with the downscaled meteorology for each point. Otherwise the function returns an object of class \code{\link{SpatialPointsDataFrame-class}} containing the meta data of the files written in the disk.
+If \code{export = FALSE}, the function returns an object of class \code{\link{SpatialPointsMeteorology-class}} with the downscaled meteorology for each point. If \code{export=TRUE} the function returns an object of class \code{\link{SpatialPointsDataFrame-class}} containing the meta data of the files written in the disk. If \code{corrOut = TRUE} the previous structures are embedded in a list which also contains an object with the calculated correction factors (biases, mappings) for each point and month.
 }
 \references{
 Gudmundsson L, Bremnes JB, Haugen JE, Engen-Skaugen T (2012) Technical Note: Downscaling predicted climatic precipitation to the station scale using statistical transformations - A comparison of methods. Hydrology and Earth System Sciences 16, 3383–3390. doi:10.5194/hess-16-3383-2012.

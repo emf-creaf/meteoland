@@ -1,7 +1,9 @@
-.monthbiasonepoint<-function(Data, MODHist, methods, verbose=TRUE) {
+.monthbiasonepoint<-function(Data, MODHist, varmethods, verbose=TRUE) {
   sel1 = rownames(MODHist) %in% rownames(Data)
   sel2 = rownames(Data) %in% rownames(MODHist)
 
+  # print(varmethods)
+  
   #subset compatible data
   MODHist = MODHist[sel1,]
   Data = Data[sel2,]
@@ -24,9 +26,9 @@
 
     #Calculate correction params depending on the correction method
     corrParam<-function(varname, varnamemean = NULL) {
-      if(methods[varname]=="unbias") {
+      if(varmethods[varname]=="unbias") {
         corr<-mean(ModelTempHist[,varname]-DatTemp[,varname], na.rm=TRUE)
-      } else if(methods[varname]=="scaling") {
+      } else if(varmethods[varname]=="scaling") {
         if(!is.null(varnamemean)) {
           difHist = (ModelTempHist[,varname]-ModelTempHist[,varnamemean])
           difDat = (DatTemp[,varname]-DatTemp[,varnamemean])
@@ -35,7 +37,7 @@
           difDat = DatTemp[,varname]
         }
         corr<- as.numeric(lm(difDat~difHist-1)$coefficients) #slope of a regression through the origin
-      } else if(methods[varname]=="quantmap") {
+      } else if(varmethods[varname]=="quantmap") {
         corr<-fitQmap(DatTemp[,varname],ModelTempHist[,varname],method=c("QUANT"))
       } else {
         stop(paste("Wrong correction method for variable:", varname))
@@ -43,7 +45,7 @@
       return(corr)
     }
     
-    corrMean[[m]] = corrParam("MeanTemperature")
+    corrTmean[[m]] = corrParam("MeanTemperature")
     corrTmin[[m]] = corrParam("MinTemperature", "MeanTemperature")
     corrTmax[[m]] = corrParam("MaxTemperature", "MeanTemperature")
     corrPrec[[m]] = corrParam("Precipitation")
@@ -51,18 +53,18 @@
     corrWS[[m]] = corrParam("WindSpeed")
     HSData<-.HRHS(Tc=DatTemp[,"MeanTemperature"] ,HR=DatTemp[,"MeanRelativeHumidity"])
     HSmodelHist<-.HRHS(Tc=ModelTempHist[,"MeanTemperature"] ,HR=ModelTempHist[,"MeanRelativeHumidity"])
-    if(methods["MeanRelativeHumidity"]=="unbias") {
+    if(varmethods["MeanRelativeHumidity"]=="unbias") {
       corrHS[[m]]<-mean(HSmodelHist-HSData, na.rm=TRUE)
-    } else if(methods["MeanRelativeHumidity"]=="scaling") {
+    } else if(varmethods["MeanRelativeHumidity"]=="scaling") {
       corrHS[[m]]<- as.numeric(lm(HSData~HSmodelHist-1)$coefficients) #slope of a regression through the origin
-    } else if(methods["MeanRelativeHumidity"]=="quantmap") {
+    } else if(varmethods["MeanRelativeHumidity"]=="quantmap") {
       corrHS[[m]]<-fitQmap(HSData,HSmodelHist,method=c("QUANT"))
     } else {
       stop(paste("Wrong correction method for variable:", "MeanRelativeHumidity"))
     }
   }
-  return(list(methods = methods, corrPrec=corrPrec,corrRad=corrRad,corrTmean=corrTmean,corrTmin=corrTmin,
-              corrTmax=corrTmax,corrHS=corrHS,corrWS=corrWS))
+  return(list(varmethods = varmethods, corrTmean=corrTmean,corrTmin=corrTmin,corrTmax=corrTmax,
+              corrPrec=corrPrec,corrRad=corrRad,corrHS=corrHS,corrWS=corrWS))
 }
 .correctiononepoint<-function(mbias, MODFut, dates = NULL, fill_wind = FALSE, verbose=TRUE){
   if(!is.null(dates)) {
@@ -98,46 +100,46 @@
 
     
     #Apply correction depending on the correction method
-    corr<-function(varuncor, varbias, method) {
-      if(method=="unbias") {
+    corr<-function(varuncor, varbias, varmethod) {
+      if(varmethod=="unbias") {
         corrected <- (varuncor-varbias)
-      } else if(method=="scaling") {
+      } else if(varmethod=="scaling") {
         corrected <- (varuncor*varbias)
-      } else if(methods[varname]=="quantmap") {
-        corr<-doQmap(varuncor, mbias)
+      } else if(varmethod=="quantmap") {
+        corrected<-doQmap(varuncor, varbias)
       } else {
-        stop(paste("Wrong correction method:", method))
+        stop(paste("Wrong correction method:", varmethod))
       }
       return(corrected)
     }
     
     #Correction Tmean
-    ModelTempFut.TM.cor <-corr(ModelTempFut$MeanTemperature, mbias$corrTmean[[m]], mbias$methods["MeanTemperature"])
+    ModelTempFut.TM.cor <-corr(ModelTempFut$MeanTemperature, mbias$corrTmean[[m]], mbias$varmethods["MeanTemperature"])
     
     #Correction Tmin
-    if(mbias$methods["MinTemperature"]=="scaling") {
+    if(mbias$varmethods["MinTemperature"]=="scaling") {
       ModelTempFut.TN.cor<-ModelTempFut.TM.cor + ((ModelTempFut$MinTemperature-ModelTempFut$MeanTemperature)*mbias$corrTmin[[m]])
     } else {
-      ModelTempFut.TN.cor<-corr(ModelTempFut$MinTemperature, mbias$corrTmin[[m]], mbias$methods["MinTemperature"])
+      ModelTempFut.TN.cor<-corr(ModelTempFut$MinTemperature, mbias$corrTmin[[m]], mbias$varmethods["MinTemperature"])
     }
     
     #Correction Tmax
-    if(mbias$methods["MinTemperature"]=="scaling") {
+    if(mbias$varmethods["MinTemperature"]=="scaling") {
       ModelTempFut.TX.cor<-ModelTempFut.TM.cor + ((ModelTempFut$MaxTemperature-ModelTempFut$MeanTemperature)*mbias$corrTmax[[m]])
     } else {
-      ModelTempFut.TX.cor<-corr(ModelTempFut$MaxTemperature, mbias$corrTmax[[m]], mbias$methods["MaxTemperature"])
+      ModelTempFut.TX.cor<-corr(ModelTempFut$MaxTemperature, mbias$corrTmax[[m]], mbias$varmethods["MaxTemperature"])
     }
     
     #Correction Precipitation
-    ModelTempFut.rain.cor<-corr(ModelTempFut$Precipitation, mbias$corrPrec[[m]], mbias$methods["Precipitation"])
+    ModelTempFut.rain.cor<-corr(ModelTempFut$Precipitation, mbias$corrPrec[[m]], mbias$varmethods["Precipitation"])
 
     #Correction Rg
-    ModelTempFut.Rg.cor<-corr(ModelTempFut$Radiation, mbias$corrRad[[m]], mbias$methods["Radiation"])
+    ModelTempFut.Rg.cor<-corr(ModelTempFut$Radiation, mbias$corrRad[[m]], mbias$varmethods["Radiation"])
     ModelTempFut.Rg.cor[ModelTempFut.Rg.cor<0]<-0
 
     #Correction WS (if NA then use input WS)
     if(!is.na(mbias$corrWS[[m]])) {
-      ModelTempFut.WS.cor<-corr(ModelTempFut$WindSpeed, mbias$corrWS[[m]], mbias$methods["WindSpeed"])
+      ModelTempFut.WS.cor<-corr(ModelTempFut$WindSpeed, mbias$corrWS[[m]], mbias$varmethods["WindSpeed"])
     }
     else if(fill_wind) ModelTempFut.WS.cor<-ModelTempFut$WindSpeed
     ModelTempFut.WS.cor[ModelTempFut.WS.cor<0]<-0
@@ -146,7 +148,7 @@
     #First transform RH into specific humidity
     HSmodelFut<-.HRHS(Tc=ModelTempFut.TM.cor ,HR=ModelTempFut[,"MeanRelativeHumidity"])
     #Second compute and apply the bias to specific humidity
-    HSmodelFut.cor<-corr(HSmodelFut, mbias$corrHS[[m]], mbias$methods["MeanRelativeHumidity"])
+    HSmodelFut.cor<-corr(HSmodelFut, mbias$corrHS[[m]], mbias$varmethods["MeanRelativeHumidity"])
     #Back transform to relative humidity (mean, max, min)
     ModelTempFut.RHM.cor<-.HSHR(Tc=ModelTempFut.TM.cor ,HS=HSmodelFut.cor)
     ModelTempFut.RHM.cor[ModelTempFut.RHM.cor<0]<-0
@@ -180,7 +182,7 @@
 
 correctionpoints<-function(object, points, topodata = NULL, dates = NULL, export = FALSE,
                             exportDir = getwd(), exportFormat = "meteoland",
-                            metadatafile = "MP.txt", verbose=TRUE) {
+                            metadatafile = "MP.txt", corrOut = FALSE, verbose=TRUE) {
 
   #Check input classes
   if(!inherits(object,"MeteorologyUncorrectedData")) stop("'object' has to be of class 'MeteorologyUncorrectedData'.")
@@ -214,6 +216,8 @@ correctionpoints<-function(object, points, topodata = NULL, dates = NULL, export
   }
   # Define vector of data frames
   dfvec = vector("list",npoints)
+  mbiasvec = vector("list", npoints)
+  
   if(inherits(points,"SpatialPointsMeteorology")) {
     if(!is.null(names(points@data))) ids = names(points@data)
     else ids = 1:npoints
@@ -274,7 +278,9 @@ correctionpoints<-function(object, points, topodata = NULL, dates = NULL, export
     }
 
     #Call statistical correction routine
-    mbias = .monthbiasonepoint(obs,rcmhist, mPar$methods, verbose)
+    mbias = .monthbiasonepoint(obs,rcmhist, mPar$varmethods, verbose)
+    mbiasvec[[i]] = mbias
+    
     # if(verbose) print(mbias)
     df = .correctiononepoint(mbias,rcmfut, dates, mPar$fill_wind, verbose)
 
@@ -304,7 +310,14 @@ correctionpoints<-function(object, points, topodata = NULL, dates = NULL, export
     }
     if(verbose) cat(".\n")
   }
-  if(!export) return(SpatialPointsMeteorology(points = points, data = dfvec, dates = dates))
-  invisible(spdf)
+  if(!export) {
+    if(!corrOut) return(SpatialPointsMeteorology(points = points, data = dfvec, dates = dates))
+    else {
+      return(list(SpatialPointsMeteorology(points = points, data = dfvec, dates = dates),
+                  mbiasvec))
+    }
+  }
+  if(!corrOut) invisible(spdf)
+  else invisible(list(spdf,mbiasvec))
 }
 

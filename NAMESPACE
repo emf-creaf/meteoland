@@ -6,7 +6,7 @@ import(rgdal)
 import(qmap)
 import(methods)
 useDynLib(meteoland, .registration = TRUE)
-export(correctionpoints, correctiongrid, correction.residual,
+export(correctionpoints, correctionpoints.residuals, correctiongrid,
        defaultCorrectionParams, defaultInterpolationParams,
        downloadAEMETcurrentday,downloadAEMETpoints, downloadAEMETstationdata,
        extractgridpoints, extractNetCDF, extractpointdates, extractSpatialData,

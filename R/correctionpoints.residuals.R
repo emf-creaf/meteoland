@@ -1,11 +1,5 @@
 .residualonepoint<-function(Data, MODHist, varmethods, verbose=TRUE){
   
-  sel1 = rownames(MODHist) %in% rownames(Data)
-  sel2 = rownames(Data) %in% rownames(MODHist)
-  
-  #subset compatible data
-  MODHist = MODHist[sel1,]
-  Data = Data[sel2,]
   # if(verbose) cat(paste(", # historic records = ", nrow(MODHist), sep=""))
   
   corrPrec<-vector("list",12)
@@ -192,8 +186,15 @@ correctionpoints.residuals<-function(object, points, topodata = NULL, keep.cvdat
         stop("Cannot access reference meteorology data")
       }
     }
-    cvone = .residualonepoint(obs,rcmhist, mPar$varmethods, verbose)
     
+    #subset compatible data
+    sel1 = rownames(rcmhist) %in% rownames(obs)
+    sel2 = rownames(obs) %in% rownames(rcmhist)
+    rcmhist = rcmhist[sel1,]
+    obs = obs[sel2,]
+    
+    cvone = .residualonepoint(obs,rcmhist, mPar$varmethods, verbose)
+
     #Calculate PET
     if(!is.null(topodata) && ("PET" %in% names(obs))) {
       J = radiation_dateStringToJulianDays(row.names(obs))
@@ -224,7 +225,7 @@ correctionpoints.residuals<-function(object, points, topodata = NULL, keep.cvdat
     cvres[i, "Radiation-MAE"] = mean(abs(cvone$Radiation-obs$Radiation), na.rm=T)
     cvres[i, "WindSpeed-Bias"] = mean(cvone$WindSpeed-obs$WindSpeed, na.rm=T)
     cvres[i, "WindSpeed-MAE"] = mean(abs(cvone$WindSpeed-obs$WindSpeed), na.rm=T)
-    if(("PET" %in% names(obs))) {
+    if(!is.null(topodata) && ("PET" %in% names(obs))) {
       cvres[i, "PET-Bias"] = mean(cvone$PET-obs$PET, na.rm=T)
       cvres[i, "PET-MAE"] = mean(abs(cvone$PET-obs$PET), na.rm=T)
     }

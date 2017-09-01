@@ -99,7 +99,7 @@
   return(DataCV)
 }
 
-correctionpoints.residuals<-function(object, points, topodata = NULL, keep.cvdata = FALSE, verbose = FALSE) {
+correctionpoints.errors<-function(object, points, topodata = NULL, error.type = "residuals.cv", keep.data = FALSE, verbose = FALSE) {
   
   #Check input classes
   if(!inherits(object,"MeteorologyUncorrectedData")) stop("'object' has to be of class 'MeteorologyUncorrectedData'.")

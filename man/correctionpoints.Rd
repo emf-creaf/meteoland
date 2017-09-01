@@ -1,19 +1,19 @@
 \encoding{UTF-8}
 \name{correctionpoints}
 \alias{correctionpoints}
-\alias{correctionpoints.residuals}
+\alias{correctionpoints.errors}
 \title{
 Statistical correction of meteorological variables for a set of points
 }
 \description{
-Function \code{correctionpoints} performs correction of predicted climatic data by applying statistical correction methods (unbiasing, scaling, or quantile mapping) to meteorological variables. Function \code{correctionpoints.residuals} allows evaluating, for each point, the bias and mean absolute error (MAE) of correction residuals. These are obtained when correcting the climate model historical period, while excluding each day to be corrected from the training set. 
+Function \code{correctionpoints} performs correction of predicted climatic data by applying statistical correction methods (unbiasing, scaling, or quantile mapping) to meteorological variables. Function \code{correctionpoints.errors} allows evaluating, for each point, the bias and mean absolute error (MAE) obtained before and after correcting the climate model for the historical period. 
 }
 \usage{
 correctionpoints(object, points, topodata = NULL, dates = NULL,
                   export = FALSE, exportDir = getwd(), exportFormat = "meteoland",
                   metadatafile = "MP.txt", corrOut = FALSE, verbose = TRUE)
-correctionpoints.residuals(object, points, topodata = NULL, 
-                  keep.cvdata = FALSE, verbose = FALSE)
+correctionpoints.errors(object, points, topodata = NULL, 
+                  error.type="residuals.cv",keep.data = FALSE, verbose = FALSE)
   
 }
 %- maybe also 'usage' for other objects documented here.
@@ -32,7 +32,8 @@ correctionpoints.residuals(object, points, topodata = NULL,
   \item{exportFormat}{Format of meteorological data. Current accepted formats are \code{"castanea"} and \code{"meteoland"}.}
   \item{corrOut}{Boolean flag to indicate that correction parameters (i.e. calculated biases) should be included with the output. Setting \code{corrOut = TRUE} changes the returned value.}
   \item{verbose}{Boolean flag to print process information.}
-  \item{keep.cvdata}{Boolean flag to return the cross-validated corrected data for the historical period.}
+  \item{error.type}{String to specify the error to be evaluated, either \code{"before"} (before correction), \code{"residual"} (after correction) or \code{"residual.cv"} (after correction, but using cross-validation).}
+  \item{keep.data}{Boolean flag to return the uncorrected/corrected data for the historical period.}
 }
 \details{
 Function \code{correctionpoints} performs statistical correction of predicted climatic data for all points supplied in \code{points}. Observed meteorological data for each point typically comes from a nearby meteorological station, but they can be the result of interpolating the meteorology of several stations (see \code{\link{MeteorologyInterpolationData}}) or they can be extracted from reanalyzed meteorology (e.g. EU-WATCH) (see \code{\link{extractNetCDF}}).
@@ -40,15 +41,15 @@ Function \code{correctionpoints} performs statistical correction of predicted cl
 For each target point, the function first determines the predicted cell where the point falls. Then it determines the dates that are shared in observed and predicted data for the historical period. These meteorological data of dates are used to conduct the correction of predicted climatic data for the future period. Corrections biases are calculated and applied for the twelve months separately. The user can control the methods used for correction of each meteorological variable by changing the slot \code{params} in \code{obj} (see class \code{\link{MeteorologyUncorrectedData-class}}). Three options are allowed (see \code{\link{defaultCorrectionParams}}): (a) 'unbias' for shifting the mean; (b) 'scaling' for multiplication by a factor; and (c) 'quantmap' for empirical quantile mapping between observed and modelled data (Gudmundsson et al. 2012).
 }
 \value{
-If \code{export = FALSE}, the function \code{correctionpoints} returns an object of class \code{\link{SpatialPointsMeteorology-class}} with the downscaled meteorology for each point. If \code{export=TRUE} function \code{correctionpoints} returns an object of class \code{\link{SpatialPointsDataFrame-class}} containing the meta data of the files written in the disk. If \code{corrOut = TRUE} the previous structures are embedded in a list which also contains an object with the calculated correction factors (biases, mappings) for each point and month. Function \code{correctionpoints.residuals} (\code{keep.cvdata = FALSE}) returns a data frame with the mean absolute error (MAE) and bias for each variable and point. If \code{keep.cvdata = TRUE} then the function also returns a list of data frames with cross-validated corrected series.  
+If \code{export = FALSE}, the function \code{correctionpoints} returns an object of class \code{\link{SpatialPointsMeteorology-class}} with the downscaled meteorology for each point. If \code{export=TRUE} function \code{correctionpoints} returns an object of class \code{\link{SpatialPointsDataFrame-class}} containing the meta data of the files written in the disk. If \code{corrOut = TRUE} the previous structures are embedded in a list which also contains an object with the calculated correction factors (biases, mappings) for each point and month. Function \code{correctionpoints.errors} (\code{keep.data = FALSE}) returns a data frame with the mean absolute error (MAE) and bias for each variable and point. If \code{keep.data = TRUE} then the function also returns a list of data frames with the uncorrected/corrected series used in the comparisons with observations.  
 }
 \references{
 Gudmundsson L, Bremnes JB, Haugen JE, Engen-Skaugen T (2012) Technical Note: Downscaling predicted climatic precipitation to the station scale using statistical transformations - A comparison of methods. Hydrology and Earth System Sciences 16, 3383–3390. doi:10.5194/hess-16-3383-2012.
 }
 \author{
-Nicolas Martin, INRA-Avignon
-
 Miquel De \enc{Cáceres}{Caceres} Ainsa, Centre Tecnologic Forestal de Catalunya
+
+Nicolas Martin, INRA-Avignon
 }
 \seealso{
 \code{\link{penman}}, \code{\link{extractNetCDF}}, \code{\link{SpatialPointsMeteorology-class}}, \code{\link{writemeteorologypointfiles}}, \code{\link{MeteorologyUncorrectedData}}, \code{\link{MeteorologyInterpolationData}}

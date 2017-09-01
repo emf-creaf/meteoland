@@ -2,206 +2,206 @@
 # Generator token: 10BE3573-1514-4C36-9D1C-5A225CD40393
 
 .temporalSmoothing <- function(input, numDays, prec) {
-    .Call('meteoland_temporalSmoothing', PACKAGE = 'meteoland', input, numDays, prec)
+    .Call(`_meteoland_temporalSmoothing`, input, numDays, prec)
 }
 
 .slope <- function(data, nrows, ncols, cellWidth, cellHeight) {
-    .Call('meteoland_slope', PACKAGE = 'meteoland', data, nrows, ncols, cellWidth, cellHeight)
+    .Call(`_meteoland_slope`, data, nrows, ncols, cellWidth, cellHeight)
 }
 
 .aspect <- function(data, nrows, ncols, cellWidth, cellHeight) {
-    .Call('meteoland_aspect', PACKAGE = 'meteoland', data, nrows, ncols, cellWidth, cellHeight)
+    .Call(`_meteoland_aspect`, data, nrows, ncols, cellWidth, cellHeight)
 }
 
 .dailyEquilibriumPET <- function(Temp, Rn) {
-    .Call('meteoland_dailyEquilibriumPET', PACKAGE = 'meteoland', Temp, Rn)
+    .Call(`_meteoland_dailyEquilibriumPET`, Temp, Rn)
 }
 
 .penmanpoint <- function(latrad, elevation, slorad, asprad, J, Tmin, Tmax, RHmin, RHmax, R_s, u, z = 2.0, z0 = 0.001, alpha = 0.08, windfun = "1956") {
-    .Call('meteoland_PenmanPETPointSeries', PACKAGE = 'meteoland', latrad, elevation, slorad, asprad, J, Tmin, Tmax, RHmin, RHmax, R_s, u, z, z0, alpha, windfun)
+    .Call(`_meteoland_PenmanPETPointSeries`, latrad, elevation, slorad, asprad, J, Tmin, Tmax, RHmin, RHmax, R_s, u, z, z0, alpha, windfun)
 }
 
 .penmanmonteithpoint <- function(rc, elevation, Tmin, Tmax, RHmin, RHmax, Rn, u) {
-    .Call('meteoland_PenmanMonteithPETPointSeries', PACKAGE = 'meteoland', rc, elevation, Tmin, Tmax, RHmin, RHmax, Rn, u)
+    .Call(`_meteoland_PenmanMonteithPETPointSeries`, rc, elevation, Tmin, Tmax, RHmin, RHmax, Rn, u)
 }
 
 .PenmanPETPointsDay <- function(latrad, elevation, slorad, asprad, J, Tmin, Tmax, RHmin, RHmax, R_s, u, z = 2.0, z0 = 0.001, alpha = 0.08, windfun = "1956") {
-    .Call('meteoland_PenmanPETPointsDay', PACKAGE = 'meteoland', latrad, elevation, slorad, asprad, J, Tmin, Tmax, RHmin, RHmax, R_s, u, z, z0, alpha, windfun)
+    .Call(`_meteoland_PenmanPETPointsDay`, latrad, elevation, slorad, asprad, J, Tmin, Tmax, RHmin, RHmax, R_s, u, z, z0, alpha, windfun)
 }
 
 .interpolatePrecipitationSeriesPoints <- function(Xp, Yp, Zp, X, Y, Z, P, Psmooth, iniRp = 140000, alpha_event = 6.25, alpha_amount = 6.25, N_event = 20L, N_amount = 20L, iterations = 3L, popcrit = 0.5, fmax = 0.95) {
-    .Call('meteoland_interpolatePrecipitationSeriesPoints', PACKAGE = 'meteoland', Xp, Yp, Zp, X, Y, Z, P, Psmooth, iniRp, alpha_event, alpha_amount, N_event, N_amount, iterations, popcrit, fmax)
+    .Call(`_meteoland_interpolatePrecipitationSeriesPoints`, Xp, Yp, Zp, X, Y, Z, P, Psmooth, iniRp, alpha_event, alpha_amount, N_event, N_amount, iterations, popcrit, fmax)
 }
 
 .interpolatePrecipitationEventSeriesPoints <- function(Xp, Yp, Zp, X, Y, Z, Pevent, iniRp = 140000, alpha = 6.25, N = 20L, iterations = 3L, popcrit = 0.5) {
-    .Call('meteoland_interpolatePrecipitationEventSeriesPoints', PACKAGE = 'meteoland', Xp, Yp, Zp, X, Y, Z, Pevent, iniRp, alpha, N, iterations, popcrit)
+    .Call(`_meteoland_interpolatePrecipitationEventSeriesPoints`, Xp, Yp, Zp, X, Y, Z, Pevent, iniRp, alpha, N, iterations, popcrit)
 }
 
 .pseudoRainfall <- function(RainM, daysMonthAll, shape = 2.0, scale = 4.0, firstMonth = 1L) {
-    .Call('meteoland_pseudoRainfall', PACKAGE = 'meteoland', RainM, daysMonthAll, shape, scale, firstMonth)
+    .Call(`_meteoland_pseudoRainfall`, RainM, daysMonthAll, shape, scale, firstMonth)
 }
 
 radiation_julianDay <- function(year, month, day) {
-    .Call('meteoland_julianDay', PACKAGE = 'meteoland', year, month, day)
+    .Call(`_meteoland_julianDay`, year, month, day)
 }
 
 radiation_dateStringToJulianDays <- function(dateStrings) {
-    .Call('meteoland_dateStringToJulianDays', PACKAGE = 'meteoland', dateStrings)
+    .Call(`_meteoland_dateStringToJulianDays`, dateStrings)
 }
 
 radiation_solarDeclination <- function(J) {
-    .Call('meteoland_solarDeclination', PACKAGE = 'meteoland', J)
+    .Call(`_meteoland_solarDeclination`, J)
 }
 
 radiation_solarConstant <- function(J) {
-    .Call('meteoland_solarConstant', PACKAGE = 'meteoland', J)
+    .Call(`_meteoland_solarConstant`, J)
 }
 
 radiation_sunRiseSet <- function(latrad, slorad, asprad, delta) {
-    .Call('meteoland_sunRiseSet', PACKAGE = 'meteoland', latrad, slorad, asprad, delta)
+    .Call(`_meteoland_sunRiseSet`, latrad, slorad, asprad, delta)
 }
 
 radiation_solarElevation <- function(latrad, delta, hrad) {
-    .Call('meteoland_solarElevation', PACKAGE = 'meteoland', latrad, delta, hrad)
+    .Call(`_meteoland_solarElevation`, latrad, delta, hrad)
 }
 
 radiation_daylength <- function(latrad, slorad, asprad, delta) {
-    .Call('meteoland_daylength', PACKAGE = 'meteoland', latrad, slorad, asprad, delta)
+    .Call(`_meteoland_daylength`, latrad, slorad, asprad, delta)
 }
 
 radiation_daylengthseconds <- function(latrad, slorad, asprad, delta) {
-    .Call('meteoland_daylengthseconds', PACKAGE = 'meteoland', latrad, slorad, asprad, delta)
+    .Call(`_meteoland_daylengthseconds`, latrad, slorad, asprad, delta)
 }
 
 radiation_potentialRadiation <- function(solarConstant, latrad, slorad, asprad, delta) {
-    .Call('meteoland_RpotDay', PACKAGE = 'meteoland', solarConstant, latrad, slorad, asprad, delta)
+    .Call(`_meteoland_RpotDay`, solarConstant, latrad, slorad, asprad, delta)
 }
 
 radiation_solarRadiation <- function(solarConstant, latrad, elevation, slorad, asprad, delta, diffTemp, diffTempMonth, vpa, precipitation) {
-    .Call('meteoland_RDay', PACKAGE = 'meteoland', solarConstant, latrad, elevation, slorad, asprad, delta, diffTemp, diffTempMonth, vpa, precipitation)
+    .Call(`_meteoland_RDay`, solarConstant, latrad, elevation, slorad, asprad, delta, diffTemp, diffTempMonth, vpa, precipitation)
 }
 
 radiation_directDiffuseInstant <- function(solarConstant, latrad, slorad, asprad, delta, hrad, R_p, R_s, clearday) {
-    .Call('meteoland_directDiffuseInstant', PACKAGE = 'meteoland', solarConstant, latrad, slorad, asprad, delta, hrad, R_p, R_s, clearday)
+    .Call(`_meteoland_directDiffuseInstant`, solarConstant, latrad, slorad, asprad, delta, hrad, R_p, R_s, clearday)
 }
 
 radiation_directDiffuseDay <- function(solarConstant, latrad, slorad, asprad, delta, R_s, clearday, nsteps = 24L) {
-    .Call('meteoland_directDiffuseDay', PACKAGE = 'meteoland', solarConstant, latrad, slorad, asprad, delta, R_s, clearday, nsteps)
+    .Call(`_meteoland_directDiffuseDay`, solarConstant, latrad, slorad, asprad, delta, R_s, clearday, nsteps)
 }
 
 radiation_outgoingLongwaveRadiation <- function(solarConstant, latrad, elevation, slorad, asprad, delta, vpa, tmin, tmax, R_s) {
-    .Call('meteoland_outgoingLongwaveRadiation', PACKAGE = 'meteoland', solarConstant, latrad, elevation, slorad, asprad, delta, vpa, tmin, tmax, R_s)
+    .Call(`_meteoland_outgoingLongwaveRadiation`, solarConstant, latrad, elevation, slorad, asprad, delta, vpa, tmin, tmax, R_s)
 }
 
 radiation_netRadiation <- function(solarConstant, latrad, elevation, slorad, asprad, delta, vpa, tmin, tmax, R_s, alpha = 0.08) {
-    .Call('meteoland_netRadiation', PACKAGE = 'meteoland', solarConstant, latrad, elevation, slorad, asprad, delta, vpa, tmin, tmax, R_s, alpha)
+    .Call(`_meteoland_netRadiation`, solarConstant, latrad, elevation, slorad, asprad, delta, vpa, tmin, tmax, R_s, alpha)
 }
 
 .potentialRadiationSeries <- function(latrad, slorad, asprad, J) {
-    .Call('meteoland_potentialRadiationSeries', PACKAGE = 'meteoland', latrad, slorad, asprad, J)
+    .Call(`_meteoland_potentialRadiationSeries`, latrad, slorad, asprad, J)
 }
 
 .potentialRadiationPoints <- function(latrad, slorad, asprad, J) {
-    .Call('meteoland_potentialRadiationPoints', PACKAGE = 'meteoland', latrad, slorad, asprad, J)
+    .Call(`_meteoland_potentialRadiationPoints`, latrad, slorad, asprad, J)
 }
 
 .radiationSeries <- function(latrad, elevation, slorad, asprad, J, diffTemp, diffTempMonth, VP, P) {
-    .Call('meteoland_radiationSeries', PACKAGE = 'meteoland', latrad, elevation, slorad, asprad, J, diffTemp, diffTempMonth, VP, P)
+    .Call(`_meteoland_radiationSeries`, latrad, elevation, slorad, asprad, J, diffTemp, diffTempMonth, VP, P)
 }
 
 .radiationPoints <- function(latrad, elevation, slorad, asprad, J, diffTemp, diffTempMonth, VP, P) {
-    .Call('meteoland_radiationPoints', PACKAGE = 'meteoland', latrad, elevation, slorad, asprad, J, diffTemp, diffTempMonth, VP, P)
+    .Call(`_meteoland_radiationPoints`, latrad, elevation, slorad, asprad, J, diffTemp, diffTempMonth, VP, P)
 }
 
 .meteo <- function(MeteoMonth, landscapeRainfall = as.numeric( c()), ERconv = 0.05, ERsyn = 0.2, shape = 2.0, scale = 4.0, albedo = 0.17, firstMonth = 1L, cyclic = FALSE) {
-    .Call('meteoland_meteo', PACKAGE = 'meteoland', MeteoMonth, landscapeRainfall, ERconv, ERsyn, shape, scale, albedo, firstMonth, cyclic)
+    .Call(`_meteoland_meteo`, MeteoMonth, landscapeRainfall, ERconv, ERsyn, shape, scale, albedo, firstMonth, cyclic)
 }
 
 .vapourPressureFromRH <- function(T, RH) {
-    .Call('meteoland_vapourPressureFromRH', PACKAGE = 'meteoland', T, RH)
+    .Call(`_meteoland_vapourPressureFromRH`, T, RH)
 }
 
 .dewpointTemperatureFromRH <- function(T, RH) {
-    .Call('meteoland_dewpointTemperatureFromRH', PACKAGE = 'meteoland', T, RH)
+    .Call(`_meteoland_dewpointTemperatureFromRH`, T, RH)
 }
 
 .temp2SVP <- function(TD) {
-    .Call('meteoland_temp2SVP', PACKAGE = 'meteoland', TD)
+    .Call(`_meteoland_temp2SVP`, TD)
 }
 
 .relativeHumidityFromMinMaxTemp <- function(Tmin, Tmax) {
-    .Call('meteoland_relativeHumidityFromMinMaxTemp', PACKAGE = 'meteoland', Tmin, Tmax)
+    .Call(`_meteoland_relativeHumidityFromMinMaxTemp`, Tmin, Tmax)
 }
 
 .relativeHumidityFromDewpointTemp <- function(T, TD) {
-    .Call('meteoland_relativeHumidityFromDewpointTemp', PACKAGE = 'meteoland', T, TD)
+    .Call(`_meteoland_relativeHumidityFromDewpointTemp`, T, TD)
 }
 
 .interpolateTdewSeriesPoints <- function(Xp, Yp, Zp, X, Y, Z, T, iniRp = 140000, alpha = 3.0, N = 30L, iterations = 3L) {
-    .Call('meteoland_interpolateTdewSeriesPoints', PACKAGE = 'meteoland', Xp, Yp, Zp, X, Y, Z, T, iniRp, alpha, N, iterations)
+    .Call(`_meteoland_interpolateTdewSeriesPoints`, Xp, Yp, Zp, X, Y, Z, T, iniRp, alpha, N, iterations)
 }
 
 .interpolateTemperatureSeriesPoints <- function(Xp, Yp, Zp, X, Y, Z, T, iniRp = 140000, alpha = 3.0, N = 30L, iterations = 3L) {
-    .Call('meteoland_interpolateTemperatureSeriesPoints', PACKAGE = 'meteoland', Xp, Yp, Zp, X, Y, Z, T, iniRp, alpha, N, iterations)
+    .Call(`_meteoland_interpolateTemperatureSeriesPoints`, Xp, Yp, Zp, X, Y, Z, T, iniRp, alpha, N, iterations)
 }
 
 utils_saturationVP <- function(temperature) {
-    .Call('meteoland_saturationVapourPressure', PACKAGE = 'meteoland', temperature)
+    .Call(`_meteoland_saturationVapourPressure`, temperature)
 }
 
 utils_averageDailyVP <- function(Tmin, Tmax, RHmin, RHmax) {
-    .Call('meteoland_averageDailyVapourPressure', PACKAGE = 'meteoland', Tmin, Tmax, RHmin, RHmax)
+    .Call(`_meteoland_averageDailyVapourPressure`, Tmin, Tmax, RHmin, RHmax)
 }
 
 utils_atmosphericPressure <- function(elevation) {
-    .Call('meteoland_atmosphericPressure', PACKAGE = 'meteoland', elevation)
+    .Call(`_meteoland_atmosphericPressure`, elevation)
 }
 
 utils_airDensity <- function(temperature, Patm) {
-    .Call('meteoland_airDensity', PACKAGE = 'meteoland', temperature, Patm)
+    .Call(`_meteoland_airDensity`, temperature, Patm)
 }
 
 utils_averageDaylightTemperature <- function(Tmin, Tmax) {
-    .Call('meteoland_averageDaylightTemperature', PACKAGE = 'meteoland', Tmin, Tmax)
+    .Call(`_meteoland_averageDaylightTemperature`, Tmin, Tmax)
 }
 
 utils_latentHeatVaporisation <- function(temperature) {
-    .Call('meteoland_latentHeatVaporisation', PACKAGE = 'meteoland', temperature)
+    .Call(`_meteoland_latentHeatVaporisation`, temperature)
 }
 
 utils_latentHeatVaporisationMol <- function(temperature) {
-    .Call('meteoland_latentHeatVaporisationMol', PACKAGE = 'meteoland', temperature)
+    .Call(`_meteoland_latentHeatVaporisationMol`, temperature)
 }
 
 utils_psychrometricConstant <- function(temperature, Patm) {
-    .Call('meteoland_psychrometricConstant', PACKAGE = 'meteoland', temperature, Patm)
+    .Call(`_meteoland_psychrometricConstant`, temperature, Patm)
 }
 
 utils_saturationVaporPressureCurveSlope <- function(temperature) {
-    .Call('meteoland_saturationVaporPressureCurveSlope', PACKAGE = 'meteoland', temperature)
+    .Call(`_meteoland_saturationVaporPressureCurveSlope`, temperature)
 }
 
 penman <- function(latrad, elevation, slorad, asprad, J, Tmin, Tmax, RHmin, RHmax, R_s, u, z = 2.0, z0 = 0.001, alpha = 0.08, windfun = "1956") {
-    .Call('meteoland_PenmanPET', PACKAGE = 'meteoland', latrad, elevation, slorad, asprad, J, Tmin, Tmax, RHmin, RHmax, R_s, u, z, z0, alpha, windfun)
+    .Call(`_meteoland_PenmanPET`, latrad, elevation, slorad, asprad, J, Tmin, Tmax, RHmin, RHmax, R_s, u, z, z0, alpha, windfun)
 }
 
 penmanmonteith <- function(rc, elevation, Tmin, Tmax, RHmin, RHmax, Rn, u = NA_real_) {
-    .Call('meteoland_PenmanMonteithPET', PACKAGE = 'meteoland', rc, elevation, Tmin, Tmax, RHmin, RHmax, Rn, u)
+    .Call(`_meteoland_PenmanMonteithPET`, rc, elevation, Tmin, Tmax, RHmin, RHmax, Rn, u)
 }
 
 .getWindFieldIndexAndFactor <- function(windSpeed, windDirection, wfSpeed, wfDirection) {
-    .Call('meteoland_getWindFieldIndexAndFactor', PACKAGE = 'meteoland', windSpeed, windDirection, wfSpeed, wfDirection)
+    .Call(`_meteoland_getWindFieldIndexAndFactor`, windSpeed, windDirection, wfSpeed, wfDirection)
 }
 
 .interpolateWindFieldSeriesPoints <- function(Xp, Yp, WS, WD, X, Y, I, F, iniRp = 140000, alpha = 3.0, N = 30L, iterations = 3L) {
-    .Call('meteoland_interpolateWindFieldSeriesPoints', PACKAGE = 'meteoland', Xp, Yp, WS, WD, X, Y, I, F, iniRp, alpha, N, iterations)
+    .Call(`_meteoland_interpolateWindFieldSeriesPoints`, Xp, Yp, WS, WD, X, Y, I, F, iniRp, alpha, N, iterations)
 }
 
 .interpolateWindStationSeriesPoints <- function(Xp, Yp, WS, WD, X, Y, iniRp = 140000, alpha = 3.0, N = 30L, iterations = 3L) {
-    .Call('meteoland_interpolateWindStationSeriesPoints', PACKAGE = 'meteoland', Xp, Yp, WS, WD, X, Y, iniRp, alpha, N, iterations)
+    .Call(`_meteoland_interpolateWindStationSeriesPoints`, Xp, Yp, WS, WD, X, Y, iniRp, alpha, N, iterations)
 }
 
 # Register entry points for exported C++ functions
 methods::setLoadAction(function(ns) {
-    .Call('meteoland_RcppExport_registerCCallable', PACKAGE = 'meteoland')
+    .Call('_meteoland_RcppExport_registerCCallable', PACKAGE = 'meteoland')
 })

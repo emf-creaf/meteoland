@@ -99,18 +99,23 @@
   return(DataCV)
 }
 
-correctionpoints.errors<-function(object, points, topodata = NULL, error.type = "residuals.cv", keep.data = FALSE, verbose = FALSE) {
+correctionpoints.errors<-function(object, points, topodata = NULL, 
+                                  error.type = "residuals.cv", keep.data = FALSE, verbose = FALSE) {
   
   #Check input classes
   if(!inherits(object,"MeteorologyUncorrectedData")) stop("'object' has to be of class 'MeteorologyUncorrectedData'.")
   if(!inherits(points,"SpatialPointsMeteorology") && !inherits(points,"SpatialPointsDataFrame")) stop("'points' has to be of class 'SpatialPointsMeteorology' or 'SpatialPointsDataFrame'.")
   
+  error.type = match.arg(error.type, c("before","residuals", "residuals.cv"))
+    
   mPar = object@params
   
   npoints = length(points)
   
-  if(verbose) cat(paste("Points to evaluate: ", npoints,"\n", sep=""))
-  
+  if(verbose) {
+    cat(paste("Points to evaluate: ", npoints,"\n", sep=""))
+    cat(paste("Error type: ", error.type,"\n", sep=""))
+  }
   #Project points into long/lat coordinates to check if they are inside the boundary box
   cchist = spTransform(points, object@proj4string)
   sel = (cchist@coords[,1] >= object@bbox[1,1] & cchist@coords[,1] <=object@bbox[1,2]) &
@@ -140,11 +145,11 @@ correctionpoints.errors<-function(object, points, topodata = NULL, error.type = 
     else ids = 1:npoints
   }
   
-  if(keep.cvdata) {
-    cvout = vector("list", npoints)
+  if(keep.data) {
+    dataout = vector("list", npoints)
   }
-  cvres = data.frame(matrix(NA, nrow=npoints, ncol= 22))
-  names(cvres) = c("MeanTemperature-Bias", "MeanTemperature-MAE",
+  res = data.frame(matrix(NA, nrow=npoints, ncol= 22))
+  names(res) = c("MeanTemperature-Bias", "MeanTemperature-MAE",
                    "MinTemperature-Bias", "MinTemperature-MAE",
                    "MaxTemperature-Bias", "MaxTemperature-MAE",
                    "Precipitation-Total", "Precipitation-DPD","Precipitation-Bias", "Precipitation-MAE",
@@ -154,11 +159,11 @@ correctionpoints.errors<-function(object, points, topodata = NULL, error.type = 
                    "Radiation-Bias", "Radiation-MAE",
                    "WindSpeed-Bias", "WindSpeed-MAE",
                    "PET-Bias", "PET-MAE")
-  row.names(cvres) = ids
+  row.names(res) = ids
   
   #Loop over all points
   for(i in 1:npoints) {
-    if(verbose) cat(paste("Evaluating cross-validation residual error for point '",ids[i],"' (",i,"/",npoints,") -",sep=""))
+    if(verbose) cat(paste("Evaluating error for point '",ids[i],"' (",i,"/",npoints,") -",sep=""))
     xy = points@coords[i,]
     #observed data frame
     if(inherits(points,"SpatialPointsMeteorology")) {
@@ -193,47 +198,62 @@ correctionpoints.errors<-function(object, points, topodata = NULL, error.type = 
     rcmhist = rcmhist[sel1,]
     obs = obs[sel2,]
     
-    cvone = .residualonepoint(obs,rcmhist, mPar$varmethods, verbose)
+    
+    if(error.type=="before") {#Errors before correction
+      dataone = rcmhist
+      #Fill minimum and maximum relative humidity if missing
+      if(!("MinRelativeHumidity" %in% names(dataone))) {
+        dataone$MinRelativeHumidity=.HSHR(dataone$MaxTemperature, dataone$SpecificHumidity)
+      }
+      if(!("MaxRelativeHumidity" %in% names(dataone))) {
+        dataone$MaxRelativeHumidity=.HSHR(dataone$MinTemperature, dataone$SpecificHumidity)
+      }
+    }else if(error.type=="residuals") {#Residuals before correction
+      mbias = .monthbiasonepoint(obs,rcmhist, mPar$varmethods, verbose)
+      dataone = .correctiononepoint(mbias, rcmhist)
+    } else if(error.type == "residuals.cv") {#Residuals before correction (including cross-validation)
+      dataone = .residualonepoint(obs,rcmhist, mPar$varmethods, verbose)
+    }
 
     #Calculate PET
     if(!is.null(topodata) && ("PET" %in% names(obs))) {
       J = radiation_dateStringToJulianDays(row.names(obs))
-      cvone$PET = .penmanpoint(latrad[i], elevation[i],slorad[i], asprad[i], J, 
-                                    cvone$MinTemperature, cvone$MaxTemperature,
-                                    cvone$MinRelativeHumidity, cvone$MaxRelativeHumidity, cvone$Radiation,
-                                    cvone$WindSpeed, mPar$wind_height,
+      dataone$PET = .penmanpoint(latrad[i], elevation[i],slorad[i], asprad[i], J, 
+                                    dataone$MinTemperature, dataone$MaxTemperature,
+                                    dataone$MinRelativeHumidity, dataone$MaxRelativeHumidity, dataone$Radiation,
+                                    dataone$WindSpeed, mPar$wind_height,
                                     0.001, 0.25);
     }
     
-    cvres[i, "MeanTemperature-Bias"] = mean(cvone$MeanTemperature-obs$MeanTemperature, na.rm=T)
-    cvres[i, "MeanTemperature-MAE"] = mean(abs(cvone$MeanTemperature-obs$MeanTemperature), na.rm=T)
-    cvres[i, "MinTemperature-Bias"] = mean(cvone$MinTemperature-obs$MinTemperature, na.rm=T)
-    cvres[i, "MinTemperature-MAE"] = mean(abs(cvone$MinTemperature-obs$MinTemperature), na.rm=T)
-    cvres[i, "MaxTemperature-Bias"] = mean(cvone$MaxTemperature-obs$MaxTemperature, na.rm=T)
-    cvres[i, "MaxTemperature-MAE"] = mean(abs(cvone$MaxTemperature-obs$MaxTemperature), na.rm=T)
-    cvres[i, "Precipitation-Total"] = sum(cvone$Precipitation, na.rm=T)-sum(obs$Precipitation, na.rm=T)
-    cvres[i, "Precipitation-DPD"] = sum(cvone$Precipitation>0, na.rm=T)/sum(!is.na(cvone$Precipitation))-sum(obs$Precipitation>0, na.rm=T)/sum(!is.na(obs$Precipitation))
-    cvres[i, "Precipitation-Bias"] = mean(cvone$Precipitation[cvone$Precipitation>0]-obs$Precipitation[cvone$Precipitation>0], na.rm=T)
-    cvres[i, "Precipitation-MAE"] = mean(abs(cvone$Precipitation[cvone$Precipitation>0]-obs$Precipitation[cvone$Precipitation>0]), na.rm=T)
-    cvres[i, "MeanRelativeHumidity-Bias"] = mean(cvone$MeanRelativeHumidity-obs$MeanRelativeHumidity, na.rm=T)
-    cvres[i, "MeanRelativeHumidity-MAE"] = mean(abs(cvone$MeanRelativeHumidity-obs$MeanRelativeHumidity), na.rm=T)
-    cvres[i, "MinRelativeHumidity-Bias"] = mean(cvone$MinRelativeHumidity-obs$MinRelativeHumidity, na.rm=T)
-    cvres[i, "MinRelativeHumidity-MAE"] = mean(abs(cvone$MinRelativeHumidity-obs$MinRelativeHumidity), na.rm=T)
-    cvres[i, "MaxRelativeHumidity-Bias"] = mean(cvone$MaxRelativeHumidity-obs$MaxRelativeHumidity, na.rm=T)
-    cvres[i, "MaxRelativeHumidity-MAE"] = mean(abs(cvone$MaxRelativeHumidity-obs$MaxRelativeHumidity), na.rm=T)
-    cvres[i, "Radiation-Bias"] = mean(cvone$Radiation-obs$Radiation, na.rm=T)
-    cvres[i, "Radiation-MAE"] = mean(abs(cvone$Radiation-obs$Radiation), na.rm=T)
-    cvres[i, "WindSpeed-Bias"] = mean(cvone$WindSpeed-obs$WindSpeed, na.rm=T)
-    cvres[i, "WindSpeed-MAE"] = mean(abs(cvone$WindSpeed-obs$WindSpeed), na.rm=T)
+    res[i, "MeanTemperature-Bias"] = mean(dataone$MeanTemperature-obs$MeanTemperature, na.rm=T)
+    res[i, "MeanTemperature-MAE"] = mean(abs(dataone$MeanTemperature-obs$MeanTemperature), na.rm=T)
+    res[i, "MinTemperature-Bias"] = mean(dataone$MinTemperature-obs$MinTemperature, na.rm=T)
+    res[i, "MinTemperature-MAE"] = mean(abs(dataone$MinTemperature-obs$MinTemperature), na.rm=T)
+    res[i, "MaxTemperature-Bias"] = mean(dataone$MaxTemperature-obs$MaxTemperature, na.rm=T)
+    res[i, "MaxTemperature-MAE"] = mean(abs(dataone$MaxTemperature-obs$MaxTemperature), na.rm=T)
+    res[i, "Precipitation-Total"] = sum(dataone$Precipitation, na.rm=T)-sum(obs$Precipitation, na.rm=T)
+    res[i, "Precipitation-DPD"] = sum(dataone$Precipitation>0, na.rm=T)/sum(!is.na(dataone$Precipitation))-sum(obs$Precipitation>0, na.rm=T)/sum(!is.na(obs$Precipitation))
+    res[i, "Precipitation-Bias"] = mean(dataone$Precipitation[dataone$Precipitation>0]-obs$Precipitation[dataone$Precipitation>0], na.rm=T)
+    res[i, "Precipitation-MAE"] = mean(abs(dataone$Precipitation[dataone$Precipitation>0]-obs$Precipitation[dataone$Precipitation>0]), na.rm=T)
+    res[i, "MeanRelativeHumidity-Bias"] = mean(dataone$MeanRelativeHumidity-obs$MeanRelativeHumidity, na.rm=T)
+    res[i, "MeanRelativeHumidity-MAE"] = mean(abs(dataone$MeanRelativeHumidity-obs$MeanRelativeHumidity), na.rm=T)
+    res[i, "MinRelativeHumidity-Bias"] = mean(dataone$MinRelativeHumidity-obs$MinRelativeHumidity, na.rm=T)
+    res[i, "MinRelativeHumidity-MAE"] = mean(abs(dataone$MinRelativeHumidity-obs$MinRelativeHumidity), na.rm=T)
+    res[i, "MaxRelativeHumidity-Bias"] = mean(dataone$MaxRelativeHumidity-obs$MaxRelativeHumidity, na.rm=T)
+    res[i, "MaxRelativeHumidity-MAE"] = mean(abs(dataone$MaxRelativeHumidity-obs$MaxRelativeHumidity), na.rm=T)
+    res[i, "Radiation-Bias"] = mean(dataone$Radiation-obs$Radiation, na.rm=T)
+    res[i, "Radiation-MAE"] = mean(abs(dataone$Radiation-obs$Radiation), na.rm=T)
+    res[i, "WindSpeed-Bias"] = mean(dataone$WindSpeed-obs$WindSpeed, na.rm=T)
+    res[i, "WindSpeed-MAE"] = mean(abs(dataone$WindSpeed-obs$WindSpeed), na.rm=T)
     if(!is.null(topodata) && ("PET" %in% names(obs))) {
-      cvres[i, "PET-Bias"] = mean(cvone$PET-obs$PET, na.rm=T)
-      cvres[i, "PET-MAE"] = mean(abs(cvone$PET-obs$PET), na.rm=T)
+      res[i, "PET-Bias"] = mean(dataone$PET-obs$PET, na.rm=T)
+      res[i, "PET-MAE"] = mean(abs(dataone$PET-obs$PET), na.rm=T)
     }
     #Store cross validation data if required
-    if(keep.cvdata) cvout[[i]] = cvone
+    if(keep.data) dataout[[i]] = dataone
     
     if(verbose) cat(".\n")
   }
-  if(keep.cvdata) return(list(cvdata = cvout, cvres = cvres))
-  else return(cvres)
+  if(keep.data) return(list(data = dataout, evaluation = res))
+  else return(res)
 }

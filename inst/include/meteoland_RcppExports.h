@@ -16,7 +16,7 @@ namespace meteoland {
             require("meteoland", Rcpp::Named("quietly") = true);
             typedef int(*Ptr_validate)(const char*);
             static Ptr_validate p_validate = (Ptr_validate)
-                R_GetCCallable("meteoland", "meteoland_RcppExport_validate");
+                R_GetCCallable("meteoland", "_meteoland_RcppExport_validate");
             if (!p_validate(sig)) {
                 throw Rcpp::function_not_exported(
                     "C++ function with signature '" + std::string(sig) + "' not found in meteoland");
@@ -29,12 +29,12 @@ namespace meteoland {
         static Ptr_radiation_julianDay p_radiation_julianDay = NULL;
         if (p_radiation_julianDay == NULL) {
             validateSignature("int(*radiation_julianDay)(int,int,int)");
-            p_radiation_julianDay = (Ptr_radiation_julianDay)R_GetCCallable("meteoland", "meteoland_radiation_julianDay");
+            p_radiation_julianDay = (Ptr_radiation_julianDay)R_GetCCallable("meteoland", "_meteoland_radiation_julianDay");
         }
         RObject rcpp_result_gen;
         {
             RNGScope RCPP_rngScope_gen;
-            rcpp_result_gen = p_radiation_julianDay(Rcpp::wrap(year), Rcpp::wrap(month), Rcpp::wrap(day));
+            rcpp_result_gen = p_radiation_julianDay(Shield<SEXP>(Rcpp::wrap(year)), Shield<SEXP>(Rcpp::wrap(month)), Shield<SEXP>(Rcpp::wrap(day)));
         }
         if (rcpp_result_gen.inherits("interrupted-error"))
             throw Rcpp::internal::InterruptedException();
@@ -48,12 +48,12 @@ namespace meteoland {
         static Ptr_radiation_dateStringToJulianDays p_radiation_dateStringToJulianDays = NULL;
         if (p_radiation_dateStringToJulianDays == NULL) {
             validateSignature("IntegerVector(*radiation_dateStringToJulianDays)(CharacterVector)");
-            p_radiation_dateStringToJulianDays = (Ptr_radiation_dateStringToJulianDays)R_GetCCallable("meteoland", "meteoland_radiation_dateStringToJulianDays");
+            p_radiation_dateStringToJulianDays = (Ptr_radiation_dateStringToJulianDays)R_GetCCallable("meteoland", "_meteoland_radiation_dateStringToJulianDays");
         }
         RObject rcpp_result_gen;
         {
             RNGScope RCPP_rngScope_gen;
-            rcpp_result_gen = p_radiation_dateStringToJulianDays(Rcpp::wrap(dateStrings));
+            rcpp_result_gen = p_radiation_dateStringToJulianDays(Shield<SEXP>(Rcpp::wrap(dateStrings)));
         }
         if (rcpp_result_gen.inherits("interrupted-error"))
             throw Rcpp::internal::InterruptedException();
@@ -67,12 +67,12 @@ namespace meteoland {
         static Ptr_radiation_solarDeclination p_radiation_solarDeclination = NULL;
         if (p_radiation_solarDeclination == NULL) {
             validateSignature("double(*radiation_solarDeclination)(int)");
-            p_radiation_solarDeclination = (Ptr_radiation_solarDeclination)R_GetCCallable("meteoland", "meteoland_radiation_solarDeclination");
+            p_radiation_solarDeclination = (Ptr_radiation_solarDeclination)R_GetCCallable("meteoland", "_meteoland_radiation_solarDeclination");
         }
         RObject rcpp_result_gen;
         {
             RNGScope RCPP_rngScope_gen;
-            rcpp_result_gen = p_radiation_solarDeclination(Rcpp::wrap(J));
+            rcpp_result_gen = p_radiation_solarDeclination(Shield<SEXP>(Rcpp::wrap(J)));
         }
         if (rcpp_result_gen.inherits("interrupted-error"))
             throw Rcpp::internal::InterruptedException();
@@ -86,12 +86,12 @@ namespace meteoland {
         static Ptr_radiation_solarConstant p_radiation_solarConstant = NULL;
         if (p_radiation_solarConstant == NULL) {
             validateSignature("double(*radiation_solarConstant)(int)");
-            p_radiation_solarConstant = (Ptr_radiation_solarConstant)R_GetCCallable("meteoland", "meteoland_radiation_solarConstant");
+            p_radiation_solarConstant = (Ptr_radiation_solarConstant)R_GetCCallable("meteoland", "_meteoland_radiation_solarConstant");
         }
         RObject rcpp_result_gen;
         {
             RNGScope RCPP_rngScope_gen;
-            rcpp_result_gen = p_radiation_solarConstant(Rcpp::wrap(J));
+            rcpp_result_gen = p_radiation_solarConstant(Shield<SEXP>(Rcpp::wrap(J)));
         }
         if (rcpp_result_gen.inherits("interrupted-error"))
             throw Rcpp::internal::InterruptedException();
@@ -105,12 +105,12 @@ namespace meteoland {
         static Ptr_radiation_sunRiseSet p_radiation_sunRiseSet = NULL;
         if (p_radiation_sunRiseSet == NULL) {
             validateSignature("NumericVector(*radiation_sunRiseSet)(double,double,double,double)");
-            p_radiation_sunRiseSet = (Ptr_radiation_sunRiseSet)R_GetCCallable("meteoland", "meteoland_radiation_sunRiseSet");
+            p_radiation_sunRiseSet = (Ptr_radiation_sunRiseSet)R_GetCCallable("meteoland", "_meteoland_radiation_sunRiseSet");
         }
         RObject rcpp_result_gen;
         {
             RNGScope RCPP_rngScope_gen;
-            rcpp_result_gen = p_radiation_sunRiseSet(Rcpp::wrap(latrad), Rcpp::wrap(slorad), Rcpp::wrap(asprad), Rcpp::wrap(delta));
+            rcpp_result_gen = p_radiation_sunRiseSet(Shield<SEXP>(Rcpp::wrap(latrad)), Shield<SEXP>(Rcpp::wrap(slorad)), Shield<SEXP>(Rcpp::wrap(asprad)), Shield<SEXP>(Rcpp::wrap(delta)));
         }
         if (rcpp_result_gen.inherits("interrupted-error"))
             throw Rcpp::internal::InterruptedException();
@@ -124,12 +124,12 @@ namespace meteoland {
         static Ptr_radiation_solarElevation p_radiation_solarElevation = NULL;
         if (p_radiation_solarElevation == NULL) {
             validateSignature("double(*radiation_solarElevation)(double,double,double)");
-            p_radiation_solarElevation = (Ptr_radiation_solarElevation)R_GetCCallable("meteoland", "meteoland_radiation_solarElevation");
+            p_radiation_solarElevation = (Ptr_radiation_solarElevation)R_GetCCallable("meteoland", "_meteoland_radiation_solarElevation");
         }
         RObject rcpp_result_gen;
         {
             RNGScope RCPP_rngScope_gen;
-            rcpp_result_gen = p_radiation_solarElevation(Rcpp::wrap(latrad), Rcpp::wrap(delta), Rcpp::wrap(hrad));
+            rcpp_result_gen = p_radiation_solarElevation(Shield<SEXP>(Rcpp::wrap(latrad)), Shield<SEXP>(Rcpp::wrap(delta)), Shield<SEXP>(Rcpp::wrap(hrad)));
         }
         if (rcpp_result_gen.inherits("interrupted-error"))
             throw Rcpp::internal::InterruptedException();
@@ -143,12 +143,12 @@ namespace meteoland {
         static Ptr_radiation_daylength p_radiation_daylength = NULL;
         if (p_radiation_daylength == NULL) {
             validateSignature("double(*radiation_daylength)(double,double,double,double)");
-            p_radiation_daylength = (Ptr_radiation_daylength)R_GetCCallable("meteoland", "meteoland_radiation_daylength");
+            p_radiation_daylength = (Ptr_radiation_daylength)R_GetCCallable("meteoland", "_meteoland_radiation_daylength");
         }
         RObject rcpp_result_gen;
         {
             RNGScope RCPP_rngScope_gen;
-            rcpp_result_gen = p_radiation_daylength(Rcpp::wrap(latrad), Rcpp::wrap(slorad), Rcpp::wrap(asprad), Rcpp::wrap(delta));
+            rcpp_result_gen = p_radiation_daylength(Shield<SEXP>(Rcpp::wrap(latrad)), Shield<SEXP>(Rcpp::wrap(slorad)), Shield<SEXP>(Rcpp::wrap(asprad)), Shield<SEXP>(Rcpp::wrap(delta)));
         }
         if (rcpp_result_gen.inherits("interrupted-error"))
             throw Rcpp::internal::InterruptedException();
@@ -162,12 +162,12 @@ namespace meteoland {
         static Ptr_radiation_daylengthseconds p_radiation_daylengthseconds = NULL;
         if (p_radiation_daylengthseconds == NULL) {
             validateSignature("double(*radiation_daylengthseconds)(double,double,double,double)");
-            p_radiation_daylengthseconds = (Ptr_radiation_daylengthseconds)R_GetCCallable("meteoland", "meteoland_radiation_daylengthseconds");
+            p_radiation_daylengthseconds = (Ptr_radiation_daylengthseconds)R_GetCCallable("meteoland", "_meteoland_radiation_daylengthseconds");
         }
         RObject rcpp_result_gen;
         {
             RNGScope RCPP_rngScope_gen;
-            rcpp_result_gen = p_radiation_daylengthseconds(Rcpp::wrap(latrad), Rcpp::wrap(slorad), Rcpp::wrap(asprad), Rcpp::wrap(delta));
+            rcpp_result_gen = p_radiation_daylengthseconds(Shield<SEXP>(Rcpp::wrap(latrad)), Shield<SEXP>(Rcpp::wrap(slorad)), Shield<SEXP>(Rcpp::wrap(asprad)), Shield<SEXP>(Rcpp::wrap(delta)));
         }
         if (rcpp_result_gen.inherits("interrupted-error"))
             throw Rcpp::internal::InterruptedException();
@@ -181,12 +181,12 @@ namespace meteoland {
         static Ptr_radiation_potentialRadiation p_radiation_potentialRadiation = NULL;
         if (p_radiation_potentialRadiation == NULL) {
             validateSignature("double(*radiation_potentialRadiation)(double,double,double,double,double)");
-            p_radiation_potentialRadiation = (Ptr_radiation_potentialRadiation)R_GetCCallable("meteoland", "meteoland_radiation_potentialRadiation");
+            p_radiation_potentialRadiation = (Ptr_radiation_potentialRadiation)R_GetCCallable("meteoland", "_meteoland_radiation_potentialRadiation");
         }
         RObject rcpp_result_gen;
         {
             RNGScope RCPP_rngScope_gen;
-            rcpp_result_gen = p_radiation_potentialRadiation(Rcpp::wrap(solarConstant), Rcpp::wrap(latrad), Rcpp::wrap(slorad), Rcpp::wrap(asprad), Rcpp::wrap(delta));
+            rcpp_result_gen = p_radiation_potentialRadiation(Shield<SEXP>(Rcpp::wrap(solarConstant)), Shield<SEXP>(Rcpp::wrap(latrad)), Shield<SEXP>(Rcpp::wrap(slorad)), Shield<SEXP>(Rcpp::wrap(asprad)), Shield<SEXP>(Rcpp::wrap(delta)));
         }
         if (rcpp_result_gen.inherits("interrupted-error"))
             throw Rcpp::internal::InterruptedException();
@@ -200,12 +200,12 @@ namespace meteoland {
         static Ptr_radiation_solarRadiation p_radiation_solarRadiation = NULL;
         if (p_radiation_solarRadiation == NULL) {
             validateSignature("double(*radiation_solarRadiation)(double,double,double,double,double,double,double,double,double,double)");
-            p_radiation_solarRadiation = (Ptr_radiation_solarRadiation)R_GetCCallable("meteoland", "meteoland_radiation_solarRadiation");
+            p_radiation_solarRadiation = (Ptr_radiation_solarRadiation)R_GetCCallable("meteoland", "_meteoland_radiation_solarRadiation");
         }
         RObject rcpp_result_gen;
         {
             RNGScope RCPP_rngScope_gen;
-            rcpp_result_gen = p_radiation_solarRadiation(Rcpp::wrap(solarConstant), Rcpp::wrap(latrad), Rcpp::wrap(elevation), Rcpp::wrap(slorad), Rcpp::wrap(asprad), Rcpp::wrap(delta), Rcpp::wrap(diffTemp), Rcpp::wrap(diffTempMonth), Rcpp::wrap(vpa), Rcpp::wrap(precipitation));
+            rcpp_result_gen = p_radiation_solarRadiation(Shield<SEXP>(Rcpp::wrap(solarConstant)), Shield<SEXP>(Rcpp::wrap(latrad)), Shield<SEXP>(Rcpp::wrap(elevation)), Shield<SEXP>(Rcpp::wrap(slorad)), Shield<SEXP>(Rcpp::wrap(asprad)), Shield<SEXP>(Rcpp::wrap(delta)), Shield<SEXP>(Rcpp::wrap(diffTemp)), Shield<SEXP>(Rcpp::wrap(diffTempMonth)), Shield<SEXP>(Rcpp::wrap(vpa)), Shield<SEXP>(Rcpp::wrap(precipitation)));
         }
         if (rcpp_result_gen.inherits("interrupted-error"))
             throw Rcpp::internal::InterruptedException();
@@ -219,12 +219,12 @@ namespace meteoland {
         static Ptr_radiation_directDiffuseInstant p_radiation_directDiffuseInstant = NULL;
         if (p_radiation_directDiffuseInstant == NULL) {
             validateSignature("NumericVector(*radiation_directDiffuseInstant)(double,double,double,double,double,double,double,double,bool)");
-            p_radiation_directDiffuseInstant = (Ptr_radiation_directDiffuseInstant)R_GetCCallable("meteoland", "meteoland_radiation_directDiffuseInstant");
+            p_radiation_directDiffuseInstant = (Ptr_radiation_directDiffuseInstant)R_GetCCallable("meteoland", "_meteoland_radiation_directDiffuseInstant");
         }
         RObject rcpp_result_gen;
         {
             RNGScope RCPP_rngScope_gen;
-            rcpp_result_gen = p_radiation_directDiffuseInstant(Rcpp::wrap(solarConstant), Rcpp::wrap(latrad), Rcpp::wrap(slorad), Rcpp::wrap(asprad), Rcpp::wrap(delta), Rcpp::wrap(hrad), Rcpp::wrap(R_p), Rcpp::wrap(R_s), Rcpp::wrap(clearday));
+            rcpp_result_gen = p_radiation_directDiffuseInstant(Shield<SEXP>(Rcpp::wrap(solarConstant)), Shield<SEXP>(Rcpp::wrap(latrad)), Shield<SEXP>(Rcpp::wrap(slorad)), Shield<SEXP>(Rcpp::wrap(asprad)), Shield<SEXP>(Rcpp::wrap(delta)), Shield<SEXP>(Rcpp::wrap(hrad)), Shield<SEXP>(Rcpp::wrap(R_p)), Shield<SEXP>(Rcpp::wrap(R_s)), Shield<SEXP>(Rcpp::wrap(clearday)));
         }
         if (rcpp_result_gen.inherits("interrupted-error"))
             throw Rcpp::internal::InterruptedException();
@@ -238,12 +238,12 @@ namespace meteoland {
         static Ptr_radiation_directDiffuseDay p_radiation_directDiffuseDay = NULL;
         if (p_radiation_directDiffuseDay == NULL) {
             validateSignature("DataFrame(*radiation_directDiffuseDay)(double,double,double,double,double,double,bool,int)");
-            p_radiation_directDiffuseDay = (Ptr_radiation_directDiffuseDay)R_GetCCallable("meteoland", "meteoland_radiation_directDiffuseDay");
+            p_radiation_directDiffuseDay = (Ptr_radiation_directDiffuseDay)R_GetCCallable("meteoland", "_meteoland_radiation_directDiffuseDay");
         }
         RObject rcpp_result_gen;
         {
             RNGScope RCPP_rngScope_gen;
-            rcpp_result_gen = p_radiation_directDiffuseDay(Rcpp::wrap(solarConstant), Rcpp::wrap(latrad), Rcpp::wrap(slorad), Rcpp::wrap(asprad), Rcpp::wrap(delta), Rcpp::wrap(R_s), Rcpp::wrap(clearday), Rcpp::wrap(nsteps));
+            rcpp_result_gen = p_radiation_directDiffuseDay(Shield<SEXP>(Rcpp::wrap(solarConstant)), Shield<SEXP>(Rcpp::wrap(latrad)), Shield<SEXP>(Rcpp::wrap(slorad)), Shield<SEXP>(Rcpp::wrap(asprad)), Shield<SEXP>(Rcpp::wrap(delta)), Shield<SEXP>(Rcpp::wrap(R_s)), Shield<SEXP>(Rcpp::wrap(clearday)), Shield<SEXP>(Rcpp::wrap(nsteps)));
         }
         if (rcpp_result_gen.inherits("interrupted-error"))
             throw Rcpp::internal::InterruptedException();
@@ -257,12 +257,12 @@ namespace meteoland {
         static Ptr_radiation_outgoingLongwaveRadiation p_radiation_outgoingLongwaveRadiation = NULL;
         if (p_radiation_outgoingLongwaveRadiation == NULL) {
             validateSignature("double(*radiation_outgoingLongwaveRadiation)(double,double,double,double,double,double,double,double,double,double)");
-            p_radiation_outgoingLongwaveRadiation = (Ptr_radiation_outgoingLongwaveRadiation)R_GetCCallable("meteoland", "meteoland_radiation_outgoingLongwaveRadiation");
+            p_radiation_outgoingLongwaveRadiation = (Ptr_radiation_outgoingLongwaveRadiation)R_GetCCallable("meteoland", "_meteoland_radiation_outgoingLongwaveRadiation");
         }
         RObject rcpp_result_gen;
         {
             RNGScope RCPP_rngScope_gen;
-            rcpp_result_gen = p_radiation_outgoingLongwaveRadiation(Rcpp::wrap(solarConstant), Rcpp::wrap(latrad), Rcpp::wrap(elevation), Rcpp::wrap(slorad), Rcpp::wrap(asprad), Rcpp::wrap(delta), Rcpp::wrap(vpa), Rcpp::wrap(tmin), Rcpp::wrap(tmax), Rcpp::wrap(R_s));
+            rcpp_result_gen = p_radiation_outgoingLongwaveRadiation(Shield<SEXP>(Rcpp::wrap(solarConstant)), Shield<SEXP>(Rcpp::wrap(latrad)), Shield<SEXP>(Rcpp::wrap(elevation)), Shield<SEXP>(Rcpp::wrap(slorad)), Shield<SEXP>(Rcpp::wrap(asprad)), Shield<SEXP>(Rcpp::wrap(delta)), Shield<SEXP>(Rcpp::wrap(vpa)), Shield<SEXP>(Rcpp::wrap(tmin)), Shield<SEXP>(Rcpp::wrap(tmax)), Shield<SEXP>(Rcpp::wrap(R_s)));
         }
         if (rcpp_result_gen.inherits("interrupted-error"))
             throw Rcpp::internal::InterruptedException();
@@ -276,12 +276,12 @@ namespace meteoland {
         static Ptr_radiation_netRadiation p_radiation_netRadiation = NULL;
         if (p_radiation_netRadiation == NULL) {
             validateSignature("double(*radiation_netRadiation)(double,double,double,double,double,double,double,double,double,double,double)");
-            p_radiation_netRadiation = (Ptr_radiation_netRadiation)R_GetCCallable("meteoland", "meteoland_radiation_netRadiation");
+            p_radiation_netRadiation = (Ptr_radiation_netRadiation)R_GetCCallable("meteoland", "_meteoland_radiation_netRadiation");
         }
         RObject rcpp_result_gen;
         {
             RNGScope RCPP_rngScope_gen;
-            rcpp_result_gen = p_radiation_netRadiation(Rcpp::wrap(solarConstant), Rcpp::wrap(latrad), Rcpp::wrap(elevation), Rcpp::wrap(slorad), Rcpp::wrap(asprad), Rcpp::wrap(delta), Rcpp::wrap(vpa), Rcpp::wrap(tmin), Rcpp::wrap(tmax), Rcpp::wrap(R_s), Rcpp::wrap(alpha));
+            rcpp_result_gen = p_radiation_netRadiation(Shield<SEXP>(Rcpp::wrap(solarConstant)), Shield<SEXP>(Rcpp::wrap(latrad)), Shield<SEXP>(Rcpp::wrap(elevation)), Shield<SEXP>(Rcpp::wrap(slorad)), Shield<SEXP>(Rcpp::wrap(asprad)), Shield<SEXP>(Rcpp::wrap(delta)), Shield<SEXP>(Rcpp::wrap(vpa)), Shield<SEXP>(Rcpp::wrap(tmin)), Shield<SEXP>(Rcpp::wrap(tmax)), Shield<SEXP>(Rcpp::wrap(R_s)), Shield<SEXP>(Rcpp::wrap(alpha)));
         }
         if (rcpp_result_gen.inherits("interrupted-error"))
             throw Rcpp::internal::InterruptedException();
@@ -295,12 +295,12 @@ namespace meteoland {
         static Ptr__potentialRadiationSeries p__potentialRadiationSeries = NULL;
         if (p__potentialRadiationSeries == NULL) {
             validateSignature("NumericVector(*_potentialRadiationSeries)(double,double,double,NumericVector)");
-            p__potentialRadiationSeries = (Ptr__potentialRadiationSeries)R_GetCCallable("meteoland", "meteoland__potentialRadiationSeries");
+            p__potentialRadiationSeries = (Ptr__potentialRadiationSeries)R_GetCCallable("meteoland", "_meteoland__potentialRadiationSeries");
         }
         RObject rcpp_result_gen;
         {
             RNGScope RCPP_rngScope_gen;
-            rcpp_result_gen = p__potentialRadiationSeries(Rcpp::wrap(latrad), Rcpp::wrap(slorad), Rcpp::wrap(asprad), Rcpp::wrap(J));
+            rcpp_result_gen = p__potentialRadiationSeries(Shield<SEXP>(Rcpp::wrap(latrad)), Shield<SEXP>(Rcpp::wrap(slorad)), Shield<SEXP>(Rcpp::wrap(asprad)), Shield<SEXP>(Rcpp::wrap(J)));
         }
         if (rcpp_result_gen.inherits("interrupted-error"))
             throw Rcpp::internal::InterruptedException();
@@ -314,12 +314,12 @@ namespace meteoland {
         static Ptr__potentialRadiationPoints p__potentialRadiationPoints = NULL;
         if (p__potentialRadiationPoints == NULL) {
             validateSignature("NumericVector(*_potentialRadiationPoints)(double,NumericVector,NumericVector,int)");
-            p__potentialRadiationPoints = (Ptr__potentialRadiationPoints)R_GetCCallable("meteoland", "meteoland__potentialRadiationPoints");
+            p__potentialRadiationPoints = (Ptr__potentialRadiationPoints)R_GetCCallable("meteoland", "_meteoland__potentialRadiationPoints");
         }
         RObject rcpp_result_gen;
         {
             RNGScope RCPP_rngScope_gen;
-            rcpp_result_gen = p__potentialRadiationPoints(Rcpp::wrap(latrad), Rcpp::wrap(slorad), Rcpp::wrap(asprad), Rcpp::wrap(J));
+            rcpp_result_gen = p__potentialRadiationPoints(Shield<SEXP>(Rcpp::wrap(latrad)), Shield<SEXP>(Rcpp::wrap(slorad)), Shield<SEXP>(Rcpp::wrap(asprad)), Shield<SEXP>(Rcpp::wrap(J)));
         }
         if (rcpp_result_gen.inherits("interrupted-error"))
             throw Rcpp::internal::InterruptedException();
@@ -333,12 +333,12 @@ namespace meteoland {
         static Ptr__radiationSeries p__radiationSeries = NULL;
         if (p__radiationSeries == NULL) {
             validateSignature("NumericVector(*_radiationSeries)(double,double,double,double,NumericVector,NumericVector,NumericVector,NumericVector,NumericVector)");
-            p__radiationSeries = (Ptr__radiationSeries)R_GetCCallable("meteoland", "meteoland__radiationSeries");
+            p__radiationSeries = (Ptr__radiationSeries)R_GetCCallable("meteoland", "_meteoland__radiationSeries");
         }
         RObject rcpp_result_gen;
         {
             RNGScope RCPP_rngScope_gen;
-            rcpp_result_gen = p__radiationSeries(Rcpp::wrap(latrad), Rcpp::wrap(elevation), Rcpp::wrap(slorad), Rcpp::wrap(asprad), Rcpp::wrap(J), Rcpp::wrap(diffTemp), Rcpp::wrap(diffTempMonth), Rcpp::wrap(VP), Rcpp::wrap(P));
+            rcpp_result_gen = p__radiationSeries(Shield<SEXP>(Rcpp::wrap(latrad)), Shield<SEXP>(Rcpp::wrap(elevation)), Shield<SEXP>(Rcpp::wrap(slorad)), Shield<SEXP>(Rcpp::wrap(asprad)), Shield<SEXP>(Rcpp::wrap(J)), Shield<SEXP>(Rcpp::wrap(diffTemp)), Shield<SEXP>(Rcpp::wrap(diffTempMonth)), Shield<SEXP>(Rcpp::wrap(VP)), Shield<SEXP>(Rcpp::wrap(P)));
         }
         if (rcpp_result_gen.inherits("interrupted-error"))
             throw Rcpp::internal::InterruptedException();
@@ -352,12 +352,12 @@ namespace meteoland {
         static Ptr__radiationPoints p__radiationPoints = NULL;
         if (p__radiationPoints == NULL) {
             validateSignature("NumericVector(*_radiationPoints)(NumericVector,NumericVector,NumericVector,NumericVector,int,NumericVector,NumericVector,NumericVector,NumericVector)");
-            p__radiationPoints = (Ptr__radiationPoints)R_GetCCallable("meteoland", "meteoland__radiationPoints");
+            p__radiationPoints = (Ptr__radiationPoints)R_GetCCallable("meteoland", "_meteoland__radiationPoints");
         }
         RObject rcpp_result_gen;
         {
             RNGScope RCPP_rngScope_gen;
-            rcpp_result_gen = p__radiationPoints(Rcpp::wrap(latrad), Rcpp::wrap(elevation), Rcpp::wrap(slorad), Rcpp::wrap(asprad), Rcpp::wrap(J), Rcpp::wrap(diffTemp), Rcpp::wrap(diffTempMonth), Rcpp::wrap(VP), Rcpp::wrap(P));
+            rcpp_result_gen = p__radiationPoints(Shield<SEXP>(Rcpp::wrap(latrad)), Shield<SEXP>(Rcpp::wrap(elevation)), Shield<SEXP>(Rcpp::wrap(slorad)), Shield<SEXP>(Rcpp::wrap(asprad)), Shield<SEXP>(Rcpp::wrap(J)), Shield<SEXP>(Rcpp::wrap(diffTemp)), Shield<SEXP>(Rcpp::wrap(diffTempMonth)), Shield<SEXP>(Rcpp::wrap(VP)), Shield<SEXP>(Rcpp::wrap(P)));
         }
         if (rcpp_result_gen.inherits("interrupted-error"))
             throw Rcpp::internal::InterruptedException();
@@ -371,12 +371,12 @@ namespace meteoland {
         static Ptr_utils_saturationVP p_utils_saturationVP = NULL;
         if (p_utils_saturationVP == NULL) {
             validateSignature("double(*utils_saturationVP)(double)");
-            p_utils_saturationVP = (Ptr_utils_saturationVP)R_GetCCallable("meteoland", "meteoland_utils_saturationVP");
+            p_utils_saturationVP = (Ptr_utils_saturationVP)R_GetCCallable("meteoland", "_meteoland_utils_saturationVP");
         }
         RObject rcpp_result_gen;
         {
             RNGScope RCPP_rngScope_gen;
-            rcpp_result_gen = p_utils_saturationVP(Rcpp::wrap(temperature));
+            rcpp_result_gen = p_utils_saturationVP(Shield<SEXP>(Rcpp::wrap(temperature)));
         }
         if (rcpp_result_gen.inherits("interrupted-error"))
             throw Rcpp::internal::InterruptedException();
@@ -390,12 +390,12 @@ namespace meteoland {
         static Ptr_utils_averageDailyVP p_utils_averageDailyVP = NULL;
         if (p_utils_averageDailyVP == NULL) {
             validateSignature("double(*utils_averageDailyVP)(double,double,double,double)");
-            p_utils_averageDailyVP = (Ptr_utils_averageDailyVP)R_GetCCallable("meteoland", "meteoland_utils_averageDailyVP");
+            p_utils_averageDailyVP = (Ptr_utils_averageDailyVP)R_GetCCallable("meteoland", "_meteoland_utils_averageDailyVP");
         }
         RObject rcpp_result_gen;
         {
             RNGScope RCPP_rngScope_gen;
-            rcpp_result_gen = p_utils_averageDailyVP(Rcpp::wrap(Tmin), Rcpp::wrap(Tmax), Rcpp::wrap(RHmin), Rcpp::wrap(RHmax));
+            rcpp_result_gen = p_utils_averageDailyVP(Shield<SEXP>(Rcpp::wrap(Tmin)), Shield<SEXP>(Rcpp::wrap(Tmax)), Shield<SEXP>(Rcpp::wrap(RHmin)), Shield<SEXP>(Rcpp::wrap(RHmax)));
         }
         if (rcpp_result_gen.inherits("interrupted-error"))
             throw Rcpp::internal::InterruptedException();
@@ -409,12 +409,12 @@ namespace meteoland {
         static Ptr_utils_atmosphericPressure p_utils_atmosphericPressure = NULL;
         if (p_utils_atmosphericPressure == NULL) {
             validateSignature("double(*utils_atmosphericPressure)(double)");
-            p_utils_atmosphericPressure = (Ptr_utils_atmosphericPressure)R_GetCCallable("meteoland", "meteoland_utils_atmosphericPressure");
+            p_utils_atmosphericPressure = (Ptr_utils_atmosphericPressure)R_GetCCallable("meteoland", "_meteoland_utils_atmosphericPressure");
         }
         RObject rcpp_result_gen;
         {
             RNGScope RCPP_rngScope_gen;
-            rcpp_result_gen = p_utils_atmosphericPressure(Rcpp::wrap(elevation));
+            rcpp_result_gen = p_utils_atmosphericPressure(Shield<SEXP>(Rcpp::wrap(elevation)));
         }
         if (rcpp_result_gen.inherits("interrupted-error"))
             throw Rcpp::internal::InterruptedException();
@@ -428,12 +428,12 @@ namespace meteoland {
         static Ptr_utils_airDensity p_utils_airDensity = NULL;
         if (p_utils_airDensity == NULL) {
             validateSignature("double(*utils_airDensity)(double,double)");
-            p_utils_airDensity = (Ptr_utils_airDensity)R_GetCCallable("meteoland", "meteoland_utils_airDensity");
+            p_utils_airDensity = (Ptr_utils_airDensity)R_GetCCallable("meteoland", "_meteoland_utils_airDensity");
         }
         RObject rcpp_result_gen;
         {
             RNGScope RCPP_rngScope_gen;
-            rcpp_result_gen = p_utils_airDensity(Rcpp::wrap(temperature), Rcpp::wrap(Patm));
+            rcpp_result_gen = p_utils_airDensity(Shield<SEXP>(Rcpp::wrap(temperature)), Shield<SEXP>(Rcpp::wrap(Patm)));
         }
         if (rcpp_result_gen.inherits("interrupted-error"))
             throw Rcpp::internal::InterruptedException();
@@ -447,12 +447,12 @@ namespace meteoland {
         static Ptr_utils_averageDaylightTemperature p_utils_averageDaylightTemperature = NULL;
         if (p_utils_averageDaylightTemperature == NULL) {
             validateSignature("double(*utils_averageDaylightTemperature)(double,double)");
-            p_utils_averageDaylightTemperature = (Ptr_utils_averageDaylightTemperature)R_GetCCallable("meteoland", "meteoland_utils_averageDaylightTemperature");
+            p_utils_averageDaylightTemperature = (Ptr_utils_averageDaylightTemperature)R_GetCCallable("meteoland", "_meteoland_utils_averageDaylightTemperature");
         }
         RObject rcpp_result_gen;
         {
             RNGScope RCPP_rngScope_gen;
-            rcpp_result_gen = p_utils_averageDaylightTemperature(Rcpp::wrap(Tmin), Rcpp::wrap(Tmax));
+            rcpp_result_gen = p_utils_averageDaylightTemperature(Shield<SEXP>(Rcpp::wrap(Tmin)), Shield<SEXP>(Rcpp::wrap(Tmax)));
         }
         if (rcpp_result_gen.inherits("interrupted-error"))
             throw Rcpp::internal::InterruptedException();
@@ -466,12 +466,12 @@ namespace meteoland {
         static Ptr_utils_latentHeatVaporisation p_utils_latentHeatVaporisation = NULL;
         if (p_utils_latentHeatVaporisation == NULL) {
             validateSignature("double(*utils_latentHeatVaporisation)(double)");
-            p_utils_latentHeatVaporisation = (Ptr_utils_latentHeatVaporisation)R_GetCCallable("meteoland", "meteoland_utils_latentHeatVaporisation");
+            p_utils_latentHeatVaporisation = (Ptr_utils_latentHeatVaporisation)R_GetCCallable("meteoland", "_meteoland_utils_latentHeatVaporisation");
         }
         RObject rcpp_result_gen;
         {
             RNGScope RCPP_rngScope_gen;
-            rcpp_result_gen = p_utils_latentHeatVaporisation(Rcpp::wrap(temperature));
+            rcpp_result_gen = p_utils_latentHeatVaporisation(Shield<SEXP>(Rcpp::wrap(temperature)));
         }
         if (rcpp_result_gen.inherits("interrupted-error"))
             throw Rcpp::internal::InterruptedException();
@@ -485,12 +485,12 @@ namespace meteoland {
         static Ptr_utils_latentHeatVaporisationMol p_utils_latentHeatVaporisationMol = NULL;
         if (p_utils_latentHeatVaporisationMol == NULL) {
             validateSignature("double(*utils_latentHeatVaporisationMol)(double)");
-            p_utils_latentHeatVaporisationMol = (Ptr_utils_latentHeatVaporisationMol)R_GetCCallable("meteoland", "meteoland_utils_latentHeatVaporisationMol");
+            p_utils_latentHeatVaporisationMol = (Ptr_utils_latentHeatVaporisationMol)R_GetCCallable("meteoland", "_meteoland_utils_latentHeatVaporisationMol");
         }
         RObject rcpp_result_gen;
         {
             RNGScope RCPP_rngScope_gen;
-            rcpp_result_gen = p_utils_latentHeatVaporisationMol(Rcpp::wrap(temperature));
+            rcpp_result_gen = p_utils_latentHeatVaporisationMol(Shield<SEXP>(Rcpp::wrap(temperature)));
         }
         if (rcpp_result_gen.inherits("interrupted-error"))
             throw Rcpp::internal::InterruptedException();
@@ -504,12 +504,12 @@ namespace meteoland {
         static Ptr_utils_psychrometricConstant p_utils_psychrometricConstant = NULL;
         if (p_utils_psychrometricConstant == NULL) {
             validateSignature("double(*utils_psychrometricConstant)(double,double)");
-            p_utils_psychrometricConstant = (Ptr_utils_psychrometricConstant)R_GetCCallable("meteoland", "meteoland_utils_psychrometricConstant");
+            p_utils_psychrometricConstant = (Ptr_utils_psychrometricConstant)R_GetCCallable("meteoland", "_meteoland_utils_psychrometricConstant");
         }
         RObject rcpp_result_gen;
         {
             RNGScope RCPP_rngScope_gen;
-            rcpp_result_gen = p_utils_psychrometricConstant(Rcpp::wrap(temperature), Rcpp::wrap(Patm));
+            rcpp_result_gen = p_utils_psychrometricConstant(Shield<SEXP>(Rcpp::wrap(temperature)), Shield<SEXP>(Rcpp::wrap(Patm)));
         }
         if (rcpp_result_gen.inherits("interrupted-error"))
             throw Rcpp::internal::InterruptedException();
@@ -523,12 +523,12 @@ namespace meteoland {
         static Ptr_utils_saturationVaporPressureCurveSlope p_utils_saturationVaporPressureCurveSlope = NULL;
         if (p_utils_saturationVaporPressureCurveSlope == NULL) {
             validateSignature("double(*utils_saturationVaporPressureCurveSlope)(double)");
-            p_utils_saturationVaporPressureCurveSlope = (Ptr_utils_saturationVaporPressureCurveSlope)R_GetCCallable("meteoland", "meteoland_utils_saturationVaporPressureCurveSlope");
+            p_utils_saturationVaporPressureCurveSlope = (Ptr_utils_saturationVaporPressureCurveSlope)R_GetCCallable("meteoland", "_meteoland_utils_saturationVaporPressureCurveSlope");
         }
         RObject rcpp_result_gen;
         {
             RNGScope RCPP_rngScope_gen;
-            rcpp_result_gen = p_utils_saturationVaporPressureCurveSlope(Rcpp::wrap(temperature));
+            rcpp_result_gen = p_utils_saturationVaporPressureCurveSlope(Shield<SEXP>(Rcpp::wrap(temperature)));
         }
         if (rcpp_result_gen.inherits("interrupted-error"))
             throw Rcpp::internal::InterruptedException();
@@ -542,12 +542,12 @@ namespace meteoland {
         static Ptr_penman p_penman = NULL;
         if (p_penman == NULL) {
             validateSignature("double(*penman)(double,double,double,double,int,double,double,double,double,double,double,double,double,double,String)");
-            p_penman = (Ptr_penman)R_GetCCallable("meteoland", "meteoland_penman");
+            p_penman = (Ptr_penman)R_GetCCallable("meteoland", "_meteoland_penman");
         }
         RObject rcpp_result_gen;
         {
             RNGScope RCPP_rngScope_gen;
-            rcpp_result_gen = p_penman(Rcpp::wrap(latrad), Rcpp::wrap(elevation), Rcpp::wrap(slorad), Rcpp::wrap(asprad), Rcpp::wrap(J), Rcpp::wrap(Tmin), Rcpp::wrap(Tmax), Rcpp::wrap(RHmin), Rcpp::wrap(RHmax), Rcpp::wrap(R_s), Rcpp::wrap(u), Rcpp::wrap(z), Rcpp::wrap(z0), Rcpp::wrap(alpha), Rcpp::wrap(windfun));
+            rcpp_result_gen = p_penman(Shield<SEXP>(Rcpp::wrap(latrad)), Shield<SEXP>(Rcpp::wrap(elevation)), Shield<SEXP>(Rcpp::wrap(slorad)), Shield<SEXP>(Rcpp::wrap(asprad)), Shield<SEXP>(Rcpp::wrap(J)), Shield<SEXP>(Rcpp::wrap(Tmin)), Shield<SEXP>(Rcpp::wrap(Tmax)), Shield<SEXP>(Rcpp::wrap(RHmin)), Shield<SEXP>(Rcpp::wrap(RHmax)), Shield<SEXP>(Rcpp::wrap(R_s)), Shield<SEXP>(Rcpp::wrap(u)), Shield<SEXP>(Rcpp::wrap(z)), Shield<SEXP>(Rcpp::wrap(z0)), Shield<SEXP>(Rcpp::wrap(alpha)), Shield<SEXP>(Rcpp::wrap(windfun)));
         }
         if (rcpp_result_gen.inherits("interrupted-error"))
             throw Rcpp::internal::InterruptedException();
@@ -561,12 +561,12 @@ namespace meteoland {
         static Ptr_penmanmonteith p_penmanmonteith = NULL;
         if (p_penmanmonteith == NULL) {
             validateSignature("double(*penmanmonteith)(double,double,double,double,double,double,double,double)");
-            p_penmanmonteith = (Ptr_penmanmonteith)R_GetCCallable("meteoland", "meteoland_penmanmonteith");
+            p_penmanmonteith = (Ptr_penmanmonteith)R_GetCCallable("meteoland", "_meteoland_penmanmonteith");
         }
         RObject rcpp_result_gen;
         {
             RNGScope RCPP_rngScope_gen;
-            rcpp_result_gen = p_penmanmonteith(Rcpp::wrap(rc), Rcpp::wrap(elevation), Rcpp::wrap(Tmin), Rcpp::wrap(Tmax), Rcpp::wrap(RHmin), Rcpp::wrap(RHmax), Rcpp::wrap(Rn), Rcpp::wrap(u));
+            rcpp_result_gen = p_penmanmonteith(Shield<SEXP>(Rcpp::wrap(rc)), Shield<SEXP>(Rcpp::wrap(elevation)), Shield<SEXP>(Rcpp::wrap(Tmin)), Shield<SEXP>(Rcpp::wrap(Tmax)), Shield<SEXP>(Rcpp::wrap(RHmin)), Shield<SEXP>(Rcpp::wrap(RHmax)), Shield<SEXP>(Rcpp::wrap(Rn)), Shield<SEXP>(Rcpp::wrap(u)));
         }
         if (rcpp_result_gen.inherits("interrupted-error"))
             throw Rcpp::internal::InterruptedException();

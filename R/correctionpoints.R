@@ -13,6 +13,8 @@
     corr<- as.numeric(lm(difDat~difHist-1)$coefficients) #slope of a regression through the origin
   } else if(varmethods[varname]=="quantmap") {
     corr<-fitQmap(DatTemp[,varname],ModelTempHist[,varname],method=c("QUANT"))
+  } else if(varmethods[varname]=="none") {
+    corr<-0
   } else {
     stop(paste("Wrong correction method for variable:", varname))
   }
@@ -26,6 +28,8 @@
     corrected <- (varuncor*varbias)
   } else if(varmethod=="quantmap") {
     corrected<-doQmap(varuncor, varbias)
+  } else if(varmethod=="none") {
+    corrected<-varuncor
   } else {
     stop(paste("Wrong correction method:", varmethod))
   }
@@ -76,6 +80,8 @@
       corrHS[[m]]<- as.numeric(lm(HSData~HSmodelHist-1)$coefficients) #slope of a regression through the origin
     } else if(varmethods["MeanRelativeHumidity"]=="quantmap") {
       corrHS[[m]]<-fitQmap(HSData,HSmodelHist,method=c("QUANT"))
+    } else if(varmethods["MeanRelativeHumidity"]=="none"){
+      corrHS[[m]]<-0
     } else {
       stop(paste("Wrong correction method for variable:", "MeanRelativeHumidity"))
     }
@@ -152,7 +158,7 @@
     
     #Correction RH
     #First transform RH into specific humidity
-    HSmodelFut<-.HRHS(Tc=ModelTempFut.TM.cor ,HR=ModelTempFut[,"MeanRelativeHumidity"])
+    HSmodelFut<-.HRHS(Tc=ModelTempFut[,"MeanTemperature"] ,HR=ModelTempFut[,"MeanRelativeHumidity"])
     #Second compute and apply the bias to specific humidity
     HSmodelFut.cor<-.corrApply(HSmodelFut, mbias$corrHS[[m]], mbias$varmethods["MeanRelativeHumidity"])
     #Back transform to relative humidity (mean, max, min)
@@ -282,7 +288,7 @@ correctionpoints<-function(object, points, topodata = NULL, dates = NULL, export
         stop("Cannot access projection meteorology data")
       }
     }
-
+ 
     #Call statistical correction routine
     mbias = .monthbiasonepoint(obs,rcmhist, mPar$varmethods, verbose)
     mbiasvec[[i]] = mbias

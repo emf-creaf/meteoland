@@ -42,6 +42,8 @@
         corrHS<- as.numeric(lm(HSData~HSmodelHist-1)$coefficients) #slope of a regression through the origin
       } else if(varmethods["MeanRelativeHumidity"]=="quantmap") {
         corrHS<-fitQmap(HSData,HSmodelHist,method=c("QUANT"))
+      } else if(varmethods["MeanRelativeHumidity"]=="none") {
+        corrHS<-0
       } else {
         stop(paste("Wrong correction method for variable:", "MeanRelativeHumidity"))
       }
@@ -81,7 +83,7 @@
 
       #Correction RH
       #First transform RH into specific humidity
-      HSmodelFut<-.HRHS(Tc=DataCV$MeanTemperature[indices[i]] ,HR=ModelTempHistMonth$MeanRelativeHumidity[i])
+      HSmodelFut<-.HRHS(Tc=ModelTempHistMonth$MeanTemperature[i] ,HR=ModelTempHistMonth$MeanRelativeHumidity[i])
       #Second apply the bias to specific humidity
       HSmodelFut.cor<-.corrApply(HSmodelFut, corrHS, varmethods["MeanRelativeHumidity"])
       #Back transform to relative humidity (mean, max, min)

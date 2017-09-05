@@ -31,13 +31,13 @@ library(meteoland)
 \subsection{Purpose}
 Reliable meteorological data are a basic requirement for hydrological and ecological studies at the landscape scale. Given the large spatial variation of meteorology over complex terrains, meteorological records from a single weather station are often not representative of entire landscapes. Studies made on multiple sites over a landscape require different meteorological series for each site; and other studies may require meteorological data series for all grid cells of a landscape, in a continuous way. In these cases, spatial correlation between the meteorology series of different sites or cells must be taken into account. For example, the sequence of days with rain of contiguous cells will normally be the same or very similar, even if precipitation amounts may differ. Finally, studies addressing the impacts of climate change on forests and landscapes require downscaling coarse-scale predictions  of global or regional climate models to the landscape scale. When downscaling predictions for several locations in a landscape, spatial correlation of predictions is also important.
 
-
-With the aim to assist research of climatic impacts on forests, the R package \texttt{meteoland} provides utilities to estimate daily weather variables at any position in complex terrains:
+With the aim to assist research of climatic impacts on forests, the R package \texttt{meteoland} provides utilities to estimate daily weather variables at any position over complex terrains:
 \begin{enumerate}
 \item{Spatial interpolation of daily weather records from meteorological stations. }
-\item{Statistical correction of meteorological data series (e.g. from regional climate models).}
+\item{Statistical correction of meteorological data series (e.g. from climate models).}
 \end{enumerate}
-Spatial interpolation is required when meteorology for the area and period of interest cannot be obtained from local measurements. The nearest weather station may not have data for the period of interest or it may be located too far away to be representative of the target area. Correcting the biases of a meteorological data series containing biases using a more accurate (i.e. local) meteorological series for a given reference period is necessary when the more accurate series does not cover the period of interest and the less accurate series does. The less accurate series may be at coarser scale, as with global/regional climate models or historical climate reanalysis. In this case one can speak of statistical downscaling. However, one may also correct the predictions of climate models using reanalysis data estimated at the same scale. 
+
+Spatial interpolation is required when meteorology for the area and period of interest cannot be obtained from local sensors. The nearest weather station may not have data for the period of interest or it may be located too far away to be representative of the target area. Correcting the biases of a meteorological data series containing biases using a more accurate meteorological series is necessary when the more accurate series does not cover the period of interest and the less accurate series does. The less accurate series may be at coarser scale, as with climate model predictions or climate reanalysis data. In this case one can speak of statistical correction adn downscaling. However, one may also correct the predictions of climate models using reanalysis data estimated at the same spatial resolution. 
 
 \subsection{Data structures}
 Package \texttt{meteoland} assists in the estimation of the following variables over lanscapes (units in parentheses):
@@ -128,13 +128,15 @@ Both functions require an object of class \texttt{`MeteorologyInterpolationData'
 <<echo=FALSE>>=
 showClass("MeteorologyInterpolationData")
 @
-When calling functions \texttt{interpolationpoints()} or \texttt{interpolationgrid()}, the user may require interpolation outputs to be written into the file system, instead of being returned in memory. If \texttt{interpolationpoints()} is called with \texttt{export = TRUE}, the function will write the data frame produced for each point into an \textbf{ascii} text file. If \texttt{interpolationgrid()} is called with \texttt{export = TRUE}, the function will write an \textbf{netCDF} file for each day. Metadata files will also be written, so that results can later be loaded in memory.
+When calling functions \texttt{interpolationpoints()} or \texttt{interpolationgrid()}, the user may require interpolation outputs to be written into the file system, instead of being returned in memory. If \texttt{interpolationpoints()} is called with \texttt{export = TRUE}, the function will write the data frame produced for each point into an \textbf{ascii} text file. If \texttt{interpolationgrid()} is called with \texttt{export = TRUE}, the function will write an \textbf{netCDF} file for each day. Metadata files will also be written, so that results can later be loaded in memory. 
+
+Functions \texttt{interpolation.calibration()} and \texttt{interpolation.cv()} are included in \texttt{meteoland} to calibrate interpolation parameters and evaluate predictive performance of interpolation routines before using them.
 
 \subsubsection{Statistical correction}
 Analogously to interpolation, two functions are available for statistical correction of meteorological data series (i.e., one function for each data structure):
 \begin{itemize}
 \item{Function \texttt{correctionpoints()} performs statistical correction of weather data series on a set of locations and it returns an object of class \texttt{SpatialPointsMeteorology} containing corrected weather predictions.}
-\item{Function \texttt{correctiongrid()} performs statistical correction of weather data series over a grid and it returns an object of class \texttt{SpatialPointsMeteorology} containing corrected weather predictions.}
+\item{Function \texttt{correctiongrid()} [normally not used] performs statistical correction of weather data series over a grid and it returns an object of class \texttt{SpatialPointsMeteorology} containing corrected weather predictions.}
 \end{itemize}
 Statistical correction functions require an object of class \texttt{`MeteorologyUncorrectedData'}, which contains the X-Y coordinates and the coarse-scale meteorological data to be corrected, which includes a reference (historic) period and projected (e.g. future) period:
 <<echo=FALSE>>=
@@ -143,6 +145,8 @@ showClass("MeteorologyUncorrectedData")
 The reference (historical) period is compared with observed meteorological data of the same period, and the routine uses this information to correct the projected (e.g. future) period. Therefore, apart from the \texttt{`MeteorologyUncorrectedData'} object, the correction functions require accurate meteorological data (for a set of spatial points or a grid). Normally, these data will be the result of spatial interpolation.
 
 As before, when calling functions \texttt{correctionpoints()} or \texttt{correctiongrid()}, the user may require the outputs to be written into the file system, instead of being returned in memory. If \texttt{correctionpoints()} is called with \texttt{export = TRUE}, the function will write the data frame produced for each point into an \textbf{ascii} text file. If \texttt{correctiongrid()} is called with \texttt{export = TRUE}, the function will write a \textbf{netCDF} file for each day. Metadata files will also be written, so that results can later be loaded in memory.
+
+Function \texttt{correctionpoints.errors()} was included in the package to evaluate the errors of the less accurate and more accurate series. Comparisons can be made before and after applying statistical corrections. In the latter case, cross-validation is also available.
 
 
 \section{Spatial interpolation of weather records}
@@ -225,11 +229,11 @@ where $e_{s,i}$ is the saturated water vapor pressure of station $i$, calculated
 \begin{equation}
 T_{d,i} = \frac{237.3\cdot \ln(e_i/0.61078)}{17.269 - \ln(e_i/0.61078)}
 \end{equation}
-Unlike temperature, weighted regression is not used. The dew-point temperature for the target point, $T_{d,p}$ is predicted as:
+Unlike temperature, interpolation of dew temperature is not corrected for elevation differences. The dew-point temperature for the target point, $T_{d,p}$ is predicted as:
 \begin{equation}
 T_{d,p} = \frac{\sum_{i=1}^{n}{W_i\cdot T_{d,i}}}{\sum_{i=1}^{n}{W_i}}
 \end{equation}
-From the interpolated dew-point temperature one can obtain actual vapour pressure $e_{p}$ and, together with saturated vapour pressure at point $p$, one calculates relative humidity as indicated above. If saturated vapour pressure is referred to average temperature $T_{a,p}$, then relative humidity is average relative humidity $RH_{a,p}$. If, instead, one refers saturated vapour pressure to minimum and maximum daily temperatures one obtains, respectively, maximum and minimum relative humidity values ($RH_{max,p}$, $RH_{min,p}$). After their estimation, the routine checks that the predicted maximum and minimum relative humidity values stay within the physical limits 0\% and 100\%.
+From the interpolated dew-point temperature one can obtain actual vapour pressure $e_{p}$ and, together with saturated vapour pressure at point $p$, one calculates relative humidity as indicated above. If saturated vapour pressure is referred to average temperature $T_{a,p}$, then relative humidity is average relative humidity $RH_{a,p}$. If, instead, one refers saturated vapour pressure to minimum and maximum daily temperatures one obtains, respectively, maximum and minimum relative humidity values ($RH_{max,p}$, $RH_{min,p}$). After their estimation, the routine checks that the predicted maximum and minimum relative humidity values stay within the physical limits 0\% and 100\%. Although interpolation of dew-point temperature does not account for elevation differences, interpolated values of relative humidity will normally exhibit a pattern following elevation differences because temperature is involved in the calculation of relative humidity.
 
 
 \subsection{Precipitation}
@@ -257,8 +261,7 @@ Interpolation of wind characteristics depends on the amount of information avail
 \item{Interpolation of wind vectors (speed and direction)}
 \item{Interpolation of wind vectors using wind fields}
 \end{itemize}
-
-In the following we detail the calculations in each case.
+The following subsections detail the calculations in each case.
 \subsubsection{Interpolation of wind speed}
 The predicted wind speed $u_{p}$ for a target point $p$ is the weighted average of station wind speed values $\{u_{i}\}$  $i=(1,... , n)$ using the interpolation weights $W_i$ determined from the truncated Gaussian filter:
 \begin{equation}
@@ -789,12 +792,35 @@ data(exampleinterpolationdata)
 bc_dates = seq(as.Date("2023-01-01"), as.Date("2023-12-31"), by="day")
 predicted = correctionpoints(examplecorrectiondata, mp, spt@data, dates = bc_dates, verbose=FALSE)
 @
-Statistical correction is necessary when meteorological data is available at a spatial scale that is too coarse for landscape-level analysis. This is usually the case when taking predictions from global or regional climate models. The general idea of correction to the landscape level is that a fine-scale meteorological series is to be compared to coarse-scale series for the a historical (reference) period. The result of this comparison can be used to correct coarse-scale meteorological series for other periods (normally future projections). In the case of most meteorological variables, the comparison consists in calculating a bias using the reference period and applying this bias to the future period. However, in the case of precipitation a different procedure is needed.
+Statistical correction is necessary when meteorological data is available at a spatial scale that is too coarse for landscape-level analysis. This is usually the case when taking predictions from global or regional climate models. The general idea of correction to the landscape level is that a fine-scale meteorological series is to be compared to coarse-scale series for the a historical (reference) period. The result of this comparison can be used to correct coarse-scale meteorological series for other periods (normally future projections). 
 
-\subsection{Precipitation}
-There are several approaches to correct precipitation predictions of climate models. Among the most popular approaches are statistical transformations that that aim to adjust aspects of the distribution of predicted values so that the new distribution resembles observations. A common approach is to use cumulative distribution function (CDF) of observed and modelled values. In \texttt{meteoland} we perform quantile mapping by calling the functions implemented in package \texttt{qmap} (Gudmundsson et al. 2012). In short, the empirical CDFs are approximated using tables of empirical percentiles. Values in between the percentiles are approximated using linear interpolation. If new model values (e.g. from climate projections) are larger than the training values used to estimate the empirical CDF, the correction found for the highest quantile of the training period is used. 
+\subsection{Correction methods}
+Users of \texttt{meteoland} can choose between three different types of corrections:
 
-Quantile mapping is done month by month, to account for seasonal variation of precipitation distribution in the target area. The following figures show the correction of RCM precipitation predictions for 2023 using interpolated data from 2002-2003 as observations for the reference period. Note that at least 15 years of observations (and not two!) would be needed for a correct estimation of monthly CDFs.
+\begin{itemize}
+\item{\textbf{Unbiasing}: consists in subtracting, from the series to be corrected, the average difference between the two series for the reference period (Deque 2007). Let $x_i$ be the value of the variable of the more accurate (e.g. local) series for a given day $i$ and $u_i$ the corresponding value for the less accurate series (e.g., climate model output). The bias, $\theta$, is the average difference over all $n$ days of the reference period:
+\begin{equation}
+\theta = \sum_{i}^{n}(u_i - x_i)/n
+\end{equation}
+The bias calculated in the reference period is then subtracted from the value of $u$ for any day of the period of interest.
+}
+\item{\textbf{Scaling}: A slope is calculated by regressing $u$ on $x$ through the origin (i.e. zero intercept) using data of the reference period. The slope can then be used as scaling factor to multiply the values of $u$ for any day of the period of interest.}
+\item{\textbf{Empirical quantile mapping}: Due to its distributional properties, neither multiplicative or additive factors are appropriate for daily precipitation (Gudmundsson et al. 2012; Ruffault et al. 2014). In this case, it has been recommended to compare the empirical cumulative distribution function (CDF) of the two series for the reference period (Gudmundsson et al. 2012). The empirical CDFs of $x$ and $u$ for the reference period are approximated using tables of empirical percentiles, and this mapping is used to correct values of $u$ for the period of interest:
+\begin{equation}
+c_d = ecdf_x^{-1}(ecdf_u(u_d))
+\end{equation}
+where $ecdf_x$ and $ecdf_u$ are the empirical CDFs of $x$ and $u$ respectively. Values between percentiles are approximated using linear interpolation. \texttt{meteoland} performs quantile mapping by calling the functions implemented in package \texttt{qmap} (Gudmundsson et al. 2012). 
+}
+\end{itemize}
+
+For each target location to be processed, the correction routine first determines which is the nearest climate model cell and extracts its weather data series for the reference period and the period of interest. Then, the correction method chosen by the user for each variable is applied. Statistical corrections are done for each of the twelve months separately to account for seasonal variation of distributional differences (Ruffault et al 2014).
+
+\subsection{Default approaches by variable}
+
+Although users can choose their preferred correction method for each variable, meteoland has default approaches. 
+
+\begin{itemize}
+\item{\textbf{Precipitation}: By default, correction of precipitation is done using empirical quantile mapping. The following figures show the correction of RCM precipitation predictions for 2023 using interpolated data from 2002-2003 as observations for the reference period. Note that at least 15 years of observations (and not two!) would be needed for a correct estimation of monthly CDFs.
 \begin{center}
 <<echo = FALSE, fig = TRUE, width=7, height=3.5>>=
 par(mfrow=c(1,2), mar=c(5,5,1,1))
@@ -810,35 +836,12 @@ plot(examplecorrectiondata@projection_data[[3]][as.character(bc_dates),"Precipit
 abline(a=0,b=1,col="gray")
 @
 \end{center}
-\subsection{Temperature}
-Let $x$ be the meteorological variable observed for the target point in the reference period, and $u$ the same variable, but estimated at the coarse-scale for the reference period. Month $m$ bias of the coarse-scale data ($\theta_{m}$) is the average of the difference between $u$ and $x$ over all $n_m$ days of month $m$ in the reference period:
-\begin{equation}
-\theta_{m} = \sum_{i=1}^{n_m}{(u_i-x_i)}/n_m
-\end{equation}
-Month biases are used to correct the coarse-scale value of day $i$ in the projected period using:
-\begin{equation}
-c_i = u_i - \theta_{m(i)}
-\end{equation}
-where $m(i)$ is the month of day $i$.
+}
+\item{\textbf{Mean temperature}: Unbiasing method is used by default to correct mean temperature. The following figures show the correction of RCM mean temperature predictions for 2023 using interpolated data from 2002-2003 as observations for the reference period:
 
-Mean daily temperature is corrected by the simple bias correction explained above (i.e. $x = T_{mean, obs}$ and $u = T_{mean, est}$):
-\begin{equation}
-T_{mean, cor} = T_{mean, est} - \theta_{m(i)}
-\end{equation}
-To correct minimum (respectively maximum) temperature values, the unbiasing method described for mean temperature could lead to estimates being above (resp. below) the daily average. To avoid this source of potential inconsistency, a multiplicative scaling factor (found by regression through the origin) is instead applied to the difference between minimum (resp. maximum) temperature and mean temperature. First, we define $x$ and $u$ as the difference in temperature ($\delta$):
-\begin{eqnarray}
-x &=& \delta_{min, obs} = T_{min, obs} - T_{mean, obs}\\
-u &=& \delta_{min, est} = T_{min, est} - T_{mean, est}
-\end{eqnarray}
-Then, for each month $m$ we regress $x$ on $u$ forcing a zero intercept. This gives a multiplicative (i.e. scaling) factor $\eta_{m}$ that we can use to perform the correction:
-\begin{equation}
-T_{min, cor} = T_{mean, cor} + \delta_{min, est} \cdot \eta_{m(i)}
-\end{equation}
-
-The following figures show the correction of RCM mean, minimum and maximum temperature predictions for 2023 using interpolated data from 2002-2003 as observations for the reference period:
 \begin{center}
-<<echo = FALSE, fig = TRUE, width=7, height=10>>=
-par(mfrow=c(3,2), mar=c(5,5,1,1))
+<<echo = FALSE, fig = TRUE, width=7, height=3>>=
+par(mfrow=c(1,2), mar=c(5,5,1,1))
 #Plot predicted mean temperature for point 1
 meteoplot(predicted, 1, "MeanTemperature", ylab="Mean temperature (Celsius)", xlab="",ylim=c(-5,40))
 #Add uncorrected mean temperature data (cell #5)
@@ -850,7 +853,15 @@ plot(examplecorrectiondata@projection_data[[3]][as.character(bc_dates),"MeanTemp
      predicted@data[[1]]$MeanTemperature, cex=0.1, asp=1,
      ylab="Corrected mean temperature", xlab="Uncorrected mean temperature")
 abline(a=0,b=1,col="gray")
+@
+\end{center}
+}
+\item{\textbf{Minimum and maximum temperatures}:
+To correct minimum (respectively maximum) temperature values, by default scaling is applied to the difference between minimum (resp. maximum) temperature and mean temperature. 
 
+\begin{center}
+<<echo = FALSE, fig = TRUE, width=7, height=6>>=
+par(mfrow=c(2,2), mar=c(5,5,1,1))
 meteoplot(predicted, 1, "MinTemperature", ylab="Minimum temperature (Celsius)", xlab="",ylim=c(-10,25))
 lines(bc_dates,
       examplecorrectiondata@projection_data[[3]][as.character(bc_dates),"MinTemperature"],
@@ -871,11 +882,8 @@ plot(examplecorrectiondata@projection_data[[3]][as.character(bc_dates),"MaxTempe
 abline(a=0,b=1,col="gray")
 @
 \end{center}
-
-\subsection{Other variables}
-Radiation and wind speed are corrected using the unbiasing procedure described for mean temperature. In the case of relative humidity, values are transformed to specific humidity, bias correction is applied to this variable and the result is back-transformed to relative humidity. Since historic wind data is often not available, if wind speed data is missing the coarse-scale wind estimate is taken directly without correction.
-
-The following figures show the correction of RCM radiation predictions for 2023 using interpolated data from 2002-2003 as observations for the reference period:
+}
+\item{\textbf{Radiation}: Radiation is by default corrected using the unbiasing procedure. The following figures show the correction of RCM radiation predictions for 2023 using interpolated data from 2002-2003 as observations for the reference period:
 \begin{center}
 <<echo = FALSE, fig = TRUE, width=7, height=3.5>>=
 par(mfrow=c(1,2), mar=c(5,5,1,1))
@@ -892,8 +900,13 @@ plot(examplecorrectiondata@projection_data[[3]][as.character(bc_dates),"Radiatio
 abline(a=0,b=1,col="gray")
 @
 \end{center}
+}
+\item{\textbf{Relative humidity}: Mean relative humidity is first transformed to specific humidity, the unbiasing method is applied by default to this variable and the result is back transformed to mean, minimum and maximum relative humidity using the previously corrected series of mean, maximum and minimum temperature, respectively.
+}
+\item{\textbf{Wind speed}: By default, wind speed is corrected using the scaling method. Since historic wind data is often not available, however, if wind speed data is missing the coarse-scale wind estimate is taken directly without correction.
+}
 
-
+\end{itemize}
 
 \section{Estimation of potential evapo-transpiration}
 Package \texttt{meteoland} allows calculating daily potential evapo-transpiration (PET) using Penman's formulation (Penman 1948; 1956) or Penman-Monteith formulation. PET is automatically calculated after meteorological data have been interpolated (i.e. within functions \texttt{interpolationpoints()} and \texttt{interpolationgrid()}) or downscaled (i.e. within functions \texttt{correctionpoints()} and \texttt{correctiongrid()}), but PET values can also be calculated for a single point using functions \texttt{penman()} or \texttt{penmanmonteith()}. For other formulations of PET, the reader is referred to package \texttt{`Evapotranspiration'}.

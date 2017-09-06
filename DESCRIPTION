@@ -1,12 +1,13 @@
 Package: meteoland
 Type: Package
 Title: Landscape Meteorology Tools
-Version: 0.6.4
-Date: 2017-09-05
-Author: Miquel De Caceres, Nicolas Martin, Antoine Cabon
+Version: 0.6.5
+Date: 2017-09-06
+Author: Miquel De Caceres, Nicolas Martin, Victor Granda, Antoine Cabon
 Maintainer: Miquel De Caceres <miquelcaceres@gmail.com>
 Description: Functions to estimate weather variables at any position of a landscape.
 License: GPL (>= 2)
+URL: http://vegmod.ctfc.cat/meteolandweb
 LazyData: TRUE
 Depends: R (>= 3.4.1), sp, qmap
 Imports: spdep, rgdal, ncdf4, ncdf4.helpers, curl, methods, Rcpp (>= 0.12.12)

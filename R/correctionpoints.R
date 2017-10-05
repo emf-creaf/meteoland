@@ -1,5 +1,5 @@
 #Calculates biases or other correction parameters for a given data period
-.corrParam<-function(DatTemp, ModelTempHist, varmethods, varname, varnamemean = NULL, verbose=TRUE) {
+.corrParam<-function(DatTemp, ModelTempHist, varmethods, varname, varnamemean = NULL, wet.day = TRUE, verbose=TRUE) {
   if(sum(!is.na(ModelTempHist))==0 || sum(!is.na(DatTemp))==0) return(NA)
   if(varmethods[varname]=="unbias") {
     corr<-mean(ModelTempHist[,varname]-DatTemp[,varname], na.rm=TRUE)
@@ -13,7 +13,14 @@
     }
     corr<- as.numeric(lm(difDat~difHist-1)$coefficients) #slope of a regression through the origin
   } else if(varmethods[varname]=="quantmap") {
-    corr<-fitQmap(DatTemp[,varname],ModelTempHist[,varname],method=c("QUANT"))
+    if(!is.null(varnamemean)) {
+      difHist = (ModelTempHist[,varname]-ModelTempHist[,varnamemean])
+      difDat = (DatTemp[,varname]-DatTemp[,varnamemean])
+    } else {
+      difHist = ModelTempHist[,varname]
+      difDat = DatTemp[,varname]
+    }
+    corr<-fitQmap(difDat,difHist,method=c("QUANT"), wet.day = wet.day)
   } else if(varmethods[varname]=="none") {
     corr<-0
   } else {
@@ -22,13 +29,13 @@
   return(corr)
 }
 #Apply correction depending on the correction method
-.corrApply<-function(varuncor, varbias, varmethod) {
+.corrApply<-function(varuncor, varbias, varmethod, wet.day = TRUE) {
   if(varmethod=="unbias") {
     corrected <- (varuncor-varbias)
   } else if(varmethod=="scaling") {
     corrected <- (varuncor*varbias)
   } else if(varmethod=="quantmap") {
-    corrected<-doQmap(varuncor, varbias)
+    corrected<-doQmap(varuncor, varbias, wet.day = wet.day)
   } else if(varmethod=="none") {
     corrected<-varuncor
   } else {
@@ -67,20 +74,20 @@
     ModelTempHist<-MODHist[MODHist.months==m,]
 
     #Calculate correction params depending on the correction method
-    corrTmean[[m]] = .corrParam(DatTemp, ModelTempHist, varmethods, "MeanTemperature")
+    corrTmean[[m]] = .corrParam(DatTemp, ModelTempHist, varmethods, "MeanTemperature", wet.day = FALSE)
     if(varmethods["MinTemperature"]=="unbias" && varmethods["MeanTemperature"]=="unbias") {#for unbias use tmean delta (to avoid tmin > tmean)
       corrTmin[[m]] = corrTmean[[m]]
     } else {
-      corrTmin[[m]] = .corrParam(DatTemp, ModelTempHist, varmethods, "MinTemperature", "MeanTemperature")
+      corrTmin[[m]] = .corrParam(DatTemp, ModelTempHist, varmethods, "MinTemperature", "MeanTemperature", wet.day = FALSE)
     }
     if(varmethods["MaxTemperature"]=="unbias" && varmethods["MeanTemperature"]=="unbias") {#for unbias use tmean delta (to avoid tmax < tmean)
       corrTmax[[m]] = corrTmean[[m]]
     } else {
-      corrTmax[[m]] = .corrParam(DatTemp, ModelTempHist, varmethods, "MaxTemperature", "MeanTemperature")
+      corrTmax[[m]] = .corrParam(DatTemp, ModelTempHist, varmethods, "MaxTemperature", "MeanTemperature", wet.day = FALSE)
     }
-    corrPrec[[m]] = .corrParam(DatTemp, ModelTempHist, varmethods, "Precipitation")
-    corrRad[[m]] = .corrParam(DatTemp, ModelTempHist, varmethods, "Radiation")
-    corrWS[[m]] = .corrParam(DatTemp, ModelTempHist, varmethods, "WindSpeed")
+    corrPrec[[m]] = .corrParam(DatTemp, ModelTempHist, varmethods, "Precipitation", wet.day = TRUE)
+    corrRad[[m]] = .corrParam(DatTemp, ModelTempHist, varmethods, "Radiation", wet.day = FALSE)
+    corrWS[[m]] = .corrParam(DatTemp, ModelTempHist, varmethods, "WindSpeed", wet.day = FALSE)
     HSData<-.HRHS(Tc=DatTemp[,"MeanTemperature"] ,HR=DatTemp[,"MeanRelativeHumidity"])
     HSmodelHist<-.HRHS(Tc=ModelTempHist[,"MeanTemperature"] ,HR=ModelTempHist[,"MeanRelativeHumidity"])
     if(varmethods["MeanRelativeHumidity"]=="unbias") {
@@ -88,7 +95,7 @@
     } else if(varmethods["MeanRelativeHumidity"]=="scaling") {
       corrHS[[m]]<- as.numeric(lm(HSData~HSmodelHist-1)$coefficients) #slope of a regression through the origin
     } else if(varmethods["MeanRelativeHumidity"]=="quantmap") {
-      corrHS[[m]]<-fitQmap(HSData,HSmodelHist,method=c("QUANT"))
+      corrHS[[m]]<-fitQmap(HSData,HSmodelHist,method=c("QUANT"), wet.day = FALSE)
     } else if(varmethods["MeanRelativeHumidity"]=="none"){
       corrHS[[m]]<-0
     } else {
@@ -133,32 +140,38 @@
     ModelTempFut<-MODFut[selFut,]
 
     #Correction Tmean
-    ModelTempFut.TM.cor <-.corrApply(ModelTempFut$MeanTemperature, mbias$corrTmean[[m]], mbias$varmethods["MeanTemperature"])
+    ModelTempFut.TM.cor <-.corrApply(ModelTempFut$MeanTemperature, mbias$corrTmean[[m]], mbias$varmethods["MeanTemperature"], wet.day = FALSE)
     
     #Correction Tmin
     if(mbias$varmethods["MinTemperature"]=="scaling") {
       ModelTempFut.TN.cor<-ModelTempFut.TM.cor + ((ModelTempFut$MinTemperature-ModelTempFut$MeanTemperature)*mbias$corrTmin[[m]])
-    } else {
-      ModelTempFut.TN.cor<-.corrApply(ModelTempFut$MinTemperature, mbias$corrTmin[[m]], mbias$varmethods["MinTemperature"])
+    } else if(mbias$varmethods["MinTemperature"]=="quantmap") {
+      ModelTempFut.TN.cor<-ModelTempFut.TM.cor + .corrApply((ModelTempFut$MinTemperature-ModelTempFut$MeanTemperature), 
+                                                            mbias$corrTmin[[m]], mbias$varmethods["MinTemperature"], wet.day = FALSE)
+    } else {#unbias/none
+      ModelTempFut.TN.cor<-.corrApply(ModelTempFut$MinTemperature, mbias$corrTmin[[m]], mbias$varmethods["MinTemperature"], wet.day = FALSE)
     }
     
     #Correction Tmax
     if(mbias$varmethods["MaxTemperature"]=="scaling") {
       ModelTempFut.TX.cor<-ModelTempFut.TM.cor + ((ModelTempFut$MaxTemperature-ModelTempFut$MeanTemperature)*mbias$corrTmax[[m]])
-    } else {
-      ModelTempFut.TX.cor<-.corrApply(ModelTempFut$MaxTemperature, mbias$corrTmax[[m]], mbias$varmethods["MaxTemperature"])
+    } else if(mbias$varmethods["MaxTemperature"]=="quantmap") {
+      ModelTempFut.TX.cor<-ModelTempFut.TM.cor + .corrApply((ModelTempFut$MaxTemperature-ModelTempFut$MeanTemperature), 
+                                                            mbias$corrTmax[[m]], mbias$varmethods["MaxTemperature"], wet.day = FALSE)
+    } else { #unbias/none
+      ModelTempFut.TX.cor<-.corrApply(ModelTempFut$MaxTemperature, mbias$corrTmax[[m]], mbias$varmethods["MaxTemperature"], wet.day = FALSE)
     }
     
     #Correction Precipitation
-    ModelTempFut.rain.cor<-.corrApply(ModelTempFut$Precipitation, mbias$corrPrec[[m]], mbias$varmethods["Precipitation"])
+    ModelTempFut.rain.cor<-.corrApply(ModelTempFut$Precipitation, mbias$corrPrec[[m]], mbias$varmethods["Precipitation"], wet.day = TRUE)
 
     #Correction Rg
-    ModelTempFut.Rg.cor<-.corrApply(ModelTempFut$Radiation, mbias$corrRad[[m]], mbias$varmethods["Radiation"])
+    ModelTempFut.Rg.cor<-.corrApply(ModelTempFut$Radiation, mbias$corrRad[[m]], mbias$varmethods["Radiation"], wet.day = FALSE)
     ModelTempFut.Rg.cor[ModelTempFut.Rg.cor<0]<-0
 
     #Correction WS (if NA then use input WS)
     if(!(is.na(mbias$corrWS[[m]])[1]))  {
-      ModelTempFut.WS.cor<-.corrApply(ModelTempFut$WindSpeed, mbias$corrWS[[m]], mbias$varmethods["WindSpeed"])
+      ModelTempFut.WS.cor<-.corrApply(ModelTempFut$WindSpeed, mbias$corrWS[[m]], mbias$varmethods["WindSpeed"], wet.day = FALSE)
     }
     else if(fill_wind) ModelTempFut.WS.cor<-ModelTempFut$WindSpeed
     ModelTempFut.WS.cor[ModelTempFut.WS.cor<0]<-0 #Truncate to minimum value
@@ -167,7 +180,7 @@
     #First transform RH into specific humidity
     HSmodelFut<-.HRHS(Tc=ModelTempFut[,"MeanTemperature"] ,HR=ModelTempFut[,"MeanRelativeHumidity"])
     #Second compute and apply the bias to specific humidity
-    HSmodelFut.cor<-.corrApply(HSmodelFut, mbias$corrHS[[m]], mbias$varmethods["MeanRelativeHumidity"])
+    HSmodelFut.cor<-.corrApply(HSmodelFut, mbias$corrHS[[m]], mbias$varmethods["MeanRelativeHumidity"], wet.day = FALSE)
     #Back transform to relative humidity (mean, max, min)
     ModelTempFut.RHM.cor<-.HSHR(Tc=ModelTempFut.TM.cor ,HS=HSmodelFut.cor)
     ModelTempFut.RHM.cor[ModelTempFut.RHM.cor<0]<-0

@@ -16,15 +16,15 @@ A list with the following items (default values in brackets):
 \item{\code{methods}: A list with the correction method for each variable. Defaults are:
 \itemize{
 \item{\code{MeanTemperature = "unbias"}}
-\item{\code{MinTemperature = "scaling"}}
-\item{\code{MaxTemperature = "scaling"}}
+\item{\code{MinTemperature = "quantmap"}}
+\item{\code{MaxTemperature = "quantmap"}}
 \item{\code{Precipitation = "quantmap"}}
 \item{\code{MeanRelativeHumidity = "unbias"}}
 \item{\code{Radiation = "unbias"}}
 \item{\code{WindSpeed = "quantmap"}}
 }
 }
-\item{\code{fill_wind [= TRUE]}: A logical flag to fill wind speed values with coarse-scale values when fine-scale data is missing.}
+\item{\code{fill_wind [= TRUE]}: A logical flag to fill wind speed values with uncorrected values when reference data is missing.}
 \item{\code{wind_height  [= 10]}: Wind measurement height (in m).}
 }
 }

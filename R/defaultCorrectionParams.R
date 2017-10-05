@@ -7,7 +7,7 @@ defaultCorrectionParams<-function() {
                  Precipitation = "quantmap",
                  MeanRelativeHumidity = "unbias",
                  Radiation = "unbias",
-                 WindSpeed = "scaling"),
+                 WindSpeed = "quantmap"),
    fill_wind = TRUE,
    wind_height = 10 #Wind height (in m)
   ))

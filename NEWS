@@ -4,8 +4,12 @@
 
 __Version history__
 
+_Version 0.6.5, October 2017.
+
+1. Default correction method for wind switched to 'quantmap'.
+
 _Version 0.6.4, September 2017.
 
-1. Corrected a bug in the correction of relative humidity
+1. Corrected a bug in the correction of relative humidity.
 2. New function 'correctionpoints.errors' to evaluate correction errors for the reference period.
 

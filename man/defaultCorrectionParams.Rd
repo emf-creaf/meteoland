@@ -21,7 +21,7 @@ A list with the following items (default values in brackets):
 \item{\code{Precipitation = "quantmap"}}
 \item{\code{MeanRelativeHumidity = "unbias"}}
 \item{\code{Radiation = "unbias"}}
-\item{\code{WindSpeed = "scaling"}}
+\item{\code{WindSpeed = "quantmap"}}
 }
 }
 \item{\code{fill_wind [= TRUE]}: A logical flag to fill wind speed values with coarse-scale values when fine-scale data is missing.}

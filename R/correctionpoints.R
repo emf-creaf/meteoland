@@ -1,5 +1,6 @@
 #Calculates biases or other correction parameters for a given data period
 .corrParam<-function(DatTemp, ModelTempHist, varmethods, varname, varnamemean = NULL, verbose=TRUE) {
+  if(sum(!is.na(ModelTempHist))==0 || sum(!is.na(DatTemp))==0) return(NA)
   if(varmethods[varname]=="unbias") {
     corr<-mean(ModelTempHist[,varname]-DatTemp[,varname], na.rm=TRUE)
   } else if(varmethods[varname]=="scaling") {
@@ -67,8 +68,16 @@
 
     #Calculate correction params depending on the correction method
     corrTmean[[m]] = .corrParam(DatTemp, ModelTempHist, varmethods, "MeanTemperature")
-    corrTmin[[m]] = .corrParam(DatTemp, ModelTempHist, varmethods, "MinTemperature", "MeanTemperature")
-    corrTmax[[m]] = .corrParam(DatTemp, ModelTempHist, varmethods, "MaxTemperature", "MeanTemperature")
+    if(varmethods["MinTemperature"]=="unbias" && varmethods["MeanTemperature"]=="unbias") {#for unbias use tmean delta (to avoid tmin > tmean)
+      corrTmin[[m]] = corrTmean[[m]]
+    } else {
+      corrTmin[[m]] = .corrParam(DatTemp, ModelTempHist, varmethods, "MinTemperature", "MeanTemperature")
+    }
+    if(varmethods["MaxTemperature"]=="unbias" && varmethods["MeanTemperature"]=="unbias") {#for unbias use tmean delta (to avoid tmax < tmean)
+      corrTmax[[m]] = corrTmean[[m]]
+    } else {
+      corrTmax[[m]] = .corrParam(DatTemp, ModelTempHist, varmethods, "MaxTemperature", "MeanTemperature")
+    }
     corrPrec[[m]] = .corrParam(DatTemp, ModelTempHist, varmethods, "Precipitation")
     corrRad[[m]] = .corrParam(DatTemp, ModelTempHist, varmethods, "Radiation")
     corrWS[[m]] = .corrParam(DatTemp, ModelTempHist, varmethods, "WindSpeed")
@@ -123,8 +132,6 @@
     selFut <- (MODFut.months==m)
     ModelTempFut<-MODFut[selFut,]
 
-    
-
     #Correction Tmean
     ModelTempFut.TM.cor <-.corrApply(ModelTempFut$MeanTemperature, mbias$corrTmean[[m]], mbias$varmethods["MeanTemperature"])
     
@@ -136,7 +143,7 @@
     }
     
     #Correction Tmax
-    if(mbias$varmethods["MinTemperature"]=="scaling") {
+    if(mbias$varmethods["MaxTemperature"]=="scaling") {
       ModelTempFut.TX.cor<-ModelTempFut.TM.cor + ((ModelTempFut$MaxTemperature-ModelTempFut$MeanTemperature)*mbias$corrTmax[[m]])
     } else {
       ModelTempFut.TX.cor<-.corrApply(ModelTempFut$MaxTemperature, mbias$corrTmax[[m]], mbias$varmethods["MaxTemperature"])
@@ -150,7 +157,7 @@
     ModelTempFut.Rg.cor[ModelTempFut.Rg.cor<0]<-0
 
     #Correction WS (if NA then use input WS)
-    if(sum(!is.na(ModelTempFut$WindSpeed))>0)  {
+    if(!(is.na(mbias$corrWS[[m]])[1]))  {
       ModelTempFut.WS.cor<-.corrApply(ModelTempFut$WindSpeed, mbias$corrWS[[m]], mbias$varmethods["WindSpeed"])
     }
     else if(fill_wind) ModelTempFut.WS.cor<-ModelTempFut$WindSpeed

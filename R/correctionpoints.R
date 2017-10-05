@@ -150,12 +150,12 @@
     ModelTempFut.Rg.cor[ModelTempFut.Rg.cor<0]<-0
 
     #Correction WS (if NA then use input WS)
-    if(!is.na(mbias$corrWS[[m]])) {
+    if(sum(!is.na(ModelTempFut$WindSpeed))>0)  {
       ModelTempFut.WS.cor<-.corrApply(ModelTempFut$WindSpeed, mbias$corrWS[[m]], mbias$varmethods["WindSpeed"])
     }
     else if(fill_wind) ModelTempFut.WS.cor<-ModelTempFut$WindSpeed
-    ModelTempFut.WS.cor[ModelTempFut.WS.cor<0]<-0
-    
+    ModelTempFut.WS.cor[ModelTempFut.WS.cor<0]<-0 #Truncate to minimum value
+
     #Correction RH
     #First transform RH into specific humidity
     HSmodelFut<-.HRHS(Tc=ModelTempFut[,"MeanTemperature"] ,HR=ModelTempFut[,"MeanRelativeHumidity"])

@@ -144,9 +144,9 @@
     
     #Correction Tmin
     if(mbias$varmethods["MinTemperature"]=="scaling") {
-      ModelTempFut.TN.cor<-ModelTempFut.TM.cor + ((ModelTempFut$MinTemperature-ModelTempFut$MeanTemperature)*mbias$corrTmin[[m]])
+      ModelTempFut.TN.cor<-ModelTempFut.TM.cor + (pmin(ModelTempFut$MinTemperature-ModelTempFut$MeanTemperature,0)*mbias$corrTmin[[m]])
     } else if(mbias$varmethods["MinTemperature"]=="quantmap") {
-      ModelTempFut.TN.cor<-ModelTempFut.TM.cor + .corrApply((ModelTempFut$MinTemperature-ModelTempFut$MeanTemperature), 
+      ModelTempFut.TN.cor<-ModelTempFut.TM.cor + .corrApply(pmin(ModelTempFut$MinTemperature-ModelTempFut$MeanTemperature,0), 
                                                             mbias$corrTmin[[m]], mbias$varmethods["MinTemperature"], wet.day = FALSE)
     } else {#unbias/none
       ModelTempFut.TN.cor<-.corrApply(ModelTempFut$MinTemperature, mbias$corrTmin[[m]], mbias$varmethods["MinTemperature"], wet.day = FALSE)
@@ -154,9 +154,9 @@
     
     #Correction Tmax
     if(mbias$varmethods["MaxTemperature"]=="scaling") {
-      ModelTempFut.TX.cor<-ModelTempFut.TM.cor + ((ModelTempFut$MaxTemperature-ModelTempFut$MeanTemperature)*mbias$corrTmax[[m]])
+      ModelTempFut.TX.cor<-ModelTempFut.TM.cor + (pmax(ModelTempFut$MaxTemperature-ModelTempFut$MeanTemperature,0)*mbias$corrTmax[[m]])
     } else if(mbias$varmethods["MaxTemperature"]=="quantmap") {
-      ModelTempFut.TX.cor<-ModelTempFut.TM.cor + .corrApply((ModelTempFut$MaxTemperature-ModelTempFut$MeanTemperature), 
+      ModelTempFut.TX.cor<-ModelTempFut.TM.cor + .corrApply(pmax(ModelTempFut$MaxTemperature-ModelTempFut$MeanTemperature,0), 
                                                             mbias$corrTmax[[m]], mbias$varmethods["MaxTemperature"], wet.day = FALSE)
     } else { #unbias/none
       ModelTempFut.TX.cor<-.corrApply(ModelTempFut$MaxTemperature, mbias$corrTmax[[m]], mbias$varmethods["MaxTemperature"], wet.day = FALSE)

@@ -62,9 +62,9 @@
       
       #Correction Tmin
       if(varmethods["MinTemperature"]=="scaling") {
-        DataCV$MinTemperature[indices[i]]<-DataCV$MeanTemperature[indices[i]] + ((ModelTempHistMonth$MinTemperature[i]-ModelTempHistMonth$MeanTemperature[i])*corrTmin)
+        DataCV$MinTemperature[indices[i]]<-DataCV$MeanTemperature[indices[i]] + (pmin(ModelTempHistMonth$MinTemperature[i]-ModelTempHistMonth$MeanTemperature[i],0)*corrTmin)
       } else if(varmethods["MinTemperature"]=="quantmap") {
-        DataCV$MinTemperature[indices[i]]<-DataCV$MeanTemperature[indices[i]] + .corrApply((ModelTempHistMonth$MinTemperature[i]-ModelTempHistMonth$MeanTemperature[i]), 
+        DataCV$MinTemperature[indices[i]]<-DataCV$MeanTemperature[indices[i]] + .corrApply(pmin(ModelTempHistMonth$MinTemperature[i]-ModelTempHistMonth$MeanTemperature[i],0), 
                                                               corrTmin, varmethods["MinTemperature"], wet.day = FALSE)
       } else {#unbias/none
         DataCV$MinTemperature[indices[i]]<-.corrApply(ModelTempHistMonth$MinTemperature[i], corrTmin, varmethods["MinTemperature"], wet.day = FALSE)
@@ -72,9 +72,9 @@
       
       #Correction Tmax
       if(varmethods["MaxTemperature"]=="scaling") {
-        DataCV$MaxTemperature[indices[i]]<-DataCV$MeanTemperature[indices[i]] + ((ModelTempHistMonth$MaxTemperature[i]-ModelTempHistMonth$MeanTemperature[i])*corrTmax)
+        DataCV$MaxTemperature[indices[i]]<-DataCV$MeanTemperature[indices[i]] + (pmax(ModelTempHistMonth$MaxTemperature[i]-ModelTempHistMonth$MeanTemperature[i],0)*corrTmax)
       } else if(varmethods["MaxTemperature"]=="quantmap") {
-        DataCV$MaxTemperature[indices[i]]<-DataCV$MeanTemperature[indices[i]] + .corrApply((ModelTempHistMonth$MaxTemperature[i]-ModelTempHistMonth$MeanTemperature[i]), 
+        DataCV$MaxTemperature[indices[i]]<-DataCV$MeanTemperature[indices[i]] + .corrApply(pmax(ModelTempHistMonth$MaxTemperature[i]-ModelTempHistMonth$MeanTemperature[i],0), 
                                                                                            corrTmax, varmethods["MaxTemperature"], wet.day = FALSE)
       } else {#unbias/none
         DataCV$MaxTemperature[indices[i]]<-.corrApply(ModelTempHistMonth$MaxTemperature[i], corrTmax, varmethods["MaxTemperature"], wet.day = FALSE)

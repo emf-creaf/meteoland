@@ -99,12 +99,12 @@ The package provides two functions to extract/reshape meteorological data from t
 
 \subsection{Reading and writing meteorological data}
 \subsubsection{Point meteorology}
-Objects of class \texttt{SpatialPointsMeteorology} are stored in the disk using one \textbf{ascii} data file for each of their spatial points. Package \texttt{meteoland} provides four input/output functions for point meteorology:
+Objects of class \texttt{SpatialPointsMeteorology} are stored in the disk using one data file for each of their spatial points. Files can be stored in \textbf{ascii} format or \textbf{rds} (compressed) format. Package \texttt{meteoland} provides four input/output functions for point meteorology:
 \begin{itemize}
-\item{Function \texttt{readmeteorologypoint()} reads the meteorological data stored in one \textbf{ascii} data file and returns a data frame.}
-\item{Function \texttt{writemeteorologypoint()} writes the meteorological data of a single point as an \textbf{ascii} file in the file system.}
-\item{Function \texttt{readmeteorologypointfiles()} reads several \textbf{ascii} files and returns an object of class \texttt{SpatialPointsMeteorology}.}
-\item{Functions \texttt{writemeteorologypointfiles()} writes several \textbf{ascii} files in the disk, one per spatial point. Metadata (i.e. the spatial coordinates of each point and the corresponding file path) is stored in an additional file.}
+\item{Function \texttt{readmeteorologypoint()} reads the meteorological data stored in one \textbf{ascii}/\textbf{rds} data file and returns a data frame.}
+\item{Function \texttt{writemeteorologypoint()} writes the meteorological data of a single point as an \textbf{ascii}/\textbf{rds} file in the file system.}
+\item{Function \texttt{readmeteorologypointfiles()} reads several \textbf{ascii}/\textbf{rds} files and returns an object of class \texttt{SpatialPointsMeteorology}.}
+\item{Functions \texttt{writemeteorologypointfiles()} writes several \textbf{ascii}/\textbf{rds} files in the disk, one per spatial point. Metadata (i.e. the spatial coordinates of each point and the corresponding file path) is stored in an additional file.}
 \end{itemize}
 
 \subsubsection{Grid meteorology}

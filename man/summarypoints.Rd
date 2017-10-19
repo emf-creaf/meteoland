@@ -15,7 +15,7 @@ summarygrid(griddata, dates = NULL)
 %- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{points}{
-    An object of class \code{\link{SpatialPointsMeteorology-class}} with the coordinates and meteorological data of the locations for which summaries are desired. Alternatively, an object of class \code{\link{SpatialPointsDataFrame-class}} containing the meta data (columns \code{dir} and \code{filename}) of meteorological files that will be sequentially read from the disk.
+    An object of class \code{\link{SpatialPointsMeteorology-class}} with the coordinates and meteorological data of the locations for which summaries are desired. Alternatively, an object of class \code{\link{SpatialPointsDataFrame-class}} containing the meta data (columns \code{dir},  \code{filename} and possibly \code{format}) of meteorological files that will be sequentially read from the disk.
   }
   \item{var}{The name of the meteorological variable to be summarized.}
   \item{fun}{The function to be calculated on values of each point. If \code{freq} is specified, the function will be calculated by intervals.}

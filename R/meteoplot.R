@@ -11,7 +11,11 @@ meteoplot<-function(object, index, var="MeanTemperature",
   if(inherits(object,"SpatialPointsDataFrame")) {
     f = paste(object@data$dir[index], object@data$filename[index], sep="/")
     cat(paste("Data read from file:", f, "\n"))
-    df = readmeteorologypoint(f)
+    if("format" %in% names(object@data)) { ##Format specified
+      df = readmeteorologypoint(f, format=object@data$format[index])
+    } else {
+      df = readmeteorologypoint(f)
+    }
     if(is.null(dates)) dates = as.Date(rownames(df))
   } else if(is.null(dates)) dates = object@dates
   if(!is.null(months)) {

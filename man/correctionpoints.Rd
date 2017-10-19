@@ -10,7 +10,7 @@ Function \code{correctionpoints} performs correction of predicted climatic data 
 }
 \usage{
 correctionpoints(object, points, topodata = NULL, dates = NULL,
-                  export = FALSE, exportDir = getwd(), exportFormat = "meteoland",
+                  export = FALSE, exportDir = getwd(), exportFormat = "meteoland/txt",
                   metadatafile = "MP.txt", corrOut = FALSE, verbose = TRUE)
 correctionpoints.errors(object, points, topodata = NULL, 
                   error.type="residuals.cv",keep.data = FALSE, verbose = FALSE)
@@ -20,16 +20,16 @@ correctionpoints.errors(object, points, topodata = NULL,
 \arguments{
   \item{object}{An object of class \code{\link{MeteorologyUncorrectedData-class}}.}
   \item{points}{
-    An object of class \code{\link{SpatialPointsMeteorology-class}} with the coordinates and historical meteorological data of the locations for which correction of predicted climatic data has to be done. Alternatively, an object of class \code{\link{SpatialPointsDataFrame-class}} containing the meta data (columns \code{dir} and \code{filename}) of meteorological files that will be read from the disk.
+    An object of class \code{\link{SpatialPointsMeteorology-class}} with the coordinates and historical meteorological data of the locations for which correction of predicted climatic data has to be done. Alternatively, an object of class \code{\link{SpatialPointsDataFrame-class}} containing the meta data (columns \code{dir},  \code{filename} and possibly \code{format}) of meteorological files that will be read from the disk.
   }
   \item{topodata}{A data frame with topographic data for each point (i.e. three columns named \code{elevation}, \code{slope} and \code{aspect}). If \code{topodata = NULL} then Penman's potential evapotranspiration is not calculated.}
   \item{dates}{An object of class \code{\link{Date}}. If \code{dates = NULL} then all dates in \code{object} are processed.}
   \item{export}{
     If \code{export = FALSE} the result of correction is stored in memory. Otherwise the result is written in the disk (using the format specified in \code{exportFormat}).
   }
-  \item{exportDir}{Output directory for downscaled meteorology.}
+  \item{exportDir}{Output directory for corrected meteorology.}
   \item{metadatafile}{The name of the file that will store the meta data describing all written files.}
-  \item{exportFormat}{Format of meteorological data. Current accepted formats are \code{"castanea"} and \code{"meteoland"}.}
+  \item{exportFormat}{Export format for meteorological data (see \code{\link{writemeteorologypoint}}).}
   \item{corrOut}{Boolean flag to indicate that correction parameters (i.e. calculated biases) should be included with the output. Setting \code{corrOut = TRUE} changes the returned value.}
   \item{verbose}{Boolean flag to print process information.}
   \item{error.type}{String to specify the error to be evaluated, either \code{"before"} (before correction), \code{"residual"} (after correction) or \code{"residual.cv"} (after correction, but using cross-validation).}

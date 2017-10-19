@@ -10,7 +10,7 @@ This function reads a set of NetCDF files (one per variable) and extracts data f
 }
 \usage{
 extractNetCDF(ncdf_files, bbox = NULL, offset = 0, cells = NULL, export = TRUE,
-              exportDir = getwd(), exportFormat = "meteoland", mpfilename = "MP.txt")
+              exportDir = getwd(), exportFormat = "meteoland/txt", mpfilename = "MP.txt")
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -25,7 +25,7 @@ Boundary box (2 x 2 matrix) specifying the limit coordinates of a study area (in
 A (n x 2) matrix specifying the x and y indices of n cells in a grid.
 }
   \item{export}{If \code{export = FALSE} the extracted data is stored in memory. Otherwise the result is written in the disk (using the format specified in \code{exportFormat}).}
-  \item{exportFormat}{Format of meteorological data. Current accepted formats are \code{"castanea"} and \code{"meteoland"}.}
+  \item{exportFormat}{Export format for meteorological data (see \code{\link{writemeteorologypoint}}).}
   \item{exportDir}{Output directory for extracted meteorology.}
   \item{mpfilename}{The name of the file that will store the meta data describing all written files.}
 

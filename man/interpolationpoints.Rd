@@ -11,7 +11,7 @@ Interpolates meteorological data for points using an object of class \code{\link
 }
 \usage{
 interpolationpoints(object, points, dates = NULL, export = FALSE,
-                    exportDir = getwd(), exportFormat = "meteoland",
+                    exportDir = getwd(), exportFormat = "meteoland/txt",
                     metadatafile = "MP.txt", verbose=TRUE)
 }
 %- maybe also 'usage' for other objects documented here.
@@ -23,8 +23,8 @@ interpolationpoints(object, points, dates = NULL, export = FALSE,
     If \code{export = FALSE} the result of interpolation is stored in memory. Otherwise the result is written in the disk (using the format specified in \code{exportFormat}).
   }
   \item{exportDir}{Output directory for interpolated meteorology data.}
-  \item{exportFormat}{Format of meteorological data. Current accepted formats are \code{"castanea"} and \code{"meteoland"}.}
-  \item{metadatafile}{The name of the file that will store the meta data describing all written files.}
+  \item{exportFormat}{Export format for meteorological data (see \code{\link{writemeteorologypoint}}).}
+  \item{metadatafile}{The name of the ascii text file that will store the meta data describing all written files.}
   \item{verbose}{Boolean flag to print process information.}
 }
 \value{

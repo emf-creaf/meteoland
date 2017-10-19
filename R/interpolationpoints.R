@@ -138,8 +138,9 @@
 }
 
 interpolationpoints<-function(object, points, dates = NULL,
-                              export=FALSE, exportDir = getwd(), exportFormat = "meteoland",
+                              export=FALSE, exportDir = getwd(), exportFormat = "meteoland/txt",
                               metadatafile = "MP.txt", verbose=TRUE) {
+  exportFormat = match.arg(exportFormat, c("meteoland/txt", "meteoland/rds", "castanea/txt", "castanea/rds"))
   if(!inherits(object,"MeteorologyInterpolationData")) stop("'object' has to be of class 'MeteorologyInterpolationData'.")
   if(!inherits(points,"SpatialPointsTopography")) stop("'points' has to be of class 'SpatialPointsTopography'.")
   if(proj4string(points)!=proj4string(object)) stop("CRS projection in 'points' has to the same as in 'object'.")
@@ -161,9 +162,13 @@ interpolationpoints<-function(object, points, dates = NULL,
   longlat = spTransform(points,CRS("+proj=longlat"))
   latitude = longlat@coords[,2]
 
+  
+  if(exportFormat %in% c("meteoland/txt","castanea/txt")) formatType = "txt"
+  else if (exportFormat %in% c("meteoland/rds","castanea/rds")) formatType = "rds"
+  
   # Define vector of data frames
   dfvec = vector("list",npoints)
-  dfout = data.frame(dir = rep(exportDir, npoints), filename=paste(ids,".txt",sep=""))
+  dfout = data.frame(dir = rep(exportDir, npoints), filename=paste0(ids,".", formatType))
   dfout$dir = as.character(dfout$dir)
   dfout$filename = as.character(dfout$filename)
   rownames(dfout) = ids

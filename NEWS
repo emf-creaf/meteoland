@@ -9,6 +9,7 @@ _Version 0.6.5, October 2017.
 1. Default correction method for wind switched to 'quantmap'.
 2. Unbias method for Tmin and Tmax applies bias from Tmean (if also unbiasing).
 3. Quantile mapping method for Tmin and Tmax is applied to (Tmin-Tmean) and (Tmax-Tmean).
+4. Export format txt/rds
 
 _Version 0.6.4, September 2017.
 

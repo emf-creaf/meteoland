@@ -213,7 +213,7 @@
 }
 
 correctionpoints<-function(object, points, topodata = NULL, dates = NULL, export = FALSE,
-                            exportDir = getwd(), exportFormat = "meteoland",
+                            exportDir = getwd(), exportFormat = "meteoland/txt",
                             metadatafile = "MP.txt", corrOut = FALSE, verbose=TRUE) {
 
   #Check input classes
@@ -257,9 +257,14 @@ correctionpoints<-function(object, points, topodata = NULL, dates = NULL, export
     if(!is.null(rownames(points@data))) ids = rownames(points@data)
     else ids = 1:npoints
   }
-  dfout = data.frame(dir = rep(exportDir, npoints), filename=paste(ids,".txt",sep=""))
+  
+  if(exportFormat %in% c("meteoland/txt","castanea/txt")) formatType = "txt"
+  else if (exportFormat %in% c("meteoland/rds","castanea/rds")) formatType = "rds"
+  
+  dfout = data.frame(dir = rep(exportDir, npoints), filename=paste0(ids,".", formatType))
   dfout$dir = as.character(dfout$dir)
   dfout$filename = as.character(dfout$filename)
+  dfout$format = exportFormat
   rownames(dfout) = ids
   spdf = SpatialPointsDataFrame(as(points,"SpatialPoints"), dfout)
   colnames(spdf@coords)<-c("x","y")
@@ -275,7 +280,11 @@ correctionpoints<-function(object, points, topodata = NULL, dates = NULL, export
     } else {
       f = paste(points@data$dir[i], points@data$filename[i],sep="/")
       if(!file.exists(f)) stop(paste("Observed file '", f,"' does not exist!", sep=""))
-      obs = readmeteorologypoint(f)
+      if("format" %in% names(points@data)) { ##Format specified
+        obs = readmeteorologypoint(f, format=points@data$format[i])
+      } else {
+        obs = readmeteorologypoint(f)
+      }
     }
     #Find closest predicted climatic cell for reference/projection periods (ideally the same)
     d = sqrt(rowSums(sweep(xypred@coords,2,xy,"-")^2))
@@ -288,7 +297,11 @@ correctionpoints<-function(object, points, topodata = NULL, dates = NULL, export
       if(("dir" %in% names(object@reference_data))&&("filename" %in% names(object@reference_data))) {
         f = paste(object@reference_data$dir[ipred], object@reference_data$filename[ipred],sep="/")
         if(!file.exists(f)) stop(paste("Reference meteorology file '", f,"' does not exist!", sep=""))
-        rcmhist = readmeteorologypoint(f)
+        if("format" %in% names(object@reference_data)) { ##Format specified
+          rcmhist = readmeteorologypoint(f, format=object@reference_data$format[i])
+        } else {
+          rcmhist = readmeteorologypoint(f)
+        }
       } else if(nrow(object@coords)==1) {
         rcmhist = object@reference_data
       } else {
@@ -301,7 +314,11 @@ correctionpoints<-function(object, points, topodata = NULL, dates = NULL, export
       if(("dir" %in% names(object@projection_data))&&("filename" %in% names(object@projection_data))) {
         f = paste(object@projection_data$dir[ipred], object@projection_data$filename[ipred],sep="/")
         if(!file.exists(f)) stop(paste("Projection meteorology file '", f,"' does not exist!",sep=""))
-        rcmfut = readmeteorologypoint(f)
+        if("format" %in% names(object@projection_data)) { ##Format specified
+          rcmfut = readmeteorologypoint(f, format=object@projection_data$format[i])
+        } else {
+          rcmfut = readmeteorologypoint(f)
+        }
       } else if(nrow(object@coords)==1) {
         rcmfut = object@projection_data
       } else {
@@ -334,7 +351,7 @@ correctionpoints<-function(object, points, topodata = NULL, dates = NULL, export
     } else {
       if(dfout$dir[i]!="") f = paste(dfout$dir[i],dfout$filename[i], sep="/")
       else f = dfout$filename[i]
-      writemeteorologypoint(df, f, exportFormat)
+      writemeteorologypoint(df, f, dfout$format[i])
       if(verbose) cat(paste(" written to ",f, sep=""))
       if(exportDir!="") f = paste(exportDir,metadatafile, sep="/")
       else f = metadatafile

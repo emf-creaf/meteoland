@@ -23,7 +23,11 @@ extractpointdates<-function(points, dates = NULL) {
     } else {
       f = paste(points@data$dir[i], points@data$filename[i],sep="/")
       if(!file.exists(f)) stop(paste("Observed file '", f,"' does not exist!", sep=""))
-      obs = readmeteorologypoint(f)
+      if("format" %in% names(points@data)) { ##Format specified
+        obs = readmeteorologypoint(f, format=points@data$format[i])
+      } else {
+        obs = readmeteorologypoint(f)
+      }
     }
     for(d in 1:ndates) {
       if(is.null(res[[d]])) {

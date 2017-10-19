@@ -26,7 +26,11 @@ summarypoints<-function(points, var, fun=mean, freq=NULL, dates = NULL, months =
     } else {
       f = paste(points@data$dir[i], points@data$filename[i],sep="/")
       if(!file.exists(f)) stop(paste("Observed file '", f,"' does not exist!", sep=""))
-      obs = readmeteorologypoint(f)
+      if("format" %in% names(points@data)) { ##Format specified
+        obs = readmeteorologypoint(f, format=points@data$format[i])
+      } else {
+        obs = readmeteorologypoint(f)
+      }
     }
     if(is.null(dates)) dates = as.Date(row.names(obs))
     if(!is.null(months)) {
@@ -34,7 +38,7 @@ summarypoints<-function(points, var, fun=mean, freq=NULL, dates = NULL, months =
       dates = dates[m %in% months]
     }
     if(is.null(freq)) {
-      dfvec[[i]] =  do.call(fun, args=list(object=obs[as.character(dates),var],...))
+      dfvec[[i]] =  do.call(fun, args=list(obs[as.character(dates),var],...))
     } else {
       date.factor = cut(dates, breaks=freq)
       dfvec[[i]] = tapply(obs[as.character(dates),var],INDEX=date.factor, FUN=fun,...)
@@ -46,7 +50,10 @@ summarypoints<-function(points, var, fun=mean, freq=NULL, dates = NULL, months =
   rownames(dfout) = ids
   outvarnames = names(dfvec[[1]])
   if(!is.null(outvarnames)) names(dfout) = outvarnames
+  cat(paste("  Arranging output...\n", sep=""))
+  pb = txtProgressBar(0, npoints, 0, style = 3)
   for(i in 1:npoints) {
+    setTxtProgressBar(pb, i)
     dfout[i,] = as.numeric(dfvec[[i]])
   }
   return(SpatialPointsDataFrame(as(points,"SpatialPoints"),dfout))

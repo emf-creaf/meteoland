@@ -15,7 +15,7 @@ meteoplot(object, index, var="MeanTemperature",
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
-  \item{object}{An object of class \code{\link{SpatialPointsMeteorology-class}} or \code{\link{SpatialGridMeteorology-class}}. Alternatively, an object of class \code{\link{SpatialPointsDataFrame-class}} containing the meta data (columns \code{dir} and \code{filename}) of meteorological files.}
+  \item{object}{An object of class \code{\link{SpatialPointsMeteorology-class}} or \code{\link{SpatialGridMeteorology-class}}. Alternatively, an object of class \code{\link{SpatialPointsDataFrame-class}} containing the meta data (columns \code{dir}, \code{filename} and possibly \code{format}) of meteorological files.}
   \item{index}{An integer to indicate the point in a \code{\link{SpatialPointsMeteorology-class}} object or the grid cell in a \code{\link{SpatialGridMeteorology-class}} object.}
   \item{var}{The meteorological variable to be plotted.}
   \item{fun}{The name of a function to be calculated for summaries (only valid if \code{freq} is specified).}

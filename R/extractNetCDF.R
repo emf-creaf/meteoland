@@ -1,4 +1,4 @@
-extractNetCDF<-function(ncdf_files, bbox = NULL, offset = 0, cells = NULL, export = TRUE,  exportDir = getwd(), exportFormat = "meteoland", mpfilename = "MP.txt") {
+extractNetCDF<-function(ncdf_files, bbox = NULL, offset = 0, cells = NULL, export = TRUE,  exportDir = getwd(), exportFormat = "meteoland/txt", mpfilename = "MP.txt") {
 
   nfiles = length(ncdf_files)
   cat(paste("Number of NetCDFs: ", nfiles,"\n", sep=""))
@@ -175,7 +175,10 @@ extractNetCDF<-function(ncdf_files, bbox = NULL, offset = 0, cells = NULL, expor
         if(!export) {
           dfvec[[cnt]] = df
         } else {
-          filename = paste("P_",xi,"_",yi,".txt", sep="")
+          if(exportFormat %in% c("meteoland/txt","castanea/txt")) formatType = "txt"
+          else if (exportFormat %in% c("meteoland/rds","castanea/rds")) formatType = "rds"
+          
+          filename = paste0("P_",xi,"_",yi,".",formatType)
           if(exportDir!="") dir = paste(getwd(),exportDir,sep="/")
           else dir = getwd()
           spdf@data$dir[cnt] = dir

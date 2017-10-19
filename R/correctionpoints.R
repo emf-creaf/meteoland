@@ -298,7 +298,7 @@ correctionpoints<-function(object, points, topodata = NULL, dates = NULL, export
         f = paste(object@reference_data$dir[ipred], object@reference_data$filename[ipred],sep="/")
         if(!file.exists(f)) stop(paste("Reference meteorology file '", f,"' does not exist!", sep=""))
         if("format" %in% names(object@reference_data)) { ##Format specified
-          rcmhist = readmeteorologypoint(f, format=object@reference_data$format[i])
+          rcmhist = readmeteorologypoint(f, format=object@reference_data$format[ipred])
         } else {
           rcmhist = readmeteorologypoint(f)
         }
@@ -315,7 +315,7 @@ correctionpoints<-function(object, points, topodata = NULL, dates = NULL, export
         f = paste(object@projection_data$dir[ipred], object@projection_data$filename[ipred],sep="/")
         if(!file.exists(f)) stop(paste("Projection meteorology file '", f,"' does not exist!",sep=""))
         if("format" %in% names(object@projection_data)) { ##Format specified
-          rcmfut = readmeteorologypoint(f, format=object@projection_data$format[i])
+          rcmfut = readmeteorologypoint(f, format=object@projection_data$format[ipred])
         } else {
           rcmfut = readmeteorologypoint(f)
         }

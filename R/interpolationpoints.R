@@ -171,6 +171,7 @@ interpolationpoints<-function(object, points, dates = NULL,
   dfout = data.frame(dir = rep(exportDir, npoints), filename=paste0(ids,".", formatType))
   dfout$dir = as.character(dfout$dir)
   dfout$filename = as.character(dfout$filename)
+  dfout$format = exportFormat
   rownames(dfout) = ids
   spdf = SpatialPointsDataFrame(as(points,"SpatialPoints"), dfout)
   colnames(spdf@coords)<-c("x","y")

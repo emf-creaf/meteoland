@@ -86,14 +86,13 @@ extractNetCDF<-function(ncdf_files, bbox = NULL, offset = 0, cells = NULL, expor
   # Define vector of data frames
   dfvec = vector("list",ncells)
   dfout = data.frame(xi = rep(NA,ncells), yi = rep(NA,ncells), dir = rep("", ncells),
-                     filename=rep("", ncells),
+                     filename=rep("", ncells), format = rep(exportFormat, ncells),
                      v1_lon = rep(NA,ncells), v1_lat = rep(NA,ncells),
                      v2_lon = rep(NA,ncells), v2_lat = rep(NA,ncells),
                      v3_lon = rep(NA,ncells), v3_lat = rep(NA,ncells),
                      v4_lon = rep(NA,ncells), v4_lat = rep(NA,ncells))
   dfout$dir = as.character(dfout$dir)
   dfout$filename = as.character(dfout$filename)
-  dfout$format = exportFormat
   rownames(dfout) = 1:ncells
   cc = cbind(rep(NA, ncells), rep(NA, ncells))
   rownames(cc)<-1:ncells

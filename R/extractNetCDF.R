@@ -93,6 +93,7 @@ extractNetCDF<-function(ncdf_files, bbox = NULL, offset = 0, cells = NULL, expor
                      v4_lon = rep(NA,ncells), v4_lat = rep(NA,ncells))
   dfout$dir = as.character(dfout$dir)
   dfout$filename = as.character(dfout$filename)
+  dfout$format = exportFormat
   rownames(dfout) = 1:ncells
   cc = cbind(rep(NA, ncells), rep(NA, ncells))
   rownames(cc)<-1:ncells

@@ -3,7 +3,7 @@ Type: Package
 Title: Landscape Meteorology Tools
 Version: 0.6.6
 Date: 2017-10-19
-Author@R: c(
+Authors@R: c(
 	person('Miquel', 'De Cáceres', role=c('aut','cre'),
 	email='miquelcaceres@gmail.com'),
 	person('Nicolas', 'Martin', role='aut'),

@@ -4,6 +4,10 @@
 
 __Version history__
 
+_Version 0.6.7, November 2017.
+
+1. Improvements in 'subsample' function
+
 _Version 0.6.6, October 2017.
 
 1. Export format txt/rds

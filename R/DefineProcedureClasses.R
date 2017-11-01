@@ -31,6 +31,8 @@ setMethod("subsample", signature("MeteorologyInterpolationData"), definition =
     function(object, bbox = NULL,  stations=NULL, dates = NULL, buffer = 0) {
       cc = object@coords
       if(is.null(bbox)) bbox = object@bbox
+      
+      # Process station selection
       if(is.null(stations)) {
         stations = (cc[,1]>=bbox[1,1]-buffer) & (cc[,2]>=bbox[2,1]-buffer) &
           (cc[,1]<=bbox[1,2]+buffer) & (cc[,2]<=bbox[2,2]+buffer)
@@ -40,6 +42,8 @@ setMethod("subsample", signature("MeteorologyInterpolationData"), definition =
         stations = ((1:nrow(cc)) %in% stations)
       }
       if(sum(stations)==0) stop("Empty subset of stations!")
+      
+      # Process dates selection
       if(!is.null(dates)) {
         if(class(dates)!="Date") stop("'dates' has to be of class 'Date'.")
         seldates = as.character(object@dates) %in% as.character(dates)
@@ -47,6 +51,8 @@ setMethod("subsample", signature("MeteorologyInterpolationData"), definition =
       } else {
         seldates = rep(TRUE, length(object@dates))
       }
+      if(sum(seldates)<2) stop("Selected dates should be more than one.")
+      
       points = SpatialPoints(cc[stations,],object@proj4string)
       ilm = new("MeteorologyInterpolationData",
                 coords = cc[stations,],
@@ -71,8 +77,32 @@ setMethod("subsample", signature("MeteorologyInterpolationData"), definition =
                 params = object@params)
       if(!is.null(ilm@WFIndex)) ilm@WFIndex = ilm@WFIndex[stations, seldates]
       if(!is.null(ilm@WFFactor)) ilm@WFFactor = ilm@WFFactor[stations, seldates]
-      return(ilm)
       
+      # Check for stations with no data in any variable
+      sel = rep(FALSE, nrow(ilm@coords))
+      sel = sel | (rowSums(!is.na(ilm@MinTemperature))>0)
+      sel = sel | (rowSums(!is.na(ilm@MaxTemperature))>0)
+      sel = sel | (rowSums(!is.na(ilm@RelativeHumidity))>0)
+      sel = sel | (rowSums(!is.na(ilm@Precipitation))>0)
+      sel = sel | (rowSums(!is.na(ilm@Radiation))>0)
+      sel = sel | (rowSums(!is.na(ilm@WindSpeed))>0)
+      sel = sel | (rowSums(!is.na(ilm@WindDirection))>0)
+  
+      ilm@coords = ilm@coords[sel, ]
+      ilm@MinTemperature = ilm@MinTemperature[sel, ]
+      ilm@MaxTemperature = ilm@MaxTemperature[sel, ]
+      ilm@SmoothedTemperatureRange = ilm@SmoothedTemperatureRange[sel, ]
+      ilm@Precipitation = ilm@Precipitation[sel, ]
+      ilm@SmoothedPrecipitation = ilm@SmoothedPrecipitation[sel, ]
+      ilm@RelativeHumidity = ilm@RelativeHumidity[sel, ]
+      ilm@Radiation = ilm@Radiation[sel, ]
+      ilm@WindSpeed = ilm@WindSpeed[sel, ]
+      ilm@WindDirection = ilm@WindDirection[sel, ]
+      if(!is.null(ilm@WFIndex)) ilm@WFIndex = ilm@WFIndex[sel, ]
+      if(!is.null(ilm@WFFactor)) ilm@WFFactor = ilm@WFFactor[sel, ]
+      
+      if(sum(!sel)>0) warning(paste0(sum(!sel)," stations had no data after subsetting and were removed."))
+      return(ilm)
     }
 )
 setMethod("subsample", signature("MeteorologyUncorrectedData"), definition =

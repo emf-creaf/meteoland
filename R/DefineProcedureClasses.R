@@ -89,6 +89,9 @@ setMethod("subsample", signature("MeteorologyInterpolationData"), definition =
       sel = sel | (rowSums(!is.na(ilm@WindDirection))>0)
   
       ilm@coords = ilm@coords[sel, ]
+      ilm@elevation = ilm@elevation[sel]
+      ilm@slope = ilm@slope[sel]
+      ilm@aspect = ilm@aspect[sel]
       ilm@MinTemperature = ilm@MinTemperature[sel, ]
       ilm@MaxTemperature = ilm@MaxTemperature[sel, ]
       ilm@SmoothedTemperatureRange = ilm@SmoothedTemperatureRange[sel, ]

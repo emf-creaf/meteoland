@@ -76,8 +76,10 @@ interpolation.cv<-function(object, stations = NULL, verbose = FALSE) {
   mintemp_pred = as.matrix(MinTemperature[stations,])
   mintemp_pred[is.na(mintemp_obs)] = NA
   mintemp_error = mintemp_pred-mintemp_obs
-  mintemp_r2 = cor(as.vector(mintemp_pred), as.vector(mintemp_obs), use="complete.obs")
-    
+  mintemp_r2 = NA
+  if(sum(!is.na(as.vector(mintemp_pred)) & !is.na(as.vector(mintemp_obs)))>0) {
+    mintemp_r2 = cor(as.vector(mintemp_pred), as.vector(mintemp_obs), use="complete.obs")
+  }
   maxtemp_station_mae = rep(NA,nstations)
   maxtemp_station_bias = rep(NA,nstations)
   maxtemp_day_mae = rep(NA,ndates)
@@ -86,8 +88,10 @@ interpolation.cv<-function(object, stations = NULL, verbose = FALSE) {
   maxtemp_pred = as.matrix(MaxTemperature[stations,])
   maxtemp_pred[is.na(maxtemp_obs)] = NA
   maxtemp_error = maxtemp_pred-maxtemp_obs
-  maxtemp_r2 = cor(as.vector(maxtemp_pred), as.vector(maxtemp_obs), use="complete.obs")
-  
+  maxtemp_r2 = NA
+  if(sum(!is.na(as.vector(maxtemp_pred)) & !is.na(as.vector(maxtemp_obs)))>0) {
+    maxtemp_r2 = cor(as.vector(maxtemp_pred), as.vector(maxtemp_obs), use="complete.obs")
+  }
   temprange_station_mae = rep(NA,nstations)
   temprange_station_bias = rep(NA,nstations)
   temprange_day_mae = rep(NA,ndates)
@@ -95,7 +99,10 @@ interpolation.cv<-function(object, stations = NULL, verbose = FALSE) {
   temprange_obs = maxtemp_obs - mintemp_obs
   temprange_pred = maxtemp_pred - mintemp_pred
   temprange_error = temprange_pred - temprange_obs
-  temprange_r2 = cor(as.vector(temprange_pred), as.vector(temprange_obs), use="complete.obs")
+  temprange_r2 = NA
+  if(sum(!is.na(as.vector(temprange_pred)) & !is.na(as.vector(temprange_obs)))>0) {
+    temprange_r2 = cor(as.vector(temprange_pred), as.vector(temprange_obs), use="complete.obs")
+  }
   
   rh_station_mae = rep(NA,nstations)
   rh_station_bias = rep(NA,nstations)
@@ -105,8 +112,10 @@ interpolation.cv<-function(object, stations = NULL, verbose = FALSE) {
   rh_pred = as.matrix(RelativeHumidity[stations,])
   rh_pred[is.na(rh_obs)] = NA
   rh_error = rh_pred-rh_obs
-  rh_r2 = cor(as.vector(rh_pred), as.vector(rh_obs), use="complete.obs")
-  
+  rh_r2 = NA
+  if(sum(!is.na(as.vector(rh_pred)) & !is.na(as.vector(rh_obs)))>0) {
+    rh_r2 = cor(as.vector(rh_pred), as.vector(rh_obs), use="complete.obs")
+  }
   rad_station_mae = rep(NA,nstations)
   rad_station_bias = rep(NA,nstations)
   rad_day_mae = rep(NA,ndates)
@@ -115,7 +124,10 @@ interpolation.cv<-function(object, stations = NULL, verbose = FALSE) {
   rad_pred = as.matrix(Radiation[stations,])
   rad_pred[is.na(rad_obs)] = NA
   rad_error = rad_pred-rad_obs
-  rad_r2 = cor(as.vector(rad_pred), as.vector(rad_obs), use="complete.obs")
+  rad_r2 = NA
+  if(sum(!is.na(as.vector(rad_pred)) & !is.na(as.vector(rad_obs)))>0) {
+    rad_r2 = cor(as.vector(rad_pred), as.vector(rad_obs), use="complete.obs")
+  }
   
   prec_obs = as.matrix(object@Precipitation[stations,])
   prec_pred = as.matrix(Precipitation[stations,])

@@ -7,6 +7,7 @@
 \alias{radiation_directDiffuseDay}
 \alias{radiation_potentialRadiation}
 \alias{radiation_julianDay}
+\alias{radiation_skyLongwaveRadiation}
 \alias{radiation_outgoingLongwaveRadiation}
 \alias{radiation_netRadiation}
 \alias{radiation_solarRadiation}
@@ -32,6 +33,7 @@ radiation_directDiffuseDay(solarConstant, latrad, slorad, asprad, delta,
                            R_s, clearday, nsteps = 24)
 radiation_potentialRadiation(solarConstant, latrad, slorad, asprad, delta)
 radiation_julianDay(year, month, day)
+radiation_skyLongwaveRadiation(Tair, vpa, c)
 radiation_outgoingLongwaveRadiation(solarConstant, latrad, elevation,  slorad, 
                                     asprad, delta, vpa, tmin, tmax, R_s)
 radiation_netRadiation(solarConstant, latrad, elevation, slorad, asprad,  delta, 
@@ -60,7 +62,9 @@ radiation_sunRiseSet(latrad, slorad, asprad, delta)
   \item{J}{Julian day (integer), number of days since January 1, 4713 BCE at noon UTC.}
   \item{year, month, day}{Year, month and day as integers.}
   \item{alpha}{Surface albedo (from 0 to 1).}
-  \item{vpa}{Average daily vapor pressure deficit (kPa).}
+  \item{Tair}{Air temperature (in degrees Celsius).}
+  \item{vpa}{Average daily vapor pressure (kPa).}
+  \item{c}{Proportion of sky covered by clouds [0-1].}
   \item{tmin, tmax}{Minimum and maximum daily temperature (ºC).}
   \item{elevation}{Elevation above sea level (in m).}
   \item{precipitation}{Precipitation (in mm).}
@@ -78,6 +82,7 @@ Values returned for each function are:
 \item{\code{radiation_directDiffuseDay}: A data frame with instantaneous direct and diffusive radiation rates (for both SWR and PAR) for each subdaily time step.}
 \item{\code{radiation_potentialRadiation}: Daily (potential) solar radiation (in MJ·m-2).}
 \item{\code{radiation_julianDay}: Number of days since January 1, 4713 BCE at noon UTC.}
+\item{\code{radiation_skyLongwaveRadiation}: Instantaneous incoming (sky) longwave radiation (W·m-2).} 
 \item{\code{radiation_outgoingLongwaveRadiation}: Daily outgoing longwave radiation (MJ·m-2·day-1).} 
 \item{\code{radiation_netRadiation}: Daily net solar radiation (MJ·m-2·day-1).} 
 \item{\code{radiation_solarConstant}: Solar constant (in kW·m-2).}

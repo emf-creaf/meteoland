@@ -595,6 +595,38 @@ RcppExport SEXP _meteoland_directDiffuseDay(SEXP solarConstantSEXP, SEXP latradS
     UNPROTECT(1);
     return rcpp_result_gen;
 }
+// skyLongwaveRadiation
+double skyLongwaveRadiation(double Tair, double vpa, double c);
+static SEXP _meteoland_skyLongwaveRadiation_try(SEXP TairSEXP, SEXP vpaSEXP, SEXP cSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< double >::type Tair(TairSEXP);
+    Rcpp::traits::input_parameter< double >::type vpa(vpaSEXP);
+    Rcpp::traits::input_parameter< double >::type c(cSEXP);
+    rcpp_result_gen = Rcpp::wrap(skyLongwaveRadiation(Tair, vpa, c));
+    return rcpp_result_gen;
+END_RCPP_RETURN_ERROR
+}
+RcppExport SEXP _meteoland_skyLongwaveRadiation(SEXP TairSEXP, SEXP vpaSEXP, SEXP cSEXP) {
+    SEXP rcpp_result_gen;
+    {
+        Rcpp::RNGScope rcpp_rngScope_gen;
+        rcpp_result_gen = PROTECT(_meteoland_skyLongwaveRadiation_try(TairSEXP, vpaSEXP, cSEXP));
+    }
+    Rboolean rcpp_isInterrupt_gen = Rf_inherits(rcpp_result_gen, "interrupted-error");
+    if (rcpp_isInterrupt_gen) {
+        UNPROTECT(1);
+        Rf_onintr();
+    }
+    Rboolean rcpp_isError_gen = Rf_inherits(rcpp_result_gen, "try-error");
+    if (rcpp_isError_gen) {
+        SEXP rcpp_msgSEXP_gen = Rf_asChar(rcpp_result_gen);
+        UNPROTECT(1);
+        Rf_error(CHAR(rcpp_msgSEXP_gen));
+    }
+    UNPROTECT(1);
+    return rcpp_result_gen;
+}
 // outgoingLongwaveRadiation
 double outgoingLongwaveRadiation(double solarConstant, double latrad, double elevation, double slorad, double asprad, double delta, double vpa, double tmin, double tmax, double R_s);
 static SEXP _meteoland_outgoingLongwaveRadiation_try(SEXP solarConstantSEXP, SEXP latradSEXP, SEXP elevationSEXP, SEXP sloradSEXP, SEXP aspradSEXP, SEXP deltaSEXP, SEXP vpaSEXP, SEXP tminSEXP, SEXP tmaxSEXP, SEXP R_sSEXP) {
@@ -1366,6 +1398,7 @@ static int _meteoland_RcppExport_validate(const char* sig) {
         signatures.insert("double(*radiation_solarRadiation)(double,double,double,double,double,double,double,double,double,double)");
         signatures.insert("NumericVector(*radiation_directDiffuseInstant)(double,double,double,double,double,double,double,double,bool)");
         signatures.insert("DataFrame(*radiation_directDiffuseDay)(double,double,double,double,double,double,bool,int)");
+        signatures.insert("double(*radiation_skyLongwaveRadiation)(double,double,double)");
         signatures.insert("double(*radiation_outgoingLongwaveRadiation)(double,double,double,double,double,double,double,double,double,double)");
         signatures.insert("double(*radiation_netRadiation)(double,double,double,double,double,double,double,double,double,double,double)");
         signatures.insert("NumericVector(*.potentialRadiationSeries)(double,double,double,NumericVector)");
@@ -1401,6 +1434,7 @@ RcppExport SEXP _meteoland_RcppExport_registerCCallable() {
     R_RegisterCCallable("meteoland", "_meteoland_radiation_solarRadiation", (DL_FUNC)_meteoland_RDay_try);
     R_RegisterCCallable("meteoland", "_meteoland_radiation_directDiffuseInstant", (DL_FUNC)_meteoland_directDiffuseInstant_try);
     R_RegisterCCallable("meteoland", "_meteoland_radiation_directDiffuseDay", (DL_FUNC)_meteoland_directDiffuseDay_try);
+    R_RegisterCCallable("meteoland", "_meteoland_radiation_skyLongwaveRadiation", (DL_FUNC)_meteoland_skyLongwaveRadiation_try);
     R_RegisterCCallable("meteoland", "_meteoland_radiation_outgoingLongwaveRadiation", (DL_FUNC)_meteoland_outgoingLongwaveRadiation_try);
     R_RegisterCCallable("meteoland", "_meteoland_radiation_netRadiation", (DL_FUNC)_meteoland_netRadiation_try);
     R_RegisterCCallable("meteoland", "_meteoland_.potentialRadiationSeries", (DL_FUNC)_meteoland_potentialRadiationSeries_try);
@@ -1445,6 +1479,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_meteoland_RDay", (DL_FUNC) &_meteoland_RDay, 10},
     {"_meteoland_directDiffuseInstant", (DL_FUNC) &_meteoland_directDiffuseInstant, 9},
     {"_meteoland_directDiffuseDay", (DL_FUNC) &_meteoland_directDiffuseDay, 8},
+    {"_meteoland_skyLongwaveRadiation", (DL_FUNC) &_meteoland_skyLongwaveRadiation, 3},
     {"_meteoland_outgoingLongwaveRadiation", (DL_FUNC) &_meteoland_outgoingLongwaveRadiation, 10},
     {"_meteoland_netRadiation", (DL_FUNC) &_meteoland_netRadiation, 11},
     {"_meteoland_potentialRadiationSeries", (DL_FUNC) &_meteoland_potentialRadiationSeries, 4},

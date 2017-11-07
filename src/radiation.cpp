@@ -6,6 +6,7 @@ using namespace Rcpp;
 const double GSC_MJminm2 = 0.0820; //solar constant in MJ/m2/min
 const double GSC_kWm2 = 1.361; //in kW/m2
 const double SIGMA_MJ_day = 4.903*pow(10,-9.0); //Stefan-Boltzmann constant MJ/K^4/m2/day
+const double SIGMA_Wm2 = 5.67*pow(10,-8.0); //Stefan-Boltzmann constant J/s/K^4/m2
 
 /**
  * Computes Julian Day from a given date.
@@ -350,6 +351,27 @@ DataFrame directDiffuseDay(double solarConstant, double latrad, double slorad, d
                                     Named("PAR_diffuse") = PAR_diffuse);
   return(res);
 }
+
+
+/**
+ *  Estimates instantaneous thermal (long-wave) radiation from the sky (i.e. counterradiation)
+ *  Units: W/m2
+ *  
+ *  Campbell, G.S., & Norman, J.M. 1998. AN INTRODUCTION TO ENVIRONMENTAL BIOPHYSICS.: 2nd edition.
+ *  
+ *  Tair - Air temperature (ºC)
+ *  vpa - water vapour pressure (kPa)
+ *  c - fraction of sky covered by clouds
+ */
+// [[Rcpp::export("radiation_skyLongwaveRadiation")]]
+double skyLongwaveRadiation(double Tair, double vpa, double c = 0) {
+  double Tkelv = Tair+273.0;
+  double bb = SIGMA_Wm2*pow(Tkelv,4.0); //eq. 10.7 (Stefan-Boltzmann law for blackbodies)
+  double eac = 1.72 * pow(vpa/Tkelv,1.0/7.0); // eq. 10.10
+  double ea = (1.0 - 0.84*c)*eac + 0.84*c; //eq.10.12
+  return(ea*bb); // eq. 10.9 Energy emitted by gray bodies (no dependence of emissivity on wavelength) 
+}
+
 
 /**
 *   Estimates daily net outgoing longwave radiation from incoming solar radiation data

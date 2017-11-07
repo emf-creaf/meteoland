@@ -89,6 +89,10 @@ radiation_directDiffuseDay <- function(solarConstant, latrad, slorad, asprad, de
     .Call(`_meteoland_directDiffuseDay`, solarConstant, latrad, slorad, asprad, delta, R_s, clearday, nsteps)
 }
 
+radiation_skyLongwaveRadiation <- function(Tair, vpa, c = 0) {
+    .Call(`_meteoland_skyLongwaveRadiation`, Tair, vpa, c)
+}
+
 radiation_outgoingLongwaveRadiation <- function(solarConstant, latrad, elevation, slorad, asprad, delta, vpa, tmin, tmax, R_s) {
     .Call(`_meteoland_outgoingLongwaveRadiation`, solarConstant, latrad, elevation, slorad, asprad, delta, vpa, tmin, tmax, R_s)
 }

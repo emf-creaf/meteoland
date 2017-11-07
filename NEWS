@@ -7,6 +7,7 @@ __Version history__
 _Version 0.6.7, November 2017.
 
 1. Improvements in 'subsample' function
+2. New function 'radiation_skyLongwaveRadiation'
 
 _Version 0.6.6, October 2017.
 

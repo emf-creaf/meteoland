@@ -252,6 +252,25 @@ namespace meteoland {
         return Rcpp::as<DataFrame >(rcpp_result_gen);
     }
 
+    inline double radiation_skyLongwaveRadiation(double Tair, double vpa, double c = 0) {
+        typedef SEXP(*Ptr_radiation_skyLongwaveRadiation)(SEXP,SEXP,SEXP);
+        static Ptr_radiation_skyLongwaveRadiation p_radiation_skyLongwaveRadiation = NULL;
+        if (p_radiation_skyLongwaveRadiation == NULL) {
+            validateSignature("double(*radiation_skyLongwaveRadiation)(double,double,double)");
+            p_radiation_skyLongwaveRadiation = (Ptr_radiation_skyLongwaveRadiation)R_GetCCallable("meteoland", "_meteoland_radiation_skyLongwaveRadiation");
+        }
+        RObject rcpp_result_gen;
+        {
+            RNGScope RCPP_rngScope_gen;
+            rcpp_result_gen = p_radiation_skyLongwaveRadiation(Shield<SEXP>(Rcpp::wrap(Tair)), Shield<SEXP>(Rcpp::wrap(vpa)), Shield<SEXP>(Rcpp::wrap(c)));
+        }
+        if (rcpp_result_gen.inherits("interrupted-error"))
+            throw Rcpp::internal::InterruptedException();
+        if (rcpp_result_gen.inherits("try-error"))
+            throw Rcpp::exception(as<std::string>(rcpp_result_gen).c_str());
+        return Rcpp::as<double >(rcpp_result_gen);
+    }
+
     inline double radiation_outgoingLongwaveRadiation(double solarConstant, double latrad, double elevation, double slorad, double asprad, double delta, double vpa, double tmin, double tmax, double R_s) {
         typedef SEXP(*Ptr_radiation_outgoingLongwaveRadiation)(SEXP,SEXP,SEXP,SEXP,SEXP,SEXP,SEXP,SEXP,SEXP,SEXP);
         static Ptr_radiation_outgoingLongwaveRadiation p_radiation_outgoingLongwaveRadiation = NULL;

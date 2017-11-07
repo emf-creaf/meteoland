@@ -26,6 +26,8 @@ NumericVector directDiffuseInstant(double solarConstant, double latrad, double s
 DataFrame directDiffuseDay(double solarConstant, double latrad, double slorad, double asprad, double delta, 
                            double R_s, bool clearday, int nsteps = 24);
 
+double skyLongwaveRadiation(double Tair, double vpa, double c = 0);
+
 double outgoingLongwaveRadiation(double solarConstant, double latrad, double elevation,  double slorad,  double asprad, double delta, 
                                  double vpa, double tmin, double tmax, double R_s);
 

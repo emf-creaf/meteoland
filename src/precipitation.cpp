@@ -37,20 +37,21 @@ double interpolatePrecipitationPoint(double xp, double yp, double zp, NumericVec
     }
     //Weighted regression
     NumericVector wr = weightedRegression(pRat, zDif, WDif);
-    //    Rcout<<Rp<<" " <<wr[0]<<" " << wr[1]<<"\n";
+       // Rcout<<Rp<<" " <<wr[0]<<" " << wr[1]<<"\n";
     double Wnum = 0.0, Wden = 0.0, f = 0.0;
     //Apply weighting
     for(int i=0;i<nstations;i++) {
       if(P[i]>0) {
         f = wr[0]+wr[1]*(zp-Z[i]);
-        //        Rcout<<f<<"\n";
+               // Rcout<<f<<"\n";
         if(f>fmax) f = fmax;
         else if(f< ((-1.0)*fmax)) f = -1.0*fmax;
-        //        Rcout<<f<<" "<<((1.0+f)/(1.0-f))<<  "\n";
-        Wnum +=Wevent[i]*P[i]*((1.0+f)/(1.0-f));
-        Wden +=Wevent[i];
+        // if(Wevent[i]>0.0) Rcout<<" z:"<<Z[i]<<" P:"<<P[i]<<" f: "<<f<<" p:"<<((1.0+f)/(1.0-f))<< " wev:"<< Wevent[i]<<"\n";
+        Wnum +=Wamount[i]*P[i]*((1.0+f)/(1.0-f));
+        Wden +=Wamount[i];
       }
     }
+    // Rcout <<" PRED: "<< Wnum<<" "<<Wden<<" "<<Wnum/Wden<<"\n";
     return(Wnum/Wden);
   }
   return(0.0);

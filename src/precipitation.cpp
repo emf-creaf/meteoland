@@ -48,8 +48,8 @@ double interpolatePrecipitationPoint(double xp, double yp, double zp, NumericVec
         if(f>fmax) f = fmax;
         else if(f< ((-1.0)*fmax)) f = -1.0*fmax;
         // if(Wevent[i]>0.0) Rcout<<" z:"<<Z[i]<<" P:"<<P[i]<<" f: "<<f<<" p:"<<((1.0+f)/(1.0-f))<< " wev:"<< Wevent[i]<<"\n";
-        Wnum +=Wamount[i]*PO[i]*((1.0+f)/(1.0-f));
-        Wden +=Wamount[i]*PO[i];
+        Wnum +=Wamount[i]*P[i]*((1.0+f)/(1.0-f));
+        Wden +=Wamount[i];
       }
     }
     // Rcout <<" PRED: "<< Wnum<<" "<<Wden<<" "<<Wnum/Wden<<"\n";

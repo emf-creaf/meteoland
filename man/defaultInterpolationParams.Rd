@@ -30,7 +30,7 @@ A list with the following items (default values in brackets):
 \item{\code{St_Precipitation [= 5]}: Number of days for the temporal smoothing of precipitation.}
 \item{\code{St_TemperatureRange [= 15]}: Number of days for the temporal smoothing of temperature range.}
 \item{\code{pop_crit  [= 0.50]}: Critical precipitation occurrence parameter.}
-\item{\code{f_max  [= 0.95]}: Maximum value for precipitation regression extrapolations.}
+\item{\code{f_max [= 0.6]}: Maximum value for precipitation regression extrapolations (0.6 equals to a maximum of 4 times extrapolation).}
 \item{\code{wind_height  [= 10]}: Wind measurement height (in m).}
 }
 }

@@ -6,7 +6,7 @@ double interpolatePrecipitationPoint(double xp, double yp, double zp, NumericVec
                                      double iniRp = 140000, double alpha_event = 6.25, double alpha_amount = 6.25, int N_event = 20,int N_amount = 20, int iterations = 3, double popcrit = 0.5, double fmax = 0.95){
   int nstations = X.size();
   int nDif = pRat.size();
-  NumericVector r(nstations), PO(nstations,0.0);
+  NumericVector r(nstations);
   for(int i=0;i<nstations;i++) {
     r[i] = sqrt(pow(xp-X[i],2.0)+pow(yp-Y[i],2.0));
   }
@@ -17,7 +17,6 @@ double interpolatePrecipitationPoint(double xp, double yp, double zp, NumericVec
   double pop = 0.0;
   for(int i=0;i<nstations;i++) {
     if(P[i]>0) {
-      PO[i] = 1.0;
       pop += Wevent[i];
     }
   }

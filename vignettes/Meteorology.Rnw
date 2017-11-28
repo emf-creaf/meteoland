@@ -770,7 +770,7 @@ elevation = 100
 J = radiation_julianDay(2001,6,1)
 gsc = radiation_solarConstant(J)
 delta = radiation_solarDeclination(J)
-a=radiation_directDiffuseDay(gsc, latrad,0,0,delta, 30, TRUE, 100)
+a=radiation_directDiffuseDay(gsc, latrad,delta, 30, TRUE, 100)
 se = a$SolarElevation*(180/pi)
 se[a$Rpot==0]=NA
 plot(a$SolarHour*12/pi, se, type="l", ylim=c(0,70), ylab="Solar elevation (degrees)", xlab="Solar hour")

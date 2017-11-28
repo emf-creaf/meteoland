@@ -8,6 +8,7 @@ _Version 0.6.8, November 2017.
 
 1. Modification of the precipitation interpolation (kernels)
 2. Modification of radiation calculation (diffuse light for slopes where direct light is too low)
+3. Modification of partitioning between direct and diffuse radiation
 
 _Version 0.6.7, November 2017.
 

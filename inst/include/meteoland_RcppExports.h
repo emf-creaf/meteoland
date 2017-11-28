@@ -214,17 +214,17 @@ namespace meteoland {
         return Rcpp::as<double >(rcpp_result_gen);
     }
 
-    inline NumericVector radiation_directDiffuseInstant(double solarConstant, double latrad, double slorad, double asprad, double delta, double hrad, double R_p, double R_s, bool clearday) {
-        typedef SEXP(*Ptr_radiation_directDiffuseInstant)(SEXP,SEXP,SEXP,SEXP,SEXP,SEXP,SEXP,SEXP,SEXP);
+    inline NumericVector radiation_directDiffuseInstant(double solarConstant, double latrad, double delta, double hrad, double R_p, double R_s, bool clearday) {
+        typedef SEXP(*Ptr_radiation_directDiffuseInstant)(SEXP,SEXP,SEXP,SEXP,SEXP,SEXP,SEXP);
         static Ptr_radiation_directDiffuseInstant p_radiation_directDiffuseInstant = NULL;
         if (p_radiation_directDiffuseInstant == NULL) {
-            validateSignature("NumericVector(*radiation_directDiffuseInstant)(double,double,double,double,double,double,double,double,bool)");
+            validateSignature("NumericVector(*radiation_directDiffuseInstant)(double,double,double,double,double,double,bool)");
             p_radiation_directDiffuseInstant = (Ptr_radiation_directDiffuseInstant)R_GetCCallable("meteoland", "_meteoland_radiation_directDiffuseInstant");
         }
         RObject rcpp_result_gen;
         {
             RNGScope RCPP_rngScope_gen;
-            rcpp_result_gen = p_radiation_directDiffuseInstant(Shield<SEXP>(Rcpp::wrap(solarConstant)), Shield<SEXP>(Rcpp::wrap(latrad)), Shield<SEXP>(Rcpp::wrap(slorad)), Shield<SEXP>(Rcpp::wrap(asprad)), Shield<SEXP>(Rcpp::wrap(delta)), Shield<SEXP>(Rcpp::wrap(hrad)), Shield<SEXP>(Rcpp::wrap(R_p)), Shield<SEXP>(Rcpp::wrap(R_s)), Shield<SEXP>(Rcpp::wrap(clearday)));
+            rcpp_result_gen = p_radiation_directDiffuseInstant(Shield<SEXP>(Rcpp::wrap(solarConstant)), Shield<SEXP>(Rcpp::wrap(latrad)), Shield<SEXP>(Rcpp::wrap(delta)), Shield<SEXP>(Rcpp::wrap(hrad)), Shield<SEXP>(Rcpp::wrap(R_p)), Shield<SEXP>(Rcpp::wrap(R_s)), Shield<SEXP>(Rcpp::wrap(clearday)));
         }
         if (rcpp_result_gen.inherits("interrupted-error"))
             throw Rcpp::internal::InterruptedException();
@@ -233,17 +233,17 @@ namespace meteoland {
         return Rcpp::as<NumericVector >(rcpp_result_gen);
     }
 
-    inline DataFrame radiation_directDiffuseDay(double solarConstant, double latrad, double slorad, double asprad, double delta, double R_s, bool clearday, int nsteps = 24) {
-        typedef SEXP(*Ptr_radiation_directDiffuseDay)(SEXP,SEXP,SEXP,SEXP,SEXP,SEXP,SEXP,SEXP);
+    inline DataFrame radiation_directDiffuseDay(double solarConstant, double latrad, double delta, double R_s, bool clearday, int nsteps = 24) {
+        typedef SEXP(*Ptr_radiation_directDiffuseDay)(SEXP,SEXP,SEXP,SEXP,SEXP,SEXP);
         static Ptr_radiation_directDiffuseDay p_radiation_directDiffuseDay = NULL;
         if (p_radiation_directDiffuseDay == NULL) {
-            validateSignature("DataFrame(*radiation_directDiffuseDay)(double,double,double,double,double,double,bool,int)");
+            validateSignature("DataFrame(*radiation_directDiffuseDay)(double,double,double,double,bool,int)");
             p_radiation_directDiffuseDay = (Ptr_radiation_directDiffuseDay)R_GetCCallable("meteoland", "_meteoland_radiation_directDiffuseDay");
         }
         RObject rcpp_result_gen;
         {
             RNGScope RCPP_rngScope_gen;
-            rcpp_result_gen = p_radiation_directDiffuseDay(Shield<SEXP>(Rcpp::wrap(solarConstant)), Shield<SEXP>(Rcpp::wrap(latrad)), Shield<SEXP>(Rcpp::wrap(slorad)), Shield<SEXP>(Rcpp::wrap(asprad)), Shield<SEXP>(Rcpp::wrap(delta)), Shield<SEXP>(Rcpp::wrap(R_s)), Shield<SEXP>(Rcpp::wrap(clearday)), Shield<SEXP>(Rcpp::wrap(nsteps)));
+            rcpp_result_gen = p_radiation_directDiffuseDay(Shield<SEXP>(Rcpp::wrap(solarConstant)), Shield<SEXP>(Rcpp::wrap(latrad)), Shield<SEXP>(Rcpp::wrap(delta)), Shield<SEXP>(Rcpp::wrap(R_s)), Shield<SEXP>(Rcpp::wrap(clearday)), Shield<SEXP>(Rcpp::wrap(nsteps)));
         }
         if (rcpp_result_gen.inherits("interrupted-error"))
             throw Rcpp::internal::InterruptedException();

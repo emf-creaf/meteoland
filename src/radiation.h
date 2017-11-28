@@ -21,9 +21,9 @@ double RpotDay(double solarConstant, double latrad,  double slorad, double aspra
 double RDay(double solarConstant, double phi, double elevation, double slorad, double asprad, double delta,
             double diffTemp, double diffTempMonth, double VP, double P);
 
-NumericVector directDiffuseInstant(double solarConstant, double latrad, double slorad, double asprad, double delta, 
+NumericVector directDiffuseInstant(double solarConstant, double latrad, double delta, 
                                    double hrad, double R_p, double R_s, bool clearday);
-DataFrame directDiffuseDay(double solarConstant, double latrad, double slorad, double asprad, double delta, 
+DataFrame directDiffuseDay(double solarConstant, double latrad, double delta, 
                            double R_s, bool clearday, int nsteps = 24);
 
 double skyLongwaveRadiation(double Tair, double vpa, double c = 0);

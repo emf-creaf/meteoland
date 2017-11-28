@@ -268,10 +268,10 @@ double RDay(double solarConstant, double latrad, double elevation, double slorad
  * Agricultural and Forest Meteoroloogy, 38, 231–242.
  */
 // [[Rcpp::export("radiation_directDiffuseInstant")]]
-NumericVector directDiffuseInstant(double solarConstant, double latrad, double slorad, double asprad, double delta, 
+NumericVector directDiffuseInstant(double solarConstant, double latrad, double delta, 
                                    double hrad, double R_p, double R_s, bool clearday) {
-  //Instantaneous potential radiation
-  double Rpotinst = std::max(0.0,RpotInstant(solarConstant, latrad, slorad, asprad, delta, hrad));//kW
+  //Instantaneous potential radiation (not accounting for topography)
+  double Rpotinst = std::max(0.0,RpotInstant(solarConstant, latrad, 0.0, 0.0, delta, hrad));//kW
   //Solar elevation (for corrections)
   double beta = solarElevation(latrad, delta, hrad);
   double SgSoday = R_s/R_p;
@@ -329,14 +329,14 @@ NumericVector directDiffuseInstant(double solarConstant, double latrad, double s
  * Agricultural and Forest Meteoroloogy, 38, 231–242.
  */
 // [[Rcpp::export("radiation_directDiffuseDay")]]
-DataFrame directDiffuseDay(double solarConstant, double latrad, double slorad, double asprad, double delta, 
+DataFrame directDiffuseDay(double solarConstant, double latrad, double delta, 
                            double R_s, bool clearday, int nsteps = 24) {
-  double rpotday = RpotDay(solarConstant, latrad, slorad, asprad, delta);
+  double rpotday = RpotDay(solarConstant, latrad, 0.0, 0.0, delta); //Potential radiation not accounting for topography
   NumericVector Rpot(nsteps), Rg(nsteps), SWR_direct(nsteps), SWR_diffuse(nsteps), PAR_direct(nsteps), PAR_diffuse(nsteps);
   NumericVector Hrad(nsteps), beta(nsteps);
   for(int i=0;i<nsteps;i++) {
     Hrad[i] = -PI + (((double)i)+0.5)*(2.0*PI/((double)nsteps));
-    NumericVector ddi = directDiffuseInstant(solarConstant, latrad,slorad,asprad,delta, Hrad[i], 
+    NumericVector ddi = directDiffuseInstant(solarConstant, latrad, delta, Hrad[i], 
                                              rpotday, R_s, clearday);
     beta[i] = ddi["SolarElevation"];
     Rpot[i] = ddi["Rpot"];

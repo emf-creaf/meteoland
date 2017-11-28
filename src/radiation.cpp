@@ -290,24 +290,30 @@ NumericVector directDiffuseInstant(double solarConstant, double latrad, double d
   if(clearday) {
     SdfSgday2 = SdfSgday/(1.0+(1.0-pow(SdfSgday,2.0))*pow(cos(PI/4.0-beta),2.0)*pow(cos(beta),3.0));
   }
+  
   double PARday = R_s*0.5; //Daily PAR radiation (MJ)
   double SdfSdPAR = (1.0+0.3*(1.0-pow(SdfSgday,2.0)))*SdfSgday2;
   double Sdfday = SdfSgday2*R_s; //MJ
   double Sginst = (R_s*1000.0)*(Rpotinst/(R_p*1000.0));//kW
   double Sdfinst = std::min((Sdfday*1000.0)*(Rpotinst/(R_p*1000.0)), Sginst);//kW
+  if(R_p==0.0) {
+    Sginst = 0.0;
+    Sdfinst = 0.0;
+  }
   double Sdrinst = Sginst-Sdfinst;
   double SdfdayPAR = SdfSdPAR*PARday;
   double SginstPAR = Sginst*0.5;
   double SdfinstPAR = std::min((SdfdayPAR*1000.0)*(Rpotinst/(R_p*1000.0)), SginstPAR);//kW
+  if(R_p == 0.0) SdfinstPAR = 0.0;
   double SdrinstPAR = SginstPAR-SdfinstPAR;
-  
+    
   NumericVector res = NumericVector::create(Named("SolarElevation") = beta,
                                             Named("Rpot") = Rpotinst,
                                             Named("Rg") = Sginst,
                                             Named("SWR_direct") = Sdrinst,
-                          Named("SWR_diffuse") = Sdfinst,
-                          Named("PAR_direct") = SdrinstPAR,
-                          Named("PAR_diffuse") = SdfinstPAR);
+                                            Named("SWR_diffuse") = Sdfinst,
+                                            Named("PAR_direct") = SdrinstPAR,
+                                            Named("PAR_diffuse") = SdfinstPAR);
   return(res);
 }
 

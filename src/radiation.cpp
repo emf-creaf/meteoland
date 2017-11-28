@@ -219,29 +219,35 @@ double RDay(double solarConstant, double latrad, double elevation, double slorad
   //Number of seconds step (for integration of instant potential radiation and maximum transmittance)
   double step = 600.0; //10 min = 600 s step
   double Rpot = 0.0;
+  double RpotFlat = 0.0; //Rpot for a flat surface (needed for diffuse radiation)
   double B = 0.031+0.201*exp(-0.185*diffTempMonth);
   double Tfmax = 1.0-0.9*exp(-B*pow(diffTemp,1.5));
   if(precipitation>0.0) Tfmax *=0.75; //Correction for wet days
-  double Ttmax = 0.0, RpotInst = 0.0, costheta=0.0;
+  double Ttmax = 0.0, RpotInst = 0.0, RpotInstFlat = 0.0, costheta=0.0;
   double pratio = pow(1.0 -2.2569e-5*elevation,5.2553); // from Pearcy et al. 1991
   double hradstep = step*(5.0/1200.0)*(PI/180.0);
-  NumericVector srs = sunRiseSet(latrad, slorad, asprad, delta);
-  for(double hrad=srs[0];hrad<srs[1];hrad+=hradstep) { 
-    RpotInst = RpotInstant(solarConstant, latrad, slorad, asprad, delta, hrad);
-    if(RpotInst>0.0) {
-      //Solar zenith angle = 90º - solar elevation angle
-      //cos(solar zenith angle) = sin(solar elevation angle)
-      costheta = sin(solarElevation(latrad,delta, hrad));
-      if(costheta>0.0) {
-        Ttmax +=step*RpotInst*pow(0.87,pratio*(1.0/costheta));
-        Rpot += step*RpotInst;
-      }
+  NumericVector srsFlat = sunRiseSet(latrad, 0.0, 0.0, delta);
+  for(double hrad=srsFlat[0];hrad<srsFlat[1];hrad+=hradstep) { 
+    RpotInstFlat = std::max(0.0,RpotInstant(solarConstant, latrad, 0.0, 0.0, delta, hrad));
+    RpotFlat += step*RpotInstFlat;
+    //Solar zenith angle = 90º - solar elevation angle
+    //cos(solar zenith angle) = sin(solar elevation angle)
+    costheta = sin(solarElevation(latrad,delta, hrad));
+    if(costheta>0.0) {
+      Ttmax +=step*RpotInstFlat*pow(0.87,pratio*(1.0/costheta));
     }
   }
-  Ttmax = (Ttmax/Rpot) -6.1e-2*vpa; //vpa in kPa
-  //  Rcout<<Rpot<<" "<<Ttmax<<" "<<Tfmax<<"\n";
-  if(Rpot==0.0) return(0.0);
-  return((Rpot/1000.0)*Ttmax*Tfmax); //Radiation in MJ/m2
+  NumericVector srsSlope = sunRiseSet(latrad, slorad, asprad, delta);
+  for(double hrad=srsSlope[0];hrad<srsSlope[1];hrad+=hradstep) { 
+    RpotInst = std::max(0.0,RpotInstant(solarConstant, latrad, slorad, asprad, delta, hrad));
+    Rpot += step*RpotInst;
+  }
+  Ttmax = (Ttmax/RpotFlat) -6.1e-2*vpa; //vpa in kPa
+  Rcout<<Rpot<<" "<<RpotFlat<<" "<<Ttmax<<" "<<Tfmax<<"\n";
+  if(RpotFlat==0.0) return(0.0);
+  double dirdifCorrected = (Rpot/1000.0)*Ttmax*Tfmax;
+  double difCorrected = 0.3*(RpotFlat/1000.0)*(1.0-Ttmax*Tfmax); //Campbell, G.S., & Norman, J.M. 1998. AN INTRODUCTION TO ENVIRONMENTAL BIOPHYSICS.: 2nd edition.
+  return(std::max(dirdifCorrected, difCorrected)); //Radiation in MJ/m2
 }
 
 
@@ -479,12 +485,13 @@ NumericVector potentialRadiationPoints(double latrad, NumericVector slorad, Nume
 // [[Rcpp::export(".radiationSeries")]]
 NumericVector radiationSeries(double latrad, double elevation, double slorad, double asprad, NumericVector J,
                               NumericVector diffTemp, NumericVector diffTempMonth, NumericVector VP, NumericVector P) {
-  NumericVector Rpot(J.size());
+  NumericVector Rs(J.size());
   for(int i=0;i<J.size(); i++) {
-    Rpot[i] = RDay(solarConstant(J[i]), latrad,elevation, slorad,asprad, solarDeclination(J[i]), 
+    Rs[i] = RDay(solarConstant(J[i]), latrad,elevation, slorad,asprad, solarDeclination(J[i]), 
                    diffTemp[i], diffTempMonth[i], VP[i], P[i]);
+    // Rcout<<solarDeclination(J[i])<<" "<< slorad<< " "<< asprad <<" "<< Rs[i] <<"\n";
   }
-  return(Rpot);
+  return(Rs);
 }
 
 // [[Rcpp::export(".radiationPoints")]]

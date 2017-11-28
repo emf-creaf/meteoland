@@ -243,7 +243,7 @@ double RDay(double solarConstant, double latrad, double elevation, double slorad
     Rpot += step*RpotInst;
   }
   Ttmax = (Ttmax/RpotFlat) -6.1e-2*vpa; //vpa in kPa
-  Rcout<<Rpot<<" "<<RpotFlat<<" "<<Ttmax<<" "<<Tfmax<<"\n";
+  // Rcout<<Rpot<<" "<<RpotFlat<<" "<<Ttmax<<" "<<Tfmax<<"\n";
   if(RpotFlat==0.0) return(0.0);
   double dirdifCorrected = (Rpot/1000.0)*Ttmax*Tfmax;
   double difCorrected = 0.3*(RpotFlat/1000.0)*(1.0-Ttmax*Tfmax); //Campbell, G.S., & Norman, J.M. 1998. AN INTRODUCTION TO ENVIRONMENTAL BIOPHYSICS.: 2nd edition.

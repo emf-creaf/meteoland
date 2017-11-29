@@ -25,6 +25,7 @@ A list with the following items (default values in brackets):
 }
 }
 \item{\code{fill_wind [= TRUE]}: A logical flag to fill wind speed values with uncorrected values when reference data is missing.}
+\item{\code{allow_saturated [= FALSE]}: A logical flag to indicate whether relative humidity values above saturation (>100\%) are permitted (bias correction is performed on specific humidity).}
 \item{\code{wind_height  [= 10]}: Wind measurement height (in m).}
 }
 }

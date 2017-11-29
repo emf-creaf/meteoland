@@ -107,7 +107,7 @@
 }
 
 #Apply monthly corrections for one point
-.correctiononepoint<-function(mbias, MODFut, dates = NULL, fill_wind = FALSE, verbose=TRUE){
+.correctiononepoint<-function(mbias, MODFut, dates = NULL, fill_wind = FALSE, allow_saturated = FALSE, verbose=TRUE){
   if(!is.null(dates)) {
     sel3 = rownames(MODFut) %in% as.character(dates)
     if(sum(sel3)!=length(dates)) stop("Some dates are outside the predicted period.")
@@ -182,13 +182,13 @@
     #Second compute and apply the bias to specific humidity
     HSmodelFut.cor<-.corrApply(HSmodelFut, mbias$corrHS[[m]], mbias$varmethods["MeanRelativeHumidity"], wet.day = FALSE)
     #Back transform to relative humidity (mean, max, min)
-    ModelTempFut.RHM.cor<-.HSHR(Tc=ModelTempFut.TM.cor ,HS=HSmodelFut.cor)
+    ModelTempFut.RHM.cor<-.HSHR(Tc=ModelTempFut.TM.cor ,HS=HSmodelFut.cor, allow_saturated)
     ModelTempFut.RHM.cor[ModelTempFut.RHM.cor<0]<-0
     ModelTempFut.RHM.cor[ModelTempFut.RHM.cor>100]<-100
-    ModelTempFut.RHX.cor<-.HSHR(Tc=ModelTempFut.TN.cor ,HS=HSmodelFut.cor)
+    ModelTempFut.RHX.cor<-.HSHR(Tc=ModelTempFut.TN.cor ,HS=HSmodelFut.cor, allow_saturated)
     ModelTempFut.RHX.cor[ModelTempFut.RHX.cor<0]<-0
     ModelTempFut.RHX.cor[ModelTempFut.RHX.cor>100]<-100
-    ModelTempFut.RHN.cor<-.HSHR(Tc=ModelTempFut.TX.cor ,HS=HSmodelFut.cor)
+    ModelTempFut.RHN.cor<-.HSHR(Tc=ModelTempFut.TX.cor ,HS=HSmodelFut.cor, allow_saturated)
     ModelTempFut.RHN.cor[ModelTempFut.RHN.cor<0]<-0
     ModelTempFut.RHN.cor[ModelTempFut.RHN.cor>100]<-100
 
@@ -331,7 +331,8 @@ correctionpoints<-function(object, points, topodata = NULL, dates = NULL, export
     mbiasvec[[i]] = mbias
     
     # if(verbose) print(mbias)
-    df = .correctiononepoint(mbias,rcmfut, dates, mPar$fill_wind, verbose)
+    df = .correctiononepoint(mbias,rcmfut, dates, 
+                             fill_wind = mPar$fill_wind, allow_saturated =mPar$allow_saturated, verbose = verbose)
 
     if(is.null(dates)) dates = as.Date(rownames(df))
     #Calculate PET

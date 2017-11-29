@@ -2,6 +2,7 @@
 \name{interpolation.cv}
 \alias{interpolation.cv}
 \alias{interpolation.calibration}
+\alias{interpolation.calibration.fmax}
 \alias{summary.interpolation.cv}
 \alias{plot.interpolation.cv}
 %- Also NEED an '\alias' for EACH other topic documented here.
@@ -15,6 +16,9 @@ Function \code{interpolation.calibration} determines optimal interpolation param
 interpolation.calibration(object, stations = NULL, variable="Tmin",
                         N_seq = seq(5,30, by=5), alpha_seq = seq(0.25,10, by=0.25),
                         verbose = FALSE)
+interpolation.calibration.fmax(object, stations = NULL, 
+                               fmax_seq = seq(0.05,0.95, by=0.05), 
+                               verbose = FALSE)                        
 interpolation.cv(object, stations = NULL, verbose = FALSE)
 \S3method{summary}{interpolation.cv}(object, ...)
 \S3method{plot}{interpolation.cv}(x, type = "stations", ...)
@@ -26,6 +30,7 @@ interpolation.cv(object, stations = NULL, verbose = FALSE)
   \item{variable}{A string indicating the meteorological variable for which interpolation parameters 'N' and 'alpha' will be calibrated. Accepted values are 'Tmin' (for minimum temperature), 'Tmax' (for maximum temperature), 'Tdew' (for dew-point temperature), 'PrecEvent' (for precipitation events),'Prec' (for regression of precipitation amounts),'Prec' (for precipitation with the same values for precipitation events and regression of precipitation amounts).}
   \item{N_seq}{Set of average number of points to be tested.}
   \item{alpha_seq}{Set of alpha values to be tested.}
+  \item{fmax_seq}{Set of f_max values to be tested.}
   \item{verbose}{A logical flag to generate additional console output.}
   \item{x}{A S3 object of class \code{interpolation.cv} with cross-validation results.}
   \item{type}{A string of the plot type to be produced (either "stations" or "dates").}

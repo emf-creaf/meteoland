@@ -27,9 +27,9 @@ Set of functions used in the calculation of incoming solar radiation and net rad
 radiation_dateStringToJulianDays(dateStrings)
 radiation_daylength(latrad, slorad, asprad, delta)
 radiation_daylengthseconds(latrad, slorad, asprad, delta)
-radiation_directDiffuseInstant(solarConstant, latrad, slorad, asprad, delta,
+radiation_directDiffuseInstant(solarConstant, latrad, delta,
                                hrad, R_p, R_s, clearday)
-radiation_directDiffuseDay(solarConstant, latrad, slorad, asprad, delta,
+radiation_directDiffuseDay(solarConstant, latrad, delta,
                            R_s, clearday, nsteps = 24)
 radiation_potentialRadiation(solarConstant, latrad, slorad, asprad, delta)
 radiation_julianDay(year, month, day)

@@ -34,6 +34,8 @@ A (n x 2) matrix specifying the x and y indices of n cells in a grid.
 Function \code{extractNetCDF} first identifies which cells in NetCDF data should be extracted according to \code{bbox} (or the cells are indicated by the user using \code{cells}), and the overall period (days). If neither \code{bbox} or \code{cells} is supplied, then all NetCDF cells will be processed. For each cell to be processed, the function loops over all files (which can describe different variables and time periods) and extracts the corresponding data. The function transforms units to the units used in \code{meteoland}. If specific humidity and mean temperature are available, the function calculates mean relative humidity.
 
 Extracted meteorological data (a data frame with days in rows and meteorological variables in columns) can be stored in an object \code{\link{SpatialPointsMeteorology-class}} or it can be written in the disk (one file per cell). In the latter case, the output format can be chosen and the function also writes a supplementary file containing the meta data (i.e. the coordinates and filename of each file).
+
+Humidity in climate model files is given as specific humidity. This is converted to relative humidity and the conversion may produce values above saturation (>100\%) (see also \code{\link{defaultCorrectionParams}} for the same issue when performing bias correction).
 }
 \value{
 If \code{export = FALSE}, the function returns an object of class \code{\link{SpatialPointsMeteorology-class}} with the meteorological series for each cell (represented by a spatial point). Otherwise the function returns an object of class \code{\link{SpatialPointsDataFrame-class}} containing the meta data of the files written in the disk.

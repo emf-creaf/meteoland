@@ -1,4 +1,5 @@
-extractNetCDF<-function(ncdf_files, bbox = NULL, offset = 0, cells = NULL, export = TRUE,  exportDir = getwd(), exportFormat = "meteoland/txt", mpfilename = "MP.txt") {
+extractNetCDF<-function(ncdf_files, bbox = NULL, offset = 0, cells = NULL, export = TRUE, 
+                        exportDir = getwd(), exportFormat = "meteoland/txt", mpfilename = "MP.txt") {
 
   nfiles = length(ncdf_files)
   cat(paste("Number of NetCDFs: ", nfiles,"\n", sep=""))
@@ -170,7 +171,7 @@ extractNetCDF<-function(ncdf_files, bbox = NULL, offset = 0, cells = NULL, expor
         }
         close(pb)
         if(sum((!is.na(df$MeanTemperature)) & (!is.na(df$SpecificHumidity)))>0) {
-          df$MeanRelativeHumidity = .HSHR(Tc=df$MeanTemperature ,HS=df$SpecificHumidity)
+          df$MeanRelativeHumidity = .HSHR(Tc=df$MeanTemperature ,HS=df$SpecificHumidity, allowSaturated = TRUE)
         }
         if(!export) {
           dfvec[[cnt]] = df

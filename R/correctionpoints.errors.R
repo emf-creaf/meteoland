@@ -1,4 +1,4 @@
-.residualonepoint<-function(Data, MODHist, varmethods, verbose=TRUE){
+.residualonepoint<-function(Data, MODHist, varmethods, allow_saturated = FALSE, verbose=TRUE){
   
   # if(verbose) cat(paste(", # historic records = ", nrow(MODHist), sep=""))
   
@@ -101,9 +101,9 @@
       #Second apply the bias to specific humidity
       HSmodelFut.cor<-.corrApply(HSmodelFut, corrHS, varmethods["MeanRelativeHumidity"], wet.day = FALSE)
       #Back transform to relative humidity (mean, max, min)
-      DataCV$MeanRelativeHumidity[indices[i]]<-min(100,max(0,.HSHR(Tc=DataCV$MeanTemperature[indices[i]] ,HS=HSmodelFut.cor)))
-      DataCV$MaxRelativeHumidity[indices[i]]<-min(100,max(0,.HSHR(Tc=DataCV$MinTemperature[indices[i]] ,HS=HSmodelFut.cor)))
-      DataCV$MinRelativeHumidity[indices[i]]<-min(100,max(0,.HSHR(Tc=DataCV$MaxTemperature[indices[i]] ,HS=HSmodelFut.cor)))
+      DataCV$MeanRelativeHumidity[indices[i]]<-min(100,max(0,.HSHR(Tc=DataCV$MeanTemperature[indices[i]] ,HS=HSmodelFut.cor, allow_saturated)))
+      DataCV$MaxRelativeHumidity[indices[i]]<-min(100,max(0,.HSHR(Tc=DataCV$MinTemperature[indices[i]] ,HS=HSmodelFut.cor, allow_saturated)))
+      DataCV$MinRelativeHumidity[indices[i]]<-min(100,max(0,.HSHR(Tc=DataCV$MaxTemperature[indices[i]] ,HS=HSmodelFut.cor, allow_saturated)))
 
       #Check RHmin <= RHmean <= RHmax
       DataCV$MinRelativeHumidity[indices[i]] = pmin(DataCV$MinRelativeHumidity[indices[i]], DataCV$MaxRelativeHumidity[indices[i]])
@@ -219,16 +219,17 @@ correctionpoints.errors<-function(object, points, topodata = NULL,
       dataone = rcmhist
       #Fill minimum and maximum relative humidity if missing
       if(!("MinRelativeHumidity" %in% names(dataone))) {
-        dataone$MinRelativeHumidity=.HSHR(dataone$MaxTemperature, dataone$SpecificHumidity)
+        dataone$MinRelativeHumidity=.HSHR(dataone$MaxTemperature, dataone$SpecificHumidity, mPar$allow_saturated)
       }
       if(!("MaxRelativeHumidity" %in% names(dataone))) {
-        dataone$MaxRelativeHumidity=.HSHR(dataone$MinTemperature, dataone$SpecificHumidity)
+        dataone$MaxRelativeHumidity=.HSHR(dataone$MinTemperature, dataone$SpecificHumidity, mPar$allow_saturated)
       }
     }else if(error.type=="residuals") {#Residuals before correction
       mbias = .monthbiasonepoint(obs,rcmhist, mPar$varmethods, verbose)
-      dataone = .correctiononepoint(mbias, rcmhist)
+      dataone = .correctiononepoint(mbias, rcmhist, fill_wind = mPar$fill_wind, allow_saturated = mPar$allow_saturated,
+                                    verbose = verbose)
     } else if(error.type == "residuals.cv") {#Residuals before correction (including cross-validation)
-      dataone = .residualonepoint(obs,rcmhist, mPar$varmethods, verbose)
+      dataone = .residualonepoint(obs,rcmhist, mPar$varmethods, mPar$allow_saturated, verbose)
     }
 
     #Calculate PET

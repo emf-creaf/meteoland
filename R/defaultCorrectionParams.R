@@ -9,6 +9,7 @@ defaultCorrectionParams<-function() {
                  Radiation = "unbias",
                  WindSpeed = "quantmap"),
    fill_wind = TRUE,
+   allow_saturated = FALSE,
    wind_height = 10 #Wind height (in m)
   ))
 }

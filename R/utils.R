@@ -1,5 +1,5 @@
 #Functions to switch from relative humidity to specific humidity
-.HSHR<-function(Tc, HS){
+.HSHR<-function(Tc, HS, allowSaturated = FALSE){
 
 
   #-------------------------------------------------------------
@@ -18,7 +18,7 @@
   ea=nhum*(Rgz*(Tk)) # Pression de vapeur r?elle (en Pa)
   es=6.108*exp(17.27*Tc/(237.2+Tc))*100 # Pression de vapeur saturante ? la Temp?rature T (en Pa)
   HR=ea/es*100 #Calcul de l'HR
-  HR[HR>100]=100 # On ne passe pas audessus de 100
+  if(!allowSaturated) HR[HR>100]=100 # On ne passe pas audessus de 100
   return(HR)
 }
 .HRHS<-function(Tc, HR){

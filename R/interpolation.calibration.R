@@ -190,7 +190,7 @@ interpolation.calibration<-function(object, stations = NULL, variable="Tmin", N_
   return(l)
 }
 
-interpolation.calibration.fmax<-function(object, stations = NULL, fmax_seq = c(seq(0.01,0.09, by=0.01),seq(0.1,0.95, by=0.05)), verbose = FALSE) {
+interpolation.calibration.fmax<-function(object, stations = NULL, fmax_seq = seq(0.05,0.95, by=0.05), verbose = FALSE) {
   if(!inherits(object, "MeteorologyInterpolationData")) stop("'object' has to be of class 'MeteorologyInterpolationData'")
   if(is.null(stations)) stations = 1:length(object@elevation)
   Osel = rep(FALSE, length(object@elevation))

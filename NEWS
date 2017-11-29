@@ -4,6 +4,9 @@
 
 __Version history__
 
+_Version 0.6.9, December 2017.
+1. Allow saturated (> 100% values) in relative humidity when extracting from NetCDF and when performing bias correction
+
 _Version 0.6.8, November 2017.
 
 1. Modification of the precipitation interpolation (kernels)

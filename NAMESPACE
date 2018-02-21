@@ -5,6 +5,7 @@ import(ncdf4.helpers)
 import(rgdal)
 import(qmap)
 import(methods)
+import(curl)
 useDynLib(meteoland, .registration = TRUE)
 export(correctionpoints, correctionpoints.errors, correctiongrid,
        defaultCorrectionParams, defaultInterpolationParams,

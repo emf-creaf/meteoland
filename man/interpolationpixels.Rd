@@ -4,10 +4,10 @@
 
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{
-Interpolates meteorological variables over a grid.
+Interpolates meteorological variables over a set of grid pixels.
 }
 \description{
-Interpolates meteorological data over grid pixels using objects of class \code{\link{MeteorologyInterpolationData-class}}.
+Interpolates meteorological data over a set of grid pixels using objects of class \code{\link{MeteorologyInterpolationData-class}}.
 }
 \usage{
 interpolationpixels(object, pixels, dates, export = FALSE,

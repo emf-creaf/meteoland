@@ -7,13 +7,15 @@ setClass("SpatialPixelsTopography", contains="SpatialPixelsDataFrame")
 
 setMethod("spplot", signature("SpatialPixelsMeteorology"), definition=
             function(obj, date, variable="MeanTemperature", ...) {
-              sgd = SpatialPixelsDataFrame(obj@grid, obj@data[[date]], obj@proj4string)
+              sgd = SpatialPixelsDataFrame(points=obj@coords, grid = obj@grid, data=obj@data[[date]], 
+                                           proj4string= obj@proj4string)
               spplot(sgd, variable, ...)
             }
 )
 setMethod("spplot", signature("SpatialGridMeteorology"), definition=
             function(obj, date, variable="MeanTemperature", ...) {
-              sgd = SpatialGridDataFrame(obj@coords, obj@data[[date]], obj@proj4string, grid = obj@grid)
+              sgd = SpatialGridDataFrame(grid = obj@grid, data=obj@data[[date]], 
+                                         proj4string=obj@proj4string)
               spplot(sgd, variable, ...)
             }
 )

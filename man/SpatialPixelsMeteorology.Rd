@@ -16,7 +16,7 @@ SpatialPixelsMeteorology(points, data, dates,
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
-  \item{points}{An object of class \code{\link{SpatialPoints-class}} or a numeric matrix of coordinates.}
+  \item{points}{An object of class \code{\link{SpatialPoints-class}}.}
   \item{data}{A vector of data frames (one per date).}
   \item{dates}{Object of class \code{"Date"} describing the time period of meteorological estimates.}
   \item{tolerance}{Precision up to which extent points should be exactly on a grid.}

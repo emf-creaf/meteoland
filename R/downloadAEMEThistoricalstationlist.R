@@ -1,5 +1,11 @@
 downloadAEMEThistoricalstationlist <- function(api){
   
+  value.func <- function(x){
+    value <- regmatches(x,gregexpr('(?<=\\:\\s)[[:print:]]*(?=\\n)', x, perl = T))[[1]]
+    value <- gsub('\\",', "", value)
+    value <- gsub('\\"', "", value)
+    value <- gsub(',', ".", value)
+  }
   
   # set options
   h = new_handle()

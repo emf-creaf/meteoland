@@ -1,7 +1,7 @@
 meteoplot<-function(object, index, var="MeanTemperature", 
                     fun=NULL, freq=NULL, dates = NULL, months = NULL,
                     add = FALSE, ...){
-  if(!inherits(object,"SpatialPointsMeteorology") && !inherits(object,"SpatialPointsDataFrame") &&  !inherits(object,"SpatialGridMeteorology")) stop("'object' should be of class 'SpatialPointsMeteorology' or 'SpatialGridMeteorology'.")
+  if(!inherits(object,"SpatialPointsMeteorology") && !inherits(object,"SpatialPointsDataFrame")) stop("'object' should be of class 'SpatialPointsMeteorology' or 'SpatialPointsDataFrame'.")
   
   VARS = c("MeanTemperature", "MinTemperature","MaxTemperature","MaxMinTemperatureDiff","MaxMeanTemperatureDiff", "MinMeanTemperatureDiff","Precipitation",
            "MeanRelativeHumidity", "MinRelativeHumidity", "MaxRelativeHumidity",
@@ -43,21 +43,7 @@ meteoplot<-function(object, index, var="MeanTemperature",
     } else if(var=="MinMeanTemperatureDiff") {
       vec = df[as.character(dates),"MinTemperature"] - df[as.character(dates),"MeanTemperature"]
     }
-  } else {
-    vec = numeric(length(dates))
-    for(i in 1:length(dates)) {
-      idate = which(object@dates == dates[i])
-      if(!(var %in% c("MaxMinTemperatureDiff","MaxMeanTemperatureDiff", "MinMeanTemperatureDiff"))) {
-        vec[i] = object@data[[index]][idate,var]
-      } else if(var=="MaxMinTemperatureDiff") {
-        vec[i] = object@data[[index]][idate,"MaxTemperature"]-object@data[[index]][idate,"MinTemperature"]
-      } else if(var=="MaxMeanTemperatureDiff") {
-        vec[i] = object@data[[index]][idate,"MaxTemperature"]-object@data[[index]][idate,"MeanTemperature"]
-      } else if(var=="MinMeanTemperatureDiff") {
-        vec[i] = object@data[[index]][idate,"MinTemperature"]-object@data[[index]][idate,"MeanTemperature"]
-      } 
-    }
-  }
+  } 
   if((!is.null(fun)) && (!is.null(freq))) {
     date.factor = cut(dates, breaks=freq)
     vec = tapply(vec,INDEX=date.factor, FUN=fun, na.rm=TRUE)

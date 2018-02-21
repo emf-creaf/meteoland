@@ -14,7 +14,7 @@ Objects can be created by calls of the form \code{new("SpatialPixelsMeteorology"
 \section{Slots}{
   \describe{
     \item{\code{dates}:}{Object of class \code{"Date"} describing the time period for which meteorological estimates are available.}
-    \item{\code{data}:}{A vector of \code{"data.frame"} objects, each one containing the grid data for one date.}
+    \item{\code{data}:}{A vector of \code{"data.frame"} objects, each one containing the pixel data for one date.}
     \item{\code{grid}:}{Grid parameters (see \code{\linkS4class{GridTopology}}).}
     \item{\code{grid.index}:}{Index of points in full grid.}
     \item{\code{coords}:}{Object of class \code{"matrix"} with the spatial coordinates. }

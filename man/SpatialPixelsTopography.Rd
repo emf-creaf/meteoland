@@ -14,11 +14,14 @@ SpatialPixelsTopography(points, elevation, slope, aspect,
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
-  \item{points}{An object of class \code{\link{SpatialPixels-class}}.}
+  \item{points}{An object of class \code{\link{SpatialPoints-class}} or a numeric matrix of coordinates.}
   \item{elevation}{Elevation values (in m) of the points.}
   \item{slope}{Slope values (in degrees) of the points.}
   \item{aspect}{Aspect values (in degrees from North) of the points.}
+  \item{tolerance}{Precision up to which extent points should be exactly on a grid.}
   \item{proj4string}{Object of class \code{\linkS4class{CRS}} in the first form only used when points does not inherit from \code{\linkS4class{Spatial}}.}
+  \item{round}{default \code{NULL}, otherwise a value passed to as the digits argument to \code{\link{round}} for setting cell size.}
+  \item{grid}{Grid topology using an object of class \code{\linkS4class{GridTopology}}; a value of \code{NULL} implies that this will be derived from the point coordinates.}
 }
 \value{
 Function \code{SpatialPixelsTopography} returns an object '\code{\link{SpatialPixelsTopography-class}}'.

@@ -131,6 +131,15 @@ Objects of class \texttt{SpatialPointsMeteorology} are stored in the disk using 
 
 As a special case, function \texttt{readmeteorologygridcells()} reads several \textbf{netCDF} files and returns an object of class \texttt{SpatialPointMeteorology} with the meteorological data of a set of specified grid cells.
 
+\subsection{Visualizing meteorological data}
+Although very simple, the package provides two kinds of functions to visualize the temporal and spatial variation of meteorology:
+
+\begin{itemize}
+\item{Function \texttt{spplot()} has been redefined from package \code{sp} to draw maps of specific weather variables corresponding to specific dates. The function can be used on objects of classs \texttt{SpatialGridMeteorology} and \texttt{SpatialPixelsMeteorology}.}
+\item{Function \texttt{meteoplot()} allows the temporal series of specific variables on specific spatial points to be plotted. The function can read the data from the disk or from objects of class \texttt{SpatialPointsMeteorology}.}
+\end{itemize}
+
+
 \subsection{Meteorology estimation functions}
 \subsubsection{Spatial interpolation}
 Package \texttt{meteoland} provides two functions for interpolating meteorological data (i.e., one for each data structure):

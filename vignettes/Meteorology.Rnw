@@ -106,7 +106,7 @@ Although the three classes have a `\texttt{data}' slot containing data frames, m
 The package provides a few functions to extract/reshape meteorological data:
 
 \begin{itemize}
-\item{Function \texttt{extractgridpoints()} extracts the meteorology of particular points in a grid (it returns an object of \texttt{SpatialPointsMeteorology}).}
+\item{Function \texttt{extractgridpoints()} extracts the meteorology of particular points in a grid. It accepts objects of \texttt{SpatialGridMeteorology} and \texttt{SpatialPixelsMeteorology} as input and it returns an object of \texttt{SpatialPointsMeteorology}.}
 \item{Function \texttt{extractpointdates()} extracts the meteorology of a set of dates from an object of class \texttt{SpatialPointsMeteorology}. It returns one data frame for each date, with points in rows and meteorology variables in columns.}
 \end{itemize}
 
@@ -120,8 +120,8 @@ Objects of class \texttt{SpatialPointsMeteorology} are stored in the disk using 
 \item{Functions \texttt{writemeteorologypointfiles()} writes several \textbf{ascii}/\textbf{rds} files in the disk, one per spatial point. Metadata (i.e. the spatial coordinates of each point and the corresponding file path) is stored in an additional file.}
 \end{itemize}
 
-\subsubsection{Grid/pixel meteorology}
- Objects of class \texttt{SpatialGridMeteorology} are stored in the disk using one \textbf{netCDF} file per day. In this case, the \textbf{netCDF} file also contains the date and spatial projection. The following functions are available for input/output of grid/pixel meteorology:
+\subsubsection{Grid meteorology}
+ Objects of class \texttt{SpatialGridMeteorology} are stored in the disk using one \textbf{netCDF} file per day. In this case, the \textbf{netCDF} file also contains the date and spatial projection. The following functions are available for input/output of meteorology over a full grid or on a subset of grid cells:
 \begin{itemize}
 \item{Functions \texttt{readmeteorologygrid()} and \texttt{readmeteorologypixels()} reads the meteorological data stored in one \textbf{netCDF} file and returns an object of class \texttt{SpatialGridDataframe} or \texttt{SpatialPixelsDataframe}, respectively.}
 \item{Functions \texttt{writemeteorologygrid()} and \texttt{writemeteorologypixels()}  write the meteorological data of the full grid or the subset of grid cells, for a single date in a \textbf{netCDF} file.}
@@ -953,9 +953,9 @@ where  $D$ is the vapour pressure deficit (in kPa), $\Delta$  is the slope of th
 
 National meteorological agencies are increasingly adopting an open data philosophy and one of them is the Spanish meteorological agency (Agencia Española de Meteorología, AEMET). In \texttt{meteoland} we provide two functions that retrieve AEMET data using their OpenData API (API keys need to be obtained from AEMET):
 \begin{itemize}
-\item{\texttt{downloadAEMETstationlist()} : Gets the list of stations from which daily meteorological data is available.}
-\item{\texttt{downloadAEMETpoints()} : Downloads historical daily meteorological data corresponding to a input set of stations and period.}
-\item{\texttt{downloadAEMETcurrentday()} : Downloads and averages last 24h of meteorological data corresponding to a input set of stations.}
+\item{\texttt{downloadAEMEThistoricalstationlist()} : Gets the list of stations from which historical daily meteorological data is available.}
+\item{\texttt{downloadAEMEThistorical()} : Downloads historical daily meteorological data corresponding to a input set of stations and period.}
+\item{\texttt{downloadAEMETcurrentday()} : Downloads the last 24h of meteorological data corresponding to a input set of stations.}
 \end{itemize}
 
 

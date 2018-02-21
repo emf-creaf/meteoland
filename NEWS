@@ -7,6 +7,8 @@ __Version history__
 _Version 0.7.0, February 2018.
 1. New S4 structures: SpatialPixelsTopography and SpatialPixelsMeteorology
 2. New function interpolationpixels
+3. Update of functions to download data from the Spanish Agencia Estatal de Meteorologia (AEMET)
+4. New function writemeteorologypixels
 
 _Version 0.6.9, December 2017.
 1. Allow saturated (> 100% values) in relative humidity when extracting from NetCDF and when performing bias correction

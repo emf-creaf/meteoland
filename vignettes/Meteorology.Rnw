@@ -102,14 +102,6 @@ showClass("SpatialPixelsMeteorology")
 In addition to their corresponding inherited slots, \texttt{SpatialPointsMeteorology}, \texttt{SpatialGridMeteorology}  and \texttt{SpatialPixelsMeteorology} have two additional slots: `\texttt{dates}' (a vector of days specifying a time period), and `\texttt{data}' (a vector of data frames with the meteorological data).
 Although the three classes have a `\texttt{data}' slot containing data frames, meteorological data is in different form in each class. In objects of \texttt{SpatialPointsMeteorology}, there is one data frame for each point where variables are in columns and dates are in rows. In objects of \texttt{SpatialGridMeteorology} and \texttt{SpatialPixelsMeteorology}, each data frame describes the meteorology over a complete grid, or a subset of cells, for a single day. In these cases, the data frame has grid cells in rows and variables in columns.
 
-\subsection{Reshaping meteorological data}
-The package provides a few functions to extract/reshape meteorological data:
-
-\begin{itemize}
-\item{Function \texttt{extractgridpoints()} extracts the meteorology of particular points in a grid. It accepts objects of \texttt{SpatialGridMeteorology} and \texttt{SpatialPixelsMeteorology} as input and it returns an object of \texttt{SpatialPointsMeteorology}.}
-\item{Function \texttt{extractpointdates()} extracts the meteorology of a set of dates from an object of class \texttt{SpatialPointsMeteorology}. It returns one data frame for each date, with points in rows and meteorology variables in columns.}
-\end{itemize}
-
 \subsection{Reading and writing meteorological data}
 \subsubsection{Point meteorology}
 Objects of class \texttt{SpatialPointsMeteorology} are stored in the disk using one data file for each of their spatial points. Files can be stored in \textbf{ascii} format or \textbf{rds} (compressed) format. Package \texttt{meteoland} provides four input/output functions for point meteorology:
@@ -139,6 +131,20 @@ Although very simple, the package provides two kinds of functions to visualize t
 \item{Function \texttt{meteoplot()} allows the temporal series of specific variables on specific spatial points to be plotted. The function can read the data from the disk or from objects of class \texttt{SpatialPointsMeteorology}.}
 \end{itemize}
 
+\subsection{Reshaping and summarizing meteorological data}
+The package provides a few functions to extract/reshape meteorological data:
+
+\begin{itemize}
+\item{Function \texttt{extractgridpoints()} extracts the meteorology of particular points in a grid. It accepts objects of \texttt{SpatialGridMeteorology} and \texttt{SpatialPixelsMeteorology} as input and it returns an object of \texttt{SpatialPointsMeteorology}.}
+\item{Function \texttt{extractpointdates()} extracts the meteorology of a set of dates from an object of class \texttt{SpatialPointsMeteorology}. It returns one data frame for each date, with points in rows and meteorology variables in columns.}
+\end{itemize}
+
+Other functions are used to generate temporal summaries of meteorological data. These accept meteorology objects as input and return their corresponding spatial dataframe structure with the summary statistics in columns:
+
+\begin{itemize}
+\item{Function \texttt{summarypoints()} summarizes the meteorology of spatial points. It accepts objects of \texttt{SpatialPointsMeteorology} as input and returns an object of \texttt{SpatialPointsDataFrame} with point summaries for the requested variable. Temporal summaries can be calculated for different periods and using different summarizing functions (e.g. mean, sum, minimum, maximum, etc.).}
+\item{Functions \texttt{summarygrid()} and \texttt{summarypixels()} summarize the meteorology of full grids or of subset of grid cells, respectively. They accept objects of \texttt{SpatialGridMeteorology} and \texttt{SpatialPixelsMeteorology}, respectively, as input and return an object of \texttt{SpatialGridDataFrame} and \texttt{SpatialPixelsDataFrame}, respectively, with temporal summaries for the requested variable over the range of dates indicated.}
+\end{itemize}
 
 \subsection{Meteorology estimation functions}
 \subsubsection{Spatial interpolation}

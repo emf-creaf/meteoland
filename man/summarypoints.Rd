@@ -2,15 +2,17 @@
 \name{summarypoints}
 \alias{summarypoints}
 \alias{summarygrid}
+\alias{summarypixels}
 \title{
 Summaries of meteorological data
 }
 \description{
-Summarizes the meteorology of a set of spatial points or a set of daily grids 
+Summarizes the meteorology of a set of spatial points or a set of grids 
 }
 \usage{
 summarypoints(points, var, fun = mean, freq = NULL, dates = NULL, months = NULL, ...)
 summarygrid(griddata, dates = NULL)
+summarypixels(pixelsdata, dates = NULL)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -32,9 +34,10 @@ An object of class \code{\link{Date}} to define the period to be summarized. If 
 Additional parameters to \code{fun}.
 }
 \item{griddata}{An object of class \code{\link{SpatialGridMeteorology-class}} with the meteorological data for a grid. Alternatively, a \code{\link{data.frame}} containing the meta data (columns \code{dir} and \code{filename}) of grid meteorological files that will be sequentially read from the disk.}
+\item{pixelsdata}{An object of class \code{\link{SpatialPixelsMeteorology-class}} with the meteorological data for a set of grid cells. Alternatively, a \code{\link{data.frame}} containing the meta data (columns \code{dir} and \code{filename}) of grid meteorological files that will be sequentially read from the disk.}
 }
 \value{
-Function \code{summarypoints} returns an object of class \code{\link{SpatialPointsDataFrame}} containing summaries (either one variable or several if \code{freq} is specified). Function \code{summarygrid} returns an object of class \code{\link{SpatialPointsDataFrame}} containing summary of all meteorogical variables (sums or precipitation and PET; means for the other variables) calculated over the specified period.
+Function \code{summarypoints} returns an object of class \code{\link{SpatialPointsDataFrame}} containing summaries (either one variable or several if \code{freq} is specified). Functions \code{summarygrid} and \code{summarypixels} return an object of class \code{\link{SpatialGridDataFrame}} and \code{\link{SpatialPixelsDataFrame}}, respectively, containing the summary of all meteorogical variables (sums or precipitation and PET; means for the other variables) calculated over the specified period. 
 }
 \author{
 Miquel De \enc{Cáceres}{Caceres} Ainsa, Centre Tecnologic Forestal de Catalunya

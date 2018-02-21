@@ -10,6 +10,7 @@ _Version 0.7.0, February 2018.
 3. Update of functions to download data from the Spanish Agencia Estatal de Meteorologia (AEMET)
 4. New function writemeteorologypixels
 5. Function correctiongrid removed (correction of weather series makes sense for point data)
+6. New function summarypixels
 
 _Version 0.6.9, December 2017.
 1. Allow saturated (> 100% values) in relative humidity when extracting from NetCDF and when performing bias correction

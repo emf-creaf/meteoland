@@ -7,7 +7,8 @@
 Function \code{SpatialPointsTopography} creates an object of class \code{\link{SpatialPointsTopography-class}} containing topographic variables for a set of points.
 }
 \usage{
-SpatialPointsTopography(points, elevation, slope, aspect)
+SpatialPointsTopography(points, elevation, slope, aspect,
+                        proj4string = CRS(as.character(NA)))
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -15,6 +16,7 @@ SpatialPointsTopography(points, elevation, slope, aspect)
   \item{elevation}{Elevation values (in m) of the points.}
   \item{slope}{Slope values (in degrees) of the points.}
   \item{aspect}{Aspect values (in degrees from North) of the points.}
+  \item{proj4string}{Object of class \code{\linkS4class{CRS}} in the first form only used when points does not inherit from \code{\linkS4class{Spatial}}.}
 }
 \value{
 Function \code{SpatialPointsTopography} returns an object '\code{\link{SpatialPointsTopography-class}}'.
@@ -35,5 +37,3 @@ spt = SpatialPointsTopography(points, examplegridtopography$elevation[p],
                               examplegridtopography$slope[p],
                               examplegridtopography$aspect[p])
 }
-% Add one or more standard keywords, see file 'KEYWORDS' in the
-% R documentation directory.

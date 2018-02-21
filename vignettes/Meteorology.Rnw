@@ -56,26 +56,32 @@ Package \texttt{meteoland} assists in the estimation of the following variables 
 \item{\texttt{PET}: Potential evapo-transpiration (in mm of water).}
 \end{itemize}
 
-The package deals with two kinds of spatial structures: individual points and grids. The package includes four S4 spatial classes, which are defined as children of classes in package \texttt{sp}. 
+The package deals with three kinds of spatial structures: individual points, a set of pixels from a spatial grid and full (i.e. complete) grids. The package includes six S4 spatial classes, which are defined as children of classes in package \texttt{sp}. 
 
 \subsubsection{Topography}
-Two classes are defined to represent the variation of topographic features (i.e., elevation, slope and aspect) over space:
+Three classes are defined to represent the variation of topographic features (i.e., elevation, slope and aspect) over space:
 \begin{itemize}
 \item{\texttt{SpatialPointsTopography} extends \texttt{SpatialPointsDataFrame} and represents the topographic features of a set of points in a landscape.
 <<echo=FALSE>>=
 showClass("SpatialPointsTopography")
 @
 }
-\item{\texttt{SpatialGridTopography} extends \texttt{SpatialGridDataFrame} and represents the continuous variation of topographic features over all cells in a grid.
+\item{\texttt{SpatialGridTopography} extends \texttt{SpatialGridDataFrame} and represents the continuous variation of topographic features over a full spatial grid.
 <<echo=FALSE>>=
 showClass("SpatialGridTopography")
 @
 }
+\item{\texttt{SpatialPixelsTopography} extends \texttt{SpatialPixelsDataFrame} and represents the continuous variation of topographic features over a set if cells in a grid.
+<<echo=FALSE>>=
+showClass("SpatialPixelsTopography")
+@
+}
 \end{itemize}
-Although they have the same slots as their parent S4 classes, data frames in \texttt{SpatialPointsTopography} and \texttt{SpatialGridTopography} objects have only three variables: `\textbf{elevation}' (in meters), `\textbf{slope}' (in degrees) and `\textbf{aspect}' (in degrees from North).
+
+Although the three classes have the same slots as their parent S4 classes, data frames in \texttt{SpatialPointsTopography}, \texttt{SpatialGridTopography} and \texttt{SpatialPixelsTopography} objects have only three variables: `\textbf{elevation}' (in meters), `\textbf{slope}' (in degrees) and `\textbf{aspect}' (in degrees from North).
 
 \subsubsection{Meteorology}
-Analogously to topography, two spatial classes are used to represent the variation of daily meteorology over space:
+Analogously to topography, three spatial classes are used to represent the variation of daily meteorology over space:
 \begin{itemize}
 \item{\texttt{SpatialPointsMeteorology} extends \texttt{SpatialPoints} and represents daily meteorology series for a set of points in a landscape.
 <<echo=FALSE>>=
@@ -87,11 +93,18 @@ showClass("SpatialPointsMeteorology")
 showClass("SpatialGridMeteorology")
 @
 }
+\item{\texttt{SpatialPixelsMeteorology} extends \texttt{SpatialPixels} and represents the variation of daily meteorology for a set of pixels (cells) of a spatial grid.
+<<echo=FALSE>>=
+showClass("SpatialPixelsMeteorology")
+@
+}
 \end{itemize}
-In addition to their corresponding inherited slots, \texttt{SpatialPointsMeteorology} and \texttt{SpatialGridMeteorology} have two additional slots: `\texttt{dates}' (a vector of days specifying a time period), and `\texttt{data}' (a vector of data frames with the meteorological data).
-Although both classes have a `\texttt{data}' slot containing data frames, meteorological data is in different form in each class. In objects of \texttt{SpatialPointsMeteorology}, there is one data frame for each point where variables are in columns and dates are in rows. In objects of \texttt{SpatialGridMeteorology}, each data frame describes the meteorology over the grid for a single day. In this case, the data frame has grid cells in rows and variables in columns.
+In addition to their corresponding inherited slots, \texttt{SpatialPointsMeteorology}, \texttt{SpatialGridMeteorology}  and \texttt{SpatialPixelsMeteorology} have two additional slots: `\texttt{dates}' (a vector of days specifying a time period), and `\texttt{data}' (a vector of data frames with the meteorological data).
+Although the three classes have a `\texttt{data}' slot containing data frames, meteorological data is in different form in each class. In objects of \texttt{SpatialPointsMeteorology}, there is one data frame for each point where variables are in columns and dates are in rows. In objects of \texttt{SpatialGridMeteorology} and \texttt{SpatialPixelsMeteorology}, each data frame describes the meteorology over a complete grid, or a subset of cells, for a single day. In these cases, the data frame has grid cells in rows and variables in columns.
 
-The package provides two functions to extract/reshape meteorological data from these structures:
+\subsection{Reshaping meteorological data}
+The package provides a few functions to extract/reshape meteorological data:
+
 \begin{itemize}
 \item{Function \texttt{extractgridpoints()} extracts the meteorology of particular points in a grid (it returns an object of \texttt{SpatialPointsMeteorology}).}
 \item{Function \texttt{extractpointdates()} extracts the meteorology of a set of dates from an object of class \texttt{SpatialPointsMeteorology}. It returns one data frame for each date, with points in rows and meteorology variables in columns.}
@@ -107,15 +120,16 @@ Objects of class \texttt{SpatialPointsMeteorology} are stored in the disk using 
 \item{Functions \texttt{writemeteorologypointfiles()} writes several \textbf{ascii}/\textbf{rds} files in the disk, one per spatial point. Metadata (i.e. the spatial coordinates of each point and the corresponding file path) is stored in an additional file.}
 \end{itemize}
 
-\subsubsection{Grid meteorology}
- Objects of class \texttt{SpatialGridMeteorology} are stored in the disk using one \textbf{netCDF} file per day. In this case, the \textbf{netCDF} file also contains the date and spatial projection. The following functions are available for input/output of grid meteorology:
+\subsubsection{Grid/pixel meteorology}
+ Objects of class \texttt{SpatialGridMeteorology} are stored in the disk using one \textbf{netCDF} file per day. In this case, the \textbf{netCDF} file also contains the date and spatial projection. The following functions are available for input/output of grid/pixel meteorology:
 \begin{itemize}
-\item{Function \texttt{readmeteorologygrid()} reads the meteorological data stored in one \textbf{netCDF} file and returns a \texttt{SpatialGridDataframe}.}
-\item{Function \texttt{writemeteorologygrid()} writes the meteorological data of a single date as a \textbf{netCDF} file.}
-\item{Function \texttt{readmeteorologygridfiles()} reads several \textbf{netCDF} files and returns an object of class \texttt{SpatialGridMeteorology}.}
-\item{Function \texttt{readmeteorologygridcells()} reads several \textbf{netCDF} files and returns an object of class \texttt{SpatialPointMeteorology} with the meteorological data of a set of specified grid cells.}
-\item{Functions \texttt{writemeteorologygridfiles()} writes several \textbf{netCDF} files in the disk, one per date. Metadata (i.e. the dates and their corresponding file path) is stored in an additional file.}
+\item{Functions \texttt{readmeteorologygrid()} and \texttt{readmeteorologypixels()} reads the meteorological data stored in one \textbf{netCDF} file and returns an object of class \texttt{SpatialGridDataframe} or \texttt{SpatialPixelsDataframe}, respectively.}
+\item{Functions \texttt{writemeteorologygrid()} and \texttt{writemeteorologypixels()}  write the meteorological data of the full grid or the subset of grid cells, for a single date in a \textbf{netCDF} file.}
+\item{Functions \texttt{readmeteorologygridfiles()} and \texttt{readmeteorologypixelsfiles()} read several \textbf{netCDF} files and returns an object of class \texttt{SpatialGridMeteorology} or \texttt{SpatialPixelsMeteorology}, respectively.}
+\item{Functions \texttt{writemeteorologygridfiles()} and \texttt{writemeteorologypixelsfiles()} write several \textbf{netCDF} files in the disk, one per date, of the full grid or the subset of grid cells. Metadata (i.e. the dates and their corresponding file path) is stored in an additional file.}
 \end{itemize}
+
+As a special case, function \texttt{readmeteorologygridcells()} reads several \textbf{netCDF} files and returns an object of class \texttt{SpatialPointMeteorology} with the meteorological data of a set of specified grid cells.
 
 \subsection{Meteorology estimation functions}
 \subsubsection{Spatial interpolation}
@@ -128,23 +142,18 @@ Both functions require an object of class \texttt{`MeteorologyInterpolationData'
 <<echo=FALSE>>=
 showClass("MeteorologyInterpolationData")
 @
-When calling functions \texttt{interpolationpoints()} or \texttt{interpolationgrid()}, the user may require interpolation outputs to be written into the file system, instead of being returned in memory. If \texttt{interpolationpoints()} is called with \texttt{export = TRUE}, the function will write the data frame produced for each point into an \textbf{ascii} text file. If \texttt{interpolationgrid()} is called with \texttt{export = TRUE}, the function will write an \textbf{netCDF} file for each day. Metadata files will also be written, so that results can later be loaded in memory. 
+When calling functions \texttt{interpolationpoints()} or \texttt{interpolationgrid()}, the user may require interpolation outputs to be written into the file system, instead of being returned in memory. If \texttt{interpolationpoints()} is called with \texttt{export = TRUE}, the function will write the data frame produced for each point into an \textbf{ascii} text file or a \textbf{rds} file. If \texttt{interpolationgrid()} is called with \texttt{export = TRUE}, the function will write an \textbf{netCDF} file for each day. Metadata files will also be written, so that results can later be loaded in memory. 
 
 Functions \texttt{interpolation.calibration()} and \texttt{interpolation.cv()} are included in \texttt{meteoland} to calibrate interpolation parameters and evaluate predictive performance of interpolation routines before using them.
 
 \subsubsection{Statistical correction}
-Analogously to interpolation, two functions are available for statistical correction of meteorological data series (i.e., one function for each data structure):
-\begin{itemize}
-\item{Function \texttt{correctionpoints()} performs statistical correction of weather data series on a set of locations and it returns an object of class \texttt{SpatialPointsMeteorology} containing corrected weather predictions.}
-\item{Function \texttt{correctiongrid()} [normally not used] performs statistical correction of weather data series over a grid and it returns an object of class \texttt{SpatialPointsMeteorology} containing corrected weather predictions.}
-\end{itemize}
-Statistical correction functions require an object of class \texttt{`MeteorologyUncorrectedData'}, which contains the X-Y coordinates and the coarse-scale meteorological data to be corrected, which includes a reference (historic) period and projected (e.g. future) period:
+One function is available for statistical correction of meteorological data series (i.e., one function for each data structure). Function \texttt{correctionpoints()} performs statistical correction of weather data series on a set of locations and it returns an object of class \texttt{SpatialPointsMeteorology} containing corrected weather predictions. Statistical correction requires an object of class \texttt{`MeteorologyUncorrectedData'}, which contains the X-Y coordinates and the coarse-scale meteorological data to be corrected, which includes a reference (historic) period and projected (e.g. future) period:
 <<echo=FALSE>>=
 showClass("MeteorologyUncorrectedData")
 @
-The reference (historical) period is compared with observed meteorological data of the same period, and the routine uses this information to correct the projected (e.g. future) period. Therefore, apart from the \texttt{`MeteorologyUncorrectedData'} object, the correction functions require accurate meteorological data (for a set of spatial points or a grid). Normally, these data will be the result of spatial interpolation.
+The reference (historical) period is compared with observed meteorological data of the same period, and the routine uses this information to correct the projected (e.g. future) period. Therefore, apart from the \texttt{`MeteorologyUncorrectedData'} object, the correction function requires accurate meteorological data (for a set of spatial points or a grid). Normally, these data will be the result of spatial interpolation.
 
-As before, when calling functions \texttt{correctionpoints()} or \texttt{correctiongrid()}, the user may require the outputs to be written into the file system, instead of being returned in memory. If \texttt{correctionpoints()} is called with \texttt{export = TRUE}, the function will write the data frame produced for each point into an \textbf{ascii} text file. If \texttt{correctiongrid()} is called with \texttt{export = TRUE}, the function will write a \textbf{netCDF} file for each day. Metadata files will also be written, so that results can later be loaded in memory.
+As before, when calling functions \texttt{correctionpoints()}, the user may require the outputs to be written into the file system, instead of being returned in memory. If \texttt{correctionpoints()} is called with \texttt{export = TRUE}, the function will write the data frame produced for each point into an \textbf{ascii} text file or a \textbf{rds} file. Metadata files will also be written, so that results can later be loaded in memory.
 
 Function \texttt{correctionpoints.errors()} was included in the package to evaluate the errors of the less accurate and more accurate series. Comparisons can be made before and after applying statistical corrections. In the latter case, cross-validation is also available.
 

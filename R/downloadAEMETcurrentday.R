@@ -1,5 +1,5 @@
 # Function to download daily met data from AEMET, format it and save it on the disk
-downloadAEMETcurrentday <- function(api, verbose=TRUE, daily = T){
+downloadAEMETcurrentday <- function(api, daily = TRUE, verbose=TRUE){
   # Utilitary functions
   cname.func <- function(x){
     regmatches(x,gregexpr('(?<=\\n\\s{2}\\")[[:print:]]+(?=\\"\\s\\:)', x, perl = T))[[1]]

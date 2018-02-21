@@ -7,7 +7,7 @@ import(qmap)
 import(methods)
 import(curl)
 useDynLib(meteoland, .registration = TRUE)
-export(correctionpoints, correctionpoints.errors, correctiongrid,
+export(correctionpoints, correctionpoints.errors, 
        defaultCorrectionParams, defaultInterpolationParams,
        downloadAEMETcurrentday,downloadAEMEThistorical, downloadAEMEThistoricalstationlist,
        extractgridpoints, extractNetCDF, extractpointdates, extractSpatialData,
@@ -45,6 +45,6 @@ importFrom(grDevices, colorRampPalette, topo.colors)
 importFrom(graphics, abline, hist, lines, par)
 importFrom(utils, read.table, setTxtProgressBar,
              txtProgressBar, write.table)
-importFrom(stats, cor, var, lm)
+importFrom(stats, cor, var, lm, aggregate)
 S3method(summary,interpolation.cv)
 S3method(plot,interpolation.cv)

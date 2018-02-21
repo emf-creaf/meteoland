@@ -13,7 +13,8 @@ Download data from the Spanish National Meterology Agency (AEMET)
 \usage{
 downloadAEMEThistoricalstationlist(api)
 downloadAEMEThistorical(api, dates, station_id, export = FALSE, exportDir = getwd(), 
-                    exportFormat = "meteoland", metadatafile = "MP.txt", verbose = TRUE)
+                    exportFormat = "meteoland/txt", metadatafile = "MP.txt", 
+                    verbose = TRUE)
 downloadAEMETcurrentday(api, daily = TRUE, verbose = TRUE)
 }
 %- maybe also 'usage' for other objects documented here.

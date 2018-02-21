@@ -1,7 +1,7 @@
 SpatialPointsMeteorology<-function(points, data, dates) {
   if(!inherits(points, "SpatialPoints")) stop("'points' has to be of class 'SpatialPoints'")
   if(!inherits(dates, "Date")) stop("'date' has to be of class 'Date'")
-  if(!inherits(data, "list")) stop("'data' has to be a list of data frames")
+  if(!is.list(data)) stop("'data' has to be a list of data frames")
   ndata = length(data)
   ndays = length(dates)
   if(ndata!=length(points)) stop("The number of points has to be the same as the length of 'data'")

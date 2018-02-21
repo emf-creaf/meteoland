@@ -9,7 +9,7 @@ import(curl)
 useDynLib(meteoland, .registration = TRUE)
 export(correctionpoints, correctionpoints.errors, correctiongrid,
        defaultCorrectionParams, defaultInterpolationParams,
-       downloadAEMETcurrentday,downloadAEMETpoints, downloadAEMETstationdata,
+       downloadAEMETcurrentday,downloadAEMEThistorical, downloadAEMEThistoricalstationlist,
        extractgridpoints, extractNetCDF, extractpointdates, extractSpatialData,
        interpolationpoints, interpolationgrid, interpolationpixels,
        interpolation.calibration, interpolation.calibration.fmax, interpolation.coverage, interpolation.cv, 

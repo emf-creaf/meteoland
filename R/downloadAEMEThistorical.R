@@ -106,10 +106,13 @@ downloadAEMEThistorical <- function(api, dates, station_id, export = FALSE, expo
   options(warn = 0) #
   data_df$fecha <- as.Date(data_df$fecha)
   colnames(data_df) <- c("ID", "Date", "Precipitation", "MeanTemperature", "MinTemperature", "MaxTemperature",
-                         "WindDirection", "WindSpeed", "Radiation")
-  data_df$MeanRelativeHumidity <- NA
-  data_df$MinRelativeHumidity <- NA
-  data_df$MaxRelativeHumidity <- NA
+                         "WindDirection", "WindSpeed")
+  data_df$WindDirection[data_df$WindDirection == 99] <- NA
+  data_df$WindDirection <- data_df$WindDirection*10 # The raw data are given in degrees/10
+  # data_df$Radiation <- NA
+  # data_df$MeanRelativeHumidity <- NA
+  # data_df$MinRelativeHumidity <- NA
+  # data_df$MaxRelativeHumidity <- NA
   
   stationfound <- station_id %in% data_df$ID
   

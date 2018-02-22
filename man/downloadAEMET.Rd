@@ -34,7 +34,7 @@ API key needs to be acquired from AEMET (https://opendata.aemet.es/)
 \value{
 Function \code{downloadAEMEThistoricalstationlist} returns a \code{\link{SpatialPointsDataFrame-class}} object containing the list of AEMET weather stations for which historical climatic series are available and can be retrieved using \code{downloadAEMEThistorical}. 
 
-Function \code{downloadAEMEThistorical} downloads data for the specified AEMET stations and dates. Data are availables for dates up to one day before current date. If \code{export = FALSE}, function \code{downloadAEMEThistorical} returns a \code{\link{SpatialPointsMeteorology-class}} object with the downloaded meteorology for each station (point). Otherwise the function writes on the disk at the location specified by \code{exportDir} and solelely returns a \code{\link{SpatialPointsDataFrame-class}} object containing the files metadata. 
+Function \code{downloadAEMEThistorical} downloads data for the specified AEMET stations and dates. Data are availables for dates up to 4 days before current date. If \code{export = FALSE}, function \code{downloadAEMEThistorical} returns a \code{\link{SpatialPointsMeteorology-class}} object with the downloaded meteorology for each station (point). Otherwise the function writes on the disk at the location specified by \code{exportDir} and solelely returns a \code{\link{SpatialPointsDataFrame-class}} object containing the files metadata. 
 
 Function \code{downloadAEMETcurrentday} downloads recent weather (the last 24h) from all currently available stations and returns data frame if \code{daily = FALSE} or a \code{\link{SpatialPointsDataFrame-class}} object with observations aggregated at the daily scale if else. 
 }

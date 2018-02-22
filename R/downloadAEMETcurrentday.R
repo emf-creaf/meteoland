@@ -78,7 +78,7 @@ downloadAEMETcurrentday <- function(api, verbose=TRUE, daily = T){
       }))
     
     data_sp <- SpatialPointsDataFrame(coords = data_df[,c("long", "lat")],
-                                      data = data_df[,which(!colnames(data_df) %in% c("long", "lat", "name", "ID", "elevation"))],
+                                      data = data_df[,which(!colnames(data_df) %in% c("long", "lat", "name", "ID"))],
                                       proj4string = CRS("+proj=longlat"))
     row.names(data_sp) <- data_df$ID
     return(data_sp)

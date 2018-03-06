@@ -4,6 +4,9 @@
 
 __Version history__
 
+_Version 0.7.1, March 2018.
+1. Bug correction in interpolationpixels (with export=TRUE)
+
 _Version 0.7.0, February 2018.
 1. New S4 structures: SpatialPixelsTopography and SpatialPixelsMeteorology
 2. New function interpolationpixels

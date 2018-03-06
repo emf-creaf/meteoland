@@ -169,7 +169,7 @@ interpolationpixels<-function(object, pixels, dates,
       if(exportFormat=="netCDF") dfout$filename[i] = paste(dates[i],".nc", sep="")
       if(dfout$dir[i]!="") f = paste(dfout$dir[i],dfout$filename[i], sep="/")
       else f = dfout$filename[i]
-      .writemeteorologypixelsNetCDF(m@data, m@coords, proj4string(m),dates[i],f,exportFormat)
+      .writemeteorologypixelsNetCDF(m@data, pixels, proj4string(m),dates[i],f,exportFormat)
       if(verbose) cat(paste(" written to ",f, sep=""))
       if(exportDir!="") f = paste(exportDir,metadatafile, sep="/")
       else f = metadatafile

@@ -127,7 +127,7 @@ As a special case, function \texttt{readmeteorologygridcells()} reads several \t
 Although very simple, the package provides two kinds of functions to visualize the temporal and spatial variation of meteorology:
 
 \begin{itemize}
-\item{Function \texttt{spplot()} has been redefined from package \code{sp} to draw maps of specific weather variables corresponding to specific dates. The function can be used on objects of classs \texttt{SpatialGridMeteorology} and \texttt{SpatialPixelsMeteorology}.}
+\item{Function \texttt{spplot()} has been redefined from package \texttt{sp} to draw maps of specific weather variables corresponding to specific dates. The function can be used on objects of classs \texttt{SpatialGridMeteorology} and \texttt{SpatialPixelsMeteorology}.}
 \item{Function \texttt{meteoplot()} allows the temporal series of specific variables on specific spatial points to be plotted. The function can read the data from the disk or from objects of class \texttt{SpatialPointsMeteorology}.}
 \end{itemize}
 

@@ -27,8 +27,15 @@ downloadAEMEThistoricalstationlist <- function(api){
   # get data and format
   data_raw <- curl_fetch_memory(urldata, h)$content
   data_string <- rawToChar(data_raw)
+  # Add local encoding information to data_string
+  Encoding(data_string) <-"latin1"
+  # enclocal <- l10n_info()
+  # if(enclocal[[2]]) Encoding(data_string) <-"UTF-8"
+  # else if(enclocal[[3]]) Encoding(data_string) <-"latin1"
+  # print(data_string)
   cname <- regmatches(data_string,gregexpr('(?<=\\\n\\s{2}\\\")[[:print:]]*(?=\\\"\\s\\:)', data_string, perl = T))[[1]]
-  value <- regmatches(data_string,gregexpr('(?<=\\:\\s\\\")[[:print:]]*(?=\\\")', data_string, perl = T))[[1]]
+  value <- regmatches(data_string,gregexpr('(?<=\\:\\s\\\")([[:print:]]|[ÑÉÈÚÀÁÜÍÏÓÒ])*(?=\\\")', data_string, perl = T))[[1]]
+  # print(head(value))
   unique_cname <- unique(cname)
   
   data_df <- as.data.frame(sapply(unique_cname,FUN = function(x){value[cname == x]}), stringsAsFactors = F)

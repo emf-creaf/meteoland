@@ -42,7 +42,6 @@ SpatialPointsMeteorology<-function(points, data, dates, dataByDate = FALSE) {
       dfcn = names(df)
       dfrn = row.names(df)
       for(h in 1:nrow(df)) {
-        print(dfrn[h])
         if(dfrn[h] %in% rownames(points@coords)) {
           i = which(rownames(points@coords)==dfrn[h])
           for(var in varnames) if(var %in% dfcn) datavec[[i]][j,var] = df[h,var]

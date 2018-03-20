@@ -7,6 +7,7 @@ __Version history__
 _Version 0.7.2, March 2018.
 1. Update of functions to download data from AEMET to deal with encoding
 2. Update of function 'SpatialPointsMeteorology' to build objects from sets of data frames, one per date
+3. Update of function 'MeteorologyInterpolationData' to build objects from different data structures
 
 _Version 0.7.1, March 2018.
 1. Bug correction in interpolationpixels (with export=TRUE)

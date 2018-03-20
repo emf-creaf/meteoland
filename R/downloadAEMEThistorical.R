@@ -2,11 +2,12 @@
 downloadAEMEThistorical <- function(api, dates, station_id, export = FALSE, exportDir = getwd(),
                                 exportFormat = "meteoland/txt",
                                 metadatafile = "MP.txt", verbose=TRUE){
+  nonUTF8 = "\u00D1\u00C0\u00C1\u00C8\u00C9\u00D2\u00D3\u00CC\u00CD\u00DC\u00CF"
   cname.func <- function(x){
     regmatches(x,gregexpr('(?<=\\n\\s{2}\\")[[:print:]]+(?=\\"\\s\\:)', x, perl = T))[[1]]
   }
   value.func <- function(x){
-    value <- regmatches(x,gregexpr('(?<=\\:\\s)([[:print:]]|[ÑÉÈÚÀÁÜÍÏÓÒ])*(?=\\n)', x, perl = T))[[1]]
+    value <- regmatches(x,gregexpr(paste0("(?<=\\:\\s)([[:print:]]|[",nonUTF8,"])*(?=\\n)"), x, perl = T))[[1]]
     value <- gsub('\\",', "", value)
     value <- gsub('\\"', "", value)
     value <- gsub(',', ".", value)

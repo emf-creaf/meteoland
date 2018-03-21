@@ -14,7 +14,8 @@ Summarizes the meteorology of a set of spatial points, pixels in a grid, or weat
 summarypoints(points, var, fun = mean, freq = NULL, dates = NULL, months = NULL, ...)
 summarygrid(griddata, dates = NULL)
 summarypixels(pixelsdata, dates = NULL)
-summaryinterpolationdata(object, var, fun = mean, freq = NULL, dates = NULL, months = NULL, ...)
+summaryinterpolationdata(object, var, fun = mean, freq = NULL, dates = NULL, 
+                         months = NULL, ...)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{

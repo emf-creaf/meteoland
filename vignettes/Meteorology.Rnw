@@ -144,6 +144,7 @@ Other functions are used to generate temporal summaries of meteorological data. 
 \begin{itemize}
 \item{Function \texttt{summarypoints()} summarizes the meteorology of spatial points. It accepts objects of \texttt{SpatialPointsMeteorology} as input and returns an object of \texttt{SpatialPointsDataFrame} with point summaries for the requested variable. Temporal summaries can be calculated for different periods and using different summarizing functions (e.g. mean, sum, minimum, maximum, etc.).}
 \item{Functions \texttt{summarygrid()} and \texttt{summarypixels()} summarize the meteorology of full grids or of subset of grid cells, respectively. They accept objects of \texttt{SpatialGridMeteorology} and \texttt{SpatialPixelsMeteorology}, respectively, as input and return an object of \texttt{SpatialGridDataFrame} and \texttt{SpatialPixelsDataFrame}, respectively, with temporal summaries for the requested variable over the range of dates indicated.}
+\item{Function \texttt{summaryinterpolationdata()} works similarly to \texttt{summarypoints()}, but takes an object of class \texttt{MeteorologyInterpolationData} as input.}
 \end{itemize}
 
 \subsection{Meteorology estimation functions}

@@ -1,8 +1,8 @@
 Package: meteoland
 Type: Package
 Title: Landscape Meteorology Tools
-Version: 0.7.2
-Date: 2018-03-19
+Version: 0.7.3
+Date: 2018-06-08
 Authors@R: c(
 	person('Miquel', 'De Cáceres', role=c('aut','cre'),
 	email='miquelcaceres@gmail.com'),

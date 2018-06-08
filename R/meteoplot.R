@@ -1,7 +1,8 @@
-meteoplot<-function(object, index, var="MeanTemperature", 
+meteoplot<-function(object, index=1, var="MeanTemperature", 
                     fun=NULL, freq=NULL, dates = NULL, months = NULL,
                     add = FALSE, ...){
-  if(!inherits(object,"SpatialPointsMeteorology") && !inherits(object,"SpatialPointsDataFrame")) stop("'object' should be of class 'SpatialPointsMeteorology' or 'SpatialPointsDataFrame'.")
+  if(!inherits(object,"data.frame") && !inherits(object,"SpatialPointsMeteorology") && !inherits(object,"SpatialPointsDataFrame")) 
+    stop("'object' should be of class 'data.frame', SpatialPointsMeteorology' or 'SpatialPointsDataFrame'.")
   
   VARS = c("MeanTemperature", "MinTemperature","MaxTemperature","MaxMinTemperatureDiff","MaxMeanTemperatureDiff", "MinMeanTemperatureDiff","Precipitation",
            "MeanRelativeHumidity", "MinRelativeHumidity", "MaxRelativeHumidity",
@@ -17,13 +18,27 @@ meteoplot<-function(object, index, var="MeanTemperature",
       df = readmeteorologypoint(f)
     }
     if(is.null(dates)) dates = as.Date(rownames(df))
-  } else if(is.null(dates)) dates = object@dates
+  } else if(inherits(object, "data.frame")) {
+    if(is.null(dates)) dates = as.Date(row.names(object))
+  } else {
+    if(is.null(dates)) dates = object@dates
+  }
   if(!is.null(months)) {
     m = as.numeric(format(dates,"%m"))
     dates = dates[m %in% months]
   }
-  
-  if(inherits(object,"SpatialPointsMeteorology")) {
+
+  if(inherits(object,"data.frame")) {
+    if(!(var %in% c("MaxMinTemperatureDiff","MaxMeanTemperatureDiff", "MinMeanTemperatureDiff"))) {
+      vec = object[as.character(dates),var]
+    } else if(var=="MaxMinTemperatureDiff") {
+      vec = object[as.character(dates),"MaxTemperature"] - object[as.character(dates),"MinTemperature"]
+    } else if(var=="MaxMeanTemperatureDiff") {
+      vec = object[as.character(dates),"MaxTemperature"] - object[as.character(dates),"MeanTemperature"]
+    } else if(var=="MinMeanTemperatureDiff") {
+      vec = object[as.character(dates),"MinTemperature"] - object[as.character(dates),"MeanTemperature"]
+    }
+  } else if(inherits(object,"SpatialPointsMeteorology")) {
     if(!(var %in% c("MaxMinTemperatureDiff","MaxMeanTemperatureDiff", "MinMeanTemperatureDiff"))) {
       vec = object@data[[index]][as.character(dates),var]
     } else if(var=="MaxMinTemperatureDiff") {

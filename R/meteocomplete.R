@@ -1,5 +1,6 @@
-meteocomplete<-function(x, elevation, slope, aspect) {
+meteocomplete<-function(x, latitude, elevation, slope, aspect) {
   patm = utils_atmosphericPressure(elevation)
+  latrad = latitude*(pi/180)
   slorad = slope*(pi/180)
   asprad = aspect*(pi/180)
   if(is.na(slorad)) slorad = 0

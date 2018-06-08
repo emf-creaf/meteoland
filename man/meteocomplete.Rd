@@ -56,6 +56,3 @@ Miquel De \enc{Cáceres}{Caceres} Ainsa, Centre Tecnologic Forestal de Catalunya
 \seealso{
 \code{\link{penman}}, \code{\link{radiation_solarRadiation}}
 }
-\examples{
-
-}

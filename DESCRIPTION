@@ -1,15 +1,15 @@
 Package: meteoland
 Type: Package
 Title: Landscape Meteorology Tools
-Version: 0.7.3
-Date: 2018-06-08
+Version: 0.7.4
+Date: 2018-08-05
 Authors@R: c(
 	person('Miquel', 'De Cáceres', role=c('aut','cre'),
 	email='miquelcaceres@gmail.com'),
 	person('Nicolas', 'Martin', role='aut'),
 	person('Víctor', 'Granda', role='aut'),
 	person('Antoine', 'Cabon', role='aut'))
-Description: Functions to estimate weather variables at any position of a landscape.
+Description: Functions to estimate weather variables at any position of a landscape [De Caceres et al. (2018) <doi:10.1016/j.envsoft.2018.08.003>].
 License: GPL (>= 2)
 URL: http://vegmod.ctfc.cat/meteolandweb
 LazyData: TRUE

@@ -1,0 +1,17 @@
+citHeader("To cite 'meteoland' package in publications use:")
+
+citEntry(entry="Manual",
+         title = "Estimating daily meteorological data and downscaling climate models over landscapes",
+         author = "Miquel De Caceres, Nicolas Martin-StPaul, Marco Turco, Antoine Cabon  & Victor Granda",
+         journal = "Environmental Modelling and Software",
+         year = "2018",
+         url  = "http://vegmod.ctfc.es/meteolandweb/",         
+         textVersion = 
+         paste("De Caceres M, Martin-StPaul N, Turco M, Cabon A, Granda V (2018). ", 
+               "Estimating daily meteorological data and downscaling climate models over landscapes. ",
+               "Environmental Modelling and Software",
+               ", URL http://vegmod.ctfc.es/meteolandweb/",
+               sep=""),
+         )
+
+citFooter("Thank you for using 'meteoland'")

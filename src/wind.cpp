@@ -109,10 +109,11 @@ NumericVector interpolateWindPoint(double xp, double yp, NumericVector ws, Numer
  * Interpolates wind direction and wind speed of meteorological stations
  * for a set of points (no use of wind fields).
  */
+// [[Rcpp::export("interpolation_wind")]]
 NumericMatrix interpolateWindStationPoints(NumericVector Xp, NumericVector Yp, NumericVector WS, NumericVector WD,
                                          NumericVector X, NumericVector Y,
                                          double iniRp = 140000, double alpha = 2.0, int N = 1, int iterations = 3,
-                                         double directionsAvailable = TRUE){
+                                         double directionsAvailable = true){
   int npoints = Xp.size();
   NumericMatrix Wp(npoints,2);
   NumericVector wvec;

@@ -80,14 +80,15 @@ double interpolatePrecipitationEventPoint(double xp, double yp, double zp, Numer
   return(0.0);
 }
 
+// [[Rcpp::export("interpolation_precipitation")]]
 NumericVector interpolatePrecipitationPoints(NumericVector Xp, NumericVector Yp, NumericVector Zp, NumericVector X, NumericVector Y, NumericVector Z, NumericVector P, NumericVector Psmooth,
                                              double iniRp = 140000, double alpha_event = 6.25, double alpha_amount = 6.25,
                                              int N_event = 20, int N_amount = 20,int iterations = 3, double popcrit = 0.5, double fmax = 0.95){
   int npoints = Xp.size();
   int nstations = X.size();
   NumericVector Pp(npoints);
-  NumericVector zDif(nstations*(nstations-1));
-  NumericVector pRat(nstations*(nstations-1));
+  NumericVector zDif(nstations*(nstations-1)/2);
+  NumericVector pRat(nstations*(nstations-1)/2);
   int c = 0;
   for(int i=0;i<nstations;i++) {
     for(int j=0;j<i;j++) {

@@ -6,6 +6,8 @@ __Version history__
 _Version 0.7.4, August 2018.
 1. Added reference to publication <doi:10.1016/j.envsoft.2018.08.003>
 2. Added citation reference.
+3. Bug correction: Over-dimensioned vectors for temperature differences (same for precipitation).
+4. Low-level interpolation routines made accessible to the user
 
 _Version 0.7.3, June 2018.
 1. New function 'meteocomplete'.

@@ -1,4 +1,5 @@
 #include <Rcpp.h>
+#include <numeric>
 #include "interpolationutils.h"
 
 using namespace Rcpp;
@@ -23,6 +24,7 @@ double interpolateTemperaturePoint(double xp, double yp, double zp, NumericVecto
   }
   //Weighted regression
   NumericVector wr = weightedRegression(tDif, zDif, WDif);
+  // Rcout<<wr[0]<<" "<<wr[1]<<"\n";
   double Wnum = 0.0;
   //Apply weighting
   for(int i=0;i<nstations;i++) {
@@ -34,12 +36,13 @@ double interpolateTemperaturePoint(double xp, double yp, double zp, NumericVecto
 }
 
 
+// [[Rcpp::export("interpolation_temperature")]]
 NumericVector interpolateTemperaturePoints(NumericVector Xp, NumericVector Yp, NumericVector Zp, NumericVector X, NumericVector Y, NumericVector Z, NumericVector T,  double iniRp = 140000, double alpha = 3.0, int N = 30, int iterations = 3){
   int npoints = Xp.size();
   int nstations = X.size();
   NumericVector Tp(npoints);
-  NumericVector zDif(nstations*(nstations-1));
-  NumericVector tDif(nstations*(nstations-1));
+  NumericVector zDif(nstations*(nstations-1)/2);
+  NumericVector tDif(nstations*(nstations-1)/2);
   int c = 0;
   for(int i=0;i<nstations;i++) {
     for(int j=0;j<i;j++) {

@@ -44,7 +44,9 @@ For each target point, the function first determines the predicted cell where th
 If \code{export = FALSE}, the function \code{correctionpoints} returns an object of class \code{\link{SpatialPointsMeteorology-class}} with the downscaled meteorology for each point. If \code{export=TRUE} function \code{correctionpoints} returns an object of class \code{\link{SpatialPointsDataFrame-class}} containing the meta data of the files written in the disk. If \code{corrOut = TRUE} the previous structures are embedded in a list which also contains an object with the calculated correction factors (biases, mappings) for each point and month. Function \code{correctionpoints.errors} (\code{keep.data = FALSE}) returns a data frame with the mean absolute error (MAE) and bias for each variable and point. If \code{keep.data = TRUE} then the function also returns a list of data frames with the uncorrected/corrected series used in the comparisons with observations.  
 }
 \references{
-Gudmundsson L, Bremnes JB, Haugen JE, Engen-Skaugen T (2012) Technical Note: Downscaling predicted climatic precipitation to the station scale using statistical transformations - A comparison of methods. Hydrology and Earth System Sciences 16, 3383–3390. doi:10.5194/hess-16-3383-2012.
+De Caceres M, Martin-StPaul N, Turco M, Cabon A, Granda V (2018) Estimating daily meteorological data and downscaling climate models over landscapes. Environmental Modelling and Software 108: 186-196.
+
+Gudmundsson L, Bremnes JB, Haugen JE, Engen-Skaugen T (2012) Technical Note: Downscaling predicted climatic precipitation to the station scale using statistical transformations - A comparison of methods. Hydrology and Earth System Sciences 16: 3383–3390. doi:10.5194/hess-16-3383-2012.
 }
 \author{
 Miquel De \enc{Cáceres}{Caceres} Ainsa, Centre Tecnologic Forestal de Catalunya

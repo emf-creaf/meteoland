@@ -20,6 +20,9 @@ interpolation.coverage(object, type = "spatial", percent = FALSE)
 \value{
 If \code{type = "spatial"} the function returns an object of class \code{SpatialPointsDataFrame} with the number (or percentage) of dates with data per station and meteorological variable. If \code{type = "temporal"} the function returns an object of class \code{data.frame} with the number (or percentage) of stations with data per day and meteorological variable.
 }
+\references{
+De Caceres M, Martin-StPaul N, Turco M, Cabon A, Granda V (2018) Estimating daily meteorological data and downscaling climate models over landscapes. Environmental Modelling and Software 108: 186-196.
+}
 \author{
 Miquel De \enc{Cáceres}{Caceres} Ainsa, Biodiversity and Landscape Ecology Laboratory, Centre Tecnologic Forestal de Catalunya
 }

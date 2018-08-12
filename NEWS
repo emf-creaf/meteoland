@@ -8,6 +8,7 @@ _Version 0.7.4, August 2018.
 2. Added citation reference.
 3. Bug correction: Over-dimensioned vectors for temperature differences (same for precipitation).
 4. Low-level interpolation routines made accessible to the user
+5. Bug correction: builder for MeteorologyInterpolationData
 
 _Version 0.7.3, June 2018.
 1. New function 'meteocomplete'.

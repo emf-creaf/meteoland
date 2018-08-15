@@ -38,7 +38,7 @@ downloadAEMEThistorical <- function(api, dates, station_id, export = FALSE, expo
   
   npoints = length(station_id)
   ndays = length(dates)
-  if(verbose) cat(paste0("\n  Downloading data for ", npoints, " stations and ", ndays," days.\n"))
+  if(verbose) cat(paste0("\n  Downloading data for ", npoints, " station(s) and ", ndays," day(s).\n"))
   
   ## Output data frame meta data
   dfout$dir = as.character(rep(exportDir, npoints)) 
@@ -81,16 +81,21 @@ downloadAEMEThistorical <- function(api, dates, station_id, export = FALSE, expo
         urldatos_string <- value.func(rawToChar(urldatos_raw$content))
       }
       
-      urldatos <- urldatos_string[3]
-      data_raw <- curl_fetch_memory(urldatos, h)
-
-      data_string <- rawToChar(data_raw$content)
-      Encoding(data_string) <-"latin1"
-      data_string <- strsplit(data_string,"}\\,\\s{1}\\{")[[1]]
-      cname <- lapply(data_string,FUN = cname.func)
-      # cname_list <- c(cname_list,cname)
-      value <- lapply(data_string,FUN = value.func)
-      value <- mapply(FUN = function(x,y){names(x) <- y;return(x)}, x = value,y = cname, SIMPLIFY = F)
+      if(urldatos_string[2]=="404"){
+        value = NA
+      }else{
+        urldatos <- urldatos_string[3]
+        data_raw <- curl_fetch_memory(urldatos, h)
+        
+        data_string <- rawToChar(data_raw$content)
+        Encoding(data_string) <-"latin1"
+        data_string <- strsplit(data_string,"}\\,\\s{1}\\{")[[1]]
+        cname <- lapply(data_string,FUN = cname.func)
+        # cname_list <- c(cname_list,cname)
+        value <- lapply(data_string,FUN = value.func)
+        value <- mapply(FUN = function(x,y){names(x) <- y;return(x)}, x = value,y = cname, SIMPLIFY = F)
+      }
+      
       value_list <- c(value_list,value)
       
       if(verbose) setTxtProgressBar(pb,i)
@@ -102,7 +107,7 @@ downloadAEMEThistorical <- function(api, dates, station_id, export = FALSE, expo
   value <- mapply(FUN = function(x,y){x[y]}, x = value_list, y = list(varnames))
   data_df <- data.frame(matrix(t(value), ncol = length(varnames), dimnames = list(NULL, varnames)),
   stringsAsFactors = F)
-  data_df <- data_df[!is.na(data_df$fecha),]
+  # data_df <- data_df[!is.na(data_df$fecha),]
   numvar <- c("prec", "tmed", "tmin", "tmax", "dir", "velmedia", "sol")
   options(warn = -1) # some residual character strings ("Ip") raise NA values when converted to numeric
   data_df[,numvar] <- sapply(data_df[,numvar],as.numeric)
@@ -131,30 +136,37 @@ downloadAEMEThistorical <- function(api, dates, station_id, export = FALSE, expo
   # Export the data
   dfout <- dfout[stationfound,]
   points <- points[stationfound,]
-  if(export){
-    for(i in 1:nrow(dfout)){
-      if(dfout$dir[i]!="") {
-        f = paste(dfout$dir[i],dfout$filename[i], sep="/")
-      }else {
-        f = dfout$filename[i]
+  
+  if(sum(stationfound)==0){
+    warning(paste("\nNo data found."))
+    if(!export){return(NA)}
+  }else{
+    if(sum(!stationfound)>0){
+    warning(paste("\nNo data found for the following station(s): \n  ",
+                                        paste(station_id[!stationfound], collapse=", "), ".\n", sep=""))
+    }
+    if(export){
+      for(i in 1:nrow(dfout)){
+        if(dfout$dir[i]!="") {
+          f = paste(dfout$dir[i],dfout$filename[i], sep="/")
+        }else {
+          f = dfout$filename[i]
+        }
+        writemeteorologypoint(data_list[[i]], f, exportFormat)
+        if(verbose) cat(paste("\n  File written to ",f, "\n", sep=""))
+        if(exportDir!=""){
+          f = paste(exportDir,metadatafile, sep="/")
+        }else{f = metadatafile}
+        spdf = SpatialPointsDataFrame(points, dfout)
+        write.table(as.data.frame(spdf),file= f,sep="\t", quote=FALSE)
       }
-      writemeteorologypoint(data_list[[i]], f, exportFormat)
-      if(verbose) cat(paste("\n  File written to ",f, "\n", sep=""))
-      if(exportDir!=""){
-        f = paste(exportDir,metadatafile, sep="/")
-      }else{f = metadatafile}
-      spdf = SpatialPointsDataFrame(points, dfout)
-      write.table(as.data.frame(spdf),file= f,sep="\t", quote=FALSE)
+    }else{
+      return(SpatialPointsMeteorology(points = points, 
+                                      data = data_list, 
+                                      dates = dates))
     }
   }
-  
-  
-  if(sum(!stationfound)>0) warning(paste("\nNo data were found for the following station(s): \n  ",
-                                        paste(station_id[!stationfound], collapse=", "), ".\n", sep=""))
-  
-  if(!export) return(SpatialPointsMeteorology(points = points, 
-                                              data = data_list, 
-                                              dates = dates))
-  invisible(spdf)
+    
+  # invisible(spdf)
 }
 

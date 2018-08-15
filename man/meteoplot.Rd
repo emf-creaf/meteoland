@@ -4,19 +4,19 @@
 
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{
-Plots meteorological series
+Plots point meteorological series
 }
 \description{
-Simple plotting of meteorological series from an object of class \code{\link{SpatialPointsMeteorology-class}} or \code{\link{SpatialGridMeteorology-class}}.
+Simple plotting of a meteorological series for a given point.
 }
 \usage{
-meteoplot(object, index, var="MeanTemperature", 
+meteoplot(object, index=1, var="MeanTemperature", 
           fun=NULL, freq=NULL, dates = NULL, months = NULL, add = FALSE,...)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
-  \item{object}{An object of class \code{\link{SpatialPointsMeteorology-class}} or \code{\link{SpatialGridMeteorology-class}}. Alternatively, an object of class \code{\link{SpatialPointsDataFrame-class}} containing the meta data (columns \code{dir}, \code{filename} and possibly \code{format}) of meteorological files.}
-  \item{index}{An integer to indicate the point in a \code{\link{SpatialPointsMeteorology-class}} object or the grid cell in a \code{\link{SpatialGridMeteorology-class}} object.}
+  \item{object}{A data frame with daily meteorological data (in this case \code{index} is not used) or an object of class \code{\linkS4class{SpatialPointsMeteorology}}. Alternatively, an object of class \code{\linkS4class{SpatialPointsDataFrame}} containing the meta data (columns \code{dir}, \code{filename} and possibly \code{format}) of meteorological files.}
+  \item{index}{An integer to indicate the point in the \code{\linkS4class{SpatialPointsMeteorology}} object (or the \code{\linkS4class{SpatialPointsDataFrame}} object).}
   \item{var}{The meteorological variable to be plotted.}
   \item{fun}{The name of a function to be calculated for summaries (only valid if \code{freq} is specified).}
   \item{freq}{

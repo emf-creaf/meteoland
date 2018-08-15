@@ -27,7 +27,7 @@ interpolation.cv(object, stations = NULL, verbose = FALSE)
 \arguments{
   \item{object}{In the case of function \code{interpolation.cv}, an object of class \code{\link{MeteorologyInterpolationData-class}}. In the case of function \code{summary}, an object of class \code{\link{interpolation.cv}}}
   \item{stations}{A numeric vector containing the indices of stations to be used to calculate mean absolute errors (MAE) in the calibration or cross-validation analysis. All the stations with data are included in the training set but predictive MAE are calculated for the 'stations' subset only.}
-  \item{variable}{A string indicating the meteorological variable for which interpolation parameters 'N' and 'alpha' will be calibrated. Accepted values are 'Tmin' (for minimum temperature), 'Tmax' (for maximum temperature), 'Tdew' (for dew-point temperature), 'PrecEvent' (for precipitation events),'Prec' (for regression of precipitation amounts),'Prec' (for precipitation with the same values for precipitation events and regression of precipitation amounts).}
+  \item{variable}{A string indicating the meteorological variable for which interpolation parameters 'N' and 'alpha' will be calibrated. Accepted values are 'Tmin' (for minimum temperature), 'Tmax' (for maximum temperature), 'Tdew' (for dew-point temperature), 'PrecEvent' (for precipitation events),'PrecAmount' (for regression of precipitation amounts),'Prec' (for precipitation with the same values for precipitation events and regression of precipitation amounts).}
   \item{N_seq}{Set of average number of points to be tested.}
   \item{alpha_seq}{Set of alpha values to be tested.}
   \item{fmax_seq}{Set of f_max values to be tested.}
@@ -92,6 +92,8 @@ Function \code{interpolation.cv} returns a list of class \code{'interpolation.cv
 }
 \references{
 Thornton, P.E., Running, S.W., 1999. An improved algorithm for estimating incident daily solar radiation from measurements of temperature, humidity, and precipitation. Agric. For. Meteorol. 93, 211–228. doi:10.1016/S0168-1923(98)00126-9.
+
+De Caceres M, Martin-StPaul N, Turco M, Cabon A, Granda V (2018) Estimating daily meteorological data and downscaling climate models over landscapes. Environmental Modelling and Software 108: 186-196.
 }
 \author{
 Miquel De \enc{Cáceres}{Caceres} Ainsa, Biodiversity and Landscape Ecology Laboratory, Centre Tecnologic Forestal de Catalunya
@@ -102,14 +104,22 @@ Miquel De \enc{Cáceres}{Caceres} Ainsa, Biodiversity and Landscape Ecology Labo
 data(exampleinterpolationdata)
 
 #Calibration procedure
-prec_cal = interpolation.calibration(exampleinterpolationdata, variable="Prec",
-                                    stations = 1:5,
-                                    N_seq=c(5,10,15), alpha_seq=seq(0.25,1.0, by=0.25),
-                                    verbose = TRUE)
+precEv_cal = interpolation.calibration(exampleinterpolationdata, variable="PrecEvent",
+                                       stations = 1:5,
+                                       N_seq=c(5,10,15), alpha_seq=seq(0.25,1.0, by=0.25),
+                                       verbose = TRUE)
+
+precAm_cal = interpolation.calibration(exampleinterpolationdata, variable="PrecAmount",
+                                       stations = 1:5,
+                                       N_seq=c(5,10,15), alpha_seq=seq(0.25,1.0, by=0.25),
+                                       verbose = TRUE)
 
 #Set 'alpha' and 'N' parameters to values found in calibration
-exampleinterpolationdata@params$N_Precipitation = prec_cal$N
-exampleinterpolationdata@params$alpha_Precipitation = prec_cal$alpha
+exampleinterpolationdata@params$N_PrecipitationEvent = precEv_cal$N
+exampleinterpolationdata@params$alpha_PrecipitationEvent = precEv_cal$alpha
+
+exampleinterpolationdata@params$N_PrecipitationAmount = precAm_cal$N
+exampleinterpolationdata@params$alpha_PrecipitationAmount = precAm_cal$alpha
 
 #Run cross validation
 cv = interpolation.cv(exampleinterpolationdata, stations = 1:5, verbose = TRUE)

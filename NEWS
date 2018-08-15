@@ -3,12 +3,34 @@
 -------------------------------
 
 __Version history__
+_Version 0.7.4, August 2018.
+1. Added reference to publication <doi:10.1016/j.envsoft.2018.08.003>
+2. Added citation reference.
+3. Bug correction: Over-dimensioned vectors for temperature differences (same for precipitation).
+4. Low-level interpolation routines made accessible to the user
+5. Bug correction: builder for MeteorologyInterpolationData
+
+_Version 0.7.3, June 2018.
+1. New function 'meteocomplete'.
+2. Improvement of function 'meteoplot' to accept data frames with daily meteorological data as input
+
+_Version 0.7.2, March 2018.
+1. Update of functions to download data from AEMET to deal with encoding
+2. Update of function 'SpatialPointsMeteorology' to build objects from sets of data frames, one per date
+3. Update of function 'MeteorologyInterpolationData' to build objects from different data structures
+4. New function 'summaryinterpolationdata' to summarize objects of class 'MeteorologyInterpolationData'
+
+_Version 0.7.1, March 2018.
+1. Bug correction in interpolationpixels (with export=TRUE)
+2. Bug correction in correctionpoints.errors (with rds input)
 
 _Version 0.7.0, February 2018.
 1. New S4 structures: SpatialPixelsTopography and SpatialPixelsMeteorology
 2. New function interpolationpixels
 3. Update of functions to download data from the Spanish Agencia Estatal de Meteorologia (AEMET)
 4. New function writemeteorologypixels
+5. Function correctiongrid removed (correction of weather series makes sense for point data)
+6. New function summarypixels
 
 _Version 0.6.9, December 2017.
 1. Allow saturated (> 100% values) in relative humidity when extracting from NetCDF and when performing bias correction

@@ -2,11 +2,12 @@
 downloadAEMEThistorical <- function(api, dates, station_id, export = FALSE, exportDir = getwd(),
                                 exportFormat = "meteoland/txt",
                                 metadatafile = "MP.txt", verbose=TRUE){
+  nonUTF8 = "\u00D1\u00C0\u00C1\u00C8\u00C9\u00D2\u00D3\u00CC\u00CD\u00DC\u00CF"
   cname.func <- function(x){
     regmatches(x,gregexpr('(?<=\\n\\s{2}\\")[[:print:]]+(?=\\"\\s\\:)', x, perl = T))[[1]]
   }
   value.func <- function(x){
-    value <- regmatches(x,gregexpr('(?<=\\:\\s)[[:print:]]*(?=\\n)', x, perl = T))[[1]]
+    value <- regmatches(x,gregexpr(paste0("(?<=\\:\\s)([[:print:]]|[",nonUTF8,"])*(?=\\n)"), x, perl = T))[[1]]
     value <- gsub('\\",', "", value)
     value <- gsub('\\"', "", value)
     value <- gsub(',', ".", value)
@@ -70,7 +71,8 @@ downloadAEMEThistorical <- function(api, dates, station_id, export = FALSE, expo
     if(verbose) pb = txtProgressBar(0, max=nrow(url), style=3)
     for(i in 1:nrow(url)){
       urldatos_raw <- curl_fetch_memory(url[i,j], h)
-      urldatos_string <- value.func(rawToChar(urldatos_raw$content))
+      data_string = rawToChar(urldatos_raw$content)
+      urldatos_string <- value.func(data_string)
       
       if(urldatos_string[2]=="429"){
         cat("\n  The number of downloads per minute on the AEMET server is limited. Please wait.")
@@ -83,6 +85,7 @@ downloadAEMEThistorical <- function(api, dates, station_id, export = FALSE, expo
       data_raw <- curl_fetch_memory(urldatos, h)
 
       data_string <- rawToChar(data_raw$content)
+      Encoding(data_string) <-"latin1"
       data_string <- strsplit(data_string,"}\\,\\s{1}\\{")[[1]]
       cname <- lapply(data_string,FUN = cname.func)
       # cname_list <- c(cname_list,cname)
@@ -106,7 +109,7 @@ downloadAEMEThistorical <- function(api, dates, station_id, export = FALSE, expo
   options(warn = 0) #
   data_df$fecha <- as.Date(data_df$fecha)
   colnames(data_df) <- c("ID", "Date", "Precipitation", "MeanTemperature", "MinTemperature", "MaxTemperature",
-                         "WindDirection", "WindSpeed")
+                         "WindDirection", "WindSpeed", "Radiation")
   data_df$WindDirection[data_df$WindDirection == 99] <- NA
   data_df$WindDirection <- data_df$WindDirection*10 # The raw data are given in degrees/10
   # data_df$Radiation <- NA

@@ -180,6 +180,7 @@ double interpolateTdewPoint(double xp, double yp, double zp, NumericVector X, Nu
 }
 
 
+// [[Rcpp::export("interpolation_dewtemperature")]]
 NumericVector interpolateTdewPoints(NumericVector Xp, NumericVector Yp, NumericVector Zp, NumericVector X, NumericVector Y, NumericVector Z, NumericVector T,  double iniRp = 140000, double alpha = 3.0, int N = 30, int iterations = 3){
   int npoints = Xp.size();
   int nstations = X.size();

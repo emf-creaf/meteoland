@@ -29,6 +29,10 @@
     .Call(`_meteoland_PenmanPETPointsDay`, latrad, elevation, slorad, asprad, J, Tmin, Tmax, RHmin, RHmax, R_s, u, z, z0, alpha, windfun)
 }
 
+interpolation_precipitation <- function(Xp, Yp, Zp, X, Y, Z, P, Psmooth, iniRp = 140000, alpha_event = 6.25, alpha_amount = 6.25, N_event = 20L, N_amount = 20L, iterations = 3L, popcrit = 0.5, fmax = 0.95) {
+    .Call(`_meteoland_interpolatePrecipitationPoints`, Xp, Yp, Zp, X, Y, Z, P, Psmooth, iniRp, alpha_event, alpha_amount, N_event, N_amount, iterations, popcrit, fmax)
+}
+
 .interpolatePrecipitationSeriesPoints <- function(Xp, Yp, Zp, X, Y, Z, P, Psmooth, iniRp = 140000, alpha_event = 6.25, alpha_amount = 6.25, N_event = 20L, N_amount = 20L, iterations = 3L, popcrit = 0.5, fmax = 0.95) {
     .Call(`_meteoland_interpolatePrecipitationSeriesPoints`, Xp, Yp, Zp, X, Y, Z, P, Psmooth, iniRp, alpha_event, alpha_amount, N_event, N_amount, iterations, popcrit, fmax)
 }
@@ -141,8 +145,16 @@ radiation_netRadiation <- function(solarConstant, latrad, elevation, slorad, asp
     .Call(`_meteoland_relativeHumidityFromDewpointTemp`, T, TD)
 }
 
+interpolation_dewtemperature <- function(Xp, Yp, Zp, X, Y, Z, T, iniRp = 140000, alpha = 3.0, N = 30L, iterations = 3L) {
+    .Call(`_meteoland_interpolateTdewPoints`, Xp, Yp, Zp, X, Y, Z, T, iniRp, alpha, N, iterations)
+}
+
 .interpolateTdewSeriesPoints <- function(Xp, Yp, Zp, X, Y, Z, T, iniRp = 140000, alpha = 3.0, N = 30L, iterations = 3L) {
     .Call(`_meteoland_interpolateTdewSeriesPoints`, Xp, Yp, Zp, X, Y, Z, T, iniRp, alpha, N, iterations)
+}
+
+interpolation_temperature <- function(Xp, Yp, Zp, X, Y, Z, T, iniRp = 140000, alpha = 3.0, N = 30L, iterations = 3L) {
+    .Call(`_meteoland_interpolateTemperaturePoints`, Xp, Yp, Zp, X, Y, Z, T, iniRp, alpha, N, iterations)
 }
 
 .interpolateTemperatureSeriesPoints <- function(Xp, Yp, Zp, X, Y, Z, T, iniRp = 140000, alpha = 3.0, N = 30L, iterations = 3L) {
@@ -195,6 +207,10 @@ penmanmonteith <- function(rc, elevation, Tmin, Tmax, RHmin, RHmax, Rn, u = NA_r
 
 .getWindFieldIndexAndFactor <- function(windSpeed, windDirection, wfSpeed, wfDirection) {
     .Call(`_meteoland_getWindFieldIndexAndFactor`, windSpeed, windDirection, wfSpeed, wfDirection)
+}
+
+interpolation_wind <- function(Xp, Yp, WS, WD, X, Y, iniRp = 140000, alpha = 2.0, N = 1L, iterations = 3L, directionsAvailable = TRUE) {
+    .Call(`_meteoland_interpolateWindStationPoints`, Xp, Yp, WS, WD, X, Y, iniRp, alpha, N, iterations, directionsAvailable)
 }
 
 .interpolateWindFieldSeriesPoints <- function(Xp, Yp, WS, WD, X, Y, I, F, iniRp = 140000, alpha = 3.0, N = 30L, iterations = 3L) {

@@ -187,7 +187,11 @@ correctionpoints.errors<-function(object, points, topodata = NULL,
     } else {
       f = paste(points@data$dir[i], points@data$filename[i],sep="/")
       if(!file.exists(f)) stop(paste("Observed file '", f,"' does not exist!", sep=""))
-      obs = readmeteorologypoint(f)
+      if("format" %in% names(points@data)) { ##Format specified
+        obs = readmeteorologypoint(f, format=points@data$format[i])
+      } else {
+        obs = readmeteorologypoint(f)
+      }
     }
     #Find closest predicted climatic cell for reference/projection periods (ideally the same)
     d = sqrt(rowSums(sweep(xypred@coords,2,xy,"-")^2))

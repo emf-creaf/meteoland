@@ -131,6 +131,32 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// interpolatePrecipitationPoints
+NumericVector interpolatePrecipitationPoints(NumericVector Xp, NumericVector Yp, NumericVector Zp, NumericVector X, NumericVector Y, NumericVector Z, NumericVector P, NumericVector Psmooth, double iniRp, double alpha_event, double alpha_amount, int N_event, int N_amount, int iterations, double popcrit, double fmax);
+RcppExport SEXP _meteoland_interpolatePrecipitationPoints(SEXP XpSEXP, SEXP YpSEXP, SEXP ZpSEXP, SEXP XSEXP, SEXP YSEXP, SEXP ZSEXP, SEXP PSEXP, SEXP PsmoothSEXP, SEXP iniRpSEXP, SEXP alpha_eventSEXP, SEXP alpha_amountSEXP, SEXP N_eventSEXP, SEXP N_amountSEXP, SEXP iterationsSEXP, SEXP popcritSEXP, SEXP fmaxSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type Xp(XpSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type Yp(YpSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type Zp(ZpSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type X(XSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type Y(YSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type Z(ZSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type P(PSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type Psmooth(PsmoothSEXP);
+    Rcpp::traits::input_parameter< double >::type iniRp(iniRpSEXP);
+    Rcpp::traits::input_parameter< double >::type alpha_event(alpha_eventSEXP);
+    Rcpp::traits::input_parameter< double >::type alpha_amount(alpha_amountSEXP);
+    Rcpp::traits::input_parameter< int >::type N_event(N_eventSEXP);
+    Rcpp::traits::input_parameter< int >::type N_amount(N_amountSEXP);
+    Rcpp::traits::input_parameter< int >::type iterations(iterationsSEXP);
+    Rcpp::traits::input_parameter< double >::type popcrit(popcritSEXP);
+    Rcpp::traits::input_parameter< double >::type fmax(fmaxSEXP);
+    rcpp_result_gen = Rcpp::wrap(interpolatePrecipitationPoints(Xp, Yp, Zp, X, Y, Z, P, Psmooth, iniRp, alpha_event, alpha_amount, N_event, N_amount, iterations, popcrit, fmax));
+    return rcpp_result_gen;
+END_RCPP
+}
 // interpolatePrecipitationSeriesPoints
 NumericMatrix interpolatePrecipitationSeriesPoints(NumericVector Xp, NumericVector Yp, NumericVector Zp, NumericVector X, NumericVector Y, NumericVector Z, NumericMatrix P, NumericMatrix Psmooth, double iniRp, double alpha_event, double alpha_amount, int N_event, int N_amount, int iterations, double popcrit, double fmax);
 RcppExport SEXP _meteoland_interpolatePrecipitationSeriesPoints(SEXP XpSEXP, SEXP YpSEXP, SEXP ZpSEXP, SEXP XSEXP, SEXP YSEXP, SEXP ZSEXP, SEXP PSEXP, SEXP PsmoothSEXP, SEXP iniRpSEXP, SEXP alpha_eventSEXP, SEXP alpha_amountSEXP, SEXP N_eventSEXP, SEXP N_amountSEXP, SEXP iterationsSEXP, SEXP popcritSEXP, SEXP fmaxSEXP) {
@@ -922,6 +948,27 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// interpolateTdewPoints
+NumericVector interpolateTdewPoints(NumericVector Xp, NumericVector Yp, NumericVector Zp, NumericVector X, NumericVector Y, NumericVector Z, NumericVector T, double iniRp, double alpha, int N, int iterations);
+RcppExport SEXP _meteoland_interpolateTdewPoints(SEXP XpSEXP, SEXP YpSEXP, SEXP ZpSEXP, SEXP XSEXP, SEXP YSEXP, SEXP ZSEXP, SEXP TSEXP, SEXP iniRpSEXP, SEXP alphaSEXP, SEXP NSEXP, SEXP iterationsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type Xp(XpSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type Yp(YpSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type Zp(ZpSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type X(XSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type Y(YSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type Z(ZSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type T(TSEXP);
+    Rcpp::traits::input_parameter< double >::type iniRp(iniRpSEXP);
+    Rcpp::traits::input_parameter< double >::type alpha(alphaSEXP);
+    Rcpp::traits::input_parameter< int >::type N(NSEXP);
+    Rcpp::traits::input_parameter< int >::type iterations(iterationsSEXP);
+    rcpp_result_gen = Rcpp::wrap(interpolateTdewPoints(Xp, Yp, Zp, X, Y, Z, T, iniRp, alpha, N, iterations));
+    return rcpp_result_gen;
+END_RCPP
+}
 // interpolateTdewSeriesPoints
 NumericMatrix interpolateTdewSeriesPoints(NumericVector Xp, NumericVector Yp, NumericVector Zp, NumericVector X, NumericVector Y, NumericVector Z, NumericMatrix T, double iniRp, double alpha, int N, int iterations);
 RcppExport SEXP _meteoland_interpolateTdewSeriesPoints(SEXP XpSEXP, SEXP YpSEXP, SEXP ZpSEXP, SEXP XSEXP, SEXP YSEXP, SEXP ZSEXP, SEXP TSEXP, SEXP iniRpSEXP, SEXP alphaSEXP, SEXP NSEXP, SEXP iterationsSEXP) {
@@ -940,6 +987,27 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< int >::type N(NSEXP);
     Rcpp::traits::input_parameter< int >::type iterations(iterationsSEXP);
     rcpp_result_gen = Rcpp::wrap(interpolateTdewSeriesPoints(Xp, Yp, Zp, X, Y, Z, T, iniRp, alpha, N, iterations));
+    return rcpp_result_gen;
+END_RCPP
+}
+// interpolateTemperaturePoints
+NumericVector interpolateTemperaturePoints(NumericVector Xp, NumericVector Yp, NumericVector Zp, NumericVector X, NumericVector Y, NumericVector Z, NumericVector T, double iniRp, double alpha, int N, int iterations);
+RcppExport SEXP _meteoland_interpolateTemperaturePoints(SEXP XpSEXP, SEXP YpSEXP, SEXP ZpSEXP, SEXP XSEXP, SEXP YSEXP, SEXP ZSEXP, SEXP TSEXP, SEXP iniRpSEXP, SEXP alphaSEXP, SEXP NSEXP, SEXP iterationsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type Xp(XpSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type Yp(YpSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type Zp(ZpSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type X(XSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type Y(YSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type Z(ZSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type T(TSEXP);
+    Rcpp::traits::input_parameter< double >::type iniRp(iniRpSEXP);
+    Rcpp::traits::input_parameter< double >::type alpha(alphaSEXP);
+    Rcpp::traits::input_parameter< int >::type N(NSEXP);
+    Rcpp::traits::input_parameter< int >::type iterations(iterationsSEXP);
+    rcpp_result_gen = Rcpp::wrap(interpolateTemperaturePoints(Xp, Yp, Zp, X, Y, Z, T, iniRp, alpha, N, iterations));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -1335,6 +1403,27 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// interpolateWindStationPoints
+NumericMatrix interpolateWindStationPoints(NumericVector Xp, NumericVector Yp, NumericVector WS, NumericVector WD, NumericVector X, NumericVector Y, double iniRp, double alpha, int N, int iterations, double directionsAvailable);
+RcppExport SEXP _meteoland_interpolateWindStationPoints(SEXP XpSEXP, SEXP YpSEXP, SEXP WSSEXP, SEXP WDSEXP, SEXP XSEXP, SEXP YSEXP, SEXP iniRpSEXP, SEXP alphaSEXP, SEXP NSEXP, SEXP iterationsSEXP, SEXP directionsAvailableSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type Xp(XpSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type Yp(YpSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type WS(WSSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type WD(WDSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type X(XSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type Y(YSEXP);
+    Rcpp::traits::input_parameter< double >::type iniRp(iniRpSEXP);
+    Rcpp::traits::input_parameter< double >::type alpha(alphaSEXP);
+    Rcpp::traits::input_parameter< int >::type N(NSEXP);
+    Rcpp::traits::input_parameter< int >::type iterations(iterationsSEXP);
+    Rcpp::traits::input_parameter< double >::type directionsAvailable(directionsAvailableSEXP);
+    rcpp_result_gen = Rcpp::wrap(interpolateWindStationPoints(Xp, Yp, WS, WD, X, Y, iniRp, alpha, N, iterations, directionsAvailable));
+    return rcpp_result_gen;
+END_RCPP
+}
 // interpolateWindFieldSeriesPoints
 List interpolateWindFieldSeriesPoints(NumericVector Xp, NumericVector Yp, NumericMatrix WS, NumericMatrix WD, NumericVector X, NumericVector Y, IntegerMatrix I, NumericMatrix F, double iniRp, double alpha, int N, int iterations);
 RcppExport SEXP _meteoland_interpolateWindFieldSeriesPoints(SEXP XpSEXP, SEXP YpSEXP, SEXP WSSEXP, SEXP WDSEXP, SEXP XSEXP, SEXP YSEXP, SEXP ISEXP, SEXP FSEXP, SEXP iniRpSEXP, SEXP alphaSEXP, SEXP NSEXP, SEXP iterationsSEXP) {
@@ -1460,6 +1549,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_meteoland_PenmanPETPointSeries", (DL_FUNC) &_meteoland_PenmanPETPointSeries, 15},
     {"_meteoland_PenmanMonteithPETPointSeries", (DL_FUNC) &_meteoland_PenmanMonteithPETPointSeries, 8},
     {"_meteoland_PenmanPETPointsDay", (DL_FUNC) &_meteoland_PenmanPETPointsDay, 15},
+    {"_meteoland_interpolatePrecipitationPoints", (DL_FUNC) &_meteoland_interpolatePrecipitationPoints, 16},
     {"_meteoland_interpolatePrecipitationSeriesPoints", (DL_FUNC) &_meteoland_interpolatePrecipitationSeriesPoints, 16},
     {"_meteoland_interpolatePrecipitationEventSeriesPoints", (DL_FUNC) &_meteoland_interpolatePrecipitationEventSeriesPoints, 12},
     {"_meteoland_pseudoRainfall", (DL_FUNC) &_meteoland_pseudoRainfall, 5},
@@ -1488,7 +1578,9 @@ static const R_CallMethodDef CallEntries[] = {
     {"_meteoland_temp2SVP", (DL_FUNC) &_meteoland_temp2SVP, 1},
     {"_meteoland_relativeHumidityFromMinMaxTemp", (DL_FUNC) &_meteoland_relativeHumidityFromMinMaxTemp, 2},
     {"_meteoland_relativeHumidityFromDewpointTemp", (DL_FUNC) &_meteoland_relativeHumidityFromDewpointTemp, 2},
+    {"_meteoland_interpolateTdewPoints", (DL_FUNC) &_meteoland_interpolateTdewPoints, 11},
     {"_meteoland_interpolateTdewSeriesPoints", (DL_FUNC) &_meteoland_interpolateTdewSeriesPoints, 11},
+    {"_meteoland_interpolateTemperaturePoints", (DL_FUNC) &_meteoland_interpolateTemperaturePoints, 11},
     {"_meteoland_interpolateTemperatureSeriesPoints", (DL_FUNC) &_meteoland_interpolateTemperatureSeriesPoints, 11},
     {"_meteoland_saturationVapourPressure", (DL_FUNC) &_meteoland_saturationVapourPressure, 1},
     {"_meteoland_averageDailyVapourPressure", (DL_FUNC) &_meteoland_averageDailyVapourPressure, 4},
@@ -1502,6 +1594,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_meteoland_PenmanPET", (DL_FUNC) &_meteoland_PenmanPET, 15},
     {"_meteoland_PenmanMonteithPET", (DL_FUNC) &_meteoland_PenmanMonteithPET, 8},
     {"_meteoland_getWindFieldIndexAndFactor", (DL_FUNC) &_meteoland_getWindFieldIndexAndFactor, 4},
+    {"_meteoland_interpolateWindStationPoints", (DL_FUNC) &_meteoland_interpolateWindStationPoints, 11},
     {"_meteoland_interpolateWindFieldSeriesPoints", (DL_FUNC) &_meteoland_interpolateWindFieldSeriesPoints, 12},
     {"_meteoland_interpolateWindStationSeriesPoints", (DL_FUNC) &_meteoland_interpolateWindStationSeriesPoints, 10},
     {"_meteoland_RcppExport_registerCCallable", (DL_FUNC) &_meteoland_RcppExport_registerCCallable, 0},

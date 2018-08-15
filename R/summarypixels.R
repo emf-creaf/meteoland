@@ -1,7 +1,7 @@
-summarygrid<-function(griddata, dates = NULL) {
-  if(!inherits(griddata,"SpatialGridMeteorology") && !inherits(griddata,"data.frame")) stop("'griddata' has to be of class 'SpatialGridMeteorology' or 'data.frame'.")
-  if(inherits(griddata,"SpatialGridMeteorology")) gdates = griddata@dates
-  else gdates = row.names(griddata)
+summarypixels<-function(pixelsdata, dates = NULL) {
+  if(!inherits(pixelsdata,"SpatialPixelsMeteorology") && !inherits(pixelsdata,"data.frame")) stop("'pixelsdata' has to be of class 'SpatialPixelsMeteorology' or 'data.frame'.")
+  if(inherits(pixelsdata,"SpatialPixelsMeteorology")) gdates = pixelsdata@dates
+  else gdates = row.names(pixelsdata)
   
   if(is.null(dates)) {
     dates = gdates
@@ -13,26 +13,29 @@ summarygrid<-function(griddata, dates = NULL) {
   
   cum = NULL
   gt = NULL
+  points = NULL
   proj4string = NULL
   pb = txtProgressBar(0, ndates, 0, style = 3)
   for(i in 1:ndates) {
     setTxtProgressBar(pb, i)
-    if(inherits(griddata,"SpatialGridMeteorology")) {
-      obs = griddata@data[[i]]
+    if(inherits(pixelsdata,"SpatialPixelsMeteorology")) {
+      obs = pixelsdata@data[[i]]
       if(is.null(cum)) {
         cum = obs
-        gt = griddata@grid
-        proj4string = griddata@proj4string
+        gt = pixelsdata@grid
+        points = as(pixelsdata, "SpatialPoints")
+        proj4string = pixelsdata@proj4string
       } else {
         cum = cum + obs
       }
     } else {
-      f = paste(griddata$dir[i], griddata$filename[i],sep="/")
+      f = paste(pixelsdata$dir[i], pixelsdata$filename[i],sep="/")
       if(!file.exists(f)) stop(paste("Observed file '", f,"' does not exist!", sep=""))
-      obs = readmeteorologygrid(f)
+      obs = readmeteorologypixels(f)
       if(is.null(cum)) {
         cum = obs@data
         gt = obs@grid
+        points = as(obs, "SpatialPoints")
         proj4string = obs@proj4string
       }else {
         cum = cum + obs@data
@@ -48,5 +51,5 @@ summarygrid<-function(griddata, dates = NULL) {
   cum$MaxRelativeHumidity = cum$MaxRelativeHumidity/ndates
   cum$Radiation = cum$Radiation/ndates
   cum$WindSpeed = cum$WindSpeed/ndates
-  return(SpatialGridDataFrame(gt,cum, proj4string))
+  return(SpatialPixelsDataFrame(points=points, data=cum, proj4string=proj4string, grid = gt))
 }

@@ -1,4 +1,5 @@
 #include <Rcpp.h>
+#include <numeric>
 using namespace Rcpp;
 
 double gaussianFilter(double r, double Rp, double alpha) {

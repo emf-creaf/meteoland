@@ -2,14 +2,18 @@
 \name{spplot}
 \alias{spplot,SpatialGridTopography-method}
 \alias{spplot,SpatialGridMeteorology-method}
+\alias{spplot,SpatialPixelsTopography-method}
+\alias{spplot,SpatialPixelsMeteorology-method}
 
 \title{Spatial grid plots}
 \description{
-Function \code{spplot} for \code{\link{SpatialGridTopography-class}} objects allows drawing maps of topographic attributes. Function \code{spplot} for \code{\link{SpatialGridMeteorology-class}} objects allows drawing maps of meteorological variables corresponding to specific dates.
+Function \code{spplot} for \code{\link{SpatialGridTopography-class}} and \code{\link{SpatialPixelsTopography-class}} objects allows drawing maps of topographic attributes. Function \code{spplot} for \code{\link{SpatialGridMeteorology-class}} and \code{\link{SpatialPixelsMeteorology-class}} objects allows drawing maps of meteorological variables corresponding to specific dates.
 }
 \usage{
 \S4method{spplot}{SpatialGridTopography}(obj, variable="elevation",...)
 \S4method{spplot}{SpatialGridMeteorology}(obj, date, variable="MeanTemperature", ...)
+\S4method{spplot}{SpatialPixelsTopography}(obj, variable="elevation",...)
+\S4method{spplot}{SpatialPixelsMeteorology}(obj, date, variable="MeanTemperature", ...)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{

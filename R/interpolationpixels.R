@@ -1,8 +1,8 @@
-.interpolateGridDay<-function(object, grid, latitude, d) {
+.interpolatePixelsDay<-function(object, pixels, latitude, d) {
   i = which(object@dates == d)
   if(length(i)==0) stop("Date not found. Date 'd' has to be comprised within the dates specified in 'object'.")
-  cc = coordinates(grid)
-  z = grid@data$elevation
+  cc = pixels@coords
+  z = pixels@data$elevation
   mPar = object@params
 
   tmin = .interpolateTemperatureSeriesPoints(Xp= cc[,1], Yp =cc[,2], Zp = z,
@@ -77,9 +77,9 @@
                                                       iterations = mPar$iterations)
 
   latrad = latitude * (pi/180)
-  asprad = grid$aspect * (pi/180)
-  slorad = grid$slope  * (pi/180)
-  rad = .radiationPoints(latrad, grid$elevation, slorad, asprad, J, 
+  asprad = pixels$aspect * (pi/180)
+  slorad = pixels$slope  * (pi/180)
+  rad = .radiationPoints(latrad, pixels$elevation, slorad, asprad, J, 
                          diffTemp, diffTempMonth, VP, prec)
   #wind
   if((!is.null(object@WFIndex)) && (!is.null(object@WFFactor))) {
@@ -116,7 +116,7 @@
     Wd = rep(NA,nrow(cc))
   }
   #PET
-  pet = .PenmanPETPointsDay(latrad, grid$elevation, slorad, asprad, J, tmin, tmax,
+  pet = .PenmanPETPointsDay(latrad, pixels$elevation, slorad, asprad, J, tmin, tmax,
                             rhmin, rhmax, rad, Ws, mPar$wind_height,
                             0.001, 0.25);
   df = data.frame(MeanTemperature = as.vector(tmean),
@@ -130,15 +130,15 @@
                   WindSpeed = as.vector(Ws),
                   WindDirection = as.vector(Wd),
                   PET = pet)
-  return(SpatialGridDataFrame(grid@grid, df, grid@proj4string))
+  return(SpatialPixelsDataFrame(cc, data = df, grid=pixels@grid, proj4string= pixels@proj4string))
 }
 
-interpolationgrid<-function(object, grid, dates,
+interpolationpixels<-function(object, pixels, dates,
                             export=FALSE, exportDir = getwd(), exportFormat = "netCDF",
                             metadatafile = "MG.txt", verbose = TRUE) {
   if(!inherits(object,"MeteorologyInterpolationData")) stop("'object' has to be of class 'MeteorologyInterpolationData'.")
-  if(!inherits(grid,"SpatialGridTopography")) stop("'grid' has to be of class 'SpatialGridTopography'.")
-  if(proj4string(grid)!=proj4string(object)) stop("CRS projection in 'grid' has to the same as in 'object'.")
+  if(!inherits(pixels,"SpatialPixelsTopography")) stop("'pixels' has to be of class 'SpatialPixelsTopography'.")
+  if(proj4string(pixels)!=proj4string(object)) stop("CRS projection in 'pixels' has to the same as in 'object'.")
   if(!is.null(dates)) {
     if(class(dates)!="Date") stop("'dates' has to be of class 'Date'.")
     if(sum(as.character(dates) %in% as.character(object@dates))<length(dates)) 
@@ -146,13 +146,13 @@ interpolationgrid<-function(object, grid, dates,
   }
   else dates = object@dates
   bbox = object@bbox
-  gbbox = grid@bbox
+  gbbox = pixels@bbox
   insidebox = (gbbox[1,1]>=bbox[1,1]) && (gbbox[1,2]<=bbox[1,2]) && (gbbox[2,1]>=bbox[2,1]) && (gbbox[2,2]<=bbox[2,2])
   if(!insidebox) stop("Boundary box of target grid is not within boundary box of interpolation data object.")
-  longlat = spTransform(as(grid,"SpatialPoints"),CRS("+proj=longlat"))
+  longlat = spTransform(as(pixels,"SpatialPoints"),CRS("+proj=longlat"))
   latitude = longlat@coords[,2]
   ndates = length(dates)
-  if(ndates==1) return(.interpolateGridDay(object, grid, latitude, dates))
+  if(ndates==1) return(.interpolatePixelsDay(object, pixels, latitude, dates))
   # Define vector of data frames
   l = vector("list", ndates)
 
@@ -164,12 +164,12 @@ interpolationgrid<-function(object, grid, dates,
 
   for(i in 1:ndates) {
     if(verbose) cat(paste("Date ", dates[i], " (",i,"/",ndates,") -",sep=""))
-    m = .interpolateGridDay(object, grid, latitude, dates[i])
+    m = .interpolatePixelsDay(object, pixels, latitude, dates[i])
     if(export) {
       if(exportFormat=="netCDF") dfout$filename[i] = paste(dates[i],".nc", sep="")
       if(dfout$dir[i]!="") f = paste(dfout$dir[i],dfout$filename[i], sep="/")
       else f = dfout$filename[i]
-      .writemeteorologygridNetCDF(m@data,m@grid, proj4string(m),dates[i],f,exportFormat)
+      .writemeteorologypixelsNetCDF(m@data, pixels, proj4string(m),dates[i],f,exportFormat)
       if(verbose) cat(paste(" written to ",f, sep=""))
       if(exportDir!="") f = paste(exportDir,metadatafile, sep="/")
       else f = metadatafile
@@ -182,7 +182,7 @@ interpolationgrid<-function(object, grid, dates,
   }
   if(!export) {
     names(l) = dates
-    return(SpatialGridMeteorology(grid@grid, grid@proj4string, l, dates))
+    return(SpatialPixelsMeteorology(as(pixels,"SpatialPoints"), data = l, dates, grid = pixels@grid, proj4string = pixels@proj4string))
   } else {
     invisible(dfout)
   }

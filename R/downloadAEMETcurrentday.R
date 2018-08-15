@@ -1,6 +1,17 @@
 # Function to download daily met data from AEMET, format it and save it on the disk
-downloadAEMETcurrentday <- function(api, station_id, verbose=TRUE){
-  # station_id is the id code of the wanted AEMET station
+downloadAEMETcurrentday <- function(api, daily = TRUE, verbose=TRUE){
+  # Utilitary functions
+  nonUTF8 = "\u00D1\u00C0\u00C1\u00C8\u00C9\u00D2\u00D3\u00CC\u00CD\u00DC\u00CF"
+  cname.func <- function(x){
+    regmatches(x,gregexpr('(?<=\\n\\s{2}\\")[[:print:]]+(?=\\"\\s\\:)', x, perl = T))[[1]]
+  }
+  value.func <- function(x){
+    value <- regmatches(x,gregexpr(paste0("(?<=\\:\\s)([[:print:]]|[",nonUTF8,"])*(?=\\n)"), x, perl = T))[[1]]
+    value <- gsub('\\",', "", value)
+    value <- gsub('\\"', "", value)
+    value <- gsub(',', "", value)
+  }
+  
   
   # set options
   h = new_handle()
@@ -8,121 +19,80 @@ downloadAEMETcurrentday <- function(api, station_id, verbose=TRUE){
   handle_setopt(h, ssl_verifypeer=FALSE)
   handle_setopt(h, customrequest="GET")
   
-  ## Metadata
-  npoints = length(station_id)
-  dfout = data.frame(lon = rep(NA, npoints), lat = rep(NA, npoints), 
-                     name = rep(NA, npoints), elevation = rep(NA, npoints))
-  rownames(dfout) = station_id
+  url <- "https://opendata.aemet.es/opendata/api/observacion/convencional/todas"
+  # get data url
+  urldata_raw <- curl_fetch_memory(url, h)$content
+  urldata_string <- value.func(rawToChar(urldata_raw))
   
-
-  dfout$MeanTemperature = NA
-  dfout$MinTemperature = NA
-  dfout$MaxTemperature = NA
-  dfout$Precipitation = NA
-  dfout$MeanRelativeHumidity = NA
-  dfout$MinRelativeHumidity = NA
-  dfout$MaxRelativeHumidity = NA
-  dfout$Radiation = NA
-  dfout$WindSpeed = NA
-  dfout$WindDirection = NA
-  
-  # express dates as url
-  url_header <- "https://opendata.aemet.es/opendata/api/observacion/convencional/datos/estacion/"
-  url <- paste(url_header,  station_id, sep = "")
-  if(verbose) pb = txtProgressBar(0, max=length(url), style=3)
-  for(i in 1:length(url)) {
-    if(verbose) setTxtProgressBar(pb,i)
-    data_raw<-curl_fetch_memory(url[i],h)
-    data_raw <- data_raw$content[-which(data_raw$content %in% c("5b", "20", "7b", "20", "20", "22", "5d"))]
-    data_raw <- strsplit(rawToChar(data_raw), split = c("}"))
-    data_raw <- strsplit(data_raw[[1]], split = c("\n"), fixed=TRUE)
-    if(data_raw[1]!="mensaje_operacional:Nohaydatosquesatisfaganesoscriterios") {
-      data_raw <- data_raw[[1]]
-      line_url<-as.character(data_raw[startsWith(data_raw,"datos:")])
-      url_string<-substr(line_url,7, nchar(line_url)-1) #URL to get data from
-      data_raw<-curl_fetch_memory(url_string,h)
-      data_raw <- data_raw$content[-which(data_raw$content %in% c("5b", "20", "7b", "20", "20", "22", "5d"))]
-      data_raw <- strsplit(rawToChar(data_raw), split = c("}"))
-      data_raw <- strsplit(data_raw[[1]], split = c("\n"), fixed=TRUE)
-      varnames = c("lon","lat", "ubi", "alt", "ta", "tamin", "tamax",  "prec", "hr", "dv", "vv")
-      
-      m = data.frame(matrix(NA, nrow=length(data_raw), ncol=length(varnames)))
-      names(m)<-varnames
-      for(k in 1:length(data_raw)) {
-        data_hour = data_raw[[k]]
-        eds = endsWith(data_hour,",")
-        data_hour[eds] = substr(data_hour[eds],1,nchar(data_hour[eds])-1)
-        var_list = strsplit(data_hour,":")
-        for(j in 1:length(var_list)) {
-          if(length(var_list[[j]])==2) {
-            vname <- var_list[[j]][1]
-            vval  <- var_list[[j]][2]
-            if(vname=="lon") m[k,"lon"]  <- as.numeric(vval)
-            else if(vname=="lat") m[k,"lat"]  <- as.numeric(vval)
-            else if(vname=="ubi") m[k,"ubi"]  <- vval
-            else if(vname=="alt") m[k,"alt"]  <- as.numeric(vval)
-            else if(vname=="ta") m[k,"ta"]  <- as.numeric(vval)
-            else if(vname=="tamax") m[k,"tamax"]  <- as.numeric(vval)
-            else if(vname=="tamin") m[k,"tamin"]  <- as.numeric(vval)
-            else if(vname=="prec") m[k,"prec"]  <- as.numeric(vval)
-            else if(vname=="hr") m[k,"hr"]  <- as.numeric(vval)
-            else if(vname=="dv") m[k,"dv"]  <- as.numeric(vval)
-            else if(vname=="vv") m[k,"vv"]  <- as.numeric(vval)
-          }
-        }
-      }
-      
-      dfout$lon[i] = m[1,"lon"]
-      dfout$lat[i] = m[1,"lat"]
-      dfout$name[i] = m[1,"ubi"]
-      dfout$elevation[i] = m[1,"alt"]
-      mtvec = m[,"ta"]
-      mtvec = mtvec[!is.na(mtvec)]
-      if(length(mtvec)>0) dfout$MeanTemperature[i] = mean(mtvec,na.rm=TRUE)
-      mxtvec = m[,"tamax"]
-      mxtvec = mxtvec[!is.na(mxtvec)]
-      if(length(mxtvec)>0) dfout$MaxTemperature[i] = max(mxtvec,na.rm=TRUE)
-      mntvec = m[,"tamin"]
-      mntvec = mntvec[!is.na(mntvec)]
-      if(length(mntvec)>0) dfout$MinTemperature[i] = min(mntvec,na.rm=TRUE)
-      dfout$Precipitation[i] = sum(m[,"prec"],na.rm=TRUE)
-      hrvec = m[,"hr"]
-      hrvec = hrvec[hrvec>0] #Remove zero values
-      hrvec = hrvec[!is.na(hrvec)]
-      if(length(hrvec)>0) {
-        dfout$MeanRelativeHumidity[i] = mean(hrvec,na.rm=TRUE)
-        dfout$MaxRelativeHumidity[i] = max(hrvec,na.rm=TRUE)
-        dfout$MinRelativeHumidity[i] = min(hrvec,na.rm=TRUE)
-      }
-      vvvec = m[,"vv"]
-      vvvec = vvvec[vvvec>0] #Remove zero values
-      vvvec = vvvec[!is.na(vvvec)]
-      if(length(vvvec)>0)  dfout$WindSpeed[i] = mean(vvvec,na.rm=TRUE)
-      dvvec = m[,"dv"]
-      dvvec = dvvec[dvvec>0] #Remove zero values
-      dvvec = dvvec[!is.na(dvvec)]
-      if(length(dvvec)>0)  {
-        y = sum(cos(dvvec*pi/180), na.rm=TRUE)/length(dvvec)
-        x = sum(sin(dvvec*pi/180), na.rm=TRUE)/length(dvvec)
-        if(!is.na(x) && !is.na(y)) {
-          dfout$WindDirection[i] = (180/pi)*atan(y/x)
-          if(dfout$WindDirection[i]<0) dfout$WindDirection[i] = dfout$WindDirection[i]+360
-        }
-      }
-    }
+  if(urldata_string[2]=="401"){
+    stop("Invalid API key. (API keys are valid for 3 months.)")
   }
   
-  sel = (!is.na(dfout$lon)) & (!is.na(dfout$lat) & (!is.na(dfout$name))) 
-  discarded = station_id[!sel]
-  dfout = dfout[sel,]
-  if(length(discarded)>0) warning(paste("\nInformation could not be retrieved for the following stations: \n  ",
-                        paste(discarded, collapse=", "), ".\n", sep=""))
-  if(sum(sel)>0) {
-    points <- SpatialPoints(coords = cbind(dfout$lon,dfout$lat), CRS("+proj=longlat"))
-    return(SpatialPointsDataFrame(points, dfout[,-c(1,2)]))
-  } else {
-    warning("No stations with results!")
-    return(NULL)
+  urldata <- urldata_string[3]
+  
+  if(verbose)cat("Downloading hourly data from all available stations")
+  data_raw <- curl_fetch_memory(urldata, h)$content
+  
+  if(verbose)cat("\nFormating data")
+  data_string <- rawToChar(data_raw)
+  #Add local encoding information to data_string
+  # Encoding(data_string) <-"latin1"
+  enclocal <- l10n_info()
+  if(enclocal[[2]]) Encoding(data_string) <-"UTF-8"
+  else if(enclocal[[3]]) Encoding(data_string) <-"latin1"
+  data_string <- strsplit(data_string,"}\\,\\s{1}\\{")[[1]]
+  cname <- lapply(data_string,FUN = cname.func)
+  value <- lapply(data_string,FUN = value.func)
+  value <- mapply(FUN = function(x,y){names(x) <- y;return(x)}, x = value,y = cname)
+  unique_cname <- cname[[which.max(sapply(cname,FUN = length))]]
+  value <- mapply(FUN = function(x,y){x[y]}, x = value, y = list(unique_cname))
+  
+  data_df <- data.frame(matrix(t(value), ncol = length(unique_cname), dimnames = list(NULL, unique_cname)),
+                        stringsAsFactors = F)
+  varnames <-c("idema", "lon","lat", "ubi", "alt", "fint", "ta", "tamin", "tamax",  "prec", "hr", "dv", "vv")
+  data_df <- data_df[,varnames]
+  numvar <- c("lon","lat","alt","ta", "tamin", "tamax",  "prec", "hr", "dv", "vv")
+  data_df[,numvar] <- sapply(data_df[,numvar],as.numeric)
+  data_df$fint <- as.POSIXlt(sub("T", " ",data_df$fint), format = "%Y-%m-%d %H:%M:%S")
+  
+  if(daily){
+    if(verbose)cat("\nAggregating hourly data to 24h-scale\n")
+    options(warn=-1)
+    data_agg <- aggregate(data_df[,numvar],list(idema = data_df$idema, ubi = data_df$ubi), 
+                          function(x){mean<-mean(x,na.rm=T);min<-min(x,na.rm=T);max<-max(x,na.rm=T);sum<-sum(x,na.rm=T)
+                          return(c(mean=mean,min=min,max=max,sum=sum))})
+    # wind direction
+    dv_agg <- aggregate(list(dv = data_df$dv),list(idema = data_df$idema, ubi = data_df$ubi),
+                        function(dvvec){
+                          y = sum(cos(dvvec*pi/180), na.rm=TRUE)/length(dvvec)
+                          x = sum(sin(dvvec*pi/180), na.rm=TRUE)/length(dvvec)
+                          dv = (180/pi)*atan(y/x)
+                          dv[dv<0] <- dv[dv<0]+360
+                          return(dv)
+                        })
+    options(warn=0)
+    data_df <- data.frame(ID = as.character(data_agg$idema), name = data_agg$ubi, 
+                          long = data_agg$lon[,"mean"],lat = data_agg$lat[,"mean"], elevation = data_agg$alt[,"mean"],
+                          MeanTemperature = data_agg$ta[,"mean"], MinTemperature = data_agg$ta[,"min"], MaxTemperature = data_agg$ta[,"max"],
+                          Precipitation = data_agg$prec[,"sum"], WindSpeed = data_agg$vv[,"mean"], WindDirection = dv_agg$dv,
+                          MeanRelativeHumidity = data_agg$hr[,"mean"], MinRelativeHumidity = data_agg$hr[,"min"], MaxRelativeHumidity = data_agg$hr[,"max"])
+
+    data_df <- as.data.frame(lapply(data_df,function(x){
+      x. <- x
+      if(is.numeric(x.))x.[is.nan(x.)|is.infinite(x.)] <- NA
+      return(x.)
+      }))
+    
+    data_sp <- SpatialPointsDataFrame(coords = data_df[,c("long", "lat")],
+                                      data = data_df[,which(!colnames(data_df) %in% c("long", "lat", "name", "ID"))],
+                                      proj4string = CRS("+proj=longlat"))
+    row.names(data_sp) <- data_df$ID
+    return(data_sp)
+  }else{
+    if(verbose)cat("\nHourly results are returned\n")
+    colnames(data_df) <- c("ID", "long", "lat", "name", "elevation", "date_time", 
+                           "MeanTemperature", "MinTemperature", "MaxTemperature",
+                           "Precipitation", "MeanRelativeHumidity", "WindDirection", "WindSpeed")
+    return(data_df)
   }
 }
-

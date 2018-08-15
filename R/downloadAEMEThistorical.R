@@ -2,26 +2,26 @@
 downloadAEMEThistorical <- function(api, dates, station_id, export = FALSE, exportDir = getwd(),
                                 exportFormat = "meteoland/txt",
                                 metadatafile = "MP.txt", verbose=TRUE){
-  nonUTF8 = "\u00D1\u00C0\u00C1\u00C8\u00C9\u00D2\u00D3\u00CC\u00CD\u00DC\u00CF"
-  cname.func <- function(x){
-    regmatches(x,gregexpr('(?<=\\n\\s{2}\\")[[:print:]]+(?=\\"\\s\\:)', x, perl = T))[[1]]
-  }
-  value.func <- function(x){
-    value <- regmatches(x,gregexpr(paste0("(?<=\\:\\s)([[:print:]]|[",nonUTF8,"])*(?=\\n)"), x, perl = T))[[1]]
-    value <- gsub('\\",', "", value)
-    value <- gsub('\\"', "", value)
-    value <- gsub(',', ".", value)
-  }
-  
-  # dates must be a vector containing dates written as "yyyy-mm-dd"
-  # station_id is the id code of the wanted AEMET station
-  
-  # set options
-  h = new_handle()
-  handle_setheaders(h, "Cache-Control" = "no-cache", api_key=api)
-  handle_setopt(h, ssl_verifypeer=FALSE)
-  handle_setopt(h, customrequest="GET")
-  
+  # nonUTF8 = "\u00D1\u00C0\u00C1\u00C8\u00C9\u00D2\u00D3\u00CC\u00CD\u00DC\u00CF"
+  # cname.func <- function(x){
+  #   regmatches(x,gregexpr('(?<=\\n\\s{2}\\")[[:print:]]+(?=\\"\\s\\:)', x, perl = T))[[1]]
+  # }
+  # value.func <- function(x){
+  #   value <- regmatches(x,gregexpr(paste0("(?<=\\:\\s)([[:print:]]|[",nonUTF8,"])*(?=\\n)"), x, perl = T))[[1]]
+  #   value <- gsub('\\",', "", value)
+  #   value <- gsub('\\"', "", value)
+  #   value <- gsub(',', ".", value)
+  # }
+  # 
+  # # dates must be a vector containing dates written as "yyyy-mm-dd"
+  # # station_id is the id code of the wanted AEMET station
+  # 
+  # # set options
+  # h = new_handle()
+  # handle_setheaders(h, "Cache-Control" = "no-cache", api_key=api)
+  # handle_setopt(h, ssl_verifypeer=FALSE)
+  # handle_setopt(h, customrequest="GET")
+  # 
   ## Metadata
   station_list = downloadAEMEThistoricalstationlist(api)
   
@@ -53,63 +53,108 @@ downloadAEMEThistorical <- function(api, dates, station_id, export = FALSE, expo
   steps_fin <- pmin(steps_ini+intlength-1, length(dates)) # does not allow holes in the date sequence
   dates_seq <- list(ini = dates[steps_ini], fin = dates[steps_fin])
   
-  # express dates as url
-  url_header <- "https://opendata.aemet.es/opendata/api/valores/climatologicos/diarios/datos/"
+  # # express dates as url
+  # url_header <- "https://opendata.aemet.es/opendata/api/valores/climatologicos/diarios/datos/"
+  # station_url <- rep(station_id, each = length(steps_ini))
+  # url <- matrix(
+  #   paste(url_header, "fechaini/", 
+  #         dates_seq$ini, "T00%3A00%3A00UTC/fechafin/", 
+  #         dates_seq$fin, "T00%3A00%3A00UTC/estacion/", 
+  #         station_url, sep = ""),
+  # ncol = length(station_id), dimnames = list(NULL, station_id))
+  # # send request and format the output
+  # value_list <- list()
+  # # cname_list <- list()
+  # 
+  # for(j in 1:ncol(url)){
+  #   if(verbose) cat(paste("\n  Downloading data for station '",station_id[j],"' (",j,"/",npoints,")\n",sep=""))
+  #   if(verbose) pb = txtProgressBar(0, max=nrow(url), style=3)
+  #   for(i in 1:nrow(url)){
+  #     urldatos_raw <- curl_fetch_memory(url[i,j], h)
+  #     data_string = rawToChar(urldatos_raw$content)
+  #     urldatos_string <- value.func(data_string)
+  #     
+  #     if(urldatos_string[2]=="429"){
+  #       cat("\n  The number of downloads per minute on the AEMET server is limited. Please wait.")
+  #       for(t in 1:10){(Sys.sleep(6));cat(".");if(t == 10)cat("\n")}
+  #       urldatos_raw <- curl_fetch_memory(url[i,j], h)
+  #       urldatos_string <- value.func(rawToChar(urldatos_raw$content))
+  #     }
+  #     
+  #     if(urldatos_string[2]=="404"){
+  #       value = NA
+  #     }else{
+  #       urldatos <- urldatos_string[3]
+  #       data_raw <- curl_fetch_memory(urldatos, h)
+  #       
+  #       data_string <- rawToChar(data_raw$content)
+  #       Encoding(data_string) <-"latin1"
+  #       data_string <- strsplit(data_string,"}\\,\\s{1}\\{")[[1]]
+  #       cname <- lapply(data_string,FUN = cname.func)
+  #       # cname_list <- c(cname_list,cname)
+  #       value <- lapply(data_string,FUN = value.func)
+  #       value <- mapply(FUN = function(x,y){names(x) <- y;return(x)}, x = value,y = cname, SIMPLIFY = F)
+  #     }
+  #     value_list <- c(value_list,value)
+  #     
+  #     if(verbose) setTxtProgressBar(pb,i)
+  #   }
+  # }
+  # cat("\n")
+  # varnames <- c("indicativo", "fecha", "prec", "tmed", "tmin", "tmax", "dir", "velmedia", "sol")
+  # value <- mapply(FUN = function(x,y){x[y]}, x = value_list, y = list(varnames))
+  # data_df <- data.frame(matrix(t(value), ncol = length(varnames), dimnames = list(NULL, varnames)),
+  #                       stringsAsFactors = F)
+  # data_df <- data_df[!is.na(data_df$fecha),]
+  
+  # numvar <- c("prec", "tmed", "tmin", "tmax", "dir", "velmedia", "sol")
+  # options(warn = -1) # some residual character strings ("Ip") raise NA values when converted to numeric
+  # data_df[,numvar] <- sapply(data_df[,numvar],as.numeric)
+  # 
+  # options(warn = 0) #
+  # data_df$fecha <- as.Date(data_df$fecha)
+  # colnames(data_df) <- c("ID", "Date", "Precipitation", "MeanTemperature", "MinTemperature", "MaxTemperature",
+  #                        "WindDirection", "WindSpeed", "Radiation")
+  # data_df$WindDirection[data_df$WindDirection == 99] <- NA
+  # data_df$WindDirection <- data_df$WindDirection*10 # The raw data are given in degrees/10
+  # # data_df$Radiation <- NA
+  # # data_df$MeanRelativeHumidity <- NA
+  # # data_df$MinRelativeHumidity <- NA
+  # # data_df$MaxRelativeHumidity <- NA
+  # 
+  # stationfound <- station_id %in% data_df$ID
+  # 
+  url_header <- "/api/valores/climatologicos/diarios/datos/"
   station_url <- rep(station_id, each = length(steps_ini))
   url <- matrix(
     paste(url_header, "fechaini/", 
           dates_seq$ini, "T00%3A00%3A00UTC/fechafin/", 
           dates_seq$fin, "T00%3A00%3A00UTC/estacion/", 
           station_url, sep = ""),
-  ncol = length(station_id), dimnames = list(NULL, station_id))
-  # send request and format the output
-  value_list <- list()
-  # cname_list <- list()
+    ncol = length(station_id), dimnames = list(NULL, station_id))
   
+  varnames <- c("indicativo", "fecha", "prec", "tmed", "tmin", "tmax", "dir", "velmedia", "sol")
+  data_df = NULL
   for(j in 1:ncol(url)){
     if(verbose) cat(paste("\n  Downloading data for station '",station_id[j],"' (",j,"/",npoints,")\n",sep=""))
     if(verbose) pb = txtProgressBar(0, max=nrow(url), style=3)
     for(i in 1:nrow(url)){
-      urldatos_raw <- curl_fetch_memory(url[i,j], h)
-      data_string = rawToChar(urldatos_raw$content)
-      urldatos_string <- value.func(data_string)
-      
-      if(urldatos_string[2]=="429"){
-        cat("\n  The number of downloads per minute on the AEMET server is limited. Please wait.")
-        for(t in 1:10){(Sys.sleep(6));cat(".");if(t == 10)cat("\n")}
-        urldatos_raw <- curl_fetch_memory(url[i,j], h)
-        urldatos_string <- value.func(rawToChar(urldatos_raw$content))
+      df1 = .get_data_aemet(url[i,j], api)
+      if(!is.null(df1)) {
+        for(var in varnames) if(!(var %in% names(df1))) df1[var] = NA
+        df1 = df1[varnames]
+        if(is.null(data_df)) data_df = df1
+        else data_df = rbind(data_df, df1)
       }
-      
-      if(urldatos_string[2]=="404"){
-        value = NA
-      }else{
-        urldatos <- urldatos_string[3]
-        data_raw <- curl_fetch_memory(urldatos, h)
-        
-        data_string <- rawToChar(data_raw$content)
-        Encoding(data_string) <-"latin1"
-        data_string <- strsplit(data_string,"}\\,\\s{1}\\{")[[1]]
-        cname <- lapply(data_string,FUN = cname.func)
-        # cname_list <- c(cname_list,cname)
-        value <- lapply(data_string,FUN = value.func)
-        value <- mapply(FUN = function(x,y){names(x) <- y;return(x)}, x = value,y = cname, SIMPLIFY = F)
-      }
-      
-      value_list <- c(value_list,value)
-      
       if(verbose) setTxtProgressBar(pb,i)
     }
   }
   cat("\n")
   
-  varnames <- c("indicativo", "fecha", "prec", "tmed", "tmin", "tmax", "dir", "velmedia", "sol")
-  value <- mapply(FUN = function(x,y){x[y]}, x = value_list, y = list(varnames))
-  data_df <- data.frame(matrix(t(value), ncol = length(varnames), dimnames = list(NULL, varnames)),
-  stringsAsFactors = F)
-  # data_df <- data_df[!is.na(data_df$fecha),]
+
   numvar <- c("prec", "tmed", "tmin", "tmax", "dir", "velmedia", "sol")
   options(warn = -1) # some residual character strings ("Ip") raise NA values when converted to numeric
+  data_df[,numvar] <- sapply(data_df[,numvar],function(x) {gsub(',', ".", x)})
   data_df[,numvar] <- sapply(data_df[,numvar],as.numeric)
   options(warn = 0) #
   data_df$fecha <- as.Date(data_df$fecha)

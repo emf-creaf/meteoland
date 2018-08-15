@@ -43,3 +43,47 @@
   return(HS)
 }
 
+# Code modified from project https://github.com/SevillaR/aemet
+.get_data_aemet <- function(apidest, apikey, verbose = FALSE) {
+  
+  url.base <- "https://opendata.aemet.es/opendata"
+  
+  url1 <- paste0(url.base, apidest)
+  
+  path1 <- httr::GET(url1, add_headers(api_key = apikey))
+  
+  urls.text <- httr::content(path1, as = "text")
+
+  if(is.na(urls.text)) {
+    cat("\n  The number of downloads per minute on the AEMET server is limited. Please wait.")
+    for(t in 1:10){(Sys.sleep(6));cat(".");if(t == 10)cat("\n")}
+    path1 <- httr::GET(url1, add_headers(api_key = apikey))
+    urls.text <- httr::content(path1, as = "text")
+  }
+  urls <- jsonlite::fromJSON(urls.text)
+
+  if(verbose) print(urls)
+  if (urls$estado==401) {
+    stop("Invalid API key. (API keys are valid for 3 months.)")
+  } else if (urls$estado==404) { #"No hay datos que satisfagan esos criterios"
+    return(NULL)
+  } else if (urls$estado==429) {
+    cat("\n  The number of downloads per minute on the AEMET server is limited. Please wait.")
+    for(t in 1:10){(Sys.sleep(6));cat(".");if(t == 10)cat("\n")}
+    path1 <- httr::GET(url1, add_headers(api_key = apikey))
+    urls.text <- httr::content(path1, as = "text")
+    urls <- jsonlite::fromJSON(urls.text)
+  }
+  if(urls$estado==200) {
+    path2 <- httr::GET(urls$datos)
+    data.json <- httr::content(path2, as = "text")
+    if(is.na(data.json)) {
+      cat("\n  The number of downloads per minute on the AEMET server is limited. Please wait.")
+      for(t in 1:10){(Sys.sleep(6));cat(".");if(t == 10)cat("\n")}
+      path2 <- httr::GET(urls$datos)
+      data.json <- httr::content(path2, as = "text")
+    }
+    datos <- jsonlite::fromJSON(data.json)
+    return(datos)
+  }
+}

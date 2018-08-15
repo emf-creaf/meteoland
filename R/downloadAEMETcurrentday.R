@@ -1,54 +1,60 @@
 # Function to download daily met data from AEMET, format it and save it on the disk
 downloadAEMETcurrentday <- function(api, daily = TRUE, verbose=TRUE){
-  # Utilitary functions
-  nonUTF8 = "\u00D1\u00C0\u00C1\u00C8\u00C9\u00D2\u00D3\u00CC\u00CD\u00DC\u00CF"
-  cname.func <- function(x){
-    regmatches(x,gregexpr('(?<=\\n\\s{2}\\")[[:print:]]+(?=\\"\\s\\:)', x, perl = T))[[1]]
-  }
-  value.func <- function(x){
-    value <- regmatches(x,gregexpr(paste0("(?<=\\:\\s)([[:print:]]|[",nonUTF8,"])*(?=\\n)"), x, perl = T))[[1]]
-    value <- gsub('\\",', "", value)
-    value <- gsub('\\"', "", value)
-    value <- gsub(',', "", value)
-  }
-  
-  
-  # set options
-  h = new_handle()
-  handle_setheaders(h, "Cache-Control" = "no-cache", api_key=api)
-  handle_setopt(h, ssl_verifypeer=FALSE)
-  handle_setopt(h, customrequest="GET")
-  
-  url <- "https://opendata.aemet.es/opendata/api/observacion/convencional/todas"
-  # get data url
-  urldata_raw <- curl_fetch_memory(url, h)$content
-  urldata_string <- value.func(rawToChar(urldata_raw))
-  
-  if(urldata_string[2]=="401"){
-    stop("Invalid API key. (API keys are valid for 3 months.)")
-  }
-  
-  urldata <- urldata_string[3]
+  # # Utilitary functions
+  # nonUTF8 = "\u00D1\u00C0\u00C1\u00C8\u00C9\u00D2\u00D3\u00CC\u00CD\u00DC\u00CF"
+  # cname.func <- function(x){
+  #   regmatches(x,gregexpr('(?<=\\n\\s{2}\\")[[:print:]]+(?=\\"\\s\\:)', x, perl = T))[[1]]
+  # }
+  # value.func <- function(x){
+  #   value <- regmatches(x,gregexpr(paste0("(?<=\\:\\s)([[:print:]]|[",nonUTF8,"])*(?=\\n)"), x, perl = T))[[1]]
+  #   value <- gsub('\\",', "", value)
+  #   value <- gsub('\\"', "", value)
+  #   value <- gsub(',', "", value)
+  # }
+  # 
+  # 
+  # # set options
+  # h = new_handle()
+  # handle_setheaders(h, "Cache-Control" = "no-cache", api_key=api)
+  # handle_setopt(h, ssl_verifypeer=FALSE)
+  # handle_setopt(h, customrequest="GET")
+  # 
+  # url <- "https://opendata.aemet.es/opendata/api/observacion/convencional/todas"
+  # # get data url
+  # urldata_raw <- curl_fetch_memory(url, h)$content
+  # urldata_string <- value.func(rawToChar(urldata_raw))
+  # 
+  # if(urldata_string[2]=="401"){
+  #   stop("Invalid API key. (API keys are valid for 3 months.)")
+  # }
+  # 
+  # urldata <- urldata_string[3]
+  # 
+  # if(verbose)cat("Downloading hourly data from all available stations")
+  # data_raw <- curl_fetch_memory(urldata, h)$content
+  # 
+  # if(verbose)cat("\nFormating data")
+  # data_string <- rawToChar(data_raw)
+  # #Add local encoding information to data_string
+  # # Encoding(data_string) <-"latin1"
+  # enclocal <- l10n_info()
+  # if(enclocal[[2]]) Encoding(data_string) <-"UTF-8"
+  # else if(enclocal[[3]]) Encoding(data_string) <-"latin1"
+  # data_string <- strsplit(data_string,"}\\,\\s{1}\\{")[[1]]
+  # cname <- lapply(data_string,FUN = cname.func)
+  # value <- lapply(data_string,FUN = value.func)
+  # value <- mapply(FUN = function(x,y){names(x) <- y;return(x)}, x = value,y = cname)
+  # unique_cname <- cname[[which.max(sapply(cname,FUN = length))]]
+  # value <- mapply(FUN = function(x,y){x[y]}, x = value, y = list(unique_cname))
+  # 
+  # data_df <- data.frame(matrix(t(value), ncol = length(unique_cname), dimnames = list(NULL, unique_cname)),
+  #                       stringsAsFactors = F)
   
   if(verbose)cat("Downloading hourly data from all available stations")
-  data_raw <- curl_fetch_memory(urldata, h)$content
+  apidest = "/api/observacion/convencional/todas"
+  data_df = .get_data_aemet(apidest, api)
   
   if(verbose)cat("\nFormating data")
-  data_string <- rawToChar(data_raw)
-  #Add local encoding information to data_string
-  # Encoding(data_string) <-"latin1"
-  enclocal <- l10n_info()
-  if(enclocal[[2]]) Encoding(data_string) <-"UTF-8"
-  else if(enclocal[[3]]) Encoding(data_string) <-"latin1"
-  data_string <- strsplit(data_string,"}\\,\\s{1}\\{")[[1]]
-  cname <- lapply(data_string,FUN = cname.func)
-  value <- lapply(data_string,FUN = value.func)
-  value <- mapply(FUN = function(x,y){names(x) <- y;return(x)}, x = value,y = cname)
-  unique_cname <- cname[[which.max(sapply(cname,FUN = length))]]
-  value <- mapply(FUN = function(x,y){x[y]}, x = value, y = list(unique_cname))
-  
-  data_df <- data.frame(matrix(t(value), ncol = length(unique_cname), dimnames = list(NULL, unique_cname)),
-                        stringsAsFactors = F)
   varnames <-c("idema", "lon","lat", "ubi", "alt", "fint", "ta", "tamin", "tamax",  "prec", "hr", "dv", "vv")
   data_df <- data_df[,varnames]
   numvar <- c("lon","lat","alt","ta", "tamin", "tamax",  "prec", "hr", "dv", "vv")

@@ -74,6 +74,17 @@ setMethod("[", signature("SpatialPointsMeteorology"),definition =
             }
 )
 
+head.SpatialPointsMeteorology <- function(x, n=6L, ...) {
+  n <- min(n, length(x))
+  ix <- sign(n)*seq(abs(n))
+  x[ ix , , drop=FALSE]
+}
+
+tail.SpatialPointsMeteorology <- function(x, n=6L, ...) {
+  n <- min(n, length(x))
+  ix <- sign(n)*rev(seq(length(x), by=-1L, len=abs(n)))
+  x[ ix , , drop=FALSE]
+}
 
 "print.SpatialPointsMeteorology" <- function(x, ..., digits = getOption("digits"))
 {

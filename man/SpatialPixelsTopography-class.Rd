@@ -3,6 +3,7 @@
 \Rdversion{1.1}
 \docType{class}
 \alias{SpatialPixelsTopography-class}
+\alias{show,SpatialPixelsTopography-method}
 
 \title{Class \code{"SpatialPixelsTopography"}}
 \description{

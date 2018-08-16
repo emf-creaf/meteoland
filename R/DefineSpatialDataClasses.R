@@ -5,20 +5,6 @@ setClass("SpatialGridTopography", contains="SpatialGridDataFrame")
 setClass("SpatialPixelsMeteorology", slots = list(dates = "Date", data="vector"), contains="SpatialPixels")
 setClass("SpatialPixelsTopography", contains="SpatialPixelsDataFrame")
 
-setMethod("spplot", signature("SpatialPixelsMeteorology"), definition=
-            function(obj, date, variable="MeanTemperature", ...) {
-              sgd = SpatialPixelsDataFrame(points=obj@coords, grid = obj@grid, data=obj@data[[date]], 
-                                           proj4string= obj@proj4string)
-              spplot(sgd, variable, ...)
-            }
-)
-setMethod("spplot", signature("SpatialGridMeteorology"), definition=
-            function(obj, date, variable="MeanTemperature", ...) {
-              sgd = SpatialGridDataFrame(grid = obj@grid, data=obj@data[[date]], 
-                                         proj4string=obj@proj4string)
-              spplot(sgd, variable, ...)
-            }
-)
 setMethod("spplot", signature("SpatialGridTopography"), definition =
             function(obj, variable="elevation",...) {
               if(variable=="elevation") {
@@ -58,22 +44,6 @@ setMethod("spplot", signature("SpatialPixelsTopography"), definition =
             }
 )
 
-setMethod("[", signature("SpatialPointsMeteorology"),definition =
-  function (x, i, j, ..., drop = TRUE) 
-  {
-    if (!missing(j)) 
-      warning("j index ignored")
-    if (is.character(i)) 
-      i <- match(i, row.names(x))
-    else if (is(i, "Spatial")) 
-      i = !is.na(over(x, geometry(i)))
-    if (any(is.na(i))) 
-      stop("NAs not permitted in row index")
-    sp = as(x,"SpatialPoints")[i, , drop=drop]
-    SpatialPointsMeteorology(sp, x@data[i], x@dates)
-  }
-)
-
 setMethod("[", signature("SpatialPointsTopography"),definition =
     function (x, i, j, ..., drop = TRUE) 
     {
@@ -96,3 +66,4 @@ setMethod("[", signature("SpatialPointsTopography"),definition =
       x
     }
 )
+

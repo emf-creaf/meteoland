@@ -57,3 +57,34 @@ SpatialPointsMeteorology<-function(points, data, dates, dataByDate = FALSE) {
   }
   return(spm)
 }
+
+setMethod("[", signature("SpatialPointsMeteorology"),definition =
+            function (x, i, j, ..., drop = TRUE) 
+            {
+              if (!missing(j)) 
+                warning("j index ignored")
+              if (is.character(i)) 
+                i <- match(i, row.names(x))
+              else if (is(i, "Spatial")) 
+                i = !is.na(over(x, geometry(i)))
+              if (any(is.na(i))) 
+                stop("NAs not permitted in row index")
+              sp = as(x,"SpatialPoints")[i, , drop=drop]
+              SpatialPointsMeteorology(sp, x@data[i], x@dates)
+            }
+)
+
+
+"print.SpatialPointsMeteorology" <- function(x, ..., digits = getOption("digits"))
+{
+  cat("Object of class SpatialPointsMeteorology\n")
+  cat("Dates: ", paste0(length(x@dates)))
+  cat(paste0("  (initial: ", x@dates[1], " final: ", x@dates[length(x@dates)],")\n"))
+  cat("SpatialPoints:\n")
+  print(x@coords)
+  pst <- paste(strwrap(paste(
+    "Coordinate Reference System (CRS) arguments:", 
+    proj4string(x))), collapse="\n")
+  cat(pst, "\n")
+}
+setMethod("show", "SpatialPointsMeteorology", function(object) print.SpatialPointsMeteorology(object))

@@ -27,3 +27,26 @@ SpatialGridMeteorology<-function(grid, proj4string=CRS(as.character(NA)), data, 
             dates = dates)
   return(spm)
 }
+
+setMethod("spplot", signature("SpatialGridMeteorology"), definition=
+            function(obj, date, variable="MeanTemperature", ...) {
+              sgd = SpatialGridDataFrame(grid = obj@grid, data=obj@data[[date]], 
+                                         proj4string=obj@proj4string)
+              spplot(sgd, variable, ...)
+            }
+)
+
+print.SpatialGridMeteorology = function(x, ...) {
+  cat("Object of class SpatialGridMeteorology\n")
+  cat("Dates: ", paste0(length(x@dates)))
+  cat(paste0("  (initial: ", x@dates[1], " final: ", x@dates[length(x@dates)],")\n"))
+  print(summary(x@grid))
+  cat("SpatialPoints:\n")
+  print(coordinates(x))
+  pst <- paste(strwrap(paste(
+    "Coordinate Reference System (CRS) arguments:", 
+    proj4string(x))), collapse="\n")
+  cat(pst, "\n")
+  invisible(x)
+}
+setMethod("show", "SpatialGridMeteorology", function(object) print.SpatialGridMeteorology(object))

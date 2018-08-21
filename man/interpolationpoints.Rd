@@ -78,7 +78,7 @@ points = as(examplegridtopography,"SpatialPoints")
 cc = points@coords
 center = 5160
 d = sqrt((cc[,1]-cc[center,1])^2+(cc[,2]-cc[center,2])^2)
-p = which(d<3000) #Take points at maximum distance of 4km from center
+p = which(d<2000) #Take points at maximum distance of 2km from center
 spt = SpatialPixelsTopography(points[p], examplegridtopography$elevation[p],
                               examplegridtopography$slope[p],
                               examplegridtopography$aspect[p],

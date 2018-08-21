@@ -1,3 +1,5 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
 ^meteoland_tests\.R$ 
+^README\.Rmd$
+^README\.md$

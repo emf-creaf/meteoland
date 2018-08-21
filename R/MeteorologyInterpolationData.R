@@ -31,6 +31,8 @@ MeteorologyInterpolationData<-function(points, elevation = NULL, slope = NULL, a
   
   if(isPoints) { # Build from variable matrices
     if(!inherits(MinTemperature,"matrix")) stop("'MinTemperature' has to be a numeric matrix")
+    dates = as.Date(colnames(MinTemperature))
+    ndays = length(dates)
     if(!inherits(MaxTemperature,"matrix")) stop("'MaxTemperature' has to be a numeric matrix.")
     if(!inherits(Precipitation,"matrix")) stop("'Precipitation' has to be a numeric matrix.")
     if(nrow(MinTemperature)!=nstations) stop("Number of rows in 'MinTemperature' have to be equal to the number of points.")
@@ -39,20 +41,27 @@ MeteorologyInterpolationData<-function(points, elevation = NULL, slope = NULL, a
     if(!is.null(RelativeHumidity)) {
       if(!inherits(RelativeHumidity,"matrix")) stop("'RelativeHumidity' has to be a numeric matrix.")
       if(nrow(RelativeHumidity)!=nstations) stop("Number of rows in 'RelativeHumidity' have to be equal to the number of points.")
+    } else {
+      RelativeHumidity = matrix(NA, nrow = nstations, ncol=ndays)
     }
     if(!is.null(WindSpeed)) {
       if(!inherits(WindSpeed,"matrix")) stop("'WindSpeed' has to be a numeric matrix.")
       if(nrow(WindSpeed)!=nstations) stop("Number of rows in 'WindSpeed' have to be equal to the number of points.")
+    } else {
+      WindSpeed = matrix(NA, nrow = nstations, ncol=ndays)
     }
     if(!is.null(WindDirection)) {
       if(!inherits(WindDirection,"matrix")) stop("'WindDirection' has to be a numeric matrix.")
       if(nrow(WindDirection)!=nstations) stop("Number of rows in 'WindDirection' have to be equal to the number of points.")
+    } else {
+      WindDirection = matrix(NA, nrow = nstations, ncol=ndays)
     }
     if(!is.null(Radiation)) {
       if(!inherits(Radiation,"matrix")) stop("'Radiation' has to be a numeric matrix.")
       if(nrow(Radiation)!=nstations) stop("Number of rows in 'Radiation' have to be equal to the number of points.")
+    } else {
+      Radiation = matrix(NA, nrow = nstations, ncol=ndays)
     }
-    dates = as.Date(colnames(Precipitation))
   } else { # Build from SpatialPointsMeteorology
     stnames = names(points@data)
     nstations = length(stnames)

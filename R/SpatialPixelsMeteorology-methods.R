@@ -28,3 +28,27 @@ SpatialPixelsMeteorology<-function(points, data, dates, tolerance = sqrt(.Machin
             dates = dates)
   return(spm)
 }
+
+setMethod("spplot", signature("SpatialPixelsMeteorology"), definition=
+            function(obj, date, variable="MeanTemperature", ...) {
+              sgd = SpatialPixelsDataFrame(points=obj@coords, grid = obj@grid, data=obj@data[[date]], 
+                                           proj4string= obj@proj4string)
+              spplot(sgd, variable, ...)
+            }
+)
+
+print.SpatialPixelsMeteorology = function(x, ...) {
+  cat("Object of class SpatialPixelsMeteorology\n")
+  cat("Dates: ", paste0(length(x@dates)))
+  cat(paste0("  (initial: ", x@dates[1], " final: ", x@dates[length(x@dates)],")\n"))
+  print(summary(x@grid))
+  cat("SpatialPoints:\n")
+  print(coordinates(x))
+  pst <- paste(strwrap(paste(
+    "Coordinate Reference System (CRS) arguments:", 
+    proj4string(x))), collapse="\n")
+  cat(pst, "\n")
+  invisible(x)
+}
+setMethod("show", "SpatialPixelsMeteorology", function(object) print.SpatialPixelsMeteorology(object))
+

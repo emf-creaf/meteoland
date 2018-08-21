@@ -1,11 +1,12 @@
 import(sp)
+import(httr)
 import(spdep)
 import(ncdf4)
 import(ncdf4.helpers)
 import(rgdal)
 import(qmap)
 import(methods)
-import(curl)
+import(utils)
 useDynLib(meteoland, .registration = TRUE)
 export(correctionpoints, correctionpoints.errors, 
        defaultCorrectionParams, defaultInterpolationParams,
@@ -39,14 +40,29 @@ export(correctionpoints, correctionpoints.errors,
        writemeteorologypoint, writemeteorologypointfiles)
 exportClasses(MeteorologyProcedureData, MeteorologyInterpolationData, MeteorologyUncorrectedData)
 exportClasses(SpatialPointsMeteorology,SpatialPointsTopography,SpatialGridMeteorology,SpatialGridTopography)
-exportMethods(subsample, spplot, "[")
+exportMethods(subsample, spplot, "[", show)
 importFrom(Rcpp, evalCpp)
-importFrom(curl,new_handle, handle_setheaders, handle_setopt,curl_fetch_memory)
+importFrom(jsonlite,fromJSON)
 importFrom(qmap,fitQmap,doQmap,fitQmapQUANT)
 importFrom(grDevices, colorRampPalette, topo.colors)
 importFrom(graphics, abline, hist, lines, par)
 importFrom(utils, read.table, setTxtProgressBar,
              txtProgressBar, write.table)
 importFrom(stats, cor, var, lm, aggregate)
-S3method(summary,interpolation.cv)
-S3method(plot,interpolation.cv)
+
+S3method(summary, interpolation.cv)
+
+S3method(plot, interpolation.cv)
+
+S3method(head, SpatialPointsMeteorology)
+S3method(head, SpatialPointsTopography)
+
+S3method(tail, SpatialPointsTopography)
+S3method(tail, SpatialPointsMeteorology)
+
+S3method(print, SpatialPointsTopography)
+S3method(print, SpatialPixelsTopography)
+S3method(print, SpatialGridTopography)
+S3method(print, SpatialPointsMeteorology)
+S3method(print, SpatialPixelsMeteorology)
+S3method(print, SpatialGridMeteorology)

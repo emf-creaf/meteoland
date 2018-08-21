@@ -3,11 +3,21 @@
 -------------------------------
 
 __Version history__
+
+_Version 0.7.5, August 2018.
+1. AEMET download using packages httr and jsonlite (code adapted from https://github.com/SevillaR/aemet)
+2. Methods 'print/show' added for objects of class SpatialPointsMeteorology, SpatialGridMeteorology and SpatialPixelsMeteorology.
+3. Methods 'print/show' added for objects of class SpatialPointsTopography, SpatialGridTopography and SpatialPixelsTopography.
+4. Methods 'head/tail' added for objects SpatialPointsTopography and SpatialPointsMeteorology
+5. Bug correction: Historical download of AEMET data returns SunshineHours
+
 _Version 0.7.4, August 2018.
 1. Added reference to publication <doi:10.1016/j.envsoft.2018.08.003>
 2. Added citation reference.
 3. Bug correction: Over-dimensioned vectors for temperature differences (same for precipitation).
 4. Low-level interpolation routines made accessible to the user
+5. Bug correction: builder for MeteorologyInterpolationData
+6. Bug correction: Missing values in downloadAEMEThistorical
 
 _Version 0.7.3, June 2018.
 1. New function 'meteocomplete'.

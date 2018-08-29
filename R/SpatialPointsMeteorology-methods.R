@@ -79,14 +79,16 @@ head.SpatialPointsMeteorology <- function(x, n=6L, ...) {
   ix <- sign(n)*seq(abs(n))
   x[ ix , , drop=FALSE]
 }
+setMethod("head", "SpatialPointsMeteorology", function(x, n=6L, ...) head.SpatialPointsMeteorology(x,n,...))
 
 tail.SpatialPointsMeteorology <- function(x, n=6L, ...) {
   n <- min(n, length(x))
   ix <- sign(n)*rev(seq(length(x), by=-1L, len=abs(n)))
   x[ ix , , drop=FALSE]
 }
+setMethod("tail", "SpatialPointsMeteorology", function(x, n=6L, ...) tail.SpatialPointsMeteorology(x,n,...))
 
-"print.SpatialPointsMeteorology" <- function(x, ..., digits = getOption("digits"))
+print.SpatialPointsMeteorology <- function(x, ..., digits = getOption("digits"))
 {
   cat("Object of class SpatialPointsMeteorology\n")
   cat("Dates: ", paste0(length(x@dates)))
@@ -98,4 +100,5 @@ tail.SpatialPointsMeteorology <- function(x, n=6L, ...) {
     proj4string(x))), collapse="\n")
   cat(pst, "\n")
 }
+setMethod("print", "SpatialPointsMeteorology", function(x, ..., digits = getOption("digits")) print.SpatialPointsMeteorology(x, ..., digits))
 setMethod("show", "SpatialPointsMeteorology", function(object) print.SpatialPointsMeteorology(object))

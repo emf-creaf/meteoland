@@ -52,6 +52,7 @@ print.SpatialPointsTopography = function(x, ..., digits = getOption("digits")) {
   row.names(df) = row.names(x@data)
   print(df, ..., digits = digits)
 }
+setMethod("print", "SpatialPointsTopography", function(x, ..., digits = getOption("digits")) print.SpatialPointsTopography(x, ..., digits))
 setMethod("show", "SpatialPointsTopography", function(object) print.SpatialPointsTopography(object))
 
 head.SpatialPointsTopography <- function(x, n=6L, ...) {
@@ -59,9 +60,11 @@ head.SpatialPointsTopography <- function(x, n=6L, ...) {
   ix <- sign(n)*seq(abs(n))
   x[ ix , , drop=FALSE]
 }
+setMethod("head", "SpatialPointsTopography", function(x, n=6L, ...) head.SpatialPointsTopography(x,n,...))
 
 tail.SpatialPointsTopography <- function(x, n=6L, ...) {
   n <- min(n, length(x))
   ix <- sign(n)*rev(seq(nrow(x), by=-1L, len=abs(n)))
   x[ ix , , drop=FALSE]
 }
+setMethod("tail", "SpatialPointsTopography", function(x, n=6L, ...) tail.SpatialPointsTopography(x,n,...))

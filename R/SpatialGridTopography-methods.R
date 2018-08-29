@@ -50,3 +50,45 @@ print.SpatialGridTopography = function(x, ...) {
 setMethod("show", "SpatialGridTopography", 
           function(object) print.SpatialGridTopography(object))
 
+subs.SpatialGridTopography <- function(x, i, j, ..., drop = FALSE) {
+  drop <- FALSE
+  #		if (!missing(drop))
+  #			stop("don't supply drop: it needs to be FALSE anyway")
+  grd = x@grid
+  if (missing(i))
+    rows = 1:grd@cells.dim[2]
+  else {
+    if (is(i, "Spatial"))
+      stop("area selection only makes sense for objects of class SpatialPixels or SpatialGridDataFrame; for object of class SpatialGrid you can only select x[rows,cols]")
+    rows = i
+  }
+  if (missing(j))
+    cols = 1:grd@cells.dim[1]
+  else
+    cols = j
+  idx = 1:prod(grd@cells.dim[1:2])
+  m = matrix(idx, grd@cells.dim[2], grd@cells.dim[1], byrow = TRUE)[rows,cols]
+  idx = as.vector(t(m)) # t(m)?
+  # print(idx)
+  if (any(is.na(idx)))
+    stop("NAs not permitted in index")
+  if (length(idx) == 0) {
+    return(x)
+  } 
+  pts = SpatialPoints(coordinates(x)[idx,,drop=FALSE], CRS(proj4string(x)))
+  if (length(idx) == 1) {
+    new("SpatialPointsTopography",
+        coords = pts@coords,
+        bbox = pts@bbox,
+        proj4string = pts@proj4string,
+        data = x@data[idx, , drop = FALSE])
+  } else {
+    sg = as(SpatialPixels(pts), "SpatialGrid")
+    new("SpatialGridTopography",
+             grid = sg@grid,
+             bbox = sg@bbox,
+             proj4string = sg@proj4string,
+             data = x@data[idx, , drop = FALSE])
+  }
+}
+setMethod("[", "SpatialGridTopography", subs.SpatialGridTopography)

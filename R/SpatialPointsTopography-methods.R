@@ -29,7 +29,7 @@ setMethod("[", signature("SpatialPointsTopography"),definition =
                 warning("j index ignored")
               if (missing.i) i = TRUE
               if (is.matrix(i)) 
-                stop("matrix argument not supported in SpatialPointsDataFrame selection")
+                stop("matrix argument not supported in SpatialPointsTopography selection")
               if (is(i, "Spatial")) 
                 i = !is.na(over(x, geometry(i)))
               if (is.character(i)) 

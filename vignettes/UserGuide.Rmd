@@ -1,0 +1,116 @@
+---
+title: "User's guide"
+author: "Miquel De Cáceres, Victor Granda"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{User's guide}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+## Preface
+
+Using `meteoland` package is easy, but some ideas and concepts must be addresed
+to make the experience easy for new users. This vignette is intended as a
+working example to explain all the steps needed to get comfortable with
+`meteoland` workflow.
+
+## Installing and loading the package
+
+First of all, before starting to work with the package, we must install and load
+the library. `meteoland` stable version can be found at CRAN
+(https://cran.r-project.org/web/packages/meteoland/index.html), and it can be
+installed and loaded as any other R package:
+
+```{r, eval = FALSE}
+install.packages("meteoland")
+library(meteoland)
+```
+
+Alternatively, you can install the development version located at GitHub using the `devtools` package:
+```{r, eval = FALSE}
+library(devtools)
+install_github("miquelcaceres/meteoland", build_vignettes = TRUE)
+library(meteoland)
+```
+
+
+# Interpolation of daily weather
+## Preparing weather data for interpolation
+
+
+```{r, echo = FALSE, include= FALSE}
+library(meteoland)
+data("exampleinterpolationdata")
+
+st_names = row.names(exampleinterpolationdata@MinTemperature)
+st_coords = exampleinterpolationdata@coords
+st_data = data.frame(X_UTM = st_coords[,1], Y_UTM = st_coords[,2],
+                     elevation = exampleinterpolationdata@elevation,
+                     row.names = st_names)
+                     
+```
+
+Before starting using the package, you need to have access to the elevation (in m) and daily weather data series corresponding a set of locations (normally weather stations). The starting point will be different depending on your data provider (the package has also tools to access weather data). But we will assume you have data from a set of 38 stations in your study area. Furthermore, we will assume that you have a data frame with the coordinates and elevation of each location:
+```{r}
+str(st_data)
+head(st_data)
+```
+
+
+
+Vignettes are long form documentation commonly included in packages. Because they are part of the distribution of the package, they need to be as compact as possible. The `html_vignette` output type provides a custom style sheet (and tweaks some options) to ensure that the resulting html is as small as possible. The `html_vignette` format:
+
+- Never uses retina figures
+- Has a smaller default figure size
+- Uses a custom CSS stylesheet instead of the default Twitter Bootstrap style
+
+## Vignette Info
+
+Note the various macros within the `vignette` section of the metadata block above. These are required in order to instruct R how to build the vignette. Note that you should change the `title` field and the `\VignetteIndexEntry` to match the title of your vignette.
+
+## Styles
+
+The `html_vignette` template includes a basic CSS theme. To override this theme you can specify your own CSS in the document metadata as follows:
+
+    output: 
+      rmarkdown::html_vignette:
+        css: mystyles.css
+
+## Figures
+
+The figure sizes have been customised so that you can easily put two images side-by-side. 
+
+```{r, fig.show='hold'}
+plot(1:10)
+plot(10:1)
+```
+
+You can enable figure captions by `fig_caption: yes` in YAML:
+
+    output:
+      rmarkdown::html_vignette:
+        fig_caption: yes
+
+Then you can use the chunk option `fig.cap = "Your figure caption."` in **knitr**.
+
+## More Examples
+
+You can write math expressions, e.g. $Y = X\beta + \epsilon$, footnotes^[A footnote here.], and tables, e.g. using `knitr::kable()`.
+
+```{r, echo=FALSE, results='asis'}
+knitr::kable(head(mtcars, 10))
+```
+
+Also a quote using `>`:
+
+> "He who gives up [code] safety for [code] speed deserves neither."
+([via](https://twitter.com/hadleywickham/status/504368538874703872))

@@ -93,3 +93,28 @@ subs.SpatialGridTopography <- function(x, i, j, ..., drop = FALSE) {
   }
 }
 setMethod("[", "SpatialGridTopography", subs.SpatialGridTopography)
+
+as.SpGrdTop.SpPoiTop = function(from) {
+  sp <- as(from, "SpatialPoints")
+  new("SpatialPointsTopography",
+      coords = sp@coords,
+      bbox = sp@bbox,
+      proj4string = sp@proj4string,
+      data = from@data)
+}
+setAs("SpatialGridTopography", "SpatialPointsTopography", as.SpGrdTop.SpPoiTop)
+
+
+as.SpGrdTop.SpPixTop = function(from) { 
+  spdf = as(from, "SpatialPixelsDataFrame")
+  new("SpatialPixelsTopography",
+           coords = spdf@coords,
+           coords.nrs = spdf@coords.nrs,
+           bbox = spdf@bbox,
+           grid = spdf@grid,
+           grid.index = spdf@grid.index,
+           proj4string = spdf@proj4string,
+           data = spdf@data)
+
+}
+setAs("SpatialGridTopography", "SpatialPixelsTopography", as.SpGrdTop.SpPixTop)

@@ -64,6 +64,29 @@ setMethod("[", "SpatialPixelsTopography",
           }
 )
 
+as.SpPixTop.SpPoiTop = function(from) {
+  
+  sp <- as(from, "SpatialPoints")
+  new("SpatialPointsTopography",
+      coords = sp@coords,
+      bbox = sp@bbox,
+      proj4string = sp@proj4string,
+      data = from@data)
+}
+setAs("SpatialPixelsTopography", "SpatialPointsTopography", as.SpPixTop.SpPoiTop)
+
+as.SpPixTop.SpGrdTop = function(from) { 
+  sgdf = as(from, "SpatialGridDataFrame")
+  new("SpatialGridTopography",
+      grid = sgdf@grid,
+      bbox = sgdf@bbox,
+      proj4string = sgdf@proj4string,
+      data = sgdf@data)
+  
+}
+setAs("SpatialPixelsTopography", "SpatialGridTopography", as.SpPixTop.SpGrdTop)
+
+
 setMethod("spplot", signature("SpatialPixelsTopography"), definition =
             function(obj, variable="elevation",...) {
               if(variable=="elevation") {

@@ -68,3 +68,34 @@ tail.SpatialPointsTopography <- function(x, n=6L, ...) {
   x[ ix , , drop=FALSE]
 }
 setMethod("tail", "SpatialPointsTopography", function(x, n=6L, ...) tail.SpatialPointsTopography(x,n,...))
+
+
+setMethod("spTransform", signature("SpatialPointsTopography", "CRS"),
+      function(x, CRSobj, ...) {
+            sp = spTransform(as(x,"SpatialPoints"), CRSobj) # calls the rgdal methods
+            new("SpatialPointsTopography",
+                coords = sp@coords,
+                bbox = sp@bbox,
+                proj4string = sp@proj4string,
+                data = x@data)
+      }
+)
+
+as.SpPtsTop.SpPixTop = function(from) { 
+  spdf = as(from, "SpatialPixelsDataFrame")
+  new("SpatialPixelsTopography",
+      coords = spdf@coords,
+      coords.nrs = spdf@coords.nrs,
+      bbox = spdf@bbox,
+      grid = spdf@grid,
+      grid.index = spdf@grid.index,
+      proj4string = spdf@proj4string,
+      data = spdf@data)
+  
+}
+setAs("SpatialPointsTopography", "SpatialPixelsTopography", as.SpPtsTop.SpPixTop)
+
+as.SpPtsTop.SpGrdTop = function(from) { 
+  as.SpPixTop.SpGrdTop(as.SpPtsTop.SpPixTop(from))
+}
+setAs("SpatialPointsTopography", "SpatialGridTopography", as.SpPtsTop.SpGrdTop)

@@ -103,11 +103,64 @@ interpolator <- MeteorologyInterpolationData(sp, elevation = st_data$elevation,
 class(interpolator)
 ```
 
-The resulting object is now ready to be used to perform interpolation on a set of target locations (see next section). Interpolation parameters are also stored in the same object (do not worry if you do not understand their meaning at this point):
+The resulting object is now ready to be used to perform interpolation on a set of target locations (see next section). We can inspect the amount of data in our interpolation object using:
+```{r}
+spatial_coverage <- interpolation.coverage(interpolator, type = 'spatial')
+head(spatial_coverage)
+temporal_coverage <- interpolation.coverage(interpolator, type = 'temporal')
+head(temporal_coverage)
+```
+In the first call, function `interpolation.coverate` returns the number of non-missing observations for each station and variable. The second call produces a similar output, but by dates instead of stations.
+
+Interpolation parameters are also stored in the same object (do not worry if you do not understand their meaning now):
 ```{r}
 names(interpolator@params)
 ```
 
+An important parameter at this point is the one specifying an initial radius for the truncated spatial Gaussian kernel, which in this case is:
+```{r}
+interpolator@params$initial_Rp
+```
+
+Its value must be set in relation to the units of the spatial coordinates of weather data. In this case, our data was in meters, so this radius indicates 140 km. In general, the initial radius should be enough to include a reasonable number of stations (~20-40), but the kernel radius is adjusted for each interpolation target point.
+
+
+## Calibration and cross-validation of the interpolation data
+Once we already have weather stations data in shape, we can start calibrating the model in order to obtain the optimal parameters for the meteorological variables we want to interpolate. Parametere calibration has to be done for each variable separately. For example for minimum temperature:
+```{r}
+tmin_cal <- interpolation.calibration(interpolator, variable = "Tmin",
+                                      N_seq = 20,
+                                      alpha_seq = seq(5, 10, by = 1),
+                                      verbose = TRUE)
+```
+
+This function returns an interpolation.calibration class object which contains several items:
+
+* Numeric matrix with the mean absolute error (MAE) values for each combination of parameters $N$ and
+$\alpha$.
+* Miminum value found for MAE.
+* Value for the $N$ parameter corresponding to the minumun MAE.
+* Value for the $\alpha$ parameter corresponding to the minimum MAE.
+* Matrix with the observed values.
+* Matrix with the predicted values for the optimum parameter combination.
+
+The result of the calibration needs to be manually stored in the interpolation params:
+```{r}
+interpolator@params$N_MinTemperature = tmin_cal$N
+interpolator@params$alpha_MinTemperature = tmin_cal$alpha
+```
+
+In general, we recommend conducting calibration exercises at least once for each variable and each data set used as reference for interpolation, and more than once periods differ in the number of stations available.
+
+Before using the object for interpolations, we also need to assess its performance. This is done by leave-one-out cross-validation in function `interpolation.cv`:
+```{r,echo=FALSE}
+cv <- interpolation.cv(interpolator, verbose=T)
+```
+
+And the results are inspected using:
+```{r}
+summary(cv)
+```
 
 ## Interpolation on a grid
 ```{r, echo = FALSE, include= FALSE}

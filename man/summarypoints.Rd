@@ -57,11 +57,7 @@ data(exampleinterpolationdata)
 
 #Creates spatial topography points from the grid
 p = 1:2
-points = as(examplegridtopography,"SpatialPoints")[p]
-points = spTransform(points, exampleinterpolationdata@proj4string)
-spt = SpatialPointsTopography(points, examplegridtopography$elevation[p],
-                              examplegridtopography$slope[p],
-                              examplegridtopography$aspect[p])
+spt = as(examplegridtopography, "SpatialPointsTopography")[p]
 
 #Interpolation of two points for the whole time period (2000-2003)
 mp = interpolationpoints(exampleinterpolationdata, spt)

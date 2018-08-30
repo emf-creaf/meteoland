@@ -57,8 +57,11 @@ data(examplegridtopography)
 
 #Display data
 spplot(examplegridtopography, variable="elevation", scales=list(draw=TRUE))
-spplot(examplegridtopography, variable="slope", scales=list(draw=TRUE))
-spplot(examplegridtopography, variable="aspect", scales=list(draw=TRUE))
+
+#Grids can be subsetted
+sgt = examplegridtopography[1:50, 1:50]
+spplot(sgt, variable="elevation", scales=list(draw=TRUE))
+
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.

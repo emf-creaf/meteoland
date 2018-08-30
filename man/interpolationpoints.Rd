@@ -57,14 +57,11 @@ Miquel De \enc{Cáceres}{Caceres} Ainsa, Biodiversity and Landscape Ecology Labo
 data(examplegridtopography)
 data(exampleinterpolationdata)
 
-####### INTERPOLATION on POINTS 
+####### INTERPOLATION on particular POINTS 
+
 #Creates spatial topography points from the grid
 p = 1:2
-points = as(examplegridtopography,"SpatialPoints")[p]
-points = spTransform(points, exampleinterpolationdata@proj4string)
-spt = SpatialPointsTopography(points, examplegridtopography$elevation[p],
-                              examplegridtopography$slope[p],
-                              examplegridtopography$aspect[p])
+spt = as(examplegridtopography, "SpatialPointsTopography")[p]
 
 #Interpolation of two points for the whole time period (2000-2003)
 mp = interpolationpoints(exampleinterpolationdata, spt)
@@ -73,28 +70,23 @@ mp = interpolationpoints(exampleinterpolationdata, spt)
 meteoplot(mp,1, ylab="Mean temperature")
 
 ####### INTERPOLATION on PIXELS 
-#Creates spatial topography pixels as a subset of grid pixels
-points = as(examplegridtopography,"SpatialPoints")
-cc = points@coords
+# Creates spatial topography pixels as a subset of grid pixels
+# and select pixels at maximum distance of 2km from center
+spt = as(examplegridtopography,"SpatialPointsTopography")
+cc = spt@coords
 center = 5160
 d = sqrt((cc[,1]-cc[center,1])^2+(cc[,2]-cc[center,2])^2)
-p = which(d<2000) #Take points at maximum distance of 2km from center
-spt = SpatialPixelsTopography(points[p], examplegridtopography$elevation[p],
-                              examplegridtopography$slope[p],
-                              examplegridtopography$aspect[p],
-                              grid = examplegridtopography@grid)
+spxt = as(spt[which(d<2000)], "SpatialPixelsTopography") 
 
-#Interpolation of meteorology over pixels for two days
-spt@proj4string = exampleinterpolationdata@proj4string
-ml = interpolationpixels(exampleinterpolationdata, spt,
+# Interpolation of meteorology over pixels for two days
+ml = interpolationpixels(exampleinterpolationdata, spxt,
                        as.Date(c("2001-02-03", "2001-06-03")))
                        
 #Plot PET corresponding to 2001-06-03
 spplot(ml,2,"PET")
 
-####### INTERPOLATION on a GRID 
+####### INTERPOLATION over a complete GRID 
 #Interpolation of meteorology over a grid for two days
-examplegridtopography@proj4string = exampleinterpolationdata@proj4string
 ml = interpolationgrid(exampleinterpolationdata, examplegridtopography,
                        as.Date(c("2001-02-03", "2001-06-03")))
 #Plot PET corresponding to 2001-06-03

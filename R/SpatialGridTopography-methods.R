@@ -37,6 +37,10 @@ setMethod("spplot", signature("SpatialGridTopography"), definition =
 print.SpatialGridTopography = function(x, ...) {
   cat("Object of class SpatialGridTopography\n")
   print(summary(x@grid))
+  pst <- paste(strwrap(paste(
+    "Coordinate Reference System (CRS) arguments:", 
+    proj4string(x))), collapse="\n")
+  cat(pst, "\n")
   if (length(x) > 0) {
     cat("\n")
     cat("Topography summary:\n")

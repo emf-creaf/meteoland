@@ -49,4 +49,50 @@ print.SpatialGridMeteorology = function(x, ...) {
   cat(pst, "\n")
   invisible(x)
 }
+setMethod("print", "SpatialGridMeteorology", function(x, ...) print.SpatialGridMeteorology(x, ...))
 setMethod("show", "SpatialGridMeteorology", function(object) print.SpatialGridMeteorology(object))
+
+subs.SpatialGridMeteorology <- function(x, i, j, ..., drop = FALSE) {
+  drop <- FALSE
+  #		if (!missing(drop))
+  #			stop("don't supply drop: it needs to be FALSE anyway")
+  grd = x@grid
+  if (missing(i))
+    rows = 1:grd@cells.dim[2]
+  else {
+    if (is(i, "Spatial"))
+      stop("area selection only makes sense for objects of class SpatialPixels or SpatialGridDataFrame; for object of class SpatialGrid you can only select x[rows,cols]")
+    rows = i
+  }
+  if (missing(j))
+    cols = 1:grd@cells.dim[1]
+  else
+    cols = j
+  idx = 1:prod(grd@cells.dim[1:2])
+  m = matrix(idx, grd@cells.dim[2], grd@cells.dim[1], byrow = TRUE)[rows,cols]
+  idx = as.vector(t(m)) # t(m)?
+  # print(idx)
+  if (any(is.na(idx)))
+    stop("NAs not permitted in index")
+  if (length(idx) == 0) {
+    return(x)
+  } 
+  pts = SpatialPoints(coordinates(x)[idx,,drop=FALSE], CRS(proj4string(x)))
+  if (length(idx) == 1) {
+    new("SpatialPointsMeteorology",
+        coords = pts@coords,
+        bbox = pts@bbox,
+        proj4string = pts@proj4string,
+        dates = x@dates,
+        data = x@data[idx])
+  } else {
+    sg = as(SpatialPixels(pts), "SpatialGrid")
+    new("SpatialGridMeteorology",
+        grid = sg@grid,
+        bbox = sg@bbox,
+        proj4string = sg@proj4string,
+        dates = x@dates,
+        data = x@data[idx])
+  }
+}
+setMethod("[", "SpatialGridMeteorology", subs.SpatialGridMeteorology)

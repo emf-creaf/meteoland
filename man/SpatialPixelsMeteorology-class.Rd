@@ -3,6 +3,7 @@
 \Rdversion{1.1}
 \docType{class}
 \alias{SpatialPixelsMeteorology-class}
+\alias{[,SpatialPixelsMeteorology,ANY,ANY,ANY-method}
 \alias{show,SpatialPixelsMeteorology-method}
 
 \title{Class \code{"SpatialPixelsMeteorology"}}
@@ -28,7 +29,12 @@ Class \code{"\linkS4class{SpatialPixels}"}, directly.
 Class \code{"\linkS4class{SpatialPoints}"}, by class "SpatialPixels", distance 2.
 Class \code{"\linkS4class{Spatial}"}, by class "SpatialPixels", distance 3.
 }
-
+\section{Methods}{
+  \describe{
+     \item{[}{\code{signature(x = "SpatialPixelsMeteorology", i = "ANY", ..., drop = "ANY")}: subsets the pixels and associated topography; only one dimension can be subsetted. If \code{drop = TRUE} the boundary box is recalculated.}
+    \item{spplot}{\code{signature(object = "SpatialPixelsTopography")}: allows plotting topography maps.}
+	 }
+}
 \author{
 Miquel De \enc{Cáceres}{Caceres} Ainsa, Centre Tecnologic Forestal de Catalunya
 }

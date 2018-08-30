@@ -47,6 +47,7 @@ print.SpatialGridTopography = function(x, ...) {
   }
   invisible(x)
 }
+setMethod("print", "SpatialGridTopography", function(x, ...) print.SpatialGridTopography(x, ...))
 setMethod("show", "SpatialGridTopography", 
           function(object) print.SpatialGridTopography(object))
 

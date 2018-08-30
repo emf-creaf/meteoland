@@ -29,6 +29,49 @@ SpatialPixelsMeteorology<-function(points, data, dates, tolerance = sqrt(.Machin
   return(spm)
 }
 
+setMethod("[", "SpatialPixelsMeteorology",
+          function(x, i, j, ..., drop = FALSE) {
+            if (!missing(j))
+              stop("can only select pixels with a single index")
+            if (missing(i))
+              return(x)
+            if (is(i, "Spatial"))
+              i = !is.na(over(x, geometry(i)))
+            if(length(i)==1) {
+              return(new("SpatialPointsMeteorology",
+                         coords = x@coords[i,,drop=FALSE],
+                         bbox = x@bbox,
+                         proj4string = x@proj4string,
+                         dates = x@dates,
+                         data = x@data[i]))
+            }
+            if (drop) { # if FALSE: adjust bbox and grid
+              res = as(x, "SpatialPoints")[i]
+              tolerance = list(...)$tolerance
+              if (!is.null(tolerance))
+                spdf = SpatialPixels(res, tolerance)
+              else
+                spdf = SpatialPixels(res)
+              new("SpatialPixelsMeteorology",
+                  coords = spdf@coords,
+                  bbox = spdf@bbox,
+                  grid = spdf@grid,
+                  grid.index = spdf@grid.index,
+                  proj4string = spdf@proj4string,
+                  dates = x@dates,
+                  data = x@data[i])
+            } else # default: don't adjust bbox and grid
+              new("SpatialPixelsMeteorology",
+                  coords = x@coords[i, , drop = FALSE],
+                  bbox = x@bbox,
+                  grid = x@grid,
+                  grid.index = x@grid.index[i],
+                  proj4string = x@proj4string,
+                  dates = x@dates,
+                  data = x@data[i])
+          }
+)
+
 setMethod("spplot", signature("SpatialPixelsMeteorology"), definition=
             function(obj, date, variable="MeanTemperature", ...) {
               sgd = SpatialPixelsDataFrame(points=obj@coords, grid = obj@grid, data=obj@data[[date]], 
@@ -50,5 +93,6 @@ print.SpatialPixelsMeteorology = function(x, ...) {
   cat(pst, "\n")
   invisible(x)
 }
+setMethod("print", "SpatialPixelsMeteorology", function(x, ..., digits = getOption("digits")) print.SpatialPixelsMeteorology(x, ..., digits))
 setMethod("show", "SpatialPixelsMeteorology", function(object) print.SpatialPixelsMeteorology(object))
 

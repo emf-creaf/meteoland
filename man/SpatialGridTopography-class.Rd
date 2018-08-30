@@ -29,7 +29,6 @@ Class \code{"\linkS4class{Spatial}"}, by class "SpatialGridDataFrame", distance 
 \section{Methods}{
   \describe{
      \item{[}{\code{signature(x = "SpatialGridTopography", i = "ANY", j = "ANY", drop = "ANY")}: subsets the grid and associated topography; only rows (x values) and columns (y values) can be subsetted.}
-    \item{spplot}{\code{signature(object = "SpatialGridTopography", variable ="character")}: allows plotting topography maps. Argument \code{variable} can be \code{"elevation"}, \code{"slope"} or \code{"aspect"}}
 	 }
 }
 

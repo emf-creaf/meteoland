@@ -39,7 +39,9 @@ export(correctionpoints, correctionpoints.errors,
        writemeteorologygrid, writemeteorologygridfiles,
        writemeteorologypoint, writemeteorologypointfiles)
 exportClasses(MeteorologyProcedureData, MeteorologyInterpolationData, MeteorologyUncorrectedData)
-exportClasses(SpatialPointsMeteorology,SpatialPointsTopography,SpatialGridMeteorology,SpatialGridTopography)
+exportClasses(SpatialPointsMeteorology,SpatialPointsTopography,
+              SpatialGridMeteorology,SpatialGridTopography,
+              SpatialPixelsMeteorology,SpatialPixelsTopography)
 exportMethods(subsample, spplot, "[", show)
 importFrom(Rcpp, evalCpp)
 importFrom(jsonlite,fromJSON)

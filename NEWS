@@ -4,10 +4,10 @@
 
 __Version history__
 
-_Version 0.7.6, August 2018.
+_Version 0.7.6, September 2018.
 1. Methods 'print/head/tail' updated for objects SpatialPointsTopography and SpatialPointsMeteorology
 2. Subsetting for objects SpatialPointsMeteorology, SpatialGridMeteorology and SpatialPixelsMeteorology.
-3. Coercing objects of Spatial_X_Topography
+3. Coercing objects of Spatial...Topography
 
 _Version 0.7.5, August 2018.
 1. AEMET download using packages httr and jsonlite (code adapted from https://github.com/SevillaR/aemet)

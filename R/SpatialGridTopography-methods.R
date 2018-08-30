@@ -1,13 +1,13 @@
-SpatialGridTopography<-function(grid, elevation, proj4string = CRS(as.character(NA))) {
+SpatialGridTopography<-function(grid, elevation, slope = NULL, aspect = NULL, proj4string = CRS(as.character(NA))) {
   if (!is(grid, "SpatialGrid")) sg = SpatialGrid(grid, proj4string)
   else sg = grid
   nrows = sg@grid@cells.dim[1]
   ncols = sg@grid@cells.dim[2]
   cellWidth = sg@grid@cellsize[1]
   cellHeight = sg@grid@cellsize[2]
-  slopeVec = .slope(elevation, nrows, ncols, cellWidth, cellHeight)
-  aspectVec = .aspect(elevation, nrows, ncols, cellWidth, cellHeight)
-  data = data.frame(elevation = elevation, slope = slopeVec, aspect = aspectVec)
+  if(is.null(slope)) slope = .slope(elevation, nrows, ncols, cellWidth, cellHeight)
+  if(is.null(aspect)) aspect = .aspect(elevation, nrows, ncols, cellWidth, cellHeight)
+  data = data.frame(elevation = elevation, slope = slope, aspect = aspect)
   lt = new("SpatialGridTopography",
           grid = sg@grid,
           bbox = sg@bbox,

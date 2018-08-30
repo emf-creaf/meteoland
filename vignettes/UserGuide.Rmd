@@ -16,12 +16,21 @@ knitr::opts_chunk$set(
 )
 ```
 
-## Preface
+# Introduction
+
+## Purpose
+
+Reliable meteorological data are a basic requirement for hydrological and ecological studies at the landscape scale. Given the large spatial variation of meteorology over complex terrains, meteorological records from a single weather station are often not representative of entire landscapes. Studies made on multiple sites over a landscape require different meteorological series for each site; and other studies may require meteorological data series for all grid cells of a landscape, in a continuous way. In these cases, spatial correlation between the meteorology series of different sites or cells must be taken into account. For example, the sequence of days with rain of contiguous cells will normally be the same or very similar, even if precipitation amounts may differ. Finally, studies addressing the impacts of climate change on forests and landscapes require downscaling coarse-scale predictions  of global or regional climate models to the landscape scale. When downscaling predictions for several locations in a landscape, spatial correlation of predictions is also important.
+
+With the aim to assist research of climatic impacts on forests, the R package `meteoland` provides utilities to estimate daily weather variables at any position over complex terrains:
+
+1. Spatial interpolation of daily weather records from meteorological stations. }
+2. Statistical correction of meteorological data series (e.g. from climate models).}
 
 Using `meteoland` package is easy, but some ideas and concepts must be addresed
 to make the experience easy for new users. This vignette is intended as a
 working example to explain all the steps needed to get comfortable with
-`meteoland` workflow.
+`meteoland` workflow. We assume that the reader is more or less familiar with S4 classes of package **sp**.
 
 ## Installing and loading the package
 
@@ -56,61 +65,132 @@ st_coords = exampleinterpolationdata@coords
 st_data = data.frame(X_UTM = st_coords[,1], Y_UTM = st_coords[,2],
                      elevation = exampleinterpolationdata@elevation,
                      row.names = st_names)
-                     
+tmin = exampleinterpolationdata@MinTemperature
+tmax = exampleinterpolationdata@MaxTemperature                     
+prec = exampleinterpolationdata@Precipitation                     
 ```
 
-Before starting using the package, you need to have access to the elevation (in m) and daily weather data series corresponding a set of locations (normally weather stations). The starting point will be different depending on your data provider (the package has also tools to access weather data). But we will assume you have data from a set of 38 stations in your study area. Furthermore, we will assume that you have a data frame with the coordinates and elevation of each location:
+Before starting using the package, you need to have access to the elevation (in m) and daily weather data series corresponding a set of locations (normally weather stations). Elevation is needed because interpolation routines perform corrections for differences in elevation between the reference locations and the target point. The initial format of your data will be different depending on the format used by your data provider (the package has also tools to access weather data). For our example, we will assume you have data from a set of 38 stations in your study area. On one hand, you should have a `data.frame` with the coordinates and elevation of each location:
 ```{r}
 str(st_data)
 head(st_data)
 ```
+On the other, you should have at least three matrices of meteorological data (one for minimum temperature, one for maximum temperature and the last one for precipitation) with stations in rows and dates in columns:
+```{r}
+dim(tmax)
+dim(tmin)
+dim(prec)
+tmax[1:6,1:6]
+```
+Units should be in degrees Celsius for temperature and mm for precipitation.
 
+## Building an interpolation data object
 
+Meteoland stores weather series for reference locations and interpolation parameters in a single object of class `MeteorologyInterpolationData`. There are several ways of building such objects, but we will first illustrate how to do it from the data we just presented.
 
-Vignettes are long form documentation commonly included in packages. Because they are part of the distribution of the package, they need to be as compact as possible. The `html_vignette` output type provides a custom style sheet (and tweaks some options) to ensure that the resulting html is as small as possible. The `html_vignette` format:
-
-- Never uses retina figures
-- Has a smaller default figure size
-- Uses a custom CSS stylesheet instead of the default Twitter Bootstrap style
-
-## Vignette Info
-
-Note the various macros within the `vignette` section of the metadata block above. These are required in order to instruct R how to build the vignette. Note that you should change the `title` field and the `\VignetteIndexEntry` to match the title of your vignette.
-
-## Styles
-
-The `html_vignette` template includes a basic CSS theme. To override this theme you can specify your own CSS in the document metadata as follows:
-
-    output: 
-      rmarkdown::html_vignette:
-        css: mystyles.css
-
-## Figures
-
-The figure sizes have been customised so that you can easily put two images side-by-side. 
-
-```{r, fig.show='hold'}
-plot(1:10)
-plot(10:1)
+First we need to create an object of class `SpatialPoints` (see package **sp**) with the spatial coordinates of our stations and the coordinate system (here UTM 31N):
+```{r}
+sp = SpatialPoints(st_data[,c("X_UTM", "Y_UTM")],
+                   proj4string = CRS("+proj=utm +zone=31 +ellps=WGS84 +datum=WGS84 +units=m +towgs84=0,0,0 "))
+head(sp)
+```
+We can now build an object `MeteorologyInterpolationData` using:
+```{r}
+interpolator <- MeteorologyInterpolationData(sp, elevation = st_data$elevation,
+                                             MinTemperature = tmin,
+                                             MaxTemperature = tmax,
+                                             Precipitation = prec)
+class(interpolator)
 ```
 
-You can enable figure captions by `fig_caption: yes` in YAML:
-
-    output:
-      rmarkdown::html_vignette:
-        fig_caption: yes
-
-Then you can use the chunk option `fig.cap = "Your figure caption."` in **knitr**.
-
-## More Examples
-
-You can write math expressions, e.g. $Y = X\beta + \epsilon$, footnotes^[A footnote here.], and tables, e.g. using `knitr::kable()`.
-
-```{r, echo=FALSE, results='asis'}
-knitr::kable(head(mtcars, 10))
+The resulting object is now ready to be used to perform interpolation on a set of target locations (see next section). Interpolation parameters are also stored in the same object (do not worry if you do not understand their meaning at this point):
+```{r}
+names(interpolator@params)
 ```
 
-Also a quote using `>`:
 
-> "He who gives up [code] safety for [code] speed deserves neither."
-([via](https://twitter.com/hadleywickham/status/504368538874703872))
+## Interpolation on a grid
+```{r, echo = FALSE, include= FALSE}
+data("examplegridtopography")
+
+elev = as(examplegridtopography[1:20,1:20], "SpatialGridDataFrame")["elevation"]
+```
+The target for weather interpolation in `meteoland` can be a set of points, pixels or a whole grid. Again, the initial format of data can be very different. Here we assume you have a small grid of 400 (20x20) cells of 1ha in size, with elevation data in form of class `SpatialGridDataFrame` (see method `read.asciigrid` in package *sp*):
+```{r}
+summary(elev)
+```
+
+Note that the coordinate reference system needs to be the same as that of `interpolator`, which in this case it is. Before performing the interpolation over this grid, we need to reshape this data in a class called `SpatialGridTopography`:
+```{r}
+sgt = SpatialGridTopography(as(elev, "SpatialGrid"), elevation = elev$elevation,
+                            proj4string = elev@proj4string)
+sgt
+```
+
+As you can see in the result, `meteoland` has calculated for us slope and aspect (both in degrees) from elevation data ^[Objects of class `SpatialGridTopography` can be initialized with user input values for slope and aspect too, but `meteoland` has its own routines when this are missing]. Slope and aspect are important for radiation calculations, which also requires relative humidity data. We can display elevation over the grid using:
+```{r}
+spplot(sgt, "elevation")
+```
+
+
+Before we call the interpolation routine, we need to define the dates (i.e. days) for which we want weather to be interpolated, for example:
+```{r}
+dates = as.Date(c("2001-02-03", "2001-06-03"))
+```
+
+Of course, we need to be sure that the `interpolator` object has data corresponding to this dates. We can check if there is any missing date using:
+```{r}
+sum(!(dates %in% interpolator@dates))
+```
+
+The name of interpolation functions depend on the target spatial structure. For grids we need to use function `interpolationgrid`:
+```{r}
+ml <- interpolationgrid(interpolator, sgt, dates)
+```
+
+This function works processing each date at a time. Since calculations can take some time, the console output shows the progress. The output of the function is an object of class `SpatialGridMeteorology`:
+```{r}
+ml
+```
+
+
+We can display the result in a map using function:
+```{r, fig.show="hold"}
+spplot(ml, 2, "MinTemperature")
+spplot(ml, 2, "MaxTemperature")
+```
+
+## Interpolation on a set of points
+```{r, echo = FALSE, include= FALSE}
+
+spt = as(examplegridtopography, "SpatialPointsTopography")[c(36,228, 530, 2304)]
+cc = coordinates(spt)
+points_df = data.frame(X_UTM = cc[,1], Y_UTM = cc[,2], elevation = spt@data$elevation)
+```
+If you want to interpolate on a set of target locations, the starting point will normally be a `data.frame`. In our example this points come from the grid, but we have reshaped them so the starting format is familiar:
+```{r}
+points_df
+```
+
+Analogously with the grid, we need to transform this data into an object `SpatialPointsTopography`:
+```{r}
+spt = SpatialPointsTopography(as.matrix(points_df[,c("X_UTM", "Y_UTM")]),
+                              elevation = points_df$elevation,
+                              proj4string = CRS("+proj=utm +zone=31 +ellps=WGS84 +datum=WGS84 +units=m +towgs84=0,0,0"))
+spt
+```
+
+In this case we only have elevation (in m), but slope and aspect should also be included if possible. Let us assume you want to interpolate on this points for the whole time series available in object `interpolator`. Since we are dealing with points, the function to interpolate is called `interpolationpoints`:
+```{r}
+mp = interpolationpoints(interpolator, spt)
+```
+This function works processing one point at a time. The output of the function is an object of class `SpatialPointsMeteorology`:
+```{r}
+mp
+```
+
+And the precipitation series for point #1 can be plotted using:
+```{r, fig =TRUE, fig.width=6}
+meteoplot(mp, 1, "Precipitation", ylab="Precipitation (mm)", xlab="")
+```
+

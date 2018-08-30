@@ -1,4 +1,4 @@
-SpatialPointsTopography<-function(points, elevation, slope, aspect, proj4string = CRS(as.character(NA))) {
+SpatialPointsTopography<-function(points, elevation, slope = NULL, aspect = NULL, proj4string = CRS(as.character(NA))) {
   if(!(inherits(points,"SpatialPoints")|| inherits(points,"matrix"))) stop("'points' has to be of class 'matrix' or 'SpatialPoints'.")
   if(inherits(points,"SpatialPoints")) {
     npoints = nrow(points@coords)
@@ -11,8 +11,14 @@ SpatialPointsTopography<-function(points, elevation, slope, aspect, proj4string 
     bbox = bbox(SpatialPoints(coords))
   }
   if(length(elevation)!=npoints) stop("'elevation' has to be of length equal to the number of points")
-  if(length(slope)!=npoints) stop("'slope' has to be of length equal to the number of points")
-  if(length(aspect)!=npoints) stop("'aspect' has to be of length equal to the number of points")
+  if(is.null(slope)) 
+    slope = rep(NA, length(elevation))
+  else if(length(slope)!=npoints) 
+    stop("'slope' has to be of length equal to the number of points")
+  if(is.null(aspect)) 
+    aspect = rep(NA, length(elevation))
+  else if(length(aspect)!=npoints) 
+    stop("'aspect' has to be of length equal to the number of points")
   data = data.frame(elevation = elevation, slope = slope, aspect = aspect)
   lt = new("SpatialPointsTopography",
           coords = coords,

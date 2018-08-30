@@ -18,3 +18,4 @@ Imports: spdep, rgdal, ncdf4, ncdf4.helpers, httr, jsonlite, methods, Rcpp (>= 0
 LinkingTo: Rcpp
 Encoding: UTF-8
 NeedsCompilation: yes
+VignetteBuilder: utils, knitr

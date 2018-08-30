@@ -41,8 +41,6 @@ print.SpatialGridMeteorology = function(x, ...) {
   cat("Dates: ", paste0(length(x@dates)))
   cat(paste0("  (initial: ", x@dates[1], " final: ", x@dates[length(x@dates)],")\n"))
   print(summary(x@grid))
-  cat("SpatialPoints:\n")
-  print(coordinates(x))
   pst <- paste(strwrap(paste(
     "Coordinate Reference System (CRS) arguments:", 
     proj4string(x))), collapse="\n")

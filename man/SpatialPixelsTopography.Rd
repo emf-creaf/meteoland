@@ -45,5 +45,8 @@ spt = SpatialPixelsTopography(points[p], examplegridtopography$elevation[p],
                               examplegridtopography$slope[p],
                               examplegridtopography$aspect[p],
                               grid = examplegridtopography@grid)
-plot(spt)
+#Display data
+spplot(spt, variable="elevation", scales=list(draw=TRUE))
+spplot(spt, variable="slope", scales=list(draw=TRUE))
+spplot(spt, variable="aspect", scales=list(draw=TRUE))
 }

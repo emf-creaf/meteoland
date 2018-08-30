@@ -56,9 +56,9 @@ Burrough, P. A. and McDonell, R.A., 1998. Principles of Geographical Information
 data(examplegridtopography)
 
 #Display data
-spplot(examplegridtopography, type="elevation", scales=list(draw=TRUE))
-spplot(examplegridtopography, type="slope", scales=list(draw=TRUE))
-spplot(examplegridtopography, type="aspect", scales=list(draw=TRUE))
+spplot(examplegridtopography, variable="elevation", scales=list(draw=TRUE))
+spplot(examplegridtopography, variable="slope", scales=list(draw=TRUE))
+spplot(examplegridtopography, variable="aspect", scales=list(draw=TRUE))
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.

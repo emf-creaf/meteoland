@@ -19,7 +19,7 @@ A more detailed introduction to the package functionality can be found in De Cá
 
 ## Package installation and documentation
 
-Package `meteoland` can be found at [CRAN](https://cran.r-project.org/), but the version in this repository is very old. We recommend users to download and install the latest stable versions GitHub as follows (package `devtools` should be installed first):
+Package `meteoland` can be found at [CRAN](https://cran.r-project.org/), but the version in this repository may not be the most recent one. Latest stable versions can be downloaded and installed from GitHub as follows (package `devtools` should be installed first):
 
 ```{r installation, eval = FALSE}
 devtools::install_github("miquelcaceres/meteoland")

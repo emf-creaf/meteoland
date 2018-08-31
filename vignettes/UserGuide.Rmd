@@ -2,9 +2,11 @@
 title: "User's guide"
 author: "Miquel De Cáceres, Victor Granda"
 date: "`r Sys.Date()`"
-output: rmarkdown::html_vignette
+output: 
+  rmarkdown::html_vignette:
+    toc: TRUE
 vignette: >
-  %\VignetteIndexEntry{User's guide}
+  %\VignetteIndexEntry{User guide to meteoland}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -14,6 +16,7 @@ knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>"
 )
+library(meteoland)
 ```
 
 # Introduction
@@ -28,9 +31,7 @@ With the aim to assist research of climatic impacts on forests, the R package `m
 2. Statistical correction of meteorological data series (e.g. from climate models).}
 
 Using `meteoland` package is easy, but some ideas and concepts must be addresed
-to make the experience easy for new users. This vignette is intended as a
-working example to explain all the steps needed to get comfortable with
-`meteoland` workflow. We assume that the reader is more or less familiar with S4 classes of package **sp**.
+to make the experience easy for new users. This vignette is intended as a working example to explain all the steps needed to get comfortable with `meteoland` workflow. We assume that the reader is more or less familiar with S4 classes of package **sp**. You will find detailed information regarding the package structure, its functions, and how calculations are done in vignette "**Package meteoland**".
 
 ## Installing and loading the package
 
@@ -53,11 +54,13 @@ library(meteoland)
 
 
 # Interpolation of daily weather
+
+Spatial interpolation is required when meteorology for the area and period of interest cannot be obtained from local sensors. The nearest weather station may not have data for the period of interest or it may be located too far away to be representative of the target area.
+
 ## Preparing weather data for interpolation
 
 
 ```{r, echo = FALSE, include= FALSE}
-library(meteoland)
 data("exampleinterpolationdata")
 
 st_names = row.names(exampleinterpolationdata@MinTemperature)
@@ -67,7 +70,8 @@ st_data = data.frame(X_UTM = st_coords[,1], Y_UTM = st_coords[,2],
                      row.names = st_names)
 tmin = exampleinterpolationdata@MinTemperature
 tmax = exampleinterpolationdata@MaxTemperature                     
-prec = exampleinterpolationdata@Precipitation                     
+prec = exampleinterpolationdata@Precipitation 
+rhum = exampleinterpolationdata@RelativeHumidity
 ```
 
 Before starting using the package, you need to have access to the elevation (in m) and daily weather data series corresponding a set of locations (normally weather stations). Elevation is needed because interpolation routines perform corrections for differences in elevation between the reference locations and the target point. The initial format of your data will be different depending on the format used by your data provider (the package has also tools to access weather data). For our example, we will assume you have data from a set of 38 stations in your study area. On one hand, you should have a `data.frame` with the coordinates and elevation of each location:
@@ -75,11 +79,12 @@ Before starting using the package, you need to have access to the elevation (in 
 str(st_data)
 head(st_data)
 ```
-On the other, you should have at least three matrices of meteorological data (one for minimum temperature, one for maximum temperature and the last one for precipitation) with stations in rows and dates in columns:
+On the other, you should have at least three matrices of meteorological data (one for minimum temperature, one for maximum temperature and the last one for precipitation) with stations in rows and dates in columns. In our example we also add relative humidity (in percent), so that other derived variables can be calculated:
 ```{r}
 dim(tmax)
 dim(tmin)
 dim(prec)
+dim(rhum)
 tmax[1:6,1:6]
 ```
 Units should be in degrees Celsius for temperature and mm for precipitation.
@@ -91,7 +96,7 @@ Meteoland stores weather series for reference locations and interpolation parame
 First we need to create an object of class `SpatialPoints` (see package **sp**) with the spatial coordinates of our stations and the coordinate system (here UTM 31N):
 ```{r}
 sp = SpatialPoints(st_data[,c("X_UTM", "Y_UTM")],
-                   proj4string = CRS("+proj=utm +zone=31 +ellps=WGS84 +datum=WGS84 +units=m +towgs84=0,0,0 "))
+                   proj4string = CRS("+proj=utm +zone=31 +ellps=WGS84 +datum=WGS84 +units=m +towgs84=0,0,0"))
 head(sp)
 ```
 We can now build an object `MeteorologyInterpolationData` using:
@@ -99,7 +104,8 @@ We can now build an object `MeteorologyInterpolationData` using:
 interpolator <- MeteorologyInterpolationData(sp, elevation = st_data$elevation,
                                              MinTemperature = tmin,
                                              MaxTemperature = tmax,
-                                             Precipitation = prec)
+                                             Precipitation = prec,
+                                             RelativeHumidity = rhum)
 class(interpolator)
 ```
 
@@ -112,17 +118,16 @@ head(temporal_coverage)
 ```
 In the first call, function `interpolation.coverate` returns the number of non-missing observations for each station and variable. The second call produces a similar output, but by dates instead of stations.
 
-Interpolation parameters are also stored in the same object (do not worry if you do not understand their meaning now):
+Interpolation parameters are also stored in the same object (do not worry if you do not know their meaning now):
 ```{r}
 names(interpolator@params)
 ```
 
-An important parameter at this point is the one specifying an initial radius for the truncated spatial Gaussian kernel, which in this case is:
+A parameter that is important to understand is ìnitial_Rp`, which specifies the initial radius for the truncated spatial Gaussian kernel. By default its value is:
 ```{r}
 interpolator@params$initial_Rp
 ```
-
-Its value must be set in relation to the units of the spatial coordinates of weather data. In this case, our data was in meters, so this radius indicates 140 km. In general, the initial radius should be enough to include a reasonable number of stations (~20-40), but the kernel radius is adjusted for each interpolation target point.
+The value of `initial_Rp` must be set in relation to the units of the spatial coordinates of weather data. Our data was in meters, so the default radius is 140 km. In general, the initial radius should be large enough to include a reasonable number of stations (~20-40), but the kernel radius is adjusted for each interpolation target point.
 
 
 ## Calibration and cross-validation of the interpolation data
@@ -205,13 +210,27 @@ This function works processing each date at a time. Since calculations can take 
 ```{r}
 ml
 ```
-
-
-We can display the result in a map using function:
+We can display interpolated grids in a map using function `spplot`:
 ```{r, fig.show="hold"}
 spplot(ml, 2, "MinTemperature")
 spplot(ml, 2, "MaxTemperature")
 ```
+
+Objects of class `SpatialGridMeteorology` include a list of data frames, one per date. We can access the interpolated data for a given date using:
+```{r}
+df_1 = ml@data[[1]]
+head(df_1)
+```
+
+Some columns are missing (e.g. wind speed) because we did not include weather station data regarding these variables. If we wants to add grid coordinates to this data frame, we can use the spatial information stored in the `ml` object:
+
+```{r}
+sgdf_1 = SpatialGridDataFrame(grid = ml@grid, data = ml@data[[1]], proj4string = ml@proj4string)
+summary(sgdf_1)
+```
+
+Results can be retrieved in this way and saved using `write.asciigrid` for its use outside R. The package also provides function for reading/writing NetCDFs (see function `writemeteorologygrid`) from `SpatialGridMeteorology` objects. 
+
 
 ## Interpolation on a set of points
 ```{r, echo = FALSE, include= FALSE}
@@ -242,8 +261,99 @@ This function works processing one point at a time. The output of the function i
 mp
 ```
 
-And the precipitation series for point #1 can be plotted using:
+And the time series for a given can be plotted using function `meteoplot`. For example, we show here the precipitation series of point #1:
 ```{r, fig =TRUE, fig.width=6}
 meteoplot(mp, 1, "Precipitation", ylab="Precipitation (mm)", xlab="")
+```
+
+Objects of class `SpatialPointsDataFrame` include a list of data frames, one per point. We can access one of them using:
+```{r}
+df_1 = mp@data[[1]]
+head(df_1)
+```
+
+This data frame can now be written into a file for its analysis outside R. The package also provides its own functions to write/read point meteorology data in different formats. If we are interested in inspecting the interpolation result by date, instead of by point, we can use function `extractpointdates`, which returns objects of class `SpatialGridDataFrame`:
+```{r}
+dt_4 = extractpointdates(mp, as.Date("2001-01-04"), verbose = FALSE)
+dt_4
+```
+
+# Statistical correction of daily weather
+
+Correcting the biases of a meteorological data series containing biases using a more accurate meteorological series is necessary when the more accurate series does not cover the period of interest and the less accurate series does. The less accurate series may be at coarser scale, as with climate model predictions or climate reanalysis data. In this case one can speak of statistical correction and downscaling. However, one may also correct the predictions of climate models using reanalysis data estimated at the same spatial resolution.
+
+In the following example we will correct the predictions of Regional Climate Model (CCLM4-8-17; driving global model CNRM-CERFACS-CNRM-CM5) on the same area of the interpolation example. RCM data includes 3 model cells. Meteorological data covers an historical (reference) period (2000-2003) and a future (projection) period (year 2023), the latter simulated under rcp4.5 scenario.
+
+## Preparing weather data to be downscaled/corrected
+
+```{r, echo = FALSE, include= FALSE}
+data("examplecorrectiondata")
+coords = examplecorrectiondata@coords
+pt_coords = data.frame(long = as.numeric(coords[,1]), lat = as.numeric(coords[,2]))
+proj_dates = examplecorrectiondata@dates
+ref_data = examplecorrectiondata@reference_data
+proj_data = examplecorrectiondata@projection_data
+```
+
+One needs several data items to perform downscaling and statistical correction. First, we need a matrix or data frame with the central coordinates of the RCM cells (here in longitude/latitude format):
+```{r}
+pt_coords
+```
+Second, we need the uncorrected meteorological data (here RCM outputs) for both a reference period (that will be matched with our more accurate series) and a projection period (that our more accurate series does not cover). Both should be arranged in lists of data frames, one per RCM cell:
+```{r}
+length(ref_data)
+length(proj_data)
+head(ref_data[[1]])
+head(proj_data[[1]])
+```
+Note that these data frames should follow the conventions of `meteoland` for variable names and units. Finally, we need to specify the projection period, in this case one year:
+```{r}
+proj_dates = seq(as.Date("2023-01-01"), as.Date("2023-12-31"), by="day")
+```
+
+## Building the uncorrected data object
+
+Statistical correction needs an object of class `MeteorologyUncorrectedData`, analogous to the `MeteorologyInterpolationData` of the previous section. To build this object we need first to express coordinates in an object `SpatialPoints`:
+```{r}
+sp = SpatialPoints(pt_coords, CRS("+proj=longlat +datum=WGS84 +ellps=WGS84 +towgs84=0,0,0"))
+sp
+```
+
+Assuming the weather data to be corrected is in the proper format, the object is constructed using:
+
+```{r}
+uncorrected = MeteorologyUncorrectedData(sp, ref_data, proj_data, proj_dates)
+```
+
+## Target point weather meteorology taken as reference
+
+Downscaling/statistical correction is done on a set of target spatial points. meteoland will first find the RCM cell to which each point is nearest (using the central coordinates of RCM cells). Once this matching is done, statistical relations are build between the meteorology of RCM cells and that of target points for the reference period (here 2000-2003) which are used to correct RCM data for the projection period (year 2023). For this process to be done, we need the coordinates and weather series for the reference period. In our case, we will employ a copy the object of class `SpatialPointsMeteorology` that resulted from interpolation in the previous section:
+```{r}
+historical  = mp
+historical
+```
+We named it `historical` to remind that we are using the historical period as reference and want to correct the RCM series for the projection period There are several ways to shape data into objects of class `SpatialPointsMeteorology`. For example, one can use  function `readmeteorologypoints`. 
+
+## Tuning correction parameters
+
+Objects of class `MeteorologyUncorrectedData` have a slot with parameters:
+```{r}
+uncorrected@params
+```
+Importantly, `varmethods` is a named list that specifies which correction method has to be used for each variable. Since we do not have reference data for wind speed, we must turn the method for wind speed to `"none"`:
+```{r}
+uncorrected@params$varmethods$WindSpeed="none"
+```
+
+
+## Conducting statistical correction
+Once we have all the data objects that we need (the hard part), conducting statistical correction is straightforward:
+```{r}
+projected = correctionpoints(uncorrected, historical)
+```
+As mentioned above, correction proceeds point by point. The result is again an object of class `SpatialPointsMeteorology`:
+
+```{r}
+projected
 ```
 

@@ -262,7 +262,7 @@ mp
 ```
 
 And the time series for a given can be plotted using function `meteoplot`. For example, we show here the precipitation series of point #1:
-```{r, fig =TRUE, fig.width=6}
+```{r, fig =TRUE, fig.width=7, fig.height=5}
 meteoplot(mp, 1, "Precipitation", ylab="Precipitation (mm)", xlab="")
 ```
 
@@ -355,5 +355,22 @@ As mentioned above, correction proceeds point by point. The result is again an o
 
 ```{r}
 projected
+```
+
+The following code displays the minimum/maximum temperatures before and after correction:
+```{r, fig=TRUE, fig.width=7, fig.height=5}
+#Plot predicted mean temperature for point 1
+meteoplot(projected, 1, "MinTemperature", ylab="Temperature (Celsius)", ylim=c(-5,40), col="blue")
+meteoplot(projected, 1, "MaxTemperature", add=TRUE, col="red")
+#Add uncorrected mean temperature data (cell #3)
+lines(uncorrected@dates,
+      uncorrected@projection_data[[3]]$MinTemperature,
+      col="blue", lty=3)
+lines(uncorrected@dates,
+      uncorrected@projection_data[[3]]$MaxTemperature,
+      col="red", lty=3)
+legend("topright", legend=c("corrected","uncorrected", "Maximum", "Minimum"), 
+       col=c("black","black", "red","blue"), lty=c(1,3,1,1), bty="n")
+
 ```
 

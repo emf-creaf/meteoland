@@ -44,23 +44,23 @@ IntegerVector dateStringToJulianDays(CharacterVector dateStrings) {
 // [[Rcpp::export("radiation_solarDeclination")]]
 double solarDeclination(int J) {
   // Original calculation
-  //double delta = 0.4093 * sin(2.0 * PI/365.0 * ((double)J) - 1.405); // solar declination in radians
+  //double delta = 0.4093 * sin(2.0 * M_PI/365.0 * ((double)J) - 1.405); // solar declination in radians
   // New calculation (Bourges 1985)
-  // double D = (2.0*PI/365.25)*(((double) J)-79.346);
+  // double D = (2.0*M_PI/365.25)*(((double) J)-79.346);
   // double delta = 0.3723+23.2567*sin(D)-0.758*cos(D)+0.1149*sin(2.0*D)+0.3656*cos(2.0*D)-0.1712*sin(3.0*D)+0.00201*cos(3.0*D);
-  // return(delta*(PI/180.0));
+  // return(delta*(M_PI/180.0));
   //
   double jdc = (((double)J) - 2451545.0)/36525.0;
   double sec = 21.448 - jdc * (46.815 + jdc * (0.00059 - jdc * (0.001813)));
   double e0 = 23.0 + (26.0 + (sec/60.0))/60.0;
-  double oblcorr = e0 + 0.00256 * cos((PI/180.0)*(125.04 - 1934.136 * jdc));
+  double oblcorr = e0 + 0.00256 * cos((M_PI/180.0)*(125.04 - 1934.136 * jdc));
   double l0 = 280.46646 + jdc * (36000.76983 + jdc * (0.0003032));
   l0 = (double)((((int)l0) - 360*(((int)l0)/360))%360);
-  double gmas = (PI/180.0)*(357.52911 + jdc * (35999.05029 - 0.0001537 * jdc));
+  double gmas = (M_PI/180.0)*(357.52911 + jdc * (35999.05029 - 0.0001537 * jdc));
   double seqcent = sin(gmas) * (1.914602 - jdc * (0.004817 + 1.4e-05 * jdc)) + sin(2 * gmas) * (0.019993 - 0.000101 * jdc) + sin(3 * gmas) * 0.000289;
   double suntl = l0 + seqcent;
-  double sal = suntl - 0.00569 - 0.00478 * sin((PI/180.0)*(125.04 - 1934.136 * jdc));
-  double delta = asin(sin((PI/180.0)*(oblcorr)) * sin((PI/180.0)*(sal)));
+  double sal = suntl - 0.00569 - 0.00478 * sin((M_PI/180.0)*(125.04 - 1934.136 * jdc));
+  double delta = asin(sin((M_PI/180.0)*(oblcorr)) * sin((M_PI/180.0)*(sal)));
   return(delta);
 }
 
@@ -73,11 +73,11 @@ double solarDeclination(int J) {
 double solarConstant(int J) {
   double jdc = (((double)J) - 2451545.0)/36525.0; //julian century
   double ecc = 0.016708634 - jdc * (4.2037e-05 + 1.267e-07 * jdc);
-  double gmasr = (PI/180.0)*(357.52911 + jdc * (35999.05029 - 0.0001537 * jdc));
+  double gmasr = (M_PI/180.0)*(357.52911 + jdc * (35999.05029 - 0.0001537 * jdc));
   double seqc = sin(gmasr) * (1.914602 - jdc * (0.004817 + 1.4e-05 * 
     jdc)) + sin(2.0 * gmasr) * (0.019993 - 0.000101 * jdc) + 
     sin(3.0 * gmasr) * 0.000289;
-  double star = gmasr + (PI/180.0)*seqc;
+  double star = gmasr + (M_PI/180.0)*seqc;
   double sunrv = (1.000001018 * (1.0 - pow(ecc,2.0)))/(1.0 + ecc * cos(star));
   return(GSC_kWm2*(1.0/sunrv));
 }
@@ -95,7 +95,7 @@ NumericVector sunRiseSet(double latrad, double slorad, double asprad, double del
   double den = cos(slorad)*cos(latrad)-sin(slorad)*sin(latrad)*cos(asprad);
   double L2;
   if(den<0) {
-    L2 = atan((sin(slorad)*sin(asprad))/den)+PI;
+    L2 = atan((sin(slorad)*sin(asprad))/den)+M_PI;
   } else {
     L2 = atan((sin(slorad)*sin(asprad))/den);
   }
@@ -133,7 +133,7 @@ double solarElevation(double latrad, double delta, double hrad) {
 // [[Rcpp::export("radiation_daylength")]]
 double daylength(double latrad, double slorad, double asprad, double delta) {
   NumericVector v = sunRiseSet(latrad, slorad, asprad, delta); //solar hour at sunrise and sunset, in radians
-  double N = 12.0/PI*(v[1]-v[0]); 
+  double N = 12.0/M_PI*(v[1]-v[0]); 
   return(std::max(N,0.0));
 }
 
@@ -184,7 +184,7 @@ double RpotInstant(double solarConstant, double latrad, double slorad, double as
 // [[Rcpp::export("radiation_potentialRadiation")]]
 double RpotDay(double solarConstant, double latrad,  double slorad, double asprad, double delta) {
   double step = 600.0; //10 min = 600 s step
-  double hradstep = step*(5.0/1200.0)*(PI/180.0);
+  double hradstep = step*(5.0/1200.0)*(M_PI/180.0);
   double Rpot = 0.0;
   NumericVector srs = sunRiseSet(latrad, slorad, asprad, delta);
   for(double hrad=srs[0];hrad<srs[1];hrad+=hradstep) {
@@ -225,7 +225,7 @@ double RDay(double solarConstant, double latrad, double elevation, double slorad
   if(precipitation>0.0) Tfmax *=0.75; //Correction for wet days
   double Ttmax = 0.0, RpotInst = 0.0, RpotInstFlat = 0.0, costheta=0.0;
   double pratio = pow(1.0 -2.2569e-5*elevation,5.2553); // from Pearcy et al. 1991
-  double hradstep = step*(5.0/1200.0)*(PI/180.0);
+  double hradstep = step*(5.0/1200.0)*(M_PI/180.0);
   NumericVector srsFlat = sunRiseSet(latrad, 0.0, 0.0, delta);
   for(double hrad=srsFlat[0];hrad<srsFlat[1];hrad+=hradstep) { 
     RpotInstFlat = std::max(0.0,RpotInstant(solarConstant, latrad, 0.0, 0.0, delta, hrad));
@@ -288,7 +288,7 @@ NumericVector directDiffuseInstant(double solarConstant, double latrad, double d
   double SdfSgday2 = SdfSgday;
   //If clear day (e.g. not rainy) modify for circumsolar part of diffuse radiation
   if(clearday) {
-    SdfSgday2 = SdfSgday/(1.0+(1.0-pow(SdfSgday,2.0))*pow(cos(PI/4.0-beta),2.0)*pow(cos(beta),3.0));
+    SdfSgday2 = SdfSgday/(1.0+(1.0-pow(SdfSgday,2.0))*pow(cos(M_PI/4.0-beta),2.0)*pow(cos(beta),3.0));
   }
   
   double PARday = R_s*0.5; //Daily PAR radiation (MJ)
@@ -341,7 +341,7 @@ DataFrame directDiffuseDay(double solarConstant, double latrad, double delta,
   NumericVector Rpot(nsteps), Rg(nsteps), SWR_direct(nsteps), SWR_diffuse(nsteps), PAR_direct(nsteps), PAR_diffuse(nsteps);
   NumericVector Hrad(nsteps), beta(nsteps);
   for(int i=0;i<nsteps;i++) {
-    Hrad[i] = -PI + (((double)i)+0.5)*(2.0*PI/((double)nsteps));
+    Hrad[i] = -M_PI + (((double)i)+0.5)*(2.0*M_PI/((double)nsteps));
     NumericVector ddi = directDiffuseInstant(solarConstant, latrad, delta, Hrad[i], 
                                              rpotday, R_s, clearday);
     beta[i] = ddi["SolarElevation"];

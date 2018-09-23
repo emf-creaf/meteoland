@@ -1,4 +1,4 @@
-.residualonepoint<-function(Data, MODHist, varmethods, allow_saturated = FALSE, verbose=TRUE){
+.residualonepoint<-function(Data, MODHist, varmethods, allow_saturated = FALSE, wet_day = TRUE, verbose=TRUE){
   
   # if(verbose) cat(paste(", # historic records = ", nrow(MODHist), sep=""))
   
@@ -28,20 +28,20 @@
       DatTemp = DatTempMonth[-i,]
       ModelTempHist = ModelTempHistMonth[-i, ]
       #Calculate correction params depending on the correction method
-      corrTmean = .corrParam(DatTemp, ModelTempHist, varmethods, "MeanTemperature", wet.day = FALSE)
+      corrTmean = .corrParam(DatTemp, ModelTempHist, varmethods, "MeanTemperature", wet_day = FALSE)
       if(varmethods["MinTemperature"]=="unbias" && varmethods["MeanTemperature"]=="unbias") {#for unbias use tmean delta (to avoid tmin > tmean)
         corrTmin = corrTmean
       } else {
-        corrTmin = .corrParam(DatTemp, ModelTempHist, varmethods, "MinTemperature", "MeanTemperature", wet.day = FALSE)
+        corrTmin = .corrParam(DatTemp, ModelTempHist, varmethods, "MinTemperature", "MeanTemperature", wet_day = FALSE)
       }
       if(varmethods["MaxTemperature"]=="unbias" && varmethods["MeanTemperature"]=="unbias") {#for unbias use tmean delta (to avoid tmax < tmean)
         corrTmax = corrTmean
       } else {
-        corrTmax = .corrParam(DatTemp, ModelTempHist, varmethods, "MaxTemperature", "MeanTemperature", wet.day = FALSE)
+        corrTmax = .corrParam(DatTemp, ModelTempHist, varmethods, "MaxTemperature", "MeanTemperature", wet_day = FALSE)
       }
-      corrPrec = .corrParam(DatTemp, ModelTempHist, varmethods, "Precipitation", wet.day = TRUE)
-      corrRad = .corrParam(DatTemp, ModelTempHist, varmethods, "Radiation", wet.day = FALSE)
-      corrWS = .corrParam(DatTemp, ModelTempHist, varmethods, "WindSpeed", wet.day = FALSE)
+      corrPrec = .corrParam(DatTemp, ModelTempHist, varmethods, "Precipitation", wet_day = wet_day)
+      corrRad = .corrParam(DatTemp, ModelTempHist, varmethods, "Radiation", wet_day = FALSE)
+      corrWS = .corrParam(DatTemp, ModelTempHist, varmethods, "WindSpeed", wet_day = FALSE)
       HSData<-.HRHS(Tc=DatTemp[,"MeanTemperature"] ,HR=DatTemp[,"MeanRelativeHumidity"])
       HSmodelHist<-.HRHS(Tc=ModelTempHist[,"MeanTemperature"] ,HR=ModelTempHist[,"MeanRelativeHumidity"])
       if(varmethods["MeanRelativeHumidity"]=="unbias") {
@@ -58,16 +58,16 @@
       
       #Apply correction 
       #Correction Tmean
-      DataCV$MeanTemperature[indices[i]] <-.corrApply(ModelTempHistMonth$MeanTemperature[i], corrTmean, varmethods["MeanTemperature"], wet.day = FALSE)
+      DataCV$MeanTemperature[indices[i]] <-.corrApply(ModelTempHistMonth$MeanTemperature[i], corrTmean, varmethods["MeanTemperature"], wet_day = FALSE)
       
       #Correction Tmin
       if(varmethods["MinTemperature"]=="scaling") {
         DataCV$MinTemperature[indices[i]]<-DataCV$MeanTemperature[indices[i]] + (pmin(ModelTempHistMonth$MinTemperature[i]-ModelTempHistMonth$MeanTemperature[i],0)*corrTmin)
       } else if(varmethods["MinTemperature"]=="quantmap") {
         DataCV$MinTemperature[indices[i]]<-DataCV$MeanTemperature[indices[i]] + .corrApply(pmin(ModelTempHistMonth$MinTemperature[i]-ModelTempHistMonth$MeanTemperature[i],0), 
-                                                              corrTmin, varmethods["MinTemperature"], wet.day = FALSE)
+                                                              corrTmin, varmethods["MinTemperature"], wet_day = FALSE)
       } else {#unbias/none
-        DataCV$MinTemperature[indices[i]]<-.corrApply(ModelTempHistMonth$MinTemperature[i], corrTmin, varmethods["MinTemperature"], wet.day = FALSE)
+        DataCV$MinTemperature[indices[i]]<-.corrApply(ModelTempHistMonth$MinTemperature[i], corrTmin, varmethods["MinTemperature"], wet_day = FALSE)
       }
       
       #Correction Tmax
@@ -75,23 +75,23 @@
         DataCV$MaxTemperature[indices[i]]<-DataCV$MeanTemperature[indices[i]] + (pmax(ModelTempHistMonth$MaxTemperature[i]-ModelTempHistMonth$MeanTemperature[i],0)*corrTmax)
       } else if(varmethods["MaxTemperature"]=="quantmap") {
         DataCV$MaxTemperature[indices[i]]<-DataCV$MeanTemperature[indices[i]] + .corrApply(pmax(ModelTempHistMonth$MaxTemperature[i]-ModelTempHistMonth$MeanTemperature[i],0), 
-                                                                                           corrTmax, varmethods["MaxTemperature"], wet.day = FALSE)
+                                                                                           corrTmax, varmethods["MaxTemperature"], wet_day = FALSE)
       } else {#unbias/none
-        DataCV$MaxTemperature[indices[i]]<-.corrApply(ModelTempHistMonth$MaxTemperature[i], corrTmax, varmethods["MaxTemperature"], wet.day = FALSE)
+        DataCV$MaxTemperature[indices[i]]<-.corrApply(ModelTempHistMonth$MaxTemperature[i], corrTmax, varmethods["MaxTemperature"], wet_day = FALSE)
       }
 
       #Correction Precipitation
-      DataCV$Precipitation[indices[i]]<-.corrApply(ModelTempHistMonth$Precipitation[i], corrPrec, varmethods["Precipitation"], wet.day = TRUE)
+      DataCV$Precipitation[indices[i]]<-.corrApply(ModelTempHistMonth$Precipitation[i], corrPrec, varmethods["Precipitation"], wet_day = wet_day)
 
 
       #Correction Rg
-      DataCV$Radiation[indices[i]]<-.corrApply(ModelTempHistMonth$Radiation[i], corrRad, varmethods["Radiation"], wet.day = FALSE)
+      DataCV$Radiation[indices[i]]<-.corrApply(ModelTempHistMonth$Radiation[i], corrRad, varmethods["Radiation"], wet_day = FALSE)
       if(DataCV$Radiation[indices[i]]<0)  DataCV$Radiation[indices[i]]=0
 
 
       #Correction WS (if NA then use input WS)
       if(!(is.na(corrWS)[1])) {
-        DataCV$WindSpeed[indices[i]]<-.corrApply(ModelTempHistMonth$WindSpeed[i], corrWS, varmethods["WindSpeed"], wet.day = FALSE)
+        DataCV$WindSpeed[indices[i]]<-.corrApply(ModelTempHistMonth$WindSpeed[i], corrWS, varmethods["WindSpeed"], wet_day = FALSE)
       }
       if(DataCV$WindSpeed[indices[i]]<0)  DataCV$WindSpeed[indices[i]]=0
 
@@ -99,7 +99,7 @@
       #First transform RH into specific humidity
       HSmodelFut<-.HRHS(Tc=ModelTempHistMonth$MeanTemperature[i] ,HR=ModelTempHistMonth$MeanRelativeHumidity[i])
       #Second apply the bias to specific humidity
-      HSmodelFut.cor<-.corrApply(HSmodelFut, corrHS, varmethods["MeanRelativeHumidity"], wet.day = FALSE)
+      HSmodelFut.cor<-.corrApply(HSmodelFut, corrHS, varmethods["MeanRelativeHumidity"], wet_day = FALSE)
       #Back transform to relative humidity (mean, max, min)
       DataCV$MeanRelativeHumidity[indices[i]]<-min(100,max(0,.HSHR(Tc=DataCV$MeanTemperature[indices[i]] ,HS=HSmodelFut.cor, allow_saturated)))
       DataCV$MaxRelativeHumidity[indices[i]]<-min(100,max(0,.HSHR(Tc=DataCV$MinTemperature[indices[i]] ,HS=HSmodelFut.cor, allow_saturated)))
@@ -231,9 +231,10 @@ correctionpoints.errors<-function(object, points, topodata = NULL,
     }else if(error.type=="residuals") {#Residuals before correction
       mbias = .monthbiasonepoint(obs,rcmhist, mPar$varmethods, verbose)
       dataone = .correctiononepoint(mbias, rcmhist, fill_wind = mPar$fill_wind, allow_saturated = mPar$allow_saturated,
+                                    wet_day = mPar$wet_day,
                                     verbose = verbose)
     } else if(error.type == "residuals.cv") {#Residuals before correction (including cross-validation)
-      dataone = .residualonepoint(obs,rcmhist, mPar$varmethods, mPar$allow_saturated, verbose)
+      dataone = .residualonepoint(obs,rcmhist, mPar$varmethods, mPar$allow_saturated, mPar$wet_day, verbose)
     }
 
     #Calculate PET

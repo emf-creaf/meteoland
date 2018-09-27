@@ -838,11 +838,11 @@ Users of \texttt{meteoland} can choose between three different types of correcti
 The bias calculated in the reference period is then subtracted from the value of $u$ for any day of the period of interest.
 }
 \item{\textbf{Scaling}: A slope is calculated by regressing $u$ on $x$ through the origin (i.e. zero intercept) using data of the reference period. The slope can then be used as scaling factor to multiply the values of $u$ for any day of the period of interest.}
-\item{\textbf{Empirical quantile mapping}: Due to its distributional properties, neither multiplicative or additive factors are appropriate for daily precipitation (Gudmundsson et al. 2012; Ruffault et al. 2014). In this case, it has been recommended to compare the empirical cumulative distribution function (CDF) of the two series for the reference period (Gudmundsson et al. 2012). The empirical CDFs of $x$ and $u$ for the reference period are approximated using tables of empirical percentiles, and this mapping is used to correct values of $u$ for the period of interest:
+\item{\textbf{Empirical quantile mapping}: Due to its distributional properties, neither multiplicative or additive factors are appropriate for daily precipitation (Gudmundsson et al. 2012; Ruffault et al. 2014). In this case, it has been recommended to compare the empirical cumulative distribution function (CDF) of the two series for the reference period (Déqué 2007). The empirical CDFs of $x$ and $u$ for the reference period are approximated using tables of empirical percentiles, and this mapping is used to correct values of $u$ for the period of interest:
 \begin{equation}
 c_d = ecdf_x^{-1}(ecdf_u(u_d))
 \end{equation}
-where $ecdf_x$ and $ecdf_u$ are the empirical CDFs of $x$ and $u$ respectively. Values between percentiles are approximated using linear interpolation. \texttt{meteoland} performs quantile mapping by calling the functions implemented in package \texttt{qmap} (Gudmundsson et al. 2012). 
+where $ecdf_x$ and $ecdf_u$ are the empirical CDFs of $x$ and $u$ respectively. Values between percentiles are approximated using linear interpolation. A difficulty arises for quantile mapping when the variables bounded by zero, such as precipitation. As the models tend to drizzle (or may have lower frequency of precipitation events), the probability of precipitation in the model may be greater or lower than that observed. To correct this, when model precipitation is zero an observed value is randomly chosen in the interval where the observed cumulative frequency is less than or equal to the probability of no precipitation in the model. This procedure ensures that the probability of precipitation after correction is equal to that observed (Boé 2007).
 }
 \end{itemize}
 
@@ -1007,7 +1007,11 @@ Function \texttt{readWindNinjaOutput()} can be used to conduct this last step. T
 
 \section{References}
 \begin{itemize}
+\item{Boé J, Terray L, Habets F, Martin E (2007) Statistical and dynamical downscaling of the Seine basin climate for hydro-meteorological studies. Int J Climatol 27:1643–1655. doi: 10.1002/joc.1602}
+
 \item{Danby, J. M. Eqn. 6.16.4 in Fundamentals of Celestial Mechanics, 2nd ed. Richmond, VA: Willmann-Bell, p. 207, 1988.}
+
+\item{Déqué M (2007) Frequency of precipitation and temperature extremes over France in an anthropogenic scenario: Model results and statistical correction according to observed values. Glob Planet Change 57:16–26. doi: 10.1016/j.gloplacha.2006.11.030}
 
 \item{De Caceres M, Martin-StPaul N, Turco M, Cabon A, Granda V (2018) Estimating daily meteorological data and downscaling climate models over landscapes. Environmental Modelling and Software 108: 186-196.}
 

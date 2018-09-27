@@ -49,7 +49,7 @@ importFrom(grDevices, colorRampPalette, topo.colors)
 importFrom(graphics, abline, hist, lines, par)
 importFrom(utils, read.table, setTxtProgressBar,
              txtProgressBar, write.table)
-importFrom(stats, cor, var, lm, aggregate)
+importFrom(stats, cor, var, lm, aggregate, approx, na.omit, quantile)
 
 S3method(summary, interpolation.cv)
 

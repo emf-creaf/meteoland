@@ -8,7 +8,7 @@ defaultCorrectionParams<-function() {
                  MeanRelativeHumidity = "unbias",
                  Radiation = "unbias",
                  WindSpeed = "quantmap"),
-   wet_day = TRUE,
+   qstep = 0.01,
    fill_wind = TRUE,
    allow_saturated = FALSE,
    wind_height = 10 #Wind height (in m)

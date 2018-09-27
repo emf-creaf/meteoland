@@ -1,5 +1,79 @@
+# Adaptation of the function in package 'qmap 'to solve the treatment of zeroes
+#  Empirical quantile mapping as in Deque (2007)
+# Deque M (2007) Frequency of precipitation and temperature extremes over France in an anthropogenic scenario: Model results and statistical correction according to observed values. 
+# Glob Planet Change 57:16–26. doi: 10.1016/j.gloplacha.2006.11.030
+fitQmapDeque <- function(obs,mod, isPrec = TRUE, qstep=0.01){
+  ### fits an nonparametric transfere function for quantile
+  ### mapping using local linear least square regression
+  ###
+  ### Based on code from John Bjornar Bremnes
+  ys <- na.omit(obs)
+  xs <- na.omit(mod)
+  #Addresses differences in length
+  if(length(xs)!=length(ys)){
+    hn <- min(length(xs),length(ys))
+    ## quantile algorithm 'type=8' appeares to
+    ## be reccomended. See help(quantile) and
+    ## Hyndman & Fan (1996) mentioned therein
+    ys <- quantile(ys,seq(0,1,length.out=hn),type=8)
+    xs <- quantile(xs,seq(0,1,length.out=hn),type=8)
+  } else {
+    xs <- sort(xs)
+    ys <- sort(ys)
+  } 
+  ## Subsample quantiles at which a fit is wanted
+  if(!isPrec){ #Other variables
+    newx <- quantile(xs, probs=seq(0,1,by=qstep),type=8)
+    newy <- quantile(ys, probs=seq(0,1,by=qstep),type=8)
+    newy0 <- NULL
+  } else { #Precipitation
+    #Subsample quantiles for the non-zero part (zeroes can still exist in quantiles for observed)
+    newx <- quantile(xs[xs>0], probs=seq(0,1,by=qstep),type=8)
+    newy <- quantile(ys[xs>0], probs=seq(0,1,by=qstep),type=8)
+    #Store the observed values corresponding to zero precipitation in the model (i.e. observed cumulative frequency equal to probability of zero precipitation in the model)
+    newy0 <- ys[xs==0] 
+  }
+  ppar <- list(modq=as.numeric(newx),
+               fitq=as.numeric(newy),
+               fitq0 = as.numeric(newy0),
+               isPrec=isPrec)
+  return(ppar)
+}
+
+# Adaptation of the function in package 'qmap' to solve the treatment of zeroes
+# Empirical quantile mapping as in Deque (2007)
+# Deque M (2007) Frequency of precipitation and temperature extremes over France in an anthropogenic scenario: Model results and statistical correction according to observed values. 
+# Glob Planet Change 57:16–26. doi: 10.1016/j.gloplacha.2006.11.030
+doQmapDeque <- function(x,fobj){
+  nonzerosel <- (x>0)
+  if(!fobj$isPrec) { #If is not precipitation correct all values
+    nonzerosel <- rep(TRUE, length(x))
+  }
+  out <- rep(NA,length.out=length(x))
+
+  #Quantile mapping of (nonzero values)
+  out[nonzerosel] <- approx(x=fobj$modq, y=fobj$fitq,
+                            xout=x[nonzerosel], method="linear",
+                            rule=2, ties=mean)$y
+  #Extreme values (shift according to the difference in maximum values)
+  nq <- nrow(fobj$modq)
+  largex <- x>fobj$modq[nq]
+  if(any(largex)){         
+    max.delta <- fobj$modq[nq] - fobj$fitq[nq]
+    out[largex] <- x[largex] - max.delta
+  }
+  
+  #Sample random values among the observed distribution corresponding to non precipitation in the model series for calibration
+  nzero =sum(!nonzerosel)
+  if(nzero>0) {
+    out[!nonzerosel] = sample(fobj$fitq0, nzero, replace=TRUE)
+  }
+  return(out)
+}
+
+
 #Calculates biases or other correction parameters for a given data period
-.corrParam<-function(DatTemp, ModelTempHist, varmethods, varname, varnamemean = NULL, wet_day = TRUE, verbose=TRUE) {
+.corrParam<-function(DatTemp, ModelTempHist, varmethods, varname, varnamemean = NULL, qstep = 0.01, verbose=TRUE) {
   if(sum(!is.na(ModelTempHist))==0 || sum(!is.na(DatTemp))==0) return(NA)
   if(varmethods[varname]=="unbias") {
     corr<-mean(ModelTempHist[,varname]-DatTemp[,varname], na.rm=TRUE)
@@ -20,7 +94,7 @@
       difHist = ModelTempHist[,varname]
       difDat = DatTemp[,varname]
     }
-    corr<-fitQmap(difDat,difHist,method=c("QUANT"), wet.day = wet_day)
+    corr<-fitQmapDeque(difDat,difHist, isPrec = (varname=="Precipitation"), qstep = qstep)
   } else if(varmethods[varname]=="none") {
     corr<-0
   } else {
@@ -29,13 +103,13 @@
   return(corr)
 }
 #Apply correction depending on the correction method
-.corrApply<-function(varuncor, varbias, varmethod, wet_day = TRUE) {
+.corrApply<-function(varuncor, varbias, varmethod) {
   if(varmethod=="unbias") {
     corrected <- (varuncor-varbias)
   } else if(varmethod=="scaling") {
     corrected <- (varuncor*varbias)
   } else if(varmethod=="quantmap") {
-    corrected<-doQmap(varuncor, varbias, wet.day = wet_day)
+    corrected<-doQmapDeque(varuncor, varbias)
   } else if(varmethod=="none") {
     corrected<-varuncor
   } else {
@@ -44,21 +118,21 @@
   return(corrected)
 }
 
-correction_series<-function(obs, mod, proj = NULL, method = "unbias", wet_day=TRUE) {
+correction_series<-function(obs, mod, proj = NULL, method = "unbias", isPrec=TRUE, qstep=0.01) {
   if(method=="unbias") {
     corr<-mean(obs-mod, na.rm=TRUE)
   } else if(method=="scaling") {
     corr<- as.numeric(lm(obs~mod-1)$coefficients) #slope of a regression through the origin
   } else if(method=="quantmap") {
-    corr<-fitQmap(obs,mod,method=c("QUANT"), wet.day = wet_day)
+    corr<-fitQmapDeque(obs,mod, isPrec, qstep)
   }
-  if(!is.null(proj)) return(.corrApply(proj, corr, method, wet_day))
-  return(.corrApply(mod, corr, method, wet_day))
+  if(!is.null(proj)) return(.corrApply(proj, corr, method))
+  return(.corrApply(mod, corr, method))
 }
 
 
 #Calculates monthly biases/params for all twelve months
-.monthbiasonepoint<-function(Data, MODHist, varmethods, wet_day = TRUE, verbose=TRUE) {
+.monthbiasonepoint<-function(Data, MODHist, varmethods, qstep = 0.01, verbose=TRUE) {
   sel1 = rownames(MODHist) %in% rownames(Data)
   sel2 = rownames(Data) %in% rownames(MODHist)
 
@@ -85,20 +159,20 @@ correction_series<-function(obs, mod, proj = NULL, method = "unbias", wet_day=TR
     ModelTempHist<-MODHist[MODHist.months==m,]
 
     #Calculate correction params depending on the correction method
-    corrTmean[[m]] = .corrParam(DatTemp, ModelTempHist, varmethods, "MeanTemperature", wet_day = FALSE)
+    corrTmean[[m]] = .corrParam(DatTemp, ModelTempHist, varmethods, "MeanTemperature", qstep=qstep)
     if(varmethods["MinTemperature"]=="unbias" && varmethods["MeanTemperature"]=="unbias") {#for unbias use tmean delta (to avoid tmin > tmean)
       corrTmin[[m]] = corrTmean[[m]]
     } else {
-      corrTmin[[m]] = .corrParam(DatTemp, ModelTempHist, varmethods, "MinTemperature", "MeanTemperature", wet_day = FALSE)
+      corrTmin[[m]] = .corrParam(DatTemp, ModelTempHist, varmethods, "MinTemperature", "MeanTemperature", qstep=qstep)
     }
     if(varmethods["MaxTemperature"]=="unbias" && varmethods["MeanTemperature"]=="unbias") {#for unbias use tmean delta (to avoid tmax < tmean)
       corrTmax[[m]] = corrTmean[[m]]
     } else {
-      corrTmax[[m]] = .corrParam(DatTemp, ModelTempHist, varmethods, "MaxTemperature", "MeanTemperature", wet_day = FALSE)
+      corrTmax[[m]] = .corrParam(DatTemp, ModelTempHist, varmethods, "MaxTemperature", "MeanTemperature", qstep=qstep)
     }
-    corrPrec[[m]] = .corrParam(DatTemp, ModelTempHist, varmethods, "Precipitation", wet_day = wet_day)
-    corrRad[[m]] = .corrParam(DatTemp, ModelTempHist, varmethods, "Radiation", wet_day = FALSE)
-    corrWS[[m]] = .corrParam(DatTemp, ModelTempHist, varmethods, "WindSpeed", wet_day = FALSE)
+    corrPrec[[m]] = .corrParam(DatTemp, ModelTempHist, varmethods, "Precipitation", qstep=qstep)
+    corrRad[[m]] = .corrParam(DatTemp, ModelTempHist, varmethods, "Radiation", qstep=qstep)
+    corrWS[[m]] = .corrParam(DatTemp, ModelTempHist, varmethods, "WindSpeed", qstep=qstep)
     HSData<-.HRHS(Tc=DatTemp[,"MeanTemperature"] ,HR=DatTemp[,"MeanRelativeHumidity"])
     HSmodelHist<-.HRHS(Tc=ModelTempHist[,"MeanTemperature"] ,HR=ModelTempHist[,"MeanRelativeHumidity"])
     if(varmethods["MeanRelativeHumidity"]=="unbias") {
@@ -106,7 +180,7 @@ correction_series<-function(obs, mod, proj = NULL, method = "unbias", wet_day=TR
     } else if(varmethods["MeanRelativeHumidity"]=="scaling") {
       corrHS[[m]]<- as.numeric(lm(HSData~HSmodelHist-1)$coefficients) #slope of a regression through the origin
     } else if(varmethods["MeanRelativeHumidity"]=="quantmap") {
-      corrHS[[m]]<-fitQmap(HSData,HSmodelHist,method=c("QUANT"), wet.day = FALSE)
+      corrHS[[m]]<-fitQmapDeque(HSData,HSmodelHist, isPrec=FALSE, qstep = qstep)
     } else if(varmethods["MeanRelativeHumidity"]=="none"){
       corrHS[[m]]<-0
     } else {
@@ -118,7 +192,7 @@ correction_series<-function(obs, mod, proj = NULL, method = "unbias", wet_day=TR
 }
 
 #Apply monthly corrections for one point
-.correctiononepoint<-function(mbias, MODFut, dates = NULL, fill_wind = FALSE, allow_saturated = FALSE, wet_day = TRUE, verbose=TRUE){
+.correctiononepoint<-function(mbias, MODFut, dates = NULL, fill_wind = FALSE, allow_saturated = FALSE, verbose=TRUE){
   if(!is.null(dates)) {
     sel3 = rownames(MODFut) %in% as.character(dates)
     if(sum(sel3)!=length(dates)) stop("Some dates are outside the predicted period.")
@@ -153,19 +227,17 @@ correction_series<-function(obs, mod, proj = NULL, method = "unbias", wet_day=TR
     #Correction Tmean
     ModelTempFut.TM.cor <-.corrApply(ModelTempFut$MeanTemperature, 
                                      mbias$corrTmean[[m]], 
-                                     mbias$varmethods["MeanTemperature"], 
-                                     wet_day = FALSE)
+                                     mbias$varmethods["MeanTemperature"])
     
     #Correction Tmin
     if(mbias$varmethods["MinTemperature"]=="scaling") {
       ModelTempFut.TN.cor<-ModelTempFut.TM.cor + (pmin(ModelTempFut$MinTemperature-ModelTempFut$MeanTemperature,0)*mbias$corrTmin[[m]])
     } else if(mbias$varmethods["MinTemperature"]=="quantmap") {
       ModelTempFut.TN.cor<-ModelTempFut.TM.cor + .corrApply(pmin(ModelTempFut$MinTemperature-ModelTempFut$MeanTemperature,0), 
-                                                            mbias$corrTmin[[m]], mbias$varmethods["MinTemperature"], 
-                                                            wet_day = FALSE)
+                                                            mbias$corrTmin[[m]], mbias$varmethods["MinTemperature"])
     } else {#unbias/none
       ModelTempFut.TN.cor<-.corrApply(ModelTempFut$MinTemperature, mbias$corrTmin[[m]], 
-                                      mbias$varmethods["MinTemperature"], wet_day = FALSE)
+                                      mbias$varmethods["MinTemperature"])
     }
     
     #Correction Tmax
@@ -173,26 +245,21 @@ correction_series<-function(obs, mod, proj = NULL, method = "unbias", wet_day=TR
       ModelTempFut.TX.cor<-ModelTempFut.TM.cor + (pmax(ModelTempFut$MaxTemperature-ModelTempFut$MeanTemperature,0)*mbias$corrTmax[[m]])
     } else if(mbias$varmethods["MaxTemperature"]=="quantmap") {
       ModelTempFut.TX.cor<-ModelTempFut.TM.cor + .corrApply(pmax(ModelTempFut$MaxTemperature-ModelTempFut$MeanTemperature,0), 
-                                                            mbias$corrTmax[[m]], mbias$varmethods["MaxTemperature"], 
-                                                            wet_day = FALSE)
+                                                            mbias$corrTmax[[m]], mbias$varmethods["MaxTemperature"])
     } else { #unbias/none
-      ModelTempFut.TX.cor<-.corrApply(ModelTempFut$MaxTemperature, mbias$corrTmax[[m]], mbias$varmethods["MaxTemperature"], 
-                                      wet_day = FALSE)
+      ModelTempFut.TX.cor<-.corrApply(ModelTempFut$MaxTemperature, mbias$corrTmax[[m]], mbias$varmethods["MaxTemperature"])
     }
     
     #Correction Precipitation
-    ModelTempFut.rain.cor<-.corrApply(ModelTempFut$Precipitation, mbias$corrPrec[[m]], mbias$varmethods["Precipitation"], 
-                                      wet_day = wet_day)
+    ModelTempFut.rain.cor<-.corrApply(ModelTempFut$Precipitation, mbias$corrPrec[[m]], mbias$varmethods["Precipitation"])
 
     #Correction Rg
-    ModelTempFut.Rg.cor<-.corrApply(ModelTempFut$Radiation, mbias$corrRad[[m]], mbias$varmethods["Radiation"], 
-                                    wet_day = FALSE)
+    ModelTempFut.Rg.cor<-.corrApply(ModelTempFut$Radiation, mbias$corrRad[[m]], mbias$varmethods["Radiation"])
     ModelTempFut.Rg.cor[ModelTempFut.Rg.cor<0]<-0
 
     #Correction WS (if NA then use input WS)
     if(!(is.na(mbias$corrWS[[m]])[1]))  {
-      ModelTempFut.WS.cor<-.corrApply(ModelTempFut$WindSpeed, mbias$corrWS[[m]], mbias$varmethods["WindSpeed"], 
-                                      wet_day = FALSE)
+      ModelTempFut.WS.cor<-.corrApply(ModelTempFut$WindSpeed, mbias$corrWS[[m]], mbias$varmethods["WindSpeed"])
     }
     else if(fill_wind) ModelTempFut.WS.cor<-ModelTempFut$WindSpeed
     ModelTempFut.WS.cor[ModelTempFut.WS.cor<0]<-0 #Truncate to minimum value
@@ -201,8 +268,7 @@ correction_series<-function(obs, mod, proj = NULL, method = "unbias", wet_day=TR
     #First transform RH into specific humidity
     HSmodelFut<-.HRHS(Tc=ModelTempFut[,"MeanTemperature"] ,HR=ModelTempFut[,"MeanRelativeHumidity"])
     #Second compute and apply the bias to specific humidity
-    HSmodelFut.cor<-.corrApply(HSmodelFut, mbias$corrHS[[m]], mbias$varmethods["MeanRelativeHumidity"], 
-                               wet_day = FALSE)
+    HSmodelFut.cor<-.corrApply(HSmodelFut, mbias$corrHS[[m]], mbias$varmethods["MeanRelativeHumidity"])
     #Back transform to relative humidity (mean, max, min)
     ModelTempFut.RHM.cor<-.HSHR(Tc=ModelTempFut.TM.cor ,HS=HSmodelFut.cor, allow_saturated)
     ModelTempFut.RHM.cor[ModelTempFut.RHM.cor<0]<-0
@@ -351,7 +417,7 @@ correctionpoints<-function(object, points, topodata = NULL, dates = NULL, export
     #Call statistical correction routine
     mbias = .monthbiasonepoint(obs,rcmhist, 
                                mPar$varmethods, 
-                               wet_day = mPar$wet_day, 
+                               qstep = mPar$qstep, 
                                verbose = verbose)
     mbiasvec[[i]] = mbias
     
@@ -359,7 +425,6 @@ correctionpoints<-function(object, points, topodata = NULL, dates = NULL, export
     df = .correctiononepoint(mbias,rcmfut, dates, 
                              fill_wind = mPar$fill_wind, 
                              allow_saturated =mPar$allow_saturated,
-                             wet_day = mPar$wet_day,
                              verbose = verbose)
 
     if(is.null(dates)) dates = as.Date(rownames(df))

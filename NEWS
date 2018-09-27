@@ -4,7 +4,8 @@
 
 __Version history__
 _Version 0.7.7, September 2018.
-1. 'wet.day' made an option in correction points
+1. Empirical quantile mapping according to original method (Déqué)
+2. Dependency from package 'qmap' removed
 
 _Version 0.7.6, September 2018.
 1. Methods 'print/head/tail' updated for objects SpatialPointsTopography and SpatialPointsMeteorology

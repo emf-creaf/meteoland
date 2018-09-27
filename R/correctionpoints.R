@@ -44,6 +44,17 @@
   return(corrected)
 }
 
+correction_series<-function(obs, mod, proj = NULL, method = "unbias", wet_day=TRUE) {
+  if(method=="unbias") {
+    corr<-mean(obs-mod, na.rm=TRUE)
+  } else if(method=="scaling") {
+    corr<- as.numeric(lm(obs~mod-1)$coefficients) #slope of a regression through the origin
+  } else if(method=="quantmap") {
+    corr<-fitQmap(obs,mod,method=c("QUANT"), wet.day = wet_day)
+  }
+  if(!is.null(proj)) return(.corrApply(proj, corr, method, wet_day))
+  return(.corrApply(mod, corr, method, wet_day))
+}
 
 
 #Calculates monthly biases/params for all twelve months

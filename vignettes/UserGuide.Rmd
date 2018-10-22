@@ -37,7 +37,7 @@ to make the experience easy for new users. This vignette is intended as a workin
 
 First of all, before starting to work with the package, we must install and load
 the library. `meteoland` stable version can be found at CRAN
-(https://cran.r-project.org/web/packages/meteoland/index.html), and it can be
+(https://CRAN.R-project.org/package=meteoland), and it can be
 installed and loaded as any other R package:
 
 ```{r, eval = FALSE}

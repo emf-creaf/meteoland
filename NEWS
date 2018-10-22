@@ -3,7 +3,7 @@
 -------------------------------
 
 __Version history__
-_Version 0.7.7, September 2018.
+_Version 0.7.7, October 2018.
 1. Empirical quantile mapping according to original method (Déqué)
 2. Dependency from package 'qmap' removed
 

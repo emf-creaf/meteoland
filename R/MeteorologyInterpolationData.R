@@ -8,9 +8,9 @@ MeteorologyInterpolationData<-function(points, elevation = NULL, slope = NULL, a
   coords = coordinates(points)
   nstations = nrow(coords)
   if(isPointsTopo) {
-    elevation = points@data$elevation
-    slope = points@data$slope
-    aspect = points@data$aspect
+    elevation = as.numeric(points@data$elevation)
+    slope = as.numeric(points@data$slope)
+    aspect = as.numeric(points@data$aspect)
   } else {
     if(!is.null(elevation)) {
       if(length(elevation)!=nstations) stop("'elevation' has to be of the same length as the number of points.")
@@ -29,7 +29,7 @@ MeteorologyInterpolationData<-function(points, elevation = NULL, slope = NULL, a
     }
   }
   
-  if(isPoints) { # Build from variable matrices
+  if(isPoints || isPointsTopo) { # Build from variable matrices
     if(!inherits(MinTemperature,"matrix")) stop("'MinTemperature' has to be a numeric matrix")
     dates = as.Date(colnames(MinTemperature))
     ndays = length(dates)

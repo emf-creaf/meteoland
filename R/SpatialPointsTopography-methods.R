@@ -12,11 +12,11 @@ SpatialPointsTopography<-function(points, elevation, slope = NULL, aspect = NULL
   }
   if(length(elevation)!=npoints) stop("'elevation' has to be of length equal to the number of points")
   if(is.null(slope)) 
-    slope = rep(NA, length(elevation))
+    slope = as.numeric(rep(NA, length(elevation)))
   else if(length(slope)!=npoints) 
     stop("'slope' has to be of length equal to the number of points")
   if(is.null(aspect)) 
-    aspect = rep(NA, length(elevation))
+    aspect = as.numeric(rep(NA, length(elevation)))
   else if(length(aspect)!=npoints) 
     stop("'aspect' has to be of length equal to the number of points")
   data = data.frame(elevation = elevation, slope = slope, aspect = aspect)

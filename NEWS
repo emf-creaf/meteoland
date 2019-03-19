@@ -4,7 +4,8 @@
 
 __Version history__
 _Version 0.7.8, November 2018.
-1. Bug MeteorologyInterpolationData with SpatialPointsTopography as input
+1. Corrected bug MeteorologyInterpolationData with SpatialPointsTopography as input
+2. Updated user guide documentation
 
 _Version 0.7.7, October 2018.
 1. Empirical quantile mapping according to original method (Déqué)

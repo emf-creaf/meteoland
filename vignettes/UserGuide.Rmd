@@ -109,29 +109,84 @@ interpolator <- MeteorologyInterpolationData(sp, elevation = st_data$elevation,
 class(interpolator)
 ```
 
-The resulting object is now ready to be used to perform interpolation on a set of target locations (see next section). We can inspect the amount of data in our interpolation object using:
+The resulting object is now ready to be used to perform interpolation on a set of target locations (see next section). We can inspect the amount of data in our interpolation object using function `interpolation.coverage`. For example, with:
 ```{r}
 spatial_coverage <- interpolation.coverage(interpolator, type = 'spatial')
 head(spatial_coverage)
+```
+we obtain the number of non-missing observations for each weather station and variable. Similarly, we can ask the number of non-missing observations for each date and variable using:
+```{r}
 temporal_coverage <- interpolation.coverage(interpolator, type = 'temporal')
 head(temporal_coverage)
 ```
-In the first call, function `interpolation.coverate` returns the number of non-missing observations for each station and variable. The second call produces a similar output, but by dates instead of stations.
-
-Interpolation parameters are also stored in the same object (do not worry if you do not know their meaning now):
+ 
+Interpolation parameters are also stored in the same object (see next subsection):
 ```{r}
 names(interpolator@params)
 ```
 
-A parameter that is important to understand is ìnitial_Rp`, which specifies the initial radius for the truncated spatial Gaussian kernel. By default its value is:
+
+
+## Interpolation basics and parameters
+Package meteoland implements, with a few modifications, the daily weather interpolation and estimation algorithms that un- derpin the U.S. [DAYMET](https://daymet.ornl.gov/) dataset (Thornton et al., 1997; Thornton and Running, 1999).This approach, similar to inverse distance weighting, interpolates weather variables using trun- cated Gaussian filters, which consist in defining spatial weights $W(r)$ at radial distance $r$ from a target point $p$ using:
+\begin{equation}
+W(r) = e^{-\alpha \cdot (r/R_p)^2} - e^{-\alpha}
+\end{equation}
+if $r \leq R_p$ and $W(r) = 0$ otherwise. 
+
+Here $r$ is the radial distance from $p$, $R_p$ is the truncation distance and $\alpha$ is the **shape** parameter. The spatial convolution of this filter with a set of weather station locations results, for each target point, in a vector of weights associated with observations. The following figure illustrates the Gaussian filter for $R_p = 500$ and either $\alpha = 3.0$ (continuous line) or $\alpha = 6.25$ (dashed line):
+
+```{r, echo = FALSE, fig = TRUE, fig.width=6, fig.height=4}
+r = 0:1000
+R_p = 500
+gf1 = exp(-3.0*((r/R_p)^2.0)) - exp(-3.0)
+gf2 = exp(-6.25*((r/R_p)^2.0)) - exp(-6.25)
+gf1[r>R_p] = 0
+gf2[r>R_p] = 0
+plot(r, gf1, type="l", ylab = "W(r)", xlab ="r")
+lines(r, gf2, lty=2)
+legend("topright", legend = c("alpha = 3", "alpha = 6.25"), lty=c(1,2), bty="n")
+
+```
+
+$R_p$ is automatically adjusted so that it has lower values in data-rich regions and is increased in data-poor regions. The method, however, requires the user to specify $N$, the average number of observations to be included for each target point. $R_p$ is then varied as a smooth function of the local density in such a way that this average is achieved over the spatial domain. It is important that the initial value of $R_p$ 
+
+In meteoland estimation of $Rp$ is done once for each target point, variable and day. Interpolation of temperature includes a correction for the effects of elevation. More specifically, a weighted least-squares regression is used to assess the relationship between temperature differences and elevation differences in weather station data and this relationship is applied to elevation differences between weather stations and the target point. Interpolation of relative humidity is done after transforming it to dew-point temperature. No correction for elevation is performed during interpolation, but elevation effects arise when back-transforming dew-point temperature to relative humidity. Interpolation of daily precipitation is complicated by the need to predict both precipitation occurrence and, conditioned on this, precipitation amount. Thornton et al. (1997) defined a binomial predictor of spatial precipitation occurrence as a function of the weighted occurrence at surrounding weather stations. Conditional on precipitation occurrence, the interpolation routine predicts precipitation amount, where weighted least-squares regression is also used to account for elevation effects. Interpolation of wind is performed in three different ways depending on the information available. If only wind speed data is available, the spatial interpolation with Gaussian weights is used on wind scalars as described above. If weather station data includes wind direction, a polar average is cal- culated using Gaussian weights. Finally, if static wind fields are also available the interpolation routine first finds, for each weather station the wind field that best matches the observed vector. Then, the wind vectors extracted from the selected wind fields are averaged as before. The details of how $R_p$ is estimated and, in general, how interpolation is done are given in a PDF vignette called 'Meteorology'.
+
+Interpolation parameters $\alpha$ and $N$ can be different for each variable to be interpolated. The following table lists all the interpolation parameters (see also function `defaultInterpolationParameters()`)
+
+| Paremeter      | Default value | Definition                          |
+| ------------- | ---------- | ----------------------------------- |
+| `initial_Rp` | 140000 | Initial truncation radius |
+| `iterations` | 3      | Number of station density iterations |
+| `alpha_MinTemperature` | 3.0 | Gaussian shape parameter for minimum temperature |
+| `alpha_MaxTemperature` | 3.0 | Gaussian shape parameter for maximum temperature |
+| `alpha_DewTemperature` | 3.0 | Gaussian shape parameter for dew-point temperature |
+| `alpha_PrecipitationEvent` | 5.0 | Gaussian shape parameter for precipitation events |
+| `alpha_PrecipitationAmount` | 5.0 | Gaussian shape parameter for the regression of precipitation amounts |
+| `alpha_Wind` | 3.0 | Gaussian shape parameter for wind |
+| `N_MinTemperature` | 30 | Average number of stations with non-zero weights for minimum temperature |
+| `N_MaxTemperature` | 30 | Average number of stations with non-zero weights for maximum temperature |
+| `N_DewTemperature` | 30 | Average number of stations with non-zero weights for dew-point temperature |
+| `N_PrecipitationEvent` | 5 | Average number of stations with non-zero weights for precipitation events |
+| `N_PrecipitationAmount` | 20 | Average number of stations with non-zero weights for the regression of precipitation amounts |
+| `N_Wind` | 2 | Average number of stations with non-zero weights for wind |
+| `St_Precipitation` | 5 | Number of days for the temporal smoothing of precipitation |
+| `St_TemperatureRange` | 15 | Number of days for the temporal smoothing of temperature range |
+| `pop_crit` | 0.50 | Critical precipitation occurrence parameter |
+| `f_max` | 0.6 | Maximum value for precipitation regression extrapolations (0.6 equals to a maximum of 4 times extrapolation) |
+| `wind_height` | 10 | Wind measurement height (in m) |
+
+Parameter `St_Precipitation` controls the temporal smoothing that is applied to weather station data to calibrate regression, while parameters `pop_crit` and `f_max` are also particular to the estimation of precipitation (see details in Thornton et al. 1997). Parameter `St_TemperatureRange` is used for the estimation of solar radiation (see details in PDF vignette called 'Meteorology').
+
+A parameter that is particularly important to understand is `initial_Rp`, which specifies the initial radius for the truncated spatial Gaussian kernel. By default its value is:
 ```{r}
 interpolator@params$initial_Rp
 ```
 The value of `initial_Rp` must be set in relation to the units of the spatial coordinates of weather data. Our data was in meters, so the default radius is 140 km. In general, the initial radius should be large enough to include a reasonable number of stations (~20-40), but the kernel radius is adjusted for each interpolation target point.
 
-
 ## Calibration and cross-validation of the interpolation data
-Once we already have weather stations data in shape, we can start calibrating the model in order to obtain the optimal parameters for the meteorological variables we want to interpolate. Parametere calibration has to be done for each variable separately. For example for minimum temperature:
+Once we already have weather stations data in shape, we can start calibrating the model in order to obtain the optimal parameters for the meteorological variables we want to interpolate. Parameter calibration has to be done for each variable separately. For example for minimum temperature:
 ```{r}
 tmin_cal <- interpolation.calibration(interpolator, variable = "Tmin",
                                       N_seq = 20,
@@ -155,14 +210,14 @@ interpolator@params$N_MinTemperature = tmin_cal$N
 interpolator@params$alpha_MinTemperature = tmin_cal$alpha
 ```
 
-In general, we recommend conducting calibration exercises at least once for each variable and each data set used as reference for interpolation, and more than once periods differ in the number of stations available.
+We strongly recommend conducting calibration exercises at least once for each variable and each data set used as reference for interpolation, and more than once if periods differ in the number of stations available.
 
-Before using the object for interpolations, we also need to assess its performance. This is done by leave-one-out cross-validation in function `interpolation.cv`:
+Before using the object for interpolations, we also need to assess its performance. This is done by cross-validation in function `interpolation.cv`:
 ```{r,echo=FALSE}
 cv <- interpolation.cv(interpolator, verbose=T)
 ```
 
-And the results are inspected using:
+Cross-validation is perfomed by *leave-one-out*, which means that each target station is first removed from the data set and then the remaining stations are used to obtain interpolation estimates. In this way one maximizes the amount of information for estimates, while keeping them independent of the observed values in each station. The results of cross-validation can be inspected using a specific `summary` function:
 ```{r}
 summary(cv)
 ```

@@ -8,8 +8,10 @@ Reshapes data from 'worldmet' or 'weathercan'
 Reshapes weather station data acquired using the 'worldmet' or 'weathercan' R packages into formats useful for meteoland
 }
 \usage{
-reshapeworldmet(hourly_data, output = "SpatialPointsMeteorology", complete = TRUE, verbose = TRUE)
-reshapeweathercan(hourly_data, daily_data = NULL, output = "SpatialPointsMeteorology", complete = TRUE, verbose = TRUE)
+reshapeworldmet(hourly_data, output = "SpatialPointsMeteorology", complete = TRUE,
+                verbose = TRUE)
+reshapeweathercan(hourly_data, daily_data = NULL, output = "SpatialPointsMeteorology",
+                  complete = TRUE, verbose = TRUE)
 }
 \arguments{
   \item{hourly_data}{

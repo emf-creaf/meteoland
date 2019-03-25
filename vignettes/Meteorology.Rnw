@@ -1,6 +1,5 @@
 \documentclass[11pt,a4paper]{article}
 \usepackage[utf8]{inputenc}
-\usepackage{natbib}
 \usepackage{authblk}
 \usepackage{hyperref}
 \usepackage{gensymb}

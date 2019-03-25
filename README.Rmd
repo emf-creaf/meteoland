@@ -27,7 +27,8 @@ devtools::install_github("miquelcaceres/meteoland")
 
 Documentation on the functions included in `meteoland` and how to run them can be found at (http://vegmod.ctfc.cat/meteolandweb). Alternatively, users can have help to run package functions directly as package vignettes, by forcing their inclusion in installation: 
 ```{r installation vignettes, eval = FALSE}
-devtools::install_github("miquelcaceres/meteoland", build_vignettes=TRUE)
+devtools::install_github("miquelcaceres/meteoland", 
+                         build_opts = c("--no-resave-data", "--no-manual"))
 ```
 
 

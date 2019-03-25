@@ -88,7 +88,13 @@ MeteorologyInterpolationData<-function(points, elevation = NULL, slope = NULL, a
       if("WindDirection" %in% names(sti_data)) WindDirection[i,] = sti_data[, "WindDirection"]
     }
   }
-
+  MinTemperature[is.infinite(MinTemperature)] = NA
+  MaxTemperature[is.infinite(MaxTemperature)] = NA
+  Precipitation[is.infinite(Precipitation)] = NA
+  RelativeHumidity[is.infinite(RelativeHumidity)] = NA
+  Radiation[is.infinite(Radiation)] = NA
+  WindDirection[is.infinite(WindDirection)] = NA
+  
   SmoothedPrecipitation = .temporalSmoothing(as.matrix(Precipitation), params$St_Precipitation, TRUE)
   SmoothedTemperatureRange = .temporalSmoothing(as.matrix(MaxTemperature-MinTemperature), params$St_TemperatureRange, FALSE)
   WFIndex = NULL
@@ -108,6 +114,10 @@ MeteorologyInterpolationData<-function(points, elevation = NULL, slope = NULL, a
     WFIndex = l$Index
     WFFactor = l$Factor
   }
+  
+  #Adapt initial_Rp to mean distance between stations
+  params$initial_Rp = mean(dist(coords))
+    
   ilm = new("MeteorologyInterpolationData",
            coords = coords,
            bbox = points@bbox,

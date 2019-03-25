@@ -3,6 +3,11 @@
 -------------------------------
 
 __Version history__
+_Version 0.7.9, March 2018.
+1. New function parseworldmet
+2. Transform point coordinate system in 'interpolationpoints', 'interpolationpixels' and 'interpolationgrid' if necessary
+3. Check for infinite values in 'MeteorologyInterpolationData'
+
 _Version 0.7.8, November 2018.
 1. Corrected bug MeteorologyInterpolationData with SpatialPointsTopography as input
 2. Updated user guide documentation

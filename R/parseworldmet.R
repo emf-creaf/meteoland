@@ -1,4 +1,4 @@
-parseworldmet<-function(x, output="SpatialPointsMeteorology", complete=TRUE) {
+parseworldmet<-function(x, output="SpatialPointsMeteorology", complete=TRUE, verbose = TRUE) {
   output <- match.arg(output, c("SpatialPointsMeteorology", "SpatialPointsTopography", "MeteorologyInterpolationData"))
   x= as.data.frame(x)
   s = split(x, x$code)
@@ -25,8 +25,17 @@ parseworldmet<-function(x, output="SpatialPointsMeteorology", complete=TRUE) {
     dates = sort(unique(c(dates,as.character(df_dates))))
                       
     data_agg <- aggregate(data_df[,numvar],list(code = data_df$code, station = data_df$station, date = as.Date(data_df$date)), 
-                          function(x){mean<-mean(x,na.rm=T);min<-min(x,na.rm=T);max<-max(x,na.rm=T);sum<-sum(x,na.rm=T)
-                          return(c(mean=mean,min=min,max=max,sum=sum))})
+                          function(x){
+                            mean<-mean(x,na.rm=T)
+                            min<-min(x,na.rm=T)
+                            max<-max(x,na.rm=T)
+                            sum<-sum(x,na.rm=T)
+                            if(is.infinite(mean)) mean <- NA
+                            if(is.infinite(min)) min <- NA
+                            if(is.infinite(max)) max <- NA
+                            if(is.infinite(sum)) sum <- NA
+                            return(c(mean=mean,min=min,max=max,sum=sum))})
+
     # wind direction
     wd_agg <- aggregate(list(wd = data_df$wd),list(code = data_df$code, station = data_df$station, date = as.Date(data_df$date)),
                         function(dvvec){
@@ -46,7 +55,6 @@ parseworldmet<-function(x, output="SpatialPointsMeteorology", complete=TRUE) {
                           MeanRelativeHumidity = data_agg$RH[,"mean"], MinRelativeHumidity = data_agg$RH[,"min"], MaxRelativeHumidity = data_agg$RH[,"max"],
                           WindSpeed = data_agg$ws[,"mean"], WindDirection = wd_agg$wd,
                           row.names = as.character(df_dates))
-    
     if(complete) data_out<-meteocomplete(data_out, 
                                          latitude = coords$lat[i],
                                          elevation = elevation[i],

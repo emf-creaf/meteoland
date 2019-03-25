@@ -1,4 +1,4 @@
-parseweathercan<-function(hourly_data, daily_data = NULL, output="SpatialPointsMeteorology", complete=TRUE, verbose = TRUE) {
+importweathercan<-function(hourly_data, daily_data = NULL, output="SpatialPointsMeteorology", complete=TRUE, verbose = TRUE) {
   output <- match.arg(output, c("SpatialPointsMeteorology", "SpatialPointsTopography", "MeteorologyInterpolationData"))
   hourly_data= as.data.frame(hourly_data)
   s_hourly = split(hourly_data, hourly_data$station_id)

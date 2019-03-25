@@ -1,4 +1,4 @@
-parseworldmet<-function(hourly_data, output="SpatialPointsMeteorology", complete=TRUE, verbose = TRUE) {
+importworldmet<-function(hourly_data, output="SpatialPointsMeteorology", complete=TRUE, verbose = TRUE) {
   output <- match.arg(output, c("SpatialPointsMeteorology", "SpatialPointsTopography", "MeteorologyInterpolationData"))
   x= as.data.frame(hourly_data)
   s = split(x, x$code)

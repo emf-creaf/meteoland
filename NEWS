@@ -4,8 +4,8 @@
 
 __Version history__
 _Version 0.7.9, March 2018.
-1. New function parseworldmet to read data downloaded using package 'worldmet'
-2. New function parseweathercan to read data downloaded using package 'weathercan'
+1. New function importworldmet to read data downloaded using package 'worldmet'
+2. New function importweathercan to read data downloaded using package 'weathercan'
 3. Transform point coordinate system in 'interpolationpoints', 'interpolationpixels' and 'interpolationgrid' if necessary
 4. Check for infinite values in 'MeteorologyInterpolationData'
 

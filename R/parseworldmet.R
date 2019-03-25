@@ -24,7 +24,7 @@ parseworldmet<-function(x, output="SpatialPointsMeteorology", complete=TRUE, ver
     df_dates = levels(as.factor(as.Date(data_df$date)))
     dates = sort(unique(c(dates,as.character(df_dates))))
                       
-    data_agg <- aggregate(data_df[,numvar],list(code = data_df$code, station = data_df$station, date = as.Date(data_df$date)), 
+    data_agg <- aggregate(data_df[,numvar],list(date = as.Date(data_df$date)), 
                           function(x){
                             mean<-mean(x,na.rm=T)
                             min<-min(x,na.rm=T)
@@ -37,7 +37,7 @@ parseworldmet<-function(x, output="SpatialPointsMeteorology", complete=TRUE, ver
                             return(c(mean=mean,min=min,max=max,sum=sum))})
 
     # wind direction
-    wd_agg <- aggregate(list(wd = data_df$wd),list(code = data_df$code, station = data_df$station, date = as.Date(data_df$date)),
+    wd_agg <- aggregate(list(wd = data_df$wd),list(date = as.Date(data_df$date)),
                         function(dvvec){
                           y = sum(cos(dvvec*pi/180), na.rm=TRUE)/length(dvvec)
                           x = sum(sin(dvvec*pi/180), na.rm=TRUE)/length(dvvec)

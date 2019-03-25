@@ -1,6 +1,6 @@
-parseworldmet<-function(x, output="SpatialPointsMeteorology", complete=TRUE, verbose = TRUE) {
+parseworldmet<-function(hourly_data, output="SpatialPointsMeteorology", complete=TRUE, verbose = TRUE) {
   output <- match.arg(output, c("SpatialPointsMeteorology", "SpatialPointsTopography", "MeteorologyInterpolationData"))
-  x= as.data.frame(x)
+  x= as.data.frame(hourly_data)
   s = split(x, x$code)
   codes = names(s)
   
@@ -12,7 +12,10 @@ parseworldmet<-function(x, output="SpatialPointsMeteorology", complete=TRUE, ver
                       row.names = codes)
   dates = character(0)
   
-  if(verbose) pb = txtProgressBar(0, nstations, style = 3)
+  if(verbose) {
+    cat("\nParsing hourly data...\n")
+    pb = txtProgressBar(0, nstations, style = 3)
+  } 
   for(i in 1:nstations) {
     if(verbose) setTxtProgressBar(pb, i)
     data_df = s[[i]]

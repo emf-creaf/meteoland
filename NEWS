@@ -3,7 +3,7 @@
 -------------------------------
 
 __Version history__
-_Version 0.7.9, March 2018.
+_Version 0.7.9, March 2019.
 1. New function reshapeworldmet to reshape data downloaded using package 'worldmet'
 2. New function reshapeweathercan to reshape data downloaded using package 'weathercan'
 3. Transform point coordinate system in 'interpolationpoints', 'interpolationpixels' and 'interpolationgrid' if necessary

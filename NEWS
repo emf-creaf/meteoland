@@ -8,6 +8,7 @@ _Version 0.7.9, March 2019.
 2. New function reshapeweathercan to reshape data downloaded using package 'weathercan'
 3. Transform point coordinate system in 'interpolationpoints', 'interpolationpixels' and 'interpolationgrid' if necessary
 4. Check for infinite values in 'MeteorologyInterpolationData'
+5. New function 'correctionpoint'.
 
 _Version 0.7.8, November 2018.
 1. Corrected bug MeteorologyInterpolationData with SpatialPointsTopography as input

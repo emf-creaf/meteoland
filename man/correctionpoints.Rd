@@ -1,29 +1,35 @@
 \encoding{UTF-8}
 \name{correctionpoints}
+\alias{correctionpoint}
 \alias{correctionpoints}
 \alias{correctionpoints.errors}
 \title{
 Statistical correction of meteorological variables for a set of points
 }
 \description{
-Function \code{correctionpoints} performs correction of predicted climatic data by applying statistical correction methods (unbiasing, scaling, or quantile mapping) to meteorological variables. Function \code{correctionpoints.errors} allows evaluating, for each point, the bias and mean absolute error (MAE) obtained before and after correcting the climate model for the historical period. 
+Functions \code{correctionpoint} and \code{correctionpoints} perform correction of predicted climatic data by applying statistical correction methods (unbiasing, scaling, or quantile mapping) to meteorological variables. Function \code{correctionpoints.errors} allows evaluating, for each point, the bias and mean absolute error (MAE) obtained before and after correcting the climate model for the historical period. 
 }
 \usage{
+correctionpoint(obs, mod, proj, dates = NULL, 
+                params = defaultCorrectionParams(), verbose=TRUE)
 correctionpoints(object, points, topodata = NULL, dates = NULL,
-                  export = FALSE, exportDir = getwd(), exportFormat = "meteoland/txt",
-                  metadatafile = "MP.txt", corrOut = FALSE, verbose = TRUE)
+                 export = FALSE, exportDir = getwd(), exportFormat = "meteoland/txt",
+                 metadatafile = "MP.txt", corrOut = FALSE, verbose = TRUE)
 correctionpoints.errors(object, points, topodata = NULL, 
                   error.type="residuals.cv",keep.data = FALSE, verbose = FALSE)
   
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
-  \item{object}{An object of class \code{\link{MeteorologyUncorrectedData-class}}.}
+  \item{obs}{A data frame with observed meteorology.}
+  \item{mod, proj}{Data frame with predicted meteorology for the reference and projection periods, respectively.}
+  \item{params}{A list with correction params (see \code{\link{defaultCorrectionParams}}).}
+  \item{object}{An object of class \code{\link{MeteorologyUncorrectedData-class}} containing the meteorology of more than one point.}
   \item{points}{
     An object of class \code{\link{SpatialPointsMeteorology-class}} with the coordinates and historical meteorological data of the locations for which correction of predicted climatic data has to be done. Alternatively, an object of class \code{\link{SpatialPointsDataFrame-class}} containing the meta data (columns \code{dir},  \code{filename} and possibly \code{format}) of meteorological files that will be read from the disk.
   }
   \item{topodata}{A data frame with topographic data for each point (i.e. three columns named \code{elevation}, \code{slope} and \code{aspect}). If \code{topodata = NULL} then Penman's potential evapotranspiration is not calculated.}
-  \item{dates}{An object of class \code{\link{Date}}. If \code{dates = NULL} then all dates in \code{object} are processed.}
+  \item{dates}{An object of class \code{\link{Date}} with a subset of dates of the projection period to be corrected. If \code{dates = NULL} then all dates in \code{proj} or the projection data of \code{object} are processed.}
   \item{export}{
     If \code{export = FALSE} the result of correction is stored in memory. Otherwise the result is written in the disk (using the format specified in \code{exportFormat}).
   }
@@ -36,9 +42,9 @@ correctionpoints.errors(object, points, topodata = NULL,
   \item{keep.data}{Boolean flag to return the uncorrected/corrected data for the historical period.}
 }
 \details{
-Function \code{correctionpoints} performs statistical correction of predicted climatic data for all points supplied in \code{points}. Observed meteorological data for each point typically comes from a nearby meteorological station, but they can be the result of interpolating the meteorology of several stations (see \code{\link{MeteorologyInterpolationData}}) or they can be extracted from reanalyzed meteorology (e.g. EU-WATCH) (see \code{\link{extractNetCDF}}).
+Function \code{correctionpoints} performs statistical correction of predicted climatic data for all points supplied in \code{points} whereas \code{correctionpoint} performs statistical correction of one single point. Observed meteorological data for each point typically comes from a nearby meteorological station, but they can be the result of interpolating the meteorology of several stations (see \code{\link{MeteorologyInterpolationData}}) or they can be extracted from reanalyzed meteorology (e.g. EU-WATCH) (see \code{\link{extractNetCDF}}).
 
-For each target point, the function first determines the predicted cell where the point falls. Then it determines the dates that are shared in observed and predicted data for the historical period. These meteorological data of dates are used to conduct the correction of predicted climatic data for the future period. Corrections biases are calculated and applied for the twelve months separately. The user can control the methods used for correction of each meteorological variable by changing the slot \code{params} in \code{obj} (see class \code{\link{MeteorologyUncorrectedData-class}}). Three options are allowed (see \code{\link{defaultCorrectionParams}}): (a) 'unbias' for shifting the mean; (b) 'scaling' for multiplication by a factor; and (c) 'quantmap' for empirical quantile mapping between observed and modelled data (\enc{Déqué}{Deque} 2007).
+For each target point, \code{correctionpoints} function first determines the predicted cell where the point falls. Then it calls \code{correctionpoint}. In turn, \code{correctionpoint} determines the dates that are shared in observed and predicted data for the historical period. These meteorological data of dates are used to conduct the correction of predicted climatic data for the future period. Corrections biases are calculated and applied for the twelve months separately. The user can control the methods used for correction of each meteorological variable by changing the slot \code{params} in \code{object} (see class \code{\link{MeteorologyUncorrectedData-class}}) or the parameter \code{params} to \code{correctionpoint}. Three options are allowed (see \code{\link{defaultCorrectionParams}}): (a) 'unbias' for shifting the mean; (b) 'scaling' for multiplication by a factor; and (c) 'quantmap' for empirical quantile mapping between observed and modelled data (\enc{Déqué}{Deque} 2007).
 
 A difficulty arises for quantile mapping when the variables bounded by zero, such as precipitation. As the models tend to drizzle (or may have lower frequency of precipitation events), the probability of precipitation in the model may be greater or lower than that observed. To correct this, when model precipitation is zero an observed value is randomly chosen in the interval where the observed cumulative frequency is less than or equal to the probability of no precipitation in the model. This procedure ensures that the probability of precipitation after correction is equal to that observed (\enc{Boé}{Boe} 2007).
 }

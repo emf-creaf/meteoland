@@ -7,7 +7,7 @@ import(rgdal)
 import(methods)
 import(utils)
 useDynLib(meteoland, .registration = TRUE)
-export(correctionpoints, correctionpoints.errors, 
+export(correctionpoint, correctionpoints, correctionpoints.errors, 
        correction_series,
        defaultCorrectionParams, defaultInterpolationParams,
        downloadAEMETcurrentday,downloadAEMEThistorical, downloadAEMEThistoricalstationlist,

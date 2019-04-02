@@ -4,7 +4,7 @@
 
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{
-Low-level correction function
+Low-level correction functions
 }
 \description{
 Low-level function to perform bias correction. 

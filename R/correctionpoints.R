@@ -300,6 +300,21 @@ correction_series<-function(obs, mod, proj = NULL, method = "unbias", isPrec=TRU
   return(ResCor)
 }
 
+correctionpoint<-function(obs, mod, proj, dates = NULL, params = defaultCorrectionParams(), verbose=TRUE){
+  #Call statistical correction routine
+  mbias = .monthbiasonepoint(obs,mod, 
+                             params$varmethods, 
+                             qstep = params$qstep, 
+                             verbose = verbose)
+  
+  # if(verbose) print(mbias)
+  df = .correctiononepoint(mbias,proj, dates, 
+                           fill_wind = params$fill_wind, 
+                           allow_saturated =params$allow_saturated,
+                           verbose = verbose)
+  return(list(monthlyBias = mbias, correctedProj = df))
+}
+
 correctionpoints<-function(object, points, topodata = NULL, dates = NULL, export = FALSE,
                             exportDir = getwd(), exportFormat = "meteoland/txt",
                             metadatafile = "MP.txt", corrOut = FALSE, verbose=TRUE) {
@@ -415,18 +430,10 @@ correctionpoints<-function(object, points, topodata = NULL, dates = NULL, export
     }
  
     #Call statistical correction routine
-    mbias = .monthbiasonepoint(obs,rcmhist, 
-                               mPar$varmethods, 
-                               qstep = mPar$qstep, 
-                               verbose = verbose)
-    mbiasvec[[i]] = mbias
+    res = correctionpoint(obs, rcmhist, rcmfut, dates, mPar, verbose)
+    df = res$correctedProj
+    mbiasvec[[i]] = res$monthlyBias
     
-    # if(verbose) print(mbias)
-    df = .correctiononepoint(mbias,rcmfut, dates, 
-                             fill_wind = mPar$fill_wind, 
-                             allow_saturated =mPar$allow_saturated,
-                             verbose = verbose)
-
     if(is.null(dates)) dates = as.Date(rownames(df))
     #Calculate PET
     if(!is.null(topodata)) {

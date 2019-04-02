@@ -29,7 +29,7 @@ meteocomplete(x, latitude, elevation, slope, aspect)
   }
 }
 \details{
-  The function fills values for humidity, radiation and PET only if they are missing in the input data frame. Relative humidity is calculated assuming that dew point temperature equals the minimum temperature. Potential solar radiation is calculated from latitude, slope and aspect. Incoming solar radiation is then corrected following Thornton & Running (1999) and potential evapotranspiration following Penman (1948).
+  The function fills values for humidity, radiation and PET only if they are missing in the input data frame. If a column 'SpecificHumidity' is present in the input data, relative humidity is calculated from it. Otherwise, relative humidity is calculated assuming that dew point temperature equals the minimum temperature. Potential solar radiation is calculated from latitude, slope and aspect. Incoming solar radiation is then corrected following Thornton & Running (1999) and potential evapotranspiration following Penman (1948).
 }
 \value{
   A data frame copied from \code{x} but with filled values for variables:
@@ -50,7 +50,7 @@ and grass. Proceedings of the Royal Society of London. Series A.
 Mathematical and Physical Sciences, 193, 120-145.
 }
 \author{
-Miquel De \enc{Cáceres}{Caceres} Ainsa, Centre Tecnologic Forestal de Catalunya
+Miquel De \enc{Cáceres}{Caceres} Ainsa, CTFC
 }
 
 \seealso{

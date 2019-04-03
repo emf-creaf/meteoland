@@ -15,35 +15,61 @@ meteocomplete<-function(x, latitude, elevation, slope, aspect) {
     year = as.numeric(format(date,"%Y"))
     month = as.numeric(format(date,"%m"))
     day = as.numeric(format(date,"%d"))
+    J = radiation_julianDay(year, month, day)
     tmin = x$MinTemperature[j]
     tmax = x$MaxTemperature[j]
     tmean = x$MeanTemperature[j]
     diffTemp = tmax-tmin
     precipitation = x$Precipitation[j]
-    #Mean relative humidity
-    if(is.na(x$MeanRelativeHumidity[j])) {
-      rhmean = 100*utils_saturationVP(tmin)/utils_saturationVP(tmean)
-      x$MeanRelativeHumidity[j] = rhmean
+    if(("SpecificHumidity" %in% names(x))) {
+      hs = x$SpecificHumidity[j]
+      #Mean relative humidity
+      if(is.na(x$MeanRelativeHumidity[j])) {
+        rhmean = .HSHR(tmean, hs)
+        x$MeanRelativeHumidity[j] = rhmean
+      } else {
+        rhmean = x$MeanRelativeHumidity[j]
+      }
+      #Minimum relative humidity
+      if(is.na(x$MinRelativeHumidity[j])) {
+        rhmin = .HSHR(tmax, hs)
+        x$MinRelativeHumidity[j] = rhmin
+      } else {
+        rhmin = x$MinRelativeHumidity[j]
+      }
+      #Maximum relative humidity
+      if(is.na(x$MaxRelativeHumidity[j])) {
+        rhmax = .HSHR(tmin, hs)
+        x$MaxRelativeHumidity[j] = rhmax
+      } else {
+        rhmax = x$MaxRelativeHumidity[j]
+      }
+      
     } else {
-      rhmean = x$MeanRelativeHumidity[j]
-    }
-    #Minimum relative humidity
-    if(is.na(x$MinRelativeHumidity[j])) {
-      rhmin = 100*utils_saturationVP(tmin)/utils_saturationVP(tmax)
-      x$MinRelativeHumidity[j] = rhmin
-    } else {
-      rhmin = x$MinRelativeHumidity[j]
-    }
-    #Maximum relative humidity
-    if(is.na(x$MaxRelativeHumidity[j])) {
-      rhmax = 100
-      x$MaxRelativeHumidity[j] = rhmax
-    } else {
-      rhmax = x$MaxRelativeHumidity[j]
+      #Mean relative humidity
+      if(is.na(x$MeanRelativeHumidity[j])) {
+        rhmean = 100*utils_saturationVP(tmin)/utils_saturationVP(tmean)
+        x$MeanRelativeHumidity[j] = max(min(rhmean,100),0)
+      } else {
+        rhmean = x$MeanRelativeHumidity[j]
+      }
+      #Minimum relative humidity
+      if(is.na(x$MinRelativeHumidity[j])) {
+        rhmin = 100*utils_saturationVP(tmin)/utils_saturationVP(tmax)
+        x$MinRelativeHumidity[j] = max(min(rhmin,100),0)
+      } else {
+        rhmin = x$MinRelativeHumidity[j]
+      }
+      #Maximum relative humidity
+      if(is.na(x$MaxRelativeHumidity[j])) {
+        rhmax = 100
+        x$MaxRelativeHumidity[j] = max(min(rhmax,100),0)
+      } else {
+        rhmax = x$MaxRelativeHumidity[j]
+      }
     }
     #Radiation
     if(is.na(x$Radiation[j])) {
-      J = radiation_julianDay(year, month, day)
       sc = radiation_solarConstant(J)
       delta = radiation_solarDeclination(J)
       vpa = utils_averageDailyVP(tmin, tmax, rhmin, rhmax)

@@ -1,12 +1,14 @@
 import(sp)
+import(httr)
 import(spdep)
 import(ncdf4)
 import(ncdf4.helpers)
 import(rgdal)
-import(qmap)
 import(methods)
+import(utils)
 useDynLib(meteoland, .registration = TRUE)
-export(correctionpoints, correctionpoints.errors, 
+export(correctionpoint, correctionpoints, correctionpoints.errors, 
+       correction_series,
        defaultCorrectionParams, defaultInterpolationParams,
        downloadAEMETcurrentday,downloadAEMEThistorical, downloadAEMEThistoricalstationlist,
        extractgridpoints, extractNetCDF, extractpointdates, extractSpatialData,
@@ -25,6 +27,7 @@ export(correctionpoints, correctionpoints.errors,
        readmeteorologypoint,readmeteorologypointfiles, 
        readmeteorologygrid, readmeteorologygridfiles, readmeteorologygridcells, 
        readWindNinjaWindFields,
+       reshapeweathercan, reshapeworldmet,
        SpatialPointsTopography, SpatialGridTopography, SpatialPixelsTopography, 
        SpatialGridMeteorology, SpatialPointsMeteorology, SpatialPixelsMeteorology,
        subsample,summary.interpolation.cv, 
@@ -37,16 +40,31 @@ export(correctionpoints, correctionpoints.errors,
        writemeteorologygrid, writemeteorologygridfiles,
        writemeteorologypoint, writemeteorologypointfiles)
 exportClasses(MeteorologyProcedureData, MeteorologyInterpolationData, MeteorologyUncorrectedData)
-exportClasses(SpatialPointsMeteorology,SpatialPointsTopography,SpatialGridMeteorology,SpatialGridTopography)
-exportMethods(subsample, spplot, "[")
+exportClasses(SpatialPointsMeteorology,SpatialPointsTopography,
+              SpatialGridMeteorology,SpatialGridTopography,
+              SpatialPixelsMeteorology,SpatialPixelsTopography)
+exportMethods(subsample, spplot, "[", show)
 importFrom(Rcpp, evalCpp)
-import(httr)
 importFrom(jsonlite,fromJSON)
-importFrom(qmap,fitQmap,doQmap,fitQmapQUANT)
 importFrom(grDevices, colorRampPalette, topo.colors)
 importFrom(graphics, abline, hist, lines, par)
 importFrom(utils, read.table, setTxtProgressBar,
              txtProgressBar, write.table)
-importFrom(stats, cor, var, lm, aggregate)
-S3method(summary,interpolation.cv)
-S3method(plot,interpolation.cv)
+importFrom(stats, cor, var, lm, aggregate, approx, na.omit, quantile, dist)
+
+S3method(summary, interpolation.cv)
+
+S3method(plot, interpolation.cv)
+
+S3method(head, SpatialPointsMeteorology)
+S3method(head, SpatialPointsTopography)
+
+S3method(tail, SpatialPointsTopography)
+S3method(tail, SpatialPointsMeteorology)
+
+S3method(print, SpatialPointsTopography)
+S3method(print, SpatialPixelsTopography)
+S3method(print, SpatialGridTopography)
+S3method(print, SpatialPointsMeteorology)
+S3method(print, SpatialPixelsMeteorology)
+S3method(print, SpatialGridMeteorology)

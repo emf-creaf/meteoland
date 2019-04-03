@@ -1,9 +1,9 @@
-extractpointdates<-function(points, dates = NULL) {
+extractpointdates<-function(points, dates = NULL, verbose=FALSE) {
   if(!inherits(points,"SpatialPointsMeteorology") && !inherits(points,"SpatialPointsDataFrame")) stop("'points' has to be of class 'SpatialPointsMeteorology' or 'SpatialPointsDataFrame'.")
   if(class(dates)!="Date") stop("'dates' has to be of class 'Date'.")
   npoints = length(points)
   ndates = length(dates)
-  cat(paste("  Extracting ", ndates, " dates from ", npoints," points...\n", sep=""))
+  if(verbose) cat(paste("  Extracting ", ndates, " dates from ", npoints," points...\n", sep=""))
   
   dfvec = vector("list",npoints)
   if(inherits(points,"SpatialPointsMeteorology")) {
@@ -15,9 +15,9 @@ extractpointdates<-function(points, dates = NULL) {
   }
   dateschar =as.character(dates)
   res = vector("list", ndates)
-  pb = txtProgressBar(0, npoints, 0, style = 3)
+  if(verbose)  pb = txtProgressBar(0, npoints, 0, style = 3)
   for(i in 1:npoints) {
-    setTxtProgressBar(pb, i)
+    if(verbose) setTxtProgressBar(pb, i)
     if(inherits(points,"SpatialPointsMeteorology")) {
       obs = points@data[[i]]
     } else {
@@ -38,7 +38,7 @@ extractpointdates<-function(points, dates = NULL) {
       res[[d]][i,]<-obs[dateschar[d],]
     }
   }
-  cat("\n")
+  if(verbose) cat("\n")
   for(d in 1:ndates) {
     res[[d]] = SpatialPointsDataFrame(as(points,"SpatialPoints"),res[[d]])
   }

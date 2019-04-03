@@ -1,7 +1,9 @@
 .interpolatePixelsDay<-function(object, pixels, latitude, d) {
   i = which(object@dates == d)
   if(length(i)==0) stop("Date not found. Date 'd' has to be comprised within the dates specified in 'object'.")
-  cc = pixels@coords
+  #Transform projection of pixel coordinates to that of object
+  sp = spTransform(SpatialPoints(pixels@coords, pixels@proj4string), object@proj4string)
+  cc = sp@coords
   z = pixels@data$elevation
   mPar = object@params
 
@@ -130,7 +132,7 @@
                   WindSpeed = as.vector(Ws),
                   WindDirection = as.vector(Wd),
                   PET = pet)
-  return(SpatialPixelsDataFrame(cc, data = df, grid=pixels@grid, proj4string= pixels@proj4string))
+  return(SpatialPixelsDataFrame(pixels@coords, data = df, grid=pixels@grid, proj4string= pixels@proj4string))
 }
 
 interpolationpixels<-function(object, pixels, dates,
@@ -138,7 +140,6 @@ interpolationpixels<-function(object, pixels, dates,
                             metadatafile = "MG.txt", verbose = TRUE) {
   if(!inherits(object,"MeteorologyInterpolationData")) stop("'object' has to be of class 'MeteorologyInterpolationData'.")
   if(!inherits(pixels,"SpatialPixelsTopography")) stop("'pixels' has to be of class 'SpatialPixelsTopography'.")
-  if(proj4string(pixels)!=proj4string(object)) stop("CRS projection in 'pixels' has to the same as in 'object'.")
   if(!is.null(dates)) {
     if(class(dates)!="Date") stop("'dates' has to be of class 'Date'.")
     if(sum(as.character(dates) %in% as.character(object@dates))<length(dates)) 
@@ -146,7 +147,13 @@ interpolationpixels<-function(object, pixels, dates,
   }
   else dates = object@dates
   bbox = object@bbox
-  gbbox = pixels@bbox
+  if(proj4string(pixels)!=proj4string(object))  {
+    warning("CRS projection in 'pixels' adapted to that of 'object'.")
+    sp = spTransform(SpatialPoints(pixels@coords, pixels@proj4string), object@proj4string)
+    gbbox = sp@bbox
+  } else {
+    gbbox = pixels@bbox
+  }
   insidebox = (gbbox[1,1]>=bbox[1,1]) && (gbbox[1,2]<=bbox[1,2]) && (gbbox[2,1]>=bbox[2,1]) && (gbbox[2,2]<=bbox[2,2])
   if(!insidebox) stop("Boundary box of target grid is not within boundary box of interpolation data object.")
   longlat = spTransform(as(pixels,"SpatialPoints"),CRS("+proj=longlat"))

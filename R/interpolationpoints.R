@@ -143,13 +143,17 @@ interpolationpoints<-function(object, points, dates = NULL,
   exportFormat = match.arg(exportFormat, c("meteoland/txt", "meteoland/rds", "castanea/txt", "castanea/rds"))
   if(!inherits(object,"MeteorologyInterpolationData")) stop("'object' has to be of class 'MeteorologyInterpolationData'.")
   if(!inherits(points,"SpatialPointsTopography")) stop("'points' has to be of class 'SpatialPointsTopography'.")
-  if(proj4string(points)!=proj4string(object)) stop("CRS projection in 'points' has to the same as in 'object'.")
+  intpoints = as(points, "SpatialPoints")
+  if(proj4string(intpoints)!=proj4string(object)) {
+    warning("CRS projection of 'points' adapted to that of 'object'.")
+    intpoints = spTransform(intpoints, object@proj4string)
+  }
   if(!is.null(dates)) {
     if(class(dates)!="Date") stop("'dates' has to be of class 'Date'.")
     if(sum(as.character(dates) %in% as.character(object@dates))<length(dates)) 
       stop("At least one of the dates is outside the time period for which interpolation is possible.")
   }
-  cc = coordinates(points)
+  cc = coordinates(intpoints) #
   ids = row.names(cc)
   npoints = nrow(cc)
   if(is.null(ids) || length(ids)==0) {

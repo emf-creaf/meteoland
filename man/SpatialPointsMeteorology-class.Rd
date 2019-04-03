@@ -4,6 +4,7 @@
 \docType{class}
 \alias{SpatialPointsMeteorology-class}
 \alias{[,SpatialPointsMeteorology,ANY,ANY,ANY-method}
+\alias{show,SpatialPointsMeteorology-method}
 
 \title{Class \code{"SpatialPointsMeteorology"}}
 \description{
@@ -27,7 +28,7 @@ Class \code{"\linkS4class{Spatial}"}, by class "SpatialPoints", distance 2.
 }
 \section{Methods}{
   \describe{
-    \item{[}{\code{signature(x = "SpatialPointsTopography", i = "ANY", j = "ANY", drop = "ANY")}: subsets the spatial points and the corresponding list of meteorological data; only rows (points can be subsetted.}
+    \item{[}{\code{signature(x = "SpatialPointsMeteorology", i = "ANY", j = "ANY", drop = "ANY")}: subsets the spatial points and the corresponding list of meteorological data; only rows (points) can be subsetted.}
 	 }
 }
 \author{

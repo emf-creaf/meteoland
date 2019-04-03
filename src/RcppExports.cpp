@@ -8,49 +8,6 @@
 
 using namespace Rcpp;
 
-// temporalSmoothing
-NumericMatrix temporalSmoothing(NumericMatrix input, int numDays, bool prec);
-RcppExport SEXP _meteoland_temporalSmoothing(SEXP inputSEXP, SEXP numDaysSEXP, SEXP precSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< NumericMatrix >::type input(inputSEXP);
-    Rcpp::traits::input_parameter< int >::type numDays(numDaysSEXP);
-    Rcpp::traits::input_parameter< bool >::type prec(precSEXP);
-    rcpp_result_gen = Rcpp::wrap(temporalSmoothing(input, numDays, prec));
-    return rcpp_result_gen;
-END_RCPP
-}
-// slope
-NumericVector slope(NumericVector data, int nrows, int ncols, double cellWidth, double cellHeight);
-RcppExport SEXP _meteoland_slope(SEXP dataSEXP, SEXP nrowsSEXP, SEXP ncolsSEXP, SEXP cellWidthSEXP, SEXP cellHeightSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< NumericVector >::type data(dataSEXP);
-    Rcpp::traits::input_parameter< int >::type nrows(nrowsSEXP);
-    Rcpp::traits::input_parameter< int >::type ncols(ncolsSEXP);
-    Rcpp::traits::input_parameter< double >::type cellWidth(cellWidthSEXP);
-    Rcpp::traits::input_parameter< double >::type cellHeight(cellHeightSEXP);
-    rcpp_result_gen = Rcpp::wrap(slope(data, nrows, ncols, cellWidth, cellHeight));
-    return rcpp_result_gen;
-END_RCPP
-}
-// aspect
-NumericVector aspect(NumericVector data, int nrows, int ncols, double cellWidth, double cellHeight);
-RcppExport SEXP _meteoland_aspect(SEXP dataSEXP, SEXP nrowsSEXP, SEXP ncolsSEXP, SEXP cellWidthSEXP, SEXP cellHeightSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< NumericVector >::type data(dataSEXP);
-    Rcpp::traits::input_parameter< int >::type nrows(nrowsSEXP);
-    Rcpp::traits::input_parameter< int >::type ncols(ncolsSEXP);
-    Rcpp::traits::input_parameter< double >::type cellWidth(cellWidthSEXP);
-    Rcpp::traits::input_parameter< double >::type cellHeight(cellHeightSEXP);
-    rcpp_result_gen = Rcpp::wrap(aspect(data, nrows, ncols, cellWidth, cellHeight));
-    return rcpp_result_gen;
-END_RCPP
-}
 // dailyEquilibriumPET
 NumericVector dailyEquilibriumPET(NumericVector Temp, NumericVector Rn);
 RcppExport SEXP _meteoland_dailyEquilibriumPET(SEXP TempSEXP, SEXP RnSEXP) {
@@ -128,6 +85,49 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< double >::type alpha(alphaSEXP);
     Rcpp::traits::input_parameter< String >::type windfun(windfunSEXP);
     rcpp_result_gen = Rcpp::wrap(PenmanPETPointsDay(latrad, elevation, slorad, asprad, J, Tmin, Tmax, RHmin, RHmax, R_s, u, z, z0, alpha, windfun));
+    return rcpp_result_gen;
+END_RCPP
+}
+// temporalSmoothing
+NumericMatrix temporalSmoothing(NumericMatrix input, int numDays, bool prec);
+RcppExport SEXP _meteoland_temporalSmoothing(SEXP inputSEXP, SEXP numDaysSEXP, SEXP precSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericMatrix >::type input(inputSEXP);
+    Rcpp::traits::input_parameter< int >::type numDays(numDaysSEXP);
+    Rcpp::traits::input_parameter< bool >::type prec(precSEXP);
+    rcpp_result_gen = Rcpp::wrap(temporalSmoothing(input, numDays, prec));
+    return rcpp_result_gen;
+END_RCPP
+}
+// slope
+NumericVector slope(NumericVector data, int nrows, int ncols, double cellWidth, double cellHeight);
+RcppExport SEXP _meteoland_slope(SEXP dataSEXP, SEXP nrowsSEXP, SEXP ncolsSEXP, SEXP cellWidthSEXP, SEXP cellHeightSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type data(dataSEXP);
+    Rcpp::traits::input_parameter< int >::type nrows(nrowsSEXP);
+    Rcpp::traits::input_parameter< int >::type ncols(ncolsSEXP);
+    Rcpp::traits::input_parameter< double >::type cellWidth(cellWidthSEXP);
+    Rcpp::traits::input_parameter< double >::type cellHeight(cellHeightSEXP);
+    rcpp_result_gen = Rcpp::wrap(slope(data, nrows, ncols, cellWidth, cellHeight));
+    return rcpp_result_gen;
+END_RCPP
+}
+// aspect
+NumericVector aspect(NumericVector data, int nrows, int ncols, double cellWidth, double cellHeight);
+RcppExport SEXP _meteoland_aspect(SEXP dataSEXP, SEXP nrowsSEXP, SEXP ncolsSEXP, SEXP cellWidthSEXP, SEXP cellHeightSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type data(dataSEXP);
+    Rcpp::traits::input_parameter< int >::type nrows(nrowsSEXP);
+    Rcpp::traits::input_parameter< int >::type ncols(ncolsSEXP);
+    Rcpp::traits::input_parameter< double >::type cellWidth(cellWidthSEXP);
+    Rcpp::traits::input_parameter< double >::type cellHeight(cellHeightSEXP);
+    rcpp_result_gen = Rcpp::wrap(aspect(data, nrows, ncols, cellWidth, cellHeight));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -243,6 +243,10 @@ RcppExport SEXP _meteoland_julianDay(SEXP yearSEXP, SEXP monthSEXP, SEXP daySEXP
         UNPROTECT(1);
         Rf_onintr();
     }
+    bool rcpp_isLongjump_gen = Rcpp::internal::isLongjumpSentinel(rcpp_result_gen);
+    if (rcpp_isLongjump_gen) {
+        Rcpp::internal::resumeJump(rcpp_result_gen);
+    }
     Rboolean rcpp_isError_gen = Rf_inherits(rcpp_result_gen, "try-error");
     if (rcpp_isError_gen) {
         SEXP rcpp_msgSEXP_gen = Rf_asChar(rcpp_result_gen);
@@ -272,6 +276,10 @@ RcppExport SEXP _meteoland_dateStringToJulianDays(SEXP dateStringsSEXP) {
     if (rcpp_isInterrupt_gen) {
         UNPROTECT(1);
         Rf_onintr();
+    }
+    bool rcpp_isLongjump_gen = Rcpp::internal::isLongjumpSentinel(rcpp_result_gen);
+    if (rcpp_isLongjump_gen) {
+        Rcpp::internal::resumeJump(rcpp_result_gen);
     }
     Rboolean rcpp_isError_gen = Rf_inherits(rcpp_result_gen, "try-error");
     if (rcpp_isError_gen) {
@@ -303,6 +311,10 @@ RcppExport SEXP _meteoland_solarDeclination(SEXP JSEXP) {
         UNPROTECT(1);
         Rf_onintr();
     }
+    bool rcpp_isLongjump_gen = Rcpp::internal::isLongjumpSentinel(rcpp_result_gen);
+    if (rcpp_isLongjump_gen) {
+        Rcpp::internal::resumeJump(rcpp_result_gen);
+    }
     Rboolean rcpp_isError_gen = Rf_inherits(rcpp_result_gen, "try-error");
     if (rcpp_isError_gen) {
         SEXP rcpp_msgSEXP_gen = Rf_asChar(rcpp_result_gen);
@@ -332,6 +344,10 @@ RcppExport SEXP _meteoland_solarConstant(SEXP JSEXP) {
     if (rcpp_isInterrupt_gen) {
         UNPROTECT(1);
         Rf_onintr();
+    }
+    bool rcpp_isLongjump_gen = Rcpp::internal::isLongjumpSentinel(rcpp_result_gen);
+    if (rcpp_isLongjump_gen) {
+        Rcpp::internal::resumeJump(rcpp_result_gen);
     }
     Rboolean rcpp_isError_gen = Rf_inherits(rcpp_result_gen, "try-error");
     if (rcpp_isError_gen) {
@@ -366,6 +382,10 @@ RcppExport SEXP _meteoland_sunRiseSet(SEXP latradSEXP, SEXP sloradSEXP, SEXP asp
         UNPROTECT(1);
         Rf_onintr();
     }
+    bool rcpp_isLongjump_gen = Rcpp::internal::isLongjumpSentinel(rcpp_result_gen);
+    if (rcpp_isLongjump_gen) {
+        Rcpp::internal::resumeJump(rcpp_result_gen);
+    }
     Rboolean rcpp_isError_gen = Rf_inherits(rcpp_result_gen, "try-error");
     if (rcpp_isError_gen) {
         SEXP rcpp_msgSEXP_gen = Rf_asChar(rcpp_result_gen);
@@ -397,6 +417,10 @@ RcppExport SEXP _meteoland_solarElevation(SEXP latradSEXP, SEXP deltaSEXP, SEXP 
     if (rcpp_isInterrupt_gen) {
         UNPROTECT(1);
         Rf_onintr();
+    }
+    bool rcpp_isLongjump_gen = Rcpp::internal::isLongjumpSentinel(rcpp_result_gen);
+    if (rcpp_isLongjump_gen) {
+        Rcpp::internal::resumeJump(rcpp_result_gen);
     }
     Rboolean rcpp_isError_gen = Rf_inherits(rcpp_result_gen, "try-error");
     if (rcpp_isError_gen) {
@@ -431,6 +455,10 @@ RcppExport SEXP _meteoland_daylength(SEXP latradSEXP, SEXP sloradSEXP, SEXP aspr
         UNPROTECT(1);
         Rf_onintr();
     }
+    bool rcpp_isLongjump_gen = Rcpp::internal::isLongjumpSentinel(rcpp_result_gen);
+    if (rcpp_isLongjump_gen) {
+        Rcpp::internal::resumeJump(rcpp_result_gen);
+    }
     Rboolean rcpp_isError_gen = Rf_inherits(rcpp_result_gen, "try-error");
     if (rcpp_isError_gen) {
         SEXP rcpp_msgSEXP_gen = Rf_asChar(rcpp_result_gen);
@@ -463,6 +491,10 @@ RcppExport SEXP _meteoland_daylengthseconds(SEXP latradSEXP, SEXP sloradSEXP, SE
     if (rcpp_isInterrupt_gen) {
         UNPROTECT(1);
         Rf_onintr();
+    }
+    bool rcpp_isLongjump_gen = Rcpp::internal::isLongjumpSentinel(rcpp_result_gen);
+    if (rcpp_isLongjump_gen) {
+        Rcpp::internal::resumeJump(rcpp_result_gen);
     }
     Rboolean rcpp_isError_gen = Rf_inherits(rcpp_result_gen, "try-error");
     if (rcpp_isError_gen) {
@@ -497,6 +529,10 @@ RcppExport SEXP _meteoland_RpotDay(SEXP solarConstantSEXP, SEXP latradSEXP, SEXP
     if (rcpp_isInterrupt_gen) {
         UNPROTECT(1);
         Rf_onintr();
+    }
+    bool rcpp_isLongjump_gen = Rcpp::internal::isLongjumpSentinel(rcpp_result_gen);
+    if (rcpp_isLongjump_gen) {
+        Rcpp::internal::resumeJump(rcpp_result_gen);
     }
     Rboolean rcpp_isError_gen = Rf_inherits(rcpp_result_gen, "try-error");
     if (rcpp_isError_gen) {
@@ -537,6 +573,10 @@ RcppExport SEXP _meteoland_RDay(SEXP solarConstantSEXP, SEXP latradSEXP, SEXP el
         UNPROTECT(1);
         Rf_onintr();
     }
+    bool rcpp_isLongjump_gen = Rcpp::internal::isLongjumpSentinel(rcpp_result_gen);
+    if (rcpp_isLongjump_gen) {
+        Rcpp::internal::resumeJump(rcpp_result_gen);
+    }
     Rboolean rcpp_isError_gen = Rf_inherits(rcpp_result_gen, "try-error");
     if (rcpp_isError_gen) {
         SEXP rcpp_msgSEXP_gen = Rf_asChar(rcpp_result_gen);
@@ -573,6 +613,10 @@ RcppExport SEXP _meteoland_directDiffuseInstant(SEXP solarConstantSEXP, SEXP lat
         UNPROTECT(1);
         Rf_onintr();
     }
+    bool rcpp_isLongjump_gen = Rcpp::internal::isLongjumpSentinel(rcpp_result_gen);
+    if (rcpp_isLongjump_gen) {
+        Rcpp::internal::resumeJump(rcpp_result_gen);
+    }
     Rboolean rcpp_isError_gen = Rf_inherits(rcpp_result_gen, "try-error");
     if (rcpp_isError_gen) {
         SEXP rcpp_msgSEXP_gen = Rf_asChar(rcpp_result_gen);
@@ -608,6 +652,10 @@ RcppExport SEXP _meteoland_directDiffuseDay(SEXP solarConstantSEXP, SEXP latradS
         UNPROTECT(1);
         Rf_onintr();
     }
+    bool rcpp_isLongjump_gen = Rcpp::internal::isLongjumpSentinel(rcpp_result_gen);
+    if (rcpp_isLongjump_gen) {
+        Rcpp::internal::resumeJump(rcpp_result_gen);
+    }
     Rboolean rcpp_isError_gen = Rf_inherits(rcpp_result_gen, "try-error");
     if (rcpp_isError_gen) {
         SEXP rcpp_msgSEXP_gen = Rf_asChar(rcpp_result_gen);
@@ -639,6 +687,10 @@ RcppExport SEXP _meteoland_skyLongwaveRadiation(SEXP TairSEXP, SEXP vpaSEXP, SEX
     if (rcpp_isInterrupt_gen) {
         UNPROTECT(1);
         Rf_onintr();
+    }
+    bool rcpp_isLongjump_gen = Rcpp::internal::isLongjumpSentinel(rcpp_result_gen);
+    if (rcpp_isLongjump_gen) {
+        Rcpp::internal::resumeJump(rcpp_result_gen);
     }
     Rboolean rcpp_isError_gen = Rf_inherits(rcpp_result_gen, "try-error");
     if (rcpp_isError_gen) {
@@ -678,6 +730,10 @@ RcppExport SEXP _meteoland_outgoingLongwaveRadiation(SEXP solarConstantSEXP, SEX
     if (rcpp_isInterrupt_gen) {
         UNPROTECT(1);
         Rf_onintr();
+    }
+    bool rcpp_isLongjump_gen = Rcpp::internal::isLongjumpSentinel(rcpp_result_gen);
+    if (rcpp_isLongjump_gen) {
+        Rcpp::internal::resumeJump(rcpp_result_gen);
     }
     Rboolean rcpp_isError_gen = Rf_inherits(rcpp_result_gen, "try-error");
     if (rcpp_isError_gen) {
@@ -719,6 +775,10 @@ RcppExport SEXP _meteoland_netRadiation(SEXP solarConstantSEXP, SEXP latradSEXP,
         UNPROTECT(1);
         Rf_onintr();
     }
+    bool rcpp_isLongjump_gen = Rcpp::internal::isLongjumpSentinel(rcpp_result_gen);
+    if (rcpp_isLongjump_gen) {
+        Rcpp::internal::resumeJump(rcpp_result_gen);
+    }
     Rboolean rcpp_isError_gen = Rf_inherits(rcpp_result_gen, "try-error");
     if (rcpp_isError_gen) {
         SEXP rcpp_msgSEXP_gen = Rf_asChar(rcpp_result_gen);
@@ -752,6 +812,10 @@ RcppExport SEXP _meteoland_potentialRadiationSeries(SEXP latradSEXP, SEXP slorad
         UNPROTECT(1);
         Rf_onintr();
     }
+    bool rcpp_isLongjump_gen = Rcpp::internal::isLongjumpSentinel(rcpp_result_gen);
+    if (rcpp_isLongjump_gen) {
+        Rcpp::internal::resumeJump(rcpp_result_gen);
+    }
     Rboolean rcpp_isError_gen = Rf_inherits(rcpp_result_gen, "try-error");
     if (rcpp_isError_gen) {
         SEXP rcpp_msgSEXP_gen = Rf_asChar(rcpp_result_gen);
@@ -784,6 +848,10 @@ RcppExport SEXP _meteoland_potentialRadiationPoints(SEXP latradSEXP, SEXP slorad
     if (rcpp_isInterrupt_gen) {
         UNPROTECT(1);
         Rf_onintr();
+    }
+    bool rcpp_isLongjump_gen = Rcpp::internal::isLongjumpSentinel(rcpp_result_gen);
+    if (rcpp_isLongjump_gen) {
+        Rcpp::internal::resumeJump(rcpp_result_gen);
     }
     Rboolean rcpp_isError_gen = Rf_inherits(rcpp_result_gen, "try-error");
     if (rcpp_isError_gen) {
@@ -823,6 +891,10 @@ RcppExport SEXP _meteoland_radiationSeries(SEXP latradSEXP, SEXP elevationSEXP, 
         UNPROTECT(1);
         Rf_onintr();
     }
+    bool rcpp_isLongjump_gen = Rcpp::internal::isLongjumpSentinel(rcpp_result_gen);
+    if (rcpp_isLongjump_gen) {
+        Rcpp::internal::resumeJump(rcpp_result_gen);
+    }
     Rboolean rcpp_isError_gen = Rf_inherits(rcpp_result_gen, "try-error");
     if (rcpp_isError_gen) {
         SEXP rcpp_msgSEXP_gen = Rf_asChar(rcpp_result_gen);
@@ -860,6 +932,10 @@ RcppExport SEXP _meteoland_radiationPoints(SEXP latradSEXP, SEXP elevationSEXP, 
     if (rcpp_isInterrupt_gen) {
         UNPROTECT(1);
         Rf_onintr();
+    }
+    bool rcpp_isLongjump_gen = Rcpp::internal::isLongjumpSentinel(rcpp_result_gen);
+    if (rcpp_isLongjump_gen) {
+        Rcpp::internal::resumeJump(rcpp_result_gen);
     }
     Rboolean rcpp_isError_gen = Rf_inherits(rcpp_result_gen, "try-error");
     if (rcpp_isError_gen) {
@@ -1053,6 +1129,10 @@ RcppExport SEXP _meteoland_saturationVapourPressure(SEXP temperatureSEXP) {
         UNPROTECT(1);
         Rf_onintr();
     }
+    bool rcpp_isLongjump_gen = Rcpp::internal::isLongjumpSentinel(rcpp_result_gen);
+    if (rcpp_isLongjump_gen) {
+        Rcpp::internal::resumeJump(rcpp_result_gen);
+    }
     Rboolean rcpp_isError_gen = Rf_inherits(rcpp_result_gen, "try-error");
     if (rcpp_isError_gen) {
         SEXP rcpp_msgSEXP_gen = Rf_asChar(rcpp_result_gen);
@@ -1086,6 +1166,10 @@ RcppExport SEXP _meteoland_averageDailyVapourPressure(SEXP TminSEXP, SEXP TmaxSE
         UNPROTECT(1);
         Rf_onintr();
     }
+    bool rcpp_isLongjump_gen = Rcpp::internal::isLongjumpSentinel(rcpp_result_gen);
+    if (rcpp_isLongjump_gen) {
+        Rcpp::internal::resumeJump(rcpp_result_gen);
+    }
     Rboolean rcpp_isError_gen = Rf_inherits(rcpp_result_gen, "try-error");
     if (rcpp_isError_gen) {
         SEXP rcpp_msgSEXP_gen = Rf_asChar(rcpp_result_gen);
@@ -1115,6 +1199,10 @@ RcppExport SEXP _meteoland_atmosphericPressure(SEXP elevationSEXP) {
     if (rcpp_isInterrupt_gen) {
         UNPROTECT(1);
         Rf_onintr();
+    }
+    bool rcpp_isLongjump_gen = Rcpp::internal::isLongjumpSentinel(rcpp_result_gen);
+    if (rcpp_isLongjump_gen) {
+        Rcpp::internal::resumeJump(rcpp_result_gen);
     }
     Rboolean rcpp_isError_gen = Rf_inherits(rcpp_result_gen, "try-error");
     if (rcpp_isError_gen) {
@@ -1147,6 +1235,10 @@ RcppExport SEXP _meteoland_airDensity(SEXP temperatureSEXP, SEXP PatmSEXP) {
         UNPROTECT(1);
         Rf_onintr();
     }
+    bool rcpp_isLongjump_gen = Rcpp::internal::isLongjumpSentinel(rcpp_result_gen);
+    if (rcpp_isLongjump_gen) {
+        Rcpp::internal::resumeJump(rcpp_result_gen);
+    }
     Rboolean rcpp_isError_gen = Rf_inherits(rcpp_result_gen, "try-error");
     if (rcpp_isError_gen) {
         SEXP rcpp_msgSEXP_gen = Rf_asChar(rcpp_result_gen);
@@ -1178,6 +1270,10 @@ RcppExport SEXP _meteoland_averageDaylightTemperature(SEXP TminSEXP, SEXP TmaxSE
         UNPROTECT(1);
         Rf_onintr();
     }
+    bool rcpp_isLongjump_gen = Rcpp::internal::isLongjumpSentinel(rcpp_result_gen);
+    if (rcpp_isLongjump_gen) {
+        Rcpp::internal::resumeJump(rcpp_result_gen);
+    }
     Rboolean rcpp_isError_gen = Rf_inherits(rcpp_result_gen, "try-error");
     if (rcpp_isError_gen) {
         SEXP rcpp_msgSEXP_gen = Rf_asChar(rcpp_result_gen);
@@ -1208,6 +1304,10 @@ RcppExport SEXP _meteoland_latentHeatVaporisation(SEXP temperatureSEXP) {
         UNPROTECT(1);
         Rf_onintr();
     }
+    bool rcpp_isLongjump_gen = Rcpp::internal::isLongjumpSentinel(rcpp_result_gen);
+    if (rcpp_isLongjump_gen) {
+        Rcpp::internal::resumeJump(rcpp_result_gen);
+    }
     Rboolean rcpp_isError_gen = Rf_inherits(rcpp_result_gen, "try-error");
     if (rcpp_isError_gen) {
         SEXP rcpp_msgSEXP_gen = Rf_asChar(rcpp_result_gen);
@@ -1237,6 +1337,10 @@ RcppExport SEXP _meteoland_latentHeatVaporisationMol(SEXP temperatureSEXP) {
     if (rcpp_isInterrupt_gen) {
         UNPROTECT(1);
         Rf_onintr();
+    }
+    bool rcpp_isLongjump_gen = Rcpp::internal::isLongjumpSentinel(rcpp_result_gen);
+    if (rcpp_isLongjump_gen) {
+        Rcpp::internal::resumeJump(rcpp_result_gen);
     }
     Rboolean rcpp_isError_gen = Rf_inherits(rcpp_result_gen, "try-error");
     if (rcpp_isError_gen) {
@@ -1269,6 +1373,10 @@ RcppExport SEXP _meteoland_psychrometricConstant(SEXP temperatureSEXP, SEXP Patm
         UNPROTECT(1);
         Rf_onintr();
     }
+    bool rcpp_isLongjump_gen = Rcpp::internal::isLongjumpSentinel(rcpp_result_gen);
+    if (rcpp_isLongjump_gen) {
+        Rcpp::internal::resumeJump(rcpp_result_gen);
+    }
     Rboolean rcpp_isError_gen = Rf_inherits(rcpp_result_gen, "try-error");
     if (rcpp_isError_gen) {
         SEXP rcpp_msgSEXP_gen = Rf_asChar(rcpp_result_gen);
@@ -1298,6 +1406,10 @@ RcppExport SEXP _meteoland_saturationVaporPressureCurveSlope(SEXP temperatureSEX
     if (rcpp_isInterrupt_gen) {
         UNPROTECT(1);
         Rf_onintr();
+    }
+    bool rcpp_isLongjump_gen = Rcpp::internal::isLongjumpSentinel(rcpp_result_gen);
+    if (rcpp_isLongjump_gen) {
+        Rcpp::internal::resumeJump(rcpp_result_gen);
     }
     Rboolean rcpp_isError_gen = Rf_inherits(rcpp_result_gen, "try-error");
     if (rcpp_isError_gen) {
@@ -1343,6 +1455,10 @@ RcppExport SEXP _meteoland_PenmanPET(SEXP latradSEXP, SEXP elevationSEXP, SEXP s
         UNPROTECT(1);
         Rf_onintr();
     }
+    bool rcpp_isLongjump_gen = Rcpp::internal::isLongjumpSentinel(rcpp_result_gen);
+    if (rcpp_isLongjump_gen) {
+        Rcpp::internal::resumeJump(rcpp_result_gen);
+    }
     Rboolean rcpp_isError_gen = Rf_inherits(rcpp_result_gen, "try-error");
     if (rcpp_isError_gen) {
         SEXP rcpp_msgSEXP_gen = Rf_asChar(rcpp_result_gen);
@@ -1379,6 +1495,10 @@ RcppExport SEXP _meteoland_PenmanMonteithPET(SEXP rcSEXP, SEXP elevationSEXP, SE
     if (rcpp_isInterrupt_gen) {
         UNPROTECT(1);
         Rf_onintr();
+    }
+    bool rcpp_isLongjump_gen = Rcpp::internal::isLongjumpSentinel(rcpp_result_gen);
+    if (rcpp_isLongjump_gen) {
+        Rcpp::internal::resumeJump(rcpp_result_gen);
     }
     Rboolean rcpp_isError_gen = Rf_inherits(rcpp_result_gen, "try-error");
     if (rcpp_isError_gen) {
@@ -1542,13 +1662,13 @@ RcppExport SEXP _meteoland_RcppExport_registerCCallable() {
 }
 
 static const R_CallMethodDef CallEntries[] = {
-    {"_meteoland_temporalSmoothing", (DL_FUNC) &_meteoland_temporalSmoothing, 3},
-    {"_meteoland_slope", (DL_FUNC) &_meteoland_slope, 5},
-    {"_meteoland_aspect", (DL_FUNC) &_meteoland_aspect, 5},
     {"_meteoland_dailyEquilibriumPET", (DL_FUNC) &_meteoland_dailyEquilibriumPET, 2},
     {"_meteoland_PenmanPETPointSeries", (DL_FUNC) &_meteoland_PenmanPETPointSeries, 15},
     {"_meteoland_PenmanMonteithPETPointSeries", (DL_FUNC) &_meteoland_PenmanMonteithPETPointSeries, 8},
     {"_meteoland_PenmanPETPointsDay", (DL_FUNC) &_meteoland_PenmanPETPointsDay, 15},
+    {"_meteoland_temporalSmoothing", (DL_FUNC) &_meteoland_temporalSmoothing, 3},
+    {"_meteoland_slope", (DL_FUNC) &_meteoland_slope, 5},
+    {"_meteoland_aspect", (DL_FUNC) &_meteoland_aspect, 5},
     {"_meteoland_interpolatePrecipitationPoints", (DL_FUNC) &_meteoland_interpolatePrecipitationPoints, 16},
     {"_meteoland_interpolatePrecipitationSeriesPoints", (DL_FUNC) &_meteoland_interpolatePrecipitationSeriesPoints, 16},
     {"_meteoland_interpolatePrecipitationEventSeriesPoints", (DL_FUNC) &_meteoland_interpolatePrecipitationEventSeriesPoints, 12},

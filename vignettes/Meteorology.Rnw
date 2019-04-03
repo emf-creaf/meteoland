@@ -1,12 +1,11 @@
 \documentclass[11pt,a4paper]{article}
 \usepackage[utf8]{inputenc}
-\usepackage{natbib}
 \usepackage{authblk}
 \usepackage{hyperref}
 \usepackage{gensymb}
 \usepackage{amsmath}
 
-%\VignetteIndexEntry{User's guide to meteoland}
+%\VignetteIndexEntry{Package meteoland}
 %\VignettePackage{meteoland}
 
 <<echo=FALSE>>=
@@ -14,7 +13,7 @@ options(width=67)
 library(meteoland)
 @
 
-\title{User's guide to meteoland (ver. \Sexpr{packageVersion("meteoland")})}
+\title{Package meteoland (ver. \Sexpr{packageVersion("meteoland")})}
 \author[1,2]{Miquel De Cáceres}
 \affil[1]{Centre Tecnològic Forestal de Catalunya. Ctra. St. Llorenç de Morunys km 2, 25280, Solsona, Catalonia, Spain}
 \affil[2]{CREAF, Cerdanyola del Vallès, 08193, Spain}
@@ -27,17 +26,20 @@ library(meteoland)
 
 \newpage
 
-\section{Introduction to the package}
-\subsection{Purpose}
+\section{Introduction}
 Reliable meteorological data are a basic requirement for hydrological and ecological studies at the landscape scale. Given the large spatial variation of meteorology over complex terrains, meteorological records from a single weather station are often not representative of entire landscapes. Studies made on multiple sites over a landscape require different meteorological series for each site; and other studies may require meteorological data series for all grid cells of a landscape, in a continuous way. In these cases, spatial correlation between the meteorology series of different sites or cells must be taken into account. For example, the sequence of days with rain of contiguous cells will normally be the same or very similar, even if precipitation amounts may differ. Finally, studies addressing the impacts of climate change on forests and landscapes require downscaling coarse-scale predictions  of global or regional climate models to the landscape scale. When downscaling predictions for several locations in a landscape, spatial correlation of predictions is also important.
 
-With the aim to assist research of climatic impacts on forests, the R package \texttt{meteoland} provides utilities to estimate daily weather variables at any position over complex terrains:
+With the aim to assist research of climatic impacts on forests, the R package \texttt{meteoland} (De Cáceres et al. 2018) provides utilities to estimate daily weather variables at any position over complex terrains:
 \begin{enumerate}
 \item{Spatial interpolation of daily weather records from meteorological stations. }
 \item{Statistical correction of meteorological data series (e.g. from climate models).}
 \end{enumerate}
 
 Spatial interpolation is required when meteorology for the area and period of interest cannot be obtained from local sensors. The nearest weather station may not have data for the period of interest or it may be located too far away to be representative of the target area. Correcting the biases of a meteorological data series containing biases using a more accurate meteorological series is necessary when the more accurate series does not cover the period of interest and the less accurate series does. The less accurate series may be at coarser scale, as with climate model predictions or climate reanalysis data. In this case one can speak of statistical correction adn downscaling. However, one may also correct the predictions of climate models using reanalysis data estimated at the same spatial resolution. 
+
+The following sections describe in detail the design and functioning of the package. An introduction to the package can be found in De Cáceres et al. (2018), but the present document should be preferred for an up-to-date description of the package.
+
+\section{Data structures and functions}
 
 \subsection{Data structures}
 Package \texttt{meteoland} assists in the estimation of the following variables over lanscapes (units in parentheses):
@@ -123,15 +125,18 @@ Objects of class \texttt{SpatialPointsMeteorology} are stored in the disk using 
 
 As a special case, function \texttt{readmeteorologygridcells()} reads several \textbf{netCDF} files and returns an object of class \texttt{SpatialPointMeteorology} with the meteorological data of a set of specified grid cells.
 
-\subsection{Visualizing meteorological data}
+\subsection{Visualizing input topography and meteorological data}
 Although very simple, the package provides two kinds of functions to visualize the temporal and spatial variation of meteorology:
 
 \begin{itemize}
 \item{Function \texttt{spplot()} has been redefined from package \texttt{sp} to draw maps of specific weather variables corresponding to specific dates. The function can be used on objects of classs \texttt{SpatialGridMeteorology} and \texttt{SpatialPixelsMeteorology}.}
 \item{Function \texttt{meteoplot()} allows the temporal series of specific variables on specific spatial points to be plotted. The function can read the data from the disk or from objects of class \texttt{SpatialPointsMeteorology}.}
 \end{itemize}
+Similarly, function \texttt{spplot()} also accepts objects of classes \texttt{SpatialGridTopography} and \texttt{SpatialPixelsTopography}, so that topography can also be easily displayed.
 
-\subsection{Reshaping and summarizing meteorological data}
+\subsection{Manipulating topographic and meteorological data}
+Following the design of package \texttt{sp}, package meteoland provides functions for switching between spatial structures. For example, it is possible to coerce an object of \texttt{SpatialPointsTopography} into a \texttt{SpatialPixelsTopography} using a call like \texttt{as(x, "SpatialPixelsTopography")}. Subsetting is also allowed, so that estimations of daily meteorology can be performed in subsets of points or grids.
+
 The package provides a few functions to extract/reshape meteorological data:
 
 \begin{itemize}
@@ -139,7 +144,9 @@ The package provides a few functions to extract/reshape meteorological data:
 \item{Function \texttt{extractpointdates()} extracts the meteorology of a set of dates from an object of class \texttt{SpatialPointsMeteorology}. It returns one data frame for each date, with points in rows and meteorology variables in columns.}
 \end{itemize}
 
-Other functions are used to generate temporal summaries of meteorological data. These accept meteorology objects as input and return their corresponding spatial dataframe structure with the summary statistics in columns:
+\subsection{Summarizing meteorological data}
+
+The package provides functions to generate temporal summaries of meteorological data. These accept meteorology objects as input and return their corresponding spatial dataframe structure with the summary statistics in columns:
 
 \begin{itemize}
 \item{Function \texttt{summarypoints()} summarizes the meteorology of spatial points. It accepts objects of \texttt{SpatialPointsMeteorology} as input and returns an object of \texttt{SpatialPointsDataFrame} with point summaries for the requested variable. Temporal summaries can be calculated for different periods and using different summarizing functions (e.g. mean, sum, minimum, maximum, etc.).}
@@ -830,11 +837,11 @@ Users of \texttt{meteoland} can choose between three different types of correcti
 The bias calculated in the reference period is then subtracted from the value of $u$ for any day of the period of interest.
 }
 \item{\textbf{Scaling}: A slope is calculated by regressing $u$ on $x$ through the origin (i.e. zero intercept) using data of the reference period. The slope can then be used as scaling factor to multiply the values of $u$ for any day of the period of interest.}
-\item{\textbf{Empirical quantile mapping}: Due to its distributional properties, neither multiplicative or additive factors are appropriate for daily precipitation (Gudmundsson et al. 2012; Ruffault et al. 2014). In this case, it has been recommended to compare the empirical cumulative distribution function (CDF) of the two series for the reference period (Gudmundsson et al. 2012). The empirical CDFs of $x$ and $u$ for the reference period are approximated using tables of empirical percentiles, and this mapping is used to correct values of $u$ for the period of interest:
+\item{\textbf{Empirical quantile mapping}: Due to its distributional properties, neither multiplicative or additive factors are appropriate for daily precipitation (Gudmundsson et al. 2012; Ruffault et al. 2014). In this case, it has been recommended to compare the empirical cumulative distribution function (CDF) of the two series for the reference period (Déqué 2007). The empirical CDFs of $x$ and $u$ for the reference period are approximated using tables of empirical percentiles, and this mapping is used to correct values of $u$ for the period of interest:
 \begin{equation}
 c_d = ecdf_x^{-1}(ecdf_u(u_d))
 \end{equation}
-where $ecdf_x$ and $ecdf_u$ are the empirical CDFs of $x$ and $u$ respectively. Values between percentiles are approximated using linear interpolation. \texttt{meteoland} performs quantile mapping by calling the functions implemented in package \texttt{qmap} (Gudmundsson et al. 2012). 
+where $ecdf_x$ and $ecdf_u$ are the empirical CDFs of $x$ and $u$ respectively. Values between percentiles are approximated using linear interpolation. A difficulty arises for quantile mapping when the variables bounded by zero, such as precipitation. As the models tend to drizzle (or may have lower frequency of precipitation events), the probability of precipitation in the model may be greater or lower than that observed. To correct this, when model precipitation is zero an observed value is randomly chosen in the interval where the observed cumulative frequency is less than or equal to the probability of no precipitation in the model. This procedure ensures that the probability of precipitation after correction is equal to that observed (Boé 2007).
 }
 \end{itemize}
 
@@ -999,7 +1006,13 @@ Function \texttt{readWindNinjaOutput()} can be used to conduct this last step. T
 
 \section{References}
 \begin{itemize}
+\item{Boé J, Terray L, Habets F, Martin E (2007) Statistical and dynamical downscaling of the Seine basin climate for hydro-meteorological studies. Int J Climatol 27:1643–1655. doi: 10.1002/joc.1602}
+
 \item{Danby, J. M. Eqn. 6.16.4 in Fundamentals of Celestial Mechanics, 2nd ed. Richmond, VA: Willmann-Bell, p. 207, 1988.}
+
+\item{Déqué M (2007) Frequency of precipitation and temperature extremes over France in an anthropogenic scenario: Model results and statistical correction according to observed values. Glob Planet Change 57:16–26. doi: 10.1016/j.gloplacha.2006.11.030}
+
+\item{De Caceres M, Martin-StPaul N, Turco M, Cabon A, Granda V (2018) Estimating daily meteorological data and downscaling climate models over landscapes. Environmental Modelling and Software 108: 186-196.}
 
 \item{Garnier, B.J., Ohmura, A., 1968. A method of calculating the direct shortwave radiation income of slopes. J. Appl. Meteorol. 7, 796–800. doi:10.1175/1520-0450(1968)007<0796:AMOCTD>2.0.CO;2.}
 

@@ -8,9 +8,9 @@ MeteorologyInterpolationData<-function(points, elevation = NULL, slope = NULL, a
   coords = coordinates(points)
   nstations = nrow(coords)
   if(isPointsTopo) {
-    elevation = points@data$elevation
-    slope = points@data$slope
-    aspect = points@data$aspect
+    elevation = as.numeric(points@data$elevation)
+    slope = as.numeric(points@data$slope)
+    aspect = as.numeric(points@data$aspect)
   } else {
     if(!is.null(elevation)) {
       if(length(elevation)!=nstations) stop("'elevation' has to be of the same length as the number of points.")
@@ -29,7 +29,7 @@ MeteorologyInterpolationData<-function(points, elevation = NULL, slope = NULL, a
     }
   }
   
-  if(isPoints) { # Build from variable matrices
+  if(isPoints || isPointsTopo) { # Build from variable matrices
     if(!inherits(MinTemperature,"matrix")) stop("'MinTemperature' has to be a numeric matrix")
     dates = as.Date(colnames(MinTemperature))
     ndays = length(dates)
@@ -88,7 +88,13 @@ MeteorologyInterpolationData<-function(points, elevation = NULL, slope = NULL, a
       if("WindDirection" %in% names(sti_data)) WindDirection[i,] = sti_data[, "WindDirection"]
     }
   }
-
+  MinTemperature[is.infinite(MinTemperature)] = NA
+  MaxTemperature[is.infinite(MaxTemperature)] = NA
+  Precipitation[is.infinite(Precipitation)] = NA
+  RelativeHumidity[is.infinite(RelativeHumidity)] = NA
+  Radiation[is.infinite(Radiation)] = NA
+  WindDirection[is.infinite(WindDirection)] = NA
+  
   SmoothedPrecipitation = .temporalSmoothing(as.matrix(Precipitation), params$St_Precipitation, TRUE)
   SmoothedTemperatureRange = .temporalSmoothing(as.matrix(MaxTemperature-MinTemperature), params$St_TemperatureRange, FALSE)
   WFIndex = NULL
@@ -108,6 +114,10 @@ MeteorologyInterpolationData<-function(points, elevation = NULL, slope = NULL, a
     WFIndex = l$Index
     WFFactor = l$Factor
   }
+  
+  #Adapt initial_Rp to mean distance between stations
+  params$initial_Rp = mean(dist(coords))
+    
   ilm = new("MeteorologyInterpolationData",
            coords = coords,
            bbox = points@bbox,

@@ -1,8 +1,8 @@
 Package: meteoland
 Type: Package
 Title: Landscape Meteorology Tools
-Version: 0.7.5
-Date: 2018-08-05
+Version: 0.7.8
+Date: 2018-10-22
 Authors@R: c(
 	person('Miquel', 'De Cáceres', role=c('aut','cre'),
 	email='miquelcaceres@gmail.com'),
@@ -13,8 +13,10 @@ Description: Functions to estimate weather variables at any position of a landsc
 License: GPL (>= 2)
 URL: http://vegmod.ctfc.cat/meteolandweb
 LazyData: TRUE
-Depends: R (>= 3.4.0), sp, qmap
+Depends: R (>= 3.4.0), sp
 Imports: spdep, rgdal, ncdf4, ncdf4.helpers, httr, jsonlite, methods, Rcpp (>= 0.12.12)
+Suggests: knitr
 LinkingTo: Rcpp
 Encoding: UTF-8
 NeedsCompilation: yes
+VignetteBuilder: utils, knitr

@@ -7,12 +7,15 @@
 Function \code{SpatialGridTopography} creates an object of class \code{\link{SpatialGridTopography-class}} containing topographic variables over a landscape.
 }
 \usage{
-SpatialGridTopography(grid, elevation, proj4string = CRS(as.character(NA)))
+SpatialGridTopography(grid, elevation, slope = NULL, aspect = NULL, 
+                      proj4string = CRS(as.character(NA)))
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{grid}{An object of class \code{\link{GridTopology-class}} or  \code{\link{SpatialGrid-class}}.}
-  \item{elevation}{A vector of elevation values for all cells of the grid (in m).}
+  \item{elevation}{A vector of elevation values for all cells of the grid (in m.a.s.l.).}
+  \item{slope}{A vector of slope angles for all cells of the grid (in degrees). If \code{slope=NULL}, slope is calculated as indicated in details.}
+  \item{aspect}{A vector of aspect angles for all cells of the grid (in degrees from North clockwise ). \code{aspect=NULL}, aspect values are calculated as indicated in details. }
   \item{proj4string}{An object of class \code{\link{CRS-class}}.}
 }
 \details{
@@ -56,9 +59,12 @@ Burrough, P. A. and McDonell, R.A., 1998. Principles of Geographical Information
 data(examplegridtopography)
 
 #Display data
-spplot(examplegridtopography, type="elevation", scales=list(draw=TRUE))
-spplot(examplegridtopography, type="slope", scales=list(draw=TRUE))
-spplot(examplegridtopography, type="aspect", scales=list(draw=TRUE))
+spplot(examplegridtopography, variable="elevation", scales=list(draw=TRUE))
+
+#Grids can be subsetted
+sgt = examplegridtopography[1:50, 1:50]
+spplot(sgt, variable="elevation", scales=list(draw=TRUE))
+
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.

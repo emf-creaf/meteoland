@@ -972,15 +972,19 @@ E_{pot} = \frac{1}{\lambda} \cdot \frac{\Delta \cdot R_{n} + D \cdot (\rho \cdot
 where  $D$ is the vapour pressure deficit (in kPa), $\Delta$  is the slope of the saturated vapor pressure (in $Pa \cdot K^{-1}$), $\gamma$ is the psychrometer constant (in $kPa\cdot K^{-1}$), $\lambda$ is the latent heat vaporization of water (in $MJ\cdot kg^{-1}$) and $C_p$ is the specific heat of air (in $MJ\cdot kg^{-1}\cdot K^{-1}$). $r_c$ is the canopy resistance (in $s\cdot m^{-1}$). For simplicity, aerodynamic resistance ($r_a$) is currently set to $r_a = 208.0/u$ where $u$ is the input wind speed.  
 
 \section{Miscellaneous functions}
-\subsection{Downloading data from AEMET}
+\subsection{Downloading data from station networks}
 
-National meteorological agencies are increasingly adopting an open data philosophy and one of them is the Spanish meteorological agency (Agencia Española de Meteorología, AEMET). In \texttt{meteoland} we provide two functions that retrieve AEMET data using their OpenData API (API keys need to be obtained from AEMET):
+National meteorological agencies are increasingly adopting an open data philosophy and two of them are the Spanish meteorological agency (Agencia Española de Meteorología, AEMET) and the Catalan meteorologicl service (Servei Català de Meteorologia, SMC). In \texttt{meteoland} we provide functions that retrieve AEMET and SMC data using their OpenData API (API keys need to be obtained from AEMET or SMC):
 \begin{itemize}
-\item{\texttt{downloadAEMEThistoricalstationlist()} : Gets the list of stations from which historical daily meteorological data is available.}
-\item{\texttt{downloadAEMEThistorical()} : Downloads historical daily meteorological data corresponding to a input set of stations and period.}
-\item{\texttt{downloadAEMETcurrentday()} : Downloads the last 24h of meteorological data corresponding to a input set of stations.}
+\item{\texttt{downloadAEMEThistoricalstationlist()} : Gets the list of AEMET stations from which historical daily meteorological data is available.}
+\item{\texttt{downloadAEMEThistorical()} : Downloads historical daily meteorological data corresponding to a input set of AEMET stations and a given period.}
+\item{\texttt{downloadAEMETcurrentday()} : Downloads the last 24h of meteorological data corresponding to a input set of AEMET stations.}
+\item{\texttt{downloadSMCvarmetadata()}: Downloads the definition of meteorological variables, their units and codes for SMC.}
+\item{\texttt{downloadSMCcurrentday()} : Downloads the last 24h of meteorological data corresponding to a input set of SMC stations.}
 \end{itemize}
 
+\subsection{Reshaping data obtained from other packages}
+\texttt{meteoland} provides functions to facilitate reshaping weather data acquired using other R packages into the meteoland format. So far, two packages are supported, \texttt{worldmet} and \texttt{weathercan}, and the corresponding functions are called \texttt{reshapeworldmet()} and \texttt{reshapeweathercan()}, respectively.
 
 \subsection{Extraction of climatic netCDF data}
 

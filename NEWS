@@ -5,6 +5,7 @@
 __Version history__
 _Version 0.8.0, April 2019.
 1. New functions 'downloadSMCcurrentday' and 'downloadSMCvarmetadata'.
+2. Update of vignette 'Meteorology'.
 
 _Version 0.7.9, March 2019.
 1. New function reshapeworldmet to reshape data downloaded using package 'worldmet'

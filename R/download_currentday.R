@@ -123,10 +123,12 @@ downloadSMCvarmetadata <- function(api){
 # download the met data
 downloadSMCcurrentday <- function(api, daily=TRUE, variable_code=NULL, station_id=NULL, date = Sys.Date(), verbose=TRUE){
 
-  load("data/SMCvarcode_df.RData")
-  load("data/SMCstation_sp.RData")
-    
-  if(meteoland_output==T) variable_code <- c(30:33,35) else if(is.null(variable_code)) stop("variable_code must be specified")
+  # load("data/SMCvarcode_df.RData")
+  # load("data/SMCstation_sp.RData")
+  SMCvarcode_df = get("SMCvarcode_df")
+  SMCstation_sp = get("SMCstation_sp")
+  
+  if(daily==T) variable_code <- c(30:33,35) else if(is.null(variable_code)) stop("variable_code must be specified")
   
   if(verbose)cat("Downloading hourly data from all available stations")
   date_split <- strsplit(as.character(date), split = "-")[[1]]

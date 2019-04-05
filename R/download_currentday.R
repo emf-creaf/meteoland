@@ -121,7 +121,7 @@ downloadSMCvarmetadata <- function(api){
 # SMCstation_sp <- downloadSMChistoricalstationlist(api)
 # save(SMCstation_sp, file = "data/SMCstation_sp.RData")
 # download the met data
-downloadSMCcurrentday <- function(api, meteoland_output=TRUE, variable_code=NULL, station_ID=NULL, date = Sys.Date(), verbose=TRUE){
+downloadSMCcurrentday <- function(api, daily=TRUE, variable_code=NULL, station_id=NULL, date = Sys.Date(), verbose=TRUE){
 
   load("data/SMCvarcode_df.RData")
   load("data/SMCstation_sp.RData")
@@ -134,7 +134,7 @@ downloadSMCcurrentday <- function(api, meteoland_output=TRUE, variable_code=NULL
   # download variable per variable
   for(i in 1:length(variable_code)){
     apidest <- paste("/variables/mesurades", variable_code[i], date_split[1], date_split[2], date_split[3], sep = "/")
-    if(!is.null(station_ID)){apidest<-paste0(apidest,"?codiEstacio=", station_ID)}
+    if(!is.null(station_id)){apidest<-paste0(apidest,"?codiEstacio=", station_id)}
     data_list <- .get_data_smc(apidest, api)
     data_list$variables <- sapply(data_list$variables, FUN = function(x)x$lectures)
     
@@ -158,7 +158,7 @@ downloadSMCcurrentday <- function(api, meteoland_output=TRUE, variable_code=NULL
   data$date <- sub("Z", "", data$date)
   data$date <- as.POSIXlt(sub("T", " ",data$date), format = "%Y-%m-%d %H:%M")
   
-  if(meteoland_output){
+  if(daily){
     if(verbose)cat("\nAggregating hourly data to 24h-scale\n")
     options(warn=-1)
     data$date <- as.Date(data$date)

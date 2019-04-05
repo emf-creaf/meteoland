@@ -46,9 +46,9 @@ The list of stations available in \code{downloadAEMETcurrentday} (current observ
 AEMET should be acknowledged as author of information when using this data.
 }
 \author{
-Antoine Cabon, Centre Tecnologic Forestal de Catalunya
+Antoine Cabon, CTFC
 
-Miquel De \enc{Cáceres}{Caceres} Ainsa, Centre Tecnologic Forestal de Catalunya
+Miquel De \enc{Cáceres}{Caceres} Ainsa, CTFC
 }
 
 \seealso{

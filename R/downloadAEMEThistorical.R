@@ -1,4 +1,6 @@
-# Function to download daily met data from AEMET, format it and save it on the disk
+# Function to download daily met data, format it and save it on the disk
+
+### AEMET
 downloadAEMEThistorical <- function(api, dates, station_id, export = FALSE, exportDir = getwd(),
                                 exportFormat = "meteoland/txt",
                                 metadatafile = "MP.txt", verbose=TRUE){
@@ -215,3 +217,7 @@ downloadAEMEThistorical <- function(api, dates, station_id, export = FALSE, expo
   # invisible(spdf)
 }
 
+
+
+#### SMC
+# a implementar...

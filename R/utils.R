@@ -87,3 +87,28 @@
     return(datos)
   }
 }
+
+.get_data_smc <- function(apidest, apikey) {
+  
+  url.base <- "https://api.meteo.cat/xema/v1"
+  
+  url1 <- paste0(url.base, apidest)
+  
+  path1 <- httr::GET(url1, httr::add_headers(`x-api-key`= apikey))
+  
+  ans.text <- httr::content(path1, as = "text")
+  ans <- jsonlite::fromJSON(ans.text)
+  
+  if(path1$status_code != 200) {
+    error.df <- data.frame(code = c(400, 403, 429, 500),
+                           type = c("Bad request","Forbidden","Too many requests", "Internal server error"),
+                           cause = c("The parameters of the request are incorrect",
+                                     "If message=Forbidden, the request is not allowed.\nIf message=Missing authentification Token, the data does not exist",
+                                     "The limit of requests per second or per month has been reached",
+                                     "Internal server error (e.g. the requested data is not available)\nFurther information about the cause of the error is given in message"))
+    sel <- error.df$code == path1$status_code  
+    stop(paste(error.df[sel,1], error.df[sel,2], error.df[sel,3], paste0("\nMessage:",ans$message), sep = ". "))
+  }else{
+    return(ans)
+  }
+}

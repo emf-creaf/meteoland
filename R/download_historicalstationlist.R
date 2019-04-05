@@ -1,3 +1,5 @@
+
+### AEMET
 downloadAEMEThistoricalstationlist <- function(api){
   # nonUTF8 = "\u00D1\u00C0\u00C1\u00C8\u00C9\u00D2\u00D3\u00CC\u00CD\u00DC\u00CF"
   # 
@@ -62,6 +64,26 @@ downloadAEMEThistoricalstationlist <- function(api){
   
   # create sp object
   data_sp <- SpatialPointsDataFrame(data = data_df[,c("province", "elevation", "ID", "name", "zip")], 
+                                    coords = data_df[,c("long", "lat")], proj4string = CRS("+proj=longlat"))
+  row.names(data_sp) <- data_sp@data$ID
+  return(data_sp)
+}
+
+
+### SMC
+downloadSMChistoricalstationlist <- function(api,date=NULL){
+  
+  apidest = "/estacions/metadades"
+  if(!is.null(date)){apidest=paste0(apidest, "?estat=ope&data=", date, "Z")}
+  data = .get_data_smc(apidest, api)
+  
+  # Format data
+  data_df <- data.frame(ID = data$codi, name = data$nom, municipality = data$municipi$nom, zip = data$municipi$codi,
+                        county = data$comarca$nom, province = data$provincia$nom, 
+                        long = data$coordenades$long, lat = data$coordenades$latitud, elevation = data$altitud)
+  
+  # create sp object
+  data_sp <- SpatialPointsDataFrame(data = data_df[,c("ID", "name", "municipality", "zip", "county", "province", "elevation")], 
                                     coords = data_df[,c("long", "lat")], proj4string = CRS("+proj=longlat"))
   row.names(data_sp) <- data_sp@data$ID
   return(data_sp)

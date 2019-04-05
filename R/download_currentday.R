@@ -1,4 +1,6 @@
-# Function to download daily met data from AEMET, format it and save it on the disk
+# Function to download daily met data, format it and save it on the disk
+
+#### AEMET
 downloadAEMETcurrentday <- function(api, daily = TRUE, verbose=TRUE){
   # # Utilitary functions
   # nonUTF8 = "\u00D1\u00C0\u00C1\u00C8\u00C9\u00D2\u00D3\u00CC\u00CD\u00DC\u00CF"
@@ -96,7 +98,107 @@ downloadAEMETcurrentday <- function(api, daily = TRUE, verbose=TRUE){
     return(data_sp)
   }else{
     if(verbose)cat("\nHourly results are returned\n")
-    colnames(data_df) <- c("ID", "long", "lat", "name", "elevation", "date_time", 
+    colnames(data_df) <- c("ID", "long", "lat", "name", "elevation", "date", 
+                           "MeanTemperature", "MinTemperature", "MaxTemperature",
+                           "Precipitation", "MeanRelativeHumidity", "WindDirection", "WindSpeed")
+    return(data_df)
+  }
+}
+
+
+
+#### SMC
+# download the variables metadata
+downloadSMCvarmetadata <- function(api){
+  apidest <- "/variables/mesurades/metadades"
+  data <- .get_data_smc(apidest,api)
+  rownames(data) <- data$codi
+  return(data)
+}
+
+# SMCvarcode_df <- downloadSMCvarmetadata(api)
+# save(SMCvarcode_df, file ="data/SMCvarcode_df.RData")
+# SMCstation_sp <- downloadSMChistoricalstationlist(api)
+# save(SMCstation_sp, file = "data/SMCstation_sp.RData")
+# download the met data
+downloadSMCcurrentday <- function(api, meteoland_output=TRUE, variable_code=NULL, station_ID=NULL, date = Sys.Date(), verbose=TRUE){
+
+  load("data/SMCvarcode_df.RData")
+  load("data/SMCstation_sp.RData")
+    
+  if(meteoland_output==T) variable_code <- c(30:33,35) else if(is.null(variable_code)) stop("variable_code must be specified")
+  
+  if(verbose)cat("Downloading hourly data from all available stations")
+  date_split <- strsplit(as.character(date), split = "-")[[1]]
+  
+  # download variable per variable
+  for(i in 1:length(variable_code)){
+    apidest <- paste("/variables/mesurades", variable_code[i], date_split[1], date_split[2], date_split[3], sep = "/")
+    if(!is.null(station_ID)){apidest<-paste0(apidest,"?codiEstacio=", station_ID)}
+    data_list <- .get_data_smc(apidest, api)
+    data_list$variables <- sapply(data_list$variables, FUN = function(x)x$lectures)
+    
+    data_i <- data.frame()
+    for(j in 1:length(data_list$codi)){
+      data_j <- data_list$variables[[j]][,c("data", "valor")]
+      data_j$ID <- data_list$codi[[j]]
+      data_i <- rbind(data_i,data_j)
+    }
+    
+    colnames(data_i) <- c("date", as.character(variable_code[i]), "ID")
+    if(i == 1) {data <- data_i}else{data <- merge(data, data_i, all=T)}
+  }
+
+
+  
+  if(verbose)cat("\nFormating data")
+  colsel <- !colnames(data) %in% c("date", "ID")
+  colnames(data)[colsel] <- SMCvarcode_df[colnames(data)[colsel], "nom"]
+  data$date <- sub("T", " ", data$date)
+  data$date <- sub("Z", "", data$date)
+  data$date <- as.POSIXlt(sub("T", " ",data$date), format = "%Y-%m-%d %H:%M")
+  
+  if(meteoland_output){
+    if(verbose)cat("\nAggregating hourly data to 24h-scale\n")
+    options(warn=-1)
+    data$date <- as.Date(data$date)
+    numvar <- !colnames(data) %in% c("date", "date", "ID")
+    
+    data_agg <- aggregate(data[,numvar],list(ID = data$ID), 
+                          function(x){mean<-mean(x,na.rm=T);min<-min(x,na.rm=T);max<-max(x,na.rm=T);sum<-sum(x,na.rm=T)
+                          return(c(mean=mean,min=min,max=max,sum=sum))})
+    
+    # wind direction
+    dv_agg <- aggregate(list(dv = data$`Direcció de vent 10 m (m. 1) `),
+                        list(ID = data$ID),
+                        function(dvvec){
+                          y = sum(cos(dvvec*pi/180), na.rm=TRUE)/length(dvvec)
+                          x = sum(sin(dvvec*pi/180), na.rm=TRUE)/length(dvvec)
+                          dv = (180/pi)*atan(y/x)
+                          dv[dv<0] <- dv[dv<0]+360
+                          return(dv)
+                        })
+    options(warn=0)
+    data_df <- data.frame(ID = data_agg$ID, name = SMCstation_sp@data[data_agg$ID,"name"], 
+                          long = SMCstation_sp@coords[data_agg$ID,"long"],lat = SMCstation_sp@coords[data_agg$ID,"lat"], elevation = SMCstation_sp@data[data_agg$ID,"elevation"],
+                          MeanTemperature = data_agg$Temperatura[,"mean"], MinTemperature = data_agg$Temperatura[,"min"], MaxTemperature = data_agg$Temperatura[,"max"],
+                          Precipitation = data_agg$Precipitació[,"sum"], WindSpeed = data_agg$`Velocitat del vent a 10 m (esc.)`[,"mean"], WindDirection = dv_agg$dv,
+                          MeanRelativeHumidity = data_agg$`Humitat relativa`[,"mean"], MinRelativeHumidity = data_agg$`Humitat relativa`[,"min"], MaxRelativeHumidity = data_agg$`Humitat relativa`[,"max"])
+    
+    data_df <- as.data.frame(lapply(data_df,function(x){
+      x. <- x
+      if(is.numeric(x.))x.[is.nan(x.)|is.infinite(x.)] <- NA
+      return(x.)
+    }))
+    
+    data_sp <- SpatialPointsDataFrame(coords = data_df[,c("long", "lat")],
+                                      data = data_df[,which(!colnames(data_df) %in% c("long", "lat", "name", "ID"))],
+                                      proj4string = CRS("+proj=longlat"))
+    row.names(data_sp) <- data_df$ID
+    return(data_sp)
+  }else{
+    if(verbose)cat("\nHourly results are returned\n")
+    colnames(data_df) <- c("ID", "long", "lat", "name", "elevation", "date", 
                            "MeanTemperature", "MinTemperature", "MaxTemperature",
                            "Precipitation", "MeanRelativeHumidity", "WindDirection", "WindSpeed")
     return(data_df)

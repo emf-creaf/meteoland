@@ -71,7 +71,7 @@ downloadAEMEThistoricalstationlist <- function(api){
 
 
 ### SMC
-downloadSMChistoricalstationlist <- function(api,date=NULL){
+downloadSMCstationlist <- function(api,date=NULL){
   
   apidest = "/estacions/metadades"
   if(!is.null(date)){apidest=paste0(apidest, "?estat=ope&data=", date, "Z")}

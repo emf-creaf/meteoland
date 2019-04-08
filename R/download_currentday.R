@@ -123,12 +123,13 @@ downloadSMCvarmetadata <- function(api){
 # download the met data
 downloadSMCcurrentday <- function(api, daily=TRUE, variable_code=NULL, station_id=NULL, date = Sys.Date(), verbose=TRUE){
 
-  # load("data/SMCvarcode_df.RData")
-  # load("data/SMCstation_sp.RData")
   SMCvarcode_df = get("SMCvarcode_df")
   SMCstation_sp = get("SMCstation_sp")
   
-  if(daily==T) variable_code <- c(30:33,35) else if(is.null(variable_code)) stop("variable_code must be specified")
+  if(daily==T) variable_code <- c(32, 33, 35, 36, 46, 47) 
+  else if(is.null(variable_code)) stop("variable_code must be specified")
+  
+  variable_names = SMCvarcode_df[as.character(variable_code),"nom"]
   
   if(verbose)cat("Downloading hourly data from all available stations")
   date_split <- strsplit(as.character(date), split = "-")[[1]]
@@ -171,7 +172,7 @@ downloadSMCcurrentday <- function(api, daily=TRUE, variable_code=NULL, station_i
                           return(c(mean=mean,min=min,max=max,sum=sum))})
     
     # wind direction
-    dv_agg <- aggregate(list(dv = data$`Direcció de vent 10 m (m. 1) `),
+    dv_agg <- aggregate(list(dv = data[,variable_names[6]]),
                         list(ID = data$ID),
                         function(dvvec){
                           y = sum(cos(dvvec*pi/180), na.rm=TRUE)/length(dvvec)
@@ -182,16 +183,26 @@ downloadSMCcurrentday <- function(api, daily=TRUE, variable_code=NULL, station_i
                         })
     options(warn=0)
     data_df <- data.frame(ID = data_agg$ID, name = SMCstation_sp@data[data_agg$ID,"name"], 
-                          long = SMCstation_sp@coords[data_agg$ID,"long"],lat = SMCstation_sp@coords[data_agg$ID,"lat"], elevation = SMCstation_sp@data[data_agg$ID,"elevation"],
-                          MeanTemperature = data_agg$Temperatura[,"mean"], MinTemperature = data_agg$Temperatura[,"min"], MaxTemperature = data_agg$Temperatura[,"max"],
-                          Precipitation = data_agg$Precipitació[,"sum"], WindSpeed = data_agg$`Velocitat del vent a 10 m (esc.)`[,"mean"], WindDirection = dv_agg$dv,
-                          MeanRelativeHumidity = data_agg$`Humitat relativa`[,"mean"], MinRelativeHumidity = data_agg$`Humitat relativa`[,"min"], MaxRelativeHumidity = data_agg$`Humitat relativa`[,"max"])
+                          long = SMCstation_sp@coords[data_agg$ID,"long"],
+                          lat = SMCstation_sp@coords[data_agg$ID,"lat"], 
+                          elevation = SMCstation_sp@data[data_agg$ID,"elevation"],
+                          MeanTemperature = data_agg[[variable_names[1]]][ ,"mean"], 
+                          MinTemperature = data_agg[[variable_names[1]]][ ,"min"], 
+                          MaxTemperature = data_agg[[variable_names[1]]][ ,"max"],
+                          Precipitation = data_agg[[variable_names[3]]][ ,"sum"], 
+                          WindSpeed = data_agg[[variable_names[5]]][ ,"mean"], 
+                          WindDirection = dv_agg$dv,
+                          MeanRelativeHumidity = data_agg[[variable_names[2]]][ ,"mean"], 
+                          MinRelativeHumidity = data_agg[[variable_names[2]]][ ,"min"], 
+                          MaxRelativeHumidity = data_agg[[variable_names[2]]][ ,"max"],
+                          Radiation = data_agg[[variable_names[4]]][ ,"mean"])
     
     data_df <- as.data.frame(lapply(data_df,function(x){
       x. <- x
       if(is.numeric(x.))x.[is.nan(x.)|is.infinite(x.)] <- NA
       return(x.)
     }))
+    data_df$Radiation = data_df$Radiation*(3600*24)/1e6 # From W/m2 to MJ/m2
     
     data_sp <- SpatialPointsDataFrame(coords = data_df[,c("long", "lat")],
                                       data = data_df[,which(!colnames(data_df) %in% c("long", "lat", "name", "ID"))],
@@ -200,9 +211,6 @@ downloadSMCcurrentday <- function(api, daily=TRUE, variable_code=NULL, station_i
     return(data_sp)
   }else{
     if(verbose)cat("\nHourly results are returned\n")
-    colnames(data_df) <- c("ID", "long", "lat", "name", "elevation", "date", 
-                           "MeanTemperature", "MinTemperature", "MaxTemperature",
-                           "Precipitation", "MeanRelativeHumidity", "WindDirection", "WindSpeed")
-    return(data_df)
+    return(data)
   }
 }

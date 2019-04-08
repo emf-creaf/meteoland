@@ -41,14 +41,17 @@ reshapeweathercan<-function(hourly_data, daily_data = NULL, output="SpatialPoint
     
     data_agg <- aggregate(data_df[,numvar],list(date = as.Date(data_df$date)), 
                           function(x){
-                            mean<-mean(x,na.rm=T)
-                            min<-min(x,na.rm=T)
-                            max<-max(x,na.rm=T)
-                            sum<-sum(x,na.rm=T)
-                            if(is.infinite(mean)) mean <- NA
-                            if(is.infinite(min)) min <- NA
-                            if(is.infinite(max)) max <- NA
-                            if(is.infinite(sum)) sum <- NA
+                            if(!all(is.na(x))) {
+                              mean<-mean(x,na.rm=T)
+                              min<-min(x,na.rm=T)
+                              max<-max(x,na.rm=T)
+                              sum<-sum(x,na.rm=T)
+                            } else {
+                              mean <- NA
+                              min <- NA
+                              max <- NA
+                              sum <- NA
+                            }
                             return(c(mean=mean,min=min,max=max,sum=sum))})
     
     # wind direction (tens of degrees)

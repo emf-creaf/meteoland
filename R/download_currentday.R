@@ -121,17 +121,14 @@ downloadSMCvarmetadata <- function(api){
 # SMCstation_sp <- downloadSMChistoricalstationlist(api)
 # save(SMCstation_sp, file = "data/SMCstation_sp.RData")
 # download the met data
-downloadSMCcurrentday <- function(api, daily=TRUE, variable_code=NULL, station_id=NULL, date = Sys.Date(), verbose=TRUE){
+downloadSMCcurrentday <- function(api, daily_meteoland=TRUE, variable_code=NULL, station_id=NULL, date = Sys.Date(), verbose=TRUE){
 
-  SMCvarcode_df = get("SMCvarcode_df")
-  SMCstation_sp = get("SMCstation_sp")
-  
-  if(daily==T) variable_code <- c(32, 33, 35, 36, 46, 47) 
+  if(daily_meteoland) variable_code <- c(32, 33, 35, 36, 46, 47) 
   else if(is.null(variable_code)) stop("variable_code must be specified")
   
-  variable_names = SMCvarcode_df[as.character(variable_code),"nom"]
+  variable_names = SMCvarcodes[as.character(variable_code),"nom"]
   
-  if(verbose)cat("Downloading hourly data from all available stations")
+  if(verbose)cat("Downloading hourly data from all available stations\n")
   date_split <- strsplit(as.character(date), split = "-")[[1]]
   
   # download variable per variable
@@ -154,14 +151,17 @@ downloadSMCcurrentday <- function(api, daily=TRUE, variable_code=NULL, station_i
 
 
   
-  if(verbose)cat("\nFormating data")
+  if(verbose)cat("\nFormating data\n")
   colsel <- !colnames(data) %in% c("date", "ID")
-  colnames(data)[colsel] <- SMCvarcode_df[colnames(data)[colsel], "nom"]
+  colnames(data)[colsel] <- SMCvarcodes[colnames(data)[colsel], "nom"]
   data$date <- sub("T", " ", data$date)
   data$date <- sub("Z", "", data$date)
   data$date <- as.POSIXlt(sub("T", " ",data$date), format = "%Y-%m-%d %H:%M")
   
-  if(daily){
+  if(daily_meteoland){
+    if(verbose)cat("\nDownloading station info\n")
+    SMCstation_sp = downloadSMCstationlist(api, date = date)
+    
     if(verbose)cat("\nAggregating hourly data to 24h-scale\n")
     options(warn=-1)
     data$date <- as.Date(data$date)

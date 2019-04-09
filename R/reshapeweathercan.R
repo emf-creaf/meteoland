@@ -41,14 +41,17 @@ reshapeweathercan<-function(hourly_data, daily_data = NULL, output="SpatialPoint
     
     data_agg <- aggregate(data_df[,numvar],list(date = as.Date(data_df$date)), 
                           function(x){
-                            mean<-mean(x,na.rm=T)
-                            min<-min(x,na.rm=T)
-                            max<-max(x,na.rm=T)
-                            sum<-sum(x,na.rm=T)
-                            if(is.infinite(mean)) mean <- NA
-                            if(is.infinite(min)) min <- NA
-                            if(is.infinite(max)) max <- NA
-                            if(is.infinite(sum)) sum <- NA
+                            if(!all(is.na(x))) {
+                              mean<-mean(x,na.rm=T)
+                              min<-min(x,na.rm=T)
+                              max<-max(x,na.rm=T)
+                              sum<-sum(x,na.rm=T)
+                            } else {
+                              mean <- NA
+                              min <- NA
+                              max <- NA
+                              sum <- NA
+                            }
                             return(c(mean=mean,min=min,max=max,sum=sum))})
     
     # wind direction (tens of degrees)
@@ -115,27 +118,33 @@ reshapeweathercan<-function(hourly_data, daily_data = NULL, output="SpatialPoint
     }
   }
   # Complete dates with missing
-  for(i in 1:nstations) {
-    df <- l[[i]]
-    if(!is.null(df)) {
-      df<-df[dates,]
-      rownames(df) <- dates
-      if(complete) df<-meteocomplete(df, 
-                                     latitude = coords$lat[i],
-                                     elevation = elevation[i],
-                                     aspect= NA,
-                                     slope = NA)
-      l[[i]] <- df
+  if(complete) {
+    for(i in 1:nstations) {
+      df <- l[[i]]
+      if(!is.null(df)) {
+        df<-df[dates,]
+        rownames(df) <- dates
+        df<-meteocomplete(df,
+                          latitude = coords$lat[i],
+                          elevation = elevation[i],
+                          aspect= NA,
+                          slope = NA)
+        l[[i]] <- df
+      }
     }
   }
   sp <- SpatialPoints(coords = coords,
                       proj4string = CRS("+proj=longlat"))
-  spt <- SpatialPointsTopography(sp, elevation)
-  spm <- SpatialPointsMeteorology(sp, l, dates = as.Date(dates))
-  if(output=="SpatialPointsMeteorology") return(spm)
-  else if(output=="SpatialPointsTopography") return(spt)
-  else if(output=="MeteorologyInterpolationData") {
-    mid = MeteorologyInterpolationData(spm, elevation = elevation)
-    return(mid)
+
+  if(output %in% c("SpatialPointsMeteorology", "MeteorologyInterpolationData")) {
+    spm <- SpatialPointsMeteorology(sp, l, dates = as.Date(dates))
+    if(output == "SpatialPointsMeteorology") {
+      return(spm)
+    } else {
+      return(MeteorologyInterpolationData(spm, elevation = elevation))
+    }
+  } else if(output=="SpatialPointsTopography") {
+    spt <- SpatialPointsTopography(sp, elevation)
+    return(spt)
   }
 }

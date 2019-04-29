@@ -120,6 +120,7 @@ downloadSMCvarmetadata <- function(api){
 # save(SMCvarcode_df, file ="data/SMCvarcode_df.RData")
 # SMCstation_sp <- downloadSMChistoricalstationlist(api)
 # save(SMCstation_sp, file = "data/SMCstation_sp.RData")
+
 # download the met data
 downloadSMCcurrentday <- function(api, daily_meteoland=TRUE, variable_code=NULL, station_id=NULL, date = Sys.Date(), verbose=TRUE){
 

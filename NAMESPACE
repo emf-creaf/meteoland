@@ -10,7 +10,7 @@ useDynLib(meteoland, .registration = TRUE)
 export(correctionpoint, correctionpoints, correctionpoints.errors, 
        correction_series,
        defaultCorrectionParams, defaultInterpolationParams,
-       downloadSMCstationlist, downloadSMCvarmetadata,downloadSMCcurrentday,
+       downloadSMCstationlist, downloadSMCvarmetadata,downloadSMCcurrentday, downloadSMChistorical,
        downloadAEMETcurrentday,downloadAEMEThistorical, downloadAEMEThistoricalstationlist,
        extractgridpoints, extractNetCDF, extractpointdates, extractSpatialData,
        interpolation_dewtemperature, interpolation_precipitation, interpolation_temperature, interpolation_wind,

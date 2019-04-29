@@ -974,13 +974,14 @@ where  $D$ is the vapour pressure deficit (in kPa), $\Delta$  is the slope of th
 \section{Miscellaneous functions}
 \subsection{Downloading data from station networks}
 
-National meteorological agencies are increasingly adopting an open data philosophy and two of them are the Spanish meteorological agency (Agencia Española de Meteorología, AEMET) and the Catalan meteorologicl service (Servei Català de Meteorologia, SMC). In \texttt{meteoland} we provide functions that retrieve AEMET and SMC data using their OpenData API (API keys need to be obtained from AEMET or SMC):
+National meteorological agencies are increasingly adopting an open data philosophy and two of them are the Spanish meteorological bureau (Agencia Española de Meteorología, AEMET) and the Catalan meteorology service (Servei Català de Meteorologia, SMC). In \texttt{meteoland} we provide functions that retrieve AEMET and SMC data using their OpenData API (API keys need to be obtained from AEMET or SMC):
 \begin{itemize}
 \item{\texttt{downloadAEMEThistoricalstationlist()} : Gets the list of AEMET stations from which historical daily meteorological data is available.}
 \item{\texttt{downloadAEMEThistorical()} : Downloads historical daily meteorological data corresponding to a input set of AEMET stations and a given period.}
 \item{\texttt{downloadAEMETcurrentday()} : Downloads the last 24h of meteorological data corresponding to a input set of AEMET stations.}
 \item{\texttt{downloadSMCvarmetadata()}: Downloads the definition of meteorological variables, their units and codes for SMC.}
 \item{\texttt{downloadSMCcurrentday()} : Downloads the last 24h of meteorological data corresponding to a input set of SMC stations.}
+\item{\texttt{downloadSMChistorical()} : Downloads historical daily meteorological data corresponding to a input set of SMC stations and a given period.}
 \end{itemize}
 
 \subsection{Reshaping data obtained from other packages}

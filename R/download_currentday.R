@@ -109,17 +109,18 @@ downloadAEMETcurrentday <- function(api, daily = TRUE, verbose=TRUE){
 
 #### SMC
 # download the variables metadata
-downloadSMCvarmetadata <- function(api){
-  apidest <- "/variables/mesurades/metadades"
+downloadSMCvarmetadata <- function(api, type = "current"){
+  type = match.arg(type, c("current", "historical"))
+  if(type=="current") {
+    apidest <- "/variables/mesurades/metadades"
+  } else if(type == "historical") {
+    apidest <- "/variables/estadistics/diaris/metadades"
+  }
   data <- .get_data_smc(apidest,api)
   rownames(data) <- data$codi
   return(data)
 }
 
-# SMCvarcode_df <- downloadSMCvarmetadata(api)
-# save(SMCvarcode_df, file ="data/SMCvarcode_df.RData")
-# SMCstation_sp <- downloadSMChistoricalstationlist(api)
-# save(SMCstation_sp, file = "data/SMCstation_sp.RData")
 
 # download the met data
 downloadSMCcurrentday <- function(api, daily_meteoland=TRUE, variable_code=NULL, station_id=NULL, date = Sys.Date(), verbose=TRUE){

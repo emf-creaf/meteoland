@@ -220,27 +220,18 @@ downloadAEMEThistorical <- function(api, dates, station_id, export = FALSE, expo
 
 
 #### SMC
-# download the variables metadata
-# Note that they are different than that of current day 
-downloadSMChistvarmetadata <- function(api){
-  apidest <- "/variables/estadistics/diaris/metadades"
-  data <- .get_data_smc(apidest,api)
-  rownames(data) <- data$codi
-  return(data)
-}
-# SMChistvarcodes <- downloadSMChistvarmetadata(api)
-# save(SMChistvarcodes, file= "data/temp.RData")
 
 # download the met data
 downloadSMChistorical <- function(api, dates, station_id=NULL, variable_code=NULL, 
-                                  # export = FALSE, exportDir = getwd(),exportFormat = "meteoland/txt",metadatafile = "MP.txt", 
-                                  verbose=TRUE, daily_meteoland=TRUE){
+                                  export = FALSE, exportDir = getwd(), exportFormat = "meteoland/txt", metadatafile = "MP.txt",
+                                  verbose=TRUE){
 
-  load("data/temp.RData")
-  if(daily_meteoland){
+  # defaults to variables required in meteoland
+  if(is.null(variable_code)) {
     variable_code <- c(1000, 1001, 1002, 1100, 1101, 1102, 1300, 1400, 1505,1511)
-  }else if(is.null(variable_code)) stop("variable_code must be specified")
-  
+    daily_meteoland = TRUE
+  }
+
   if(verbose)cat("Downloading daily data from all available stations\n")
   dates_round <- regmatches(dates,regexpr("[[:digit:]]{4}-[[:digit:]]{2}", dates))
   dates_round <- unique(dates_round)
@@ -276,11 +267,16 @@ downloadSMChistorical <- function(api, dates, station_id=NULL, variable_code=NUL
   data$date <- as.Date(data$date)
   data <- data[data$date %in% as.Date(dates),]
   
+  #Subset station data if required
+  if(!is.null(station_id)) {
+    data <- data[data$ID %in% station_id,]
+  }
+  
   if(daily_meteoland){
     if(verbose)cat("\nDownloading station info\n")
     SMCstation_sp = downloadSMCstationlist(api)
     
-    if(verbose)cat("\nFormating data\n")
+    if(verbose)cat("\nFormating data as SpatialMeteorologyPoints\n")
     data_df <- data.frame(ID = data$ID, name = SMCstation_sp@data[data$ID,"name"], 
                           long = SMCstation_sp@coords[data$ID,"long"],
                           lat = SMCstation_sp@coords[data$ID,"lat"], 
@@ -303,25 +299,56 @@ downloadSMChistorical <- function(api, dates, station_id=NULL, variable_code=NUL
       return(x.)
     }))
     
-    data_sp <- SpatialPointsDataFrame(coords = data_df[,c("long", "lat")],
-                                      data = data_df[,which(!colnames(data_df) %in% c("long", "lat", "name", "ID"))],
-                                      proj4string = CRS("+proj=longlat"))
+    vars <- colnames(data_df)
+    vars <- vars[!vars %in% c("ID","name","long","lat","elevation", "date")]
+    ID <- unique(data_df$ID)
+    data_list <- list()
+    coords <- matrix(nrow=0, ncol=2)
+    elevation<-numeric(0)
+    for(i in 1:length(ID)){
+      seli = data$ID == ID[i]
+      first = which(seli)[1]
+      dfi <- data.frame(matrix(NA, nrow=length(dates), ncol=length(vars)),
+                        row.names = as.character(dates))
+      names(dfi) <- vars
+      dfi[as.character(data_df[seli, "date"]),] <- data_df[seli,vars]
+      coords = rbind(coords, data_df[first,c("long", "lat")])
+      elevation = c(elevation, data_df[first, "elevation"])
+      data_list[[i]] <- dfi
+    }
+    names(data_list) <- ID
+    rownames(coords) <- ID
+    data_sp <- SpatialPoints(coords = coords, proj4string = CRS("+proj=longlat"))
     
-    # vars <- colnames(data_df)
-    # vars <- vars[!vars %in% c("ID","name","long","lat","elevation")]
-    # ID <- unique(data_df$ID)
-    # data_list <- list()
-    # for(i in 1:length(ID)){
-    #   data_list[[i]] <- data_df[data$ID == ID[i],vars]
-    #   rownames(data_list[[i]]) <- data_list[[i]]$date
-    # }
-    # names(data_list) <- ID
-    # 
-    # data_sp <- SpatialPointsMeteorology(SMCstation_sp[ID,],
-    #                                     data = data_list, dates = data_list[[1]]$date)
+    npoints <- length(data_sp)
+    data_spm <- SpatialPointsMeteorology(points = data_sp,
+                                         data = data_list, 
+                                         dates = dates)
     
-    return(data_sp)
-  }else{
+    dfout = data.frame(coords, elevation = elevation, row.names = ID)
+    if(export){
+      
+      ## Output data frame meta data
+      dfout$dir = as.character(rep(exportDir, npoints)) 
+      dfout$filename = as.character(paste(ID,".txt",sep=""))
+
+      for(i in 1:nrow(dfout)){
+        if(dfout$dir[i]!="") {
+          f = paste(dfout$dir[i],dfout$filename[i], sep="/")
+        }else {
+          f = dfout$filename[i]
+        }
+        writemeteorologypoint(data_list[[i]], f, exportFormat)
+        if(verbose) cat(paste("\n  File written to ",f, "\n", sep=""))
+        if(exportDir!=""){
+          f = paste(exportDir,metadatafile, sep="/")
+        }else{f = metadatafile}
+        write.table(dfout,file= f,sep="\t", quote=FALSE)
+      }
+    } else{
+      return(data_spm)
+    }
+  } else {
     if(verbose)cat("\nNon-formated results are returned\n")
     colsel <- !colnames(data) %in% c("date", "ID")
     colnames(data)[colsel] <- SMChistvarcodes[colnames(data)[colsel], "nom"]

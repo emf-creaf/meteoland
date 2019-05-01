@@ -587,26 +587,27 @@ RcppExport SEXP _meteoland_RDay(SEXP solarConstantSEXP, SEXP latradSEXP, SEXP el
     return rcpp_result_gen;
 }
 // directDiffuseInstant
-NumericVector directDiffuseInstant(double solarConstant, double latrad, double delta, double hrad, double R_p, double R_s, bool clearday);
-static SEXP _meteoland_directDiffuseInstant_try(SEXP solarConstantSEXP, SEXP latradSEXP, SEXP deltaSEXP, SEXP hradSEXP, SEXP R_pSEXP, SEXP R_sSEXP, SEXP cleardaySEXP) {
+NumericVector directDiffuseInstant(double solarConstant, double latrad, double slorad, double asprad, double delta, double hrad, double R_s, bool clearday);
+static SEXP _meteoland_directDiffuseInstant_try(SEXP solarConstantSEXP, SEXP latradSEXP, SEXP sloradSEXP, SEXP aspradSEXP, SEXP deltaSEXP, SEXP hradSEXP, SEXP R_sSEXP, SEXP cleardaySEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::traits::input_parameter< double >::type solarConstant(solarConstantSEXP);
     Rcpp::traits::input_parameter< double >::type latrad(latradSEXP);
+    Rcpp::traits::input_parameter< double >::type slorad(sloradSEXP);
+    Rcpp::traits::input_parameter< double >::type asprad(aspradSEXP);
     Rcpp::traits::input_parameter< double >::type delta(deltaSEXP);
     Rcpp::traits::input_parameter< double >::type hrad(hradSEXP);
-    Rcpp::traits::input_parameter< double >::type R_p(R_pSEXP);
     Rcpp::traits::input_parameter< double >::type R_s(R_sSEXP);
     Rcpp::traits::input_parameter< bool >::type clearday(cleardaySEXP);
-    rcpp_result_gen = Rcpp::wrap(directDiffuseInstant(solarConstant, latrad, delta, hrad, R_p, R_s, clearday));
+    rcpp_result_gen = Rcpp::wrap(directDiffuseInstant(solarConstant, latrad, slorad, asprad, delta, hrad, R_s, clearday));
     return rcpp_result_gen;
 END_RCPP_RETURN_ERROR
 }
-RcppExport SEXP _meteoland_directDiffuseInstant(SEXP solarConstantSEXP, SEXP latradSEXP, SEXP deltaSEXP, SEXP hradSEXP, SEXP R_pSEXP, SEXP R_sSEXP, SEXP cleardaySEXP) {
+RcppExport SEXP _meteoland_directDiffuseInstant(SEXP solarConstantSEXP, SEXP latradSEXP, SEXP sloradSEXP, SEXP aspradSEXP, SEXP deltaSEXP, SEXP hradSEXP, SEXP R_sSEXP, SEXP cleardaySEXP) {
     SEXP rcpp_result_gen;
     {
         Rcpp::RNGScope rcpp_rngScope_gen;
-        rcpp_result_gen = PROTECT(_meteoland_directDiffuseInstant_try(solarConstantSEXP, latradSEXP, deltaSEXP, hradSEXP, R_pSEXP, R_sSEXP, cleardaySEXP));
+        rcpp_result_gen = PROTECT(_meteoland_directDiffuseInstant_try(solarConstantSEXP, latradSEXP, sloradSEXP, aspradSEXP, deltaSEXP, hradSEXP, R_sSEXP, cleardaySEXP));
     }
     Rboolean rcpp_isInterrupt_gen = Rf_inherits(rcpp_result_gen, "interrupted-error");
     if (rcpp_isInterrupt_gen) {
@@ -627,25 +628,27 @@ RcppExport SEXP _meteoland_directDiffuseInstant(SEXP solarConstantSEXP, SEXP lat
     return rcpp_result_gen;
 }
 // directDiffuseDay
-DataFrame directDiffuseDay(double solarConstant, double latrad, double delta, double R_s, bool clearday, int nsteps);
-static SEXP _meteoland_directDiffuseDay_try(SEXP solarConstantSEXP, SEXP latradSEXP, SEXP deltaSEXP, SEXP R_sSEXP, SEXP cleardaySEXP, SEXP nstepsSEXP) {
+DataFrame directDiffuseDay(double solarConstant, double latrad, double slorad, double asprad, double delta, double R_s, bool clearday, int nsteps);
+static SEXP _meteoland_directDiffuseDay_try(SEXP solarConstantSEXP, SEXP latradSEXP, SEXP sloradSEXP, SEXP aspradSEXP, SEXP deltaSEXP, SEXP R_sSEXP, SEXP cleardaySEXP, SEXP nstepsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::traits::input_parameter< double >::type solarConstant(solarConstantSEXP);
     Rcpp::traits::input_parameter< double >::type latrad(latradSEXP);
+    Rcpp::traits::input_parameter< double >::type slorad(sloradSEXP);
+    Rcpp::traits::input_parameter< double >::type asprad(aspradSEXP);
     Rcpp::traits::input_parameter< double >::type delta(deltaSEXP);
     Rcpp::traits::input_parameter< double >::type R_s(R_sSEXP);
     Rcpp::traits::input_parameter< bool >::type clearday(cleardaySEXP);
     Rcpp::traits::input_parameter< int >::type nsteps(nstepsSEXP);
-    rcpp_result_gen = Rcpp::wrap(directDiffuseDay(solarConstant, latrad, delta, R_s, clearday, nsteps));
+    rcpp_result_gen = Rcpp::wrap(directDiffuseDay(solarConstant, latrad, slorad, asprad, delta, R_s, clearday, nsteps));
     return rcpp_result_gen;
 END_RCPP_RETURN_ERROR
 }
-RcppExport SEXP _meteoland_directDiffuseDay(SEXP solarConstantSEXP, SEXP latradSEXP, SEXP deltaSEXP, SEXP R_sSEXP, SEXP cleardaySEXP, SEXP nstepsSEXP) {
+RcppExport SEXP _meteoland_directDiffuseDay(SEXP solarConstantSEXP, SEXP latradSEXP, SEXP sloradSEXP, SEXP aspradSEXP, SEXP deltaSEXP, SEXP R_sSEXP, SEXP cleardaySEXP, SEXP nstepsSEXP) {
     SEXP rcpp_result_gen;
     {
         Rcpp::RNGScope rcpp_rngScope_gen;
-        rcpp_result_gen = PROTECT(_meteoland_directDiffuseDay_try(solarConstantSEXP, latradSEXP, deltaSEXP, R_sSEXP, cleardaySEXP, nstepsSEXP));
+        rcpp_result_gen = PROTECT(_meteoland_directDiffuseDay_try(solarConstantSEXP, latradSEXP, sloradSEXP, aspradSEXP, deltaSEXP, R_sSEXP, cleardaySEXP, nstepsSEXP));
     }
     Rboolean rcpp_isInterrupt_gen = Rf_inherits(rcpp_result_gen, "interrupted-error");
     if (rcpp_isInterrupt_gen) {
@@ -1601,8 +1604,8 @@ static int _meteoland_RcppExport_validate(const char* sig) {
         signatures.insert("double(*radiation_daylengthseconds)(double,double,double,double)");
         signatures.insert("double(*radiation_potentialRadiation)(double,double,double,double,double)");
         signatures.insert("double(*radiation_solarRadiation)(double,double,double,double,double,double,double,double,double,double)");
-        signatures.insert("NumericVector(*radiation_directDiffuseInstant)(double,double,double,double,double,double,bool)");
-        signatures.insert("DataFrame(*radiation_directDiffuseDay)(double,double,double,double,bool,int)");
+        signatures.insert("NumericVector(*radiation_directDiffuseInstant)(double,double,double,double,double,double,double,bool)");
+        signatures.insert("DataFrame(*radiation_directDiffuseDay)(double,double,double,double,double,double,bool,int)");
         signatures.insert("double(*radiation_skyLongwaveRadiation)(double,double,double)");
         signatures.insert("double(*radiation_outgoingLongwaveRadiation)(double,double,double,double,double,double,double,double,double,double)");
         signatures.insert("double(*radiation_netRadiation)(double,double,double,double,double,double,double,double,double,double,double)");
@@ -1683,8 +1686,8 @@ static const R_CallMethodDef CallEntries[] = {
     {"_meteoland_daylengthseconds", (DL_FUNC) &_meteoland_daylengthseconds, 4},
     {"_meteoland_RpotDay", (DL_FUNC) &_meteoland_RpotDay, 5},
     {"_meteoland_RDay", (DL_FUNC) &_meteoland_RDay, 10},
-    {"_meteoland_directDiffuseInstant", (DL_FUNC) &_meteoland_directDiffuseInstant, 7},
-    {"_meteoland_directDiffuseDay", (DL_FUNC) &_meteoland_directDiffuseDay, 6},
+    {"_meteoland_directDiffuseInstant", (DL_FUNC) &_meteoland_directDiffuseInstant, 8},
+    {"_meteoland_directDiffuseDay", (DL_FUNC) &_meteoland_directDiffuseDay, 8},
     {"_meteoland_skyLongwaveRadiation", (DL_FUNC) &_meteoland_skyLongwaveRadiation, 3},
     {"_meteoland_outgoingLongwaveRadiation", (DL_FUNC) &_meteoland_outgoingLongwaveRadiation, 10},
     {"_meteoland_netRadiation", (DL_FUNC) &_meteoland_netRadiation, 11},

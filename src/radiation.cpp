@@ -270,12 +270,16 @@ double RDay(double solarConstant, double latrad, double elevation, double slorad
 // [[Rcpp::export("radiation_directDiffuseInstant")]]
 NumericVector directDiffuseInstant(double solarConstant, double latrad, double slorad, double asprad, double delta, 
                                    double hrad, double R_s, bool clearday) {
-  //Instantaneous potential radiation accounting for topography
-  double R_p_topo = RpotDay(solarConstant, latrad, slorad, asprad, delta);
-  double Rpotinst_topo = std::max(0.0,RpotInstant(solarConstant, latrad, slorad, asprad, delta, hrad));//kW
   //Instantaneous potential radiation NOT accounting for topography
   double R_p_flat = RpotDay(solarConstant, latrad, 0.0, 0.0, delta);
   double Rpotinst_flat = std::max(0.0,RpotInstant(solarConstant, latrad, 0.0, 0.0, delta, hrad));//kW
+  //Instantaneous potential radiation accounting for topography
+  double R_p_topo = R_p_flat;
+  double Rpotinst_topo = Rpotinst_flat;
+  if(slorad>0.0) {
+    R_p_topo = RpotDay(solarConstant, latrad, slorad, asprad, delta);
+    Rpotinst_topo = std::max(0.0,RpotInstant(solarConstant, latrad, slorad, asprad, delta, hrad));//kW 
+  }
   //Solar elevation (for corrections)
   double beta = solarElevation(latrad, delta, hrad);
   

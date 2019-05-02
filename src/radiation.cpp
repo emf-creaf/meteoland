@@ -267,19 +267,11 @@ double RDay(double solarConstant, double latrad, double elevation, double slorad
  * Spitters, C.J.T., Toussaint, H.A.J.M. & Goudriaan, J. (1986). Separating the diffuse and direct components of global radiation and its implications for modeling canopy photosynthesis. I. Components of incoming radiation. 
  * Agricultural and Forest Meteoroloogy, 38, 231–242.
  */
-// [[Rcpp::export("radiation_directDiffuseInstant")]]
 NumericVector directDiffuseInstant(double solarConstant, double latrad, double slorad, double asprad, double delta, 
-                                   double hrad, double R_s, bool clearday) {
-  //Instantaneous potential radiation NOT accounting for topography
-  double R_p_flat = RpotDay(solarConstant, latrad, 0.0, 0.0, delta);
-  double Rpotinst_flat = std::max(0.0,RpotInstant(solarConstant, latrad, 0.0, 0.0, delta, hrad));//kW
-  //Instantaneous potential radiation accounting for topography
-  double R_p_topo = R_p_flat;
-  double Rpotinst_topo = Rpotinst_flat;
-  if(slorad>0.0) {
-    R_p_topo = RpotDay(solarConstant, latrad, slorad, asprad, delta);
-    Rpotinst_topo = std::max(0.0,RpotInstant(solarConstant, latrad, slorad, asprad, delta, hrad));//kW 
-  }
+                                   double hrad, double R_s, 
+                                   double R_p_flat, double Rpotinst_flat, double R_p_topo, double Rpotinst_topo,
+                                   bool clearday) {
+  // Rcout<< slorad<<" "<<R_p_topo<<"\n";
   //Solar elevation (for corrections)
   double beta = solarElevation(latrad, delta, hrad);
   
@@ -321,7 +313,7 @@ NumericVector directDiffuseInstant(double solarConstant, double latrad, double s
     SdfinstPAR = 0.0;
   }
   double SdrinstPAR = SginstPAR-SdfinstPAR;
-    
+  
   NumericVector res = NumericVector::create(Named("SolarElevation") = beta,
                                             Named("Rpot") = Rpotinst_topo,
                                             Named("Rpot_flat") = Rpotinst_flat,
@@ -331,6 +323,24 @@ NumericVector directDiffuseInstant(double solarConstant, double latrad, double s
                                             Named("PAR_direct") = SdrinstPAR,
                                             Named("PAR_diffuse") = SdfinstPAR);
   return(res);
+}
+// [[Rcpp::export("radiation_directDiffuseInstant")]]
+NumericVector directDiffuseInstant(double solarConstant, double latrad, double slorad, double asprad, double delta, 
+                                   double hrad, double R_s, bool clearday) {
+  //Instantaneous potential radiation NOT accounting for topography
+  double R_p_flat = RpotDay(solarConstant, latrad, 0.0, 0.0, delta);
+  double Rpotinst_flat = std::max(0.0,RpotInstant(solarConstant, latrad, 0.0, 0.0, delta, hrad));//kW
+  //Instantaneous potential radiation accounting for topography
+  double R_p_topo = R_p_flat;
+  double Rpotinst_topo = Rpotinst_flat;
+  if(slorad>0.0) {
+    NumericVector srs = sunRiseSet(latrad, slorad, asprad, delta);
+    R_p_topo = RpotDay(solarConstant, latrad, slorad, asprad, delta);
+    if(hrad >= srs[0] && hrad< srs[1]) Rpotinst_topo = std::max(0.0,RpotInstant(solarConstant, latrad, slorad, asprad, delta, hrad));//kW 
+    else Rpotinst_topo = 0.0;
+  }
+  return(directDiffuseInstant(solarConstant, latrad, slorad, asprad, delta, hrad, R_s, R_p_flat, Rpotinst_flat, 
+                              R_p_topo, Rpotinst_topo));
 }
 
 
@@ -357,8 +367,8 @@ DataFrame directDiffuseDay(double solarConstant, double latrad, double slorad, d
   NumericVector Hrad(nsteps), beta(nsteps);
   for(int i=0;i<nsteps;i++) {
     Hrad[i] = -M_PI + (((double)i)+0.5)*(2.0*M_PI/((double)nsteps));
-    NumericVector ddi = directDiffuseInstant(solarConstant, latrad, slorad, asprad, delta, Hrad[i], 
-                                             R_s, clearday);
+    NumericVector ddi = directDiffuseInstant(solarConstant, latrad, slorad, asprad, delta, 
+                                             Hrad[i], R_s, clearday);
     beta[i] = ddi["SolarElevation"];
     Rpot[i] = ddi["Rpot"];
     Rpot_flat[i] = ddi["Rpot_flat"];

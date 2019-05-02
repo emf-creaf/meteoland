@@ -365,13 +365,25 @@ DataFrame directDiffuseDay(double solarConstant, double latrad, double slorad, d
                            double R_s, bool clearday, int nsteps = 24) {
   NumericVector Rpot(nsteps),Rpot_flat(nsteps), Rg(nsteps), SWR_direct(nsteps), SWR_diffuse(nsteps), PAR_direct(nsteps), PAR_diffuse(nsteps);
   NumericVector Hrad(nsteps), beta(nsteps);
+  double R_p_flat = RpotDay(solarConstant, latrad, 0.0, 0.0, delta);
+  double R_p_topo = R_p_flat;
+  if(slorad>0.0) {
+    R_p_topo = RpotDay(solarConstant, latrad, slorad, asprad, delta);
+  }
+  NumericVector srs = sunRiseSet(latrad, slorad, asprad, delta);
   for(int i=0;i<nsteps;i++) {
     Hrad[i] = -M_PI + (((double)i)+0.5)*(2.0*M_PI/((double)nsteps));
+    double Rpotinst_flat = std::max(0.0,RpotInstant(solarConstant, latrad, 0.0, 0.0, delta, Hrad[i]));//kW
+    double Rpotinst_topo = Rpotinst_flat;
+    if(slorad>0.0) {
+      Rpotinst_topo = 0.0;
+      if(Hrad[i] >= srs[0] && Hrad[i]< srs[1]) Rpotinst_topo = std::max(0.0,RpotInstant(solarConstant, latrad, slorad, asprad, delta, Hrad[i]));//kW 
+    }
     NumericVector ddi = directDiffuseInstant(solarConstant, latrad, slorad, asprad, delta, 
-                                             Hrad[i], R_s, clearday);
+                                             Hrad[i], R_s, R_p_flat, Rpotinst_flat, R_p_topo, Rpotinst_topo, clearday);
     beta[i] = ddi["SolarElevation"];
-    Rpot[i] = ddi["Rpot"];
-    Rpot_flat[i] = ddi["Rpot_flat"];
+    Rpot[i] = Rpotinst_topo;
+    Rpot_flat[i] = Rpotinst_flat;
     Rg[i] = ddi["Rg"];
     SWR_direct[i] = ddi["SWR_direct"];
     SWR_diffuse[i] = ddi["SWR_diffuse"];

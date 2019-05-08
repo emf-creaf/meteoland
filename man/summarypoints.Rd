@@ -1,5 +1,6 @@
 \encoding{UTF-8}
 \name{summarypoints}
+\alias{summarypoint}
 \alias{summarypoints}
 \alias{summarygrid}
 \alias{summarypixels}
@@ -8,9 +9,10 @@
 Summaries of meteorological data
 }
 \description{
-Summarizes the meteorology of a set of spatial points, pixels in a grid, or weather stations of interpolation data.
+Summarizes the meteorology of a single location, a set of spatial points, pixels in a grid, or weather stations of interpolation data.
 }
 \usage{
+summarypoint(x, var, fun = mean, freq = NULL, dates = NULL, months = NULL, ...)
 summarypoints(points, var, fun = mean, freq = NULL, dates = NULL, months = NULL, ...)
 summarygrid(griddata, dates = NULL)
 summarypixels(pixelsdata, dates = NULL)
@@ -19,6 +21,7 @@ summaryinterpolationdata(object, var, fun = mean, freq = NULL, dates = NULL,
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
+  \item{x}{A data frame with dates in rows and meteorological variables in columns.}
   \item{points}{
     An object of class \code{\link{SpatialPointsMeteorology-class}} with the coordinates and meteorological data of the locations for which summaries are desired. Alternatively, an object of class \code{\link{SpatialPointsDataFrame-class}} containing the meta data (columns \code{dir},  \code{filename} and possibly \code{format}) of meteorological files that will be sequentially read from the disk.
   }
@@ -41,12 +44,12 @@ Additional parameters to \code{fun}.
   \item{object}{An object of class \code{\link{MeteorologyInterpolationData-class}}.}
 }
 \value{
-Functions \code{summarypoints} and \code{summaryinterpolatoiondata} return an object of class \code{\link{SpatialPointsDataFrame}} containing summaries (either one variable or several if \code{freq} is specified). Functions \code{summarygrid} and \code{summarypixels} return an object of class \code{\link{SpatialGridDataFrame}} and \code{\link{SpatialPixelsDataFrame}}, respectively, containing the summary of all meteorogical variables (sums or precipitation and PET; means for the other variables) calculated over the specified period. 
+Function \code{summarypoint} returns a named vector of values with dates as names. Functions \code{summarypoints} and \code{summaryinterpolatoiondata} return an object of class \code{\link{SpatialPointsDataFrame}} containing summaries (either one variable or several if \code{freq} is specified). Functions \code{summarygrid} and \code{summarypixels} return an object of class \code{\link{SpatialGridDataFrame}} and \code{\link{SpatialPixelsDataFrame}}, respectively, containing the summary of all meteorogical variables (sums or precipitation and PET; means for the other variables) calculated over the specified period. 
 }
 \author{
-Miquel De \enc{Cáceres}{Caceres} Ainsa, Centre Tecnologic Forestal de Catalunya
+Miquel De \enc{Cáceres}{Caceres} Ainsa, CTFC
 
-Antoine Cabon, Centre Tecnologic Forestal de Catalunya
+Antoine Cabon,CTFC
 }
 \seealso{
 \code{\link{SpatialPointsMeteorology-class}}

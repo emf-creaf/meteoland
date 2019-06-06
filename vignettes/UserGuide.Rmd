@@ -48,7 +48,8 @@ library(meteoland)
 Alternatively, you can install the development version located at GitHub using the `devtools` package:
 ```{r, eval = FALSE}
 library(devtools)
-install_github("miquelcaceres/meteoland", build_vignettes = TRUE)
+install_github("vegmod/meteoland", 
+               build_opts = c("--no-resave-data", "--no-manual"))
 library(meteoland)
 ```
 

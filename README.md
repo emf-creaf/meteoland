@@ -23,7 +23,7 @@ Latest stable versions can be downloaded and installed from GitHub as
 follows (package `devtools` should be installed first):
 
 ``` r
-devtools::install_github("miquelcaceres/meteoland")
+devtools::install_github("vegmod/meteoland")
 ```
 
 Documentation on the functions included in `meteoland` and how to run
@@ -32,7 +32,7 @@ Alternatively, users can have help to run package functions directly as
 package vignettes, by forcing their inclusion in installation:
 
 ``` r
-devtools::install_github("miquelcaceres/meteoland", 
+devtools::install_github("vegmod/meteoland", 
                          build_opts = c("--no-resave-data", "--no-manual"))
 ```
 

@@ -22,12 +22,12 @@ A more detailed introduction to the package functionality can be found in De Cá
 Package `meteoland` can be found at [CRAN](https://cran.r-project.org/), but the version in this repository may not be the most recent one. Latest stable versions can be downloaded and installed from GitHub as follows (package `devtools` should be installed first):
 
 ```{r installation, eval = FALSE}
-devtools::install_github("miquelcaceres/meteoland")
+devtools::install_github("vegmod/meteoland")
 ```
 
 Documentation on the functions included in `meteoland` and how to run them can be found at (http://vegmod.ctfc.cat/meteolandweb). Alternatively, users can have help to run package functions directly as package vignettes, by forcing their inclusion in installation: 
 ```{r installation vignettes, eval = FALSE}
-devtools::install_github("miquelcaceres/meteoland", 
+devtools::install_github("vegmod/meteoland", 
                          build_opts = c("--no-resave-data", "--no-manual"))
 ```
 

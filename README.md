@@ -26,8 +26,6 @@ follows (package `devtools` should be installed first):
 devtools::install_github("vegmod/meteoland")
 ```
 
-Documentation on the functions included in `meteoland` and how to run
-them can be found at (<http://vegmod.ctfc.cat/meteolandweb>).
 Alternatively, users can have help to run package functions directly as
 package vignettes, by forcing their inclusion in installation:
 
@@ -35,6 +33,9 @@ package vignettes, by forcing their inclusion in installation:
 devtools::install_github("vegmod/meteoland", 
                          build_opts = c("--no-resave-data", "--no-manual"))
 ```
+
+Further documentation on `meteoland` and how to run them can be found at
+(<https://vegmod.github.io/rpackage/meteoland>).
 
 ## References
 

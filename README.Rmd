@@ -25,12 +25,13 @@ Package `meteoland` can be found at [CRAN](https://cran.r-project.org/), but the
 devtools::install_github("vegmod/meteoland")
 ```
 
-Documentation on the functions included in `meteoland` and how to run them can be found at (http://vegmod.ctfc.cat/meteolandweb). Alternatively, users can have help to run package functions directly as package vignettes, by forcing their inclusion in installation: 
+Alternatively, users can have help to run package functions directly as package vignettes, by forcing their inclusion in installation: 
 ```{r installation vignettes, eval = FALSE}
 devtools::install_github("vegmod/meteoland", 
                          build_opts = c("--no-resave-data", "--no-manual"))
 ```
 
+Further documentation on `meteoland` and how to run them can be found at (https://vegmod.github.io/rpackage/meteoland).
 
 ## References
 

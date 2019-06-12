@@ -1,0 +1,10 @@
+destination: "D:/Rservices/vegmod_web/static/meteolanddocs"
+
+home:
+  links:
+  - text: Package website
+    href: https://vegmod.github.io/rpackage/meteoland
+  - text: Package shiny application
+    href: http://vegmod.ctfc.cat/meteolandweb
+    
+

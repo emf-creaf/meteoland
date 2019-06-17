@@ -34,8 +34,8 @@ devtools::install_github("vegmod/meteoland",
                          build_opts = c("--no-resave-data", "--no-manual"))
 ```
 
-Further documentation on `meteoland` and how to run them can be found at
-(<https://vegmod.github.io/rpackage/meteoland>).
+Detailed documentation on `meteoland` can be found at
+(<https://vegmod.ctfc.cat/software/meteoland>).
 
 ## References
 

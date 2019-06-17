@@ -31,7 +31,7 @@ With the aim to assist research of climatic impacts on forests, the R package `m
 2. Statistical correction of meteorological data series (e.g. from climate models).}
 
 Using `meteoland` package is easy, but some ideas and concepts must be addresed
-to make the experience easy for new users. This vignette is intended as a working example to explain all the steps needed to get comfortable with `meteoland` workflow. We assume that the reader is more or less familiar with S4 classes of package **sp**. You will find detailed information regarding the package structure, its functions, and how calculations are done in vignette "**Package meteoland**".
+to make the experience easy for new users. This vignette is intended as a working example to explain all the steps needed to get comfortable with `meteoland` workflow. We assume that the reader is more or less familiar with S4 classes of package **sp**. You will find detailed information regarding the package structure, its functions, and how calculations are done at the [vegmod website](http://vegmod.ctfc.cat/software/meteoland/).
 
 ## Installing and loading the package
 

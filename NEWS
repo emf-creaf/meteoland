@@ -5,6 +5,7 @@
 __Version history__
 _Version 0.8.2, May 2019.
 1. Documentation converted to bookdown reference book.
+2. Bug correction in function 'doQmapDeque'
 
 _Version 0.8.1, May 2019.
 1. Modification of 'radiation_directDiffuseInstant' and 'radiation_directDiffuseDay' to account for topographic effects

@@ -66,7 +66,11 @@ doQmapDeque <- function(x,fobj){
   #Sample random values among the observed distribution corresponding to non precipitation in the model series for calibration
   nzero =sum(!nonzerosel)
   if(nzero>0) {
-    out[!nonzerosel] = sample(fobj$fitq0, nzero, replace=TRUE)
+    if(length(fobj$fitq0)>0) { # If the model series used for calibration had zero values use the corresponding observed values
+      out[!nonzerosel] = sample(fobj$fitq0, nzero, replace=TRUE)
+    } else { # If the model series used for calibration did not have zeroes, keep the zeroes of the projected series
+      out[!nonzerosel] = 0
+    }
   }
   return(out)
 }

@@ -13,7 +13,7 @@ defaultCorrectionParams()
 \value{
 A list with the following items (default values in brackets):
 \itemize{
-\item{\code{methods}: A list with the correction method for each variable. Defaults are:
+\item{\code{methods}: A list with the correction method for each variable (options are "unbias" (shift of the mean), "scaling" (factor multiplication),  "quantmap" (empirical quantile mapping) or "none" (for no correction)). Defaults are:
 \itemize{
 \item{\code{MeanTemperature = "unbias"}}
 \item{\code{MinTemperature = "quantmap"}}
@@ -36,5 +36,5 @@ De Caceres M, Martin-StPaul N, Turco M, Cabon A, Granda V (2018) Estimating dail
 \author{
 Miquel De \enc{Cáceres}{Caceres} Ainsa, Centre de Ciència i Tecnologia Forestal de Catalunya
 }
-\seealso{\code{\link{MeteorologyInterpolationData}}}
+\seealso{\code{\link{MeteorologyInterpolationData}}, \code{\link{MeteorologyUncorrectedData}}}
 

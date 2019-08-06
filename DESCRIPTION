@@ -11,7 +11,7 @@ Authors@R: c(
 	person('Antoine', 'Cabon', role='aut'))
 Description: Functions to estimate weather variables at any position of a landscape [De Caceres et al. (2018) <doi:10.1016/j.envsoft.2018.08.003>].
 License: GPL (>= 2)
-URL: https://vegmod.github.io/rpackage/meteoland
+URL: https://vegmod.github.io/software/meteoland
 LazyData: TRUE
 Depends: R (>= 3.4.0), sp
 Imports: spdep, rgdal, ncdf4, ncdf4.helpers, httr, jsonlite, methods, Rcpp (>= 0.12.12)

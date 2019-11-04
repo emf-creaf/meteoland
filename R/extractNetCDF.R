@@ -1,4 +1,12 @@
-# From package ncdf4.helpers
+# Functions copied from package ncdf4.helpers to avoid dependencies
+.nc_get_dimnames <- function(f, v) {
+  if(missing(v)) {
+    d <- unlist(lapply(f$dim, function(x) { return(x$name) }))
+    names(d) <- NULL
+    return(d)
+  } else
+    return(unlist(lapply(f$var[[v]]$dim, function(x) { return(x$name) })))
+}
 .nc_get_climatologybounds_varlist <- function(f) {
   dim.list <- names(f$dim)
   is.climatology<- sapply(dim.list, function(x) {
@@ -13,7 +21,7 @@
 }
 .nc_get_dimbounds_varlist <- function(f, v=NULL) {
   dimension.vars <- names(f$dim)
-  dim.names <- if(is.null(v)) names(f$dim) else nc.get.dim.names(f, v)
+  dim.names <- if(is.null(v)) names(f$dim) else .nc_get_dimnames(f, v)
   return(unlist(sapply(names(f$dim), function(x) {
     if(f$dim[[x]]$create_dimvar) {
       a <- ncdf4::ncatt_get(f, x, "bounds");
@@ -34,7 +42,7 @@
   var.list <- names(f$var)
   enough.dims <- sapply(var.list, function(v) { length(f$var[[v]]$dim) >= min.dims } )
   bounds <- .nc_get_dimbounds_varlist(f)
-  climatology.bounds <- nc_get_climatologybounds_varlist(f)
+  climatology.bounds <- .nc_get_climatologybounds_varlist(f)
   has.axis <- unlist(lapply(var.list, function(x) { a <- ncdf4::ncatt_get(f, x, "axis"); if(a$hasatt & nchar(a$value) == 1) return(x); return(NULL); } ))
   
   ## When things get really broken, we'll need this...

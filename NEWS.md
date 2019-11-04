@@ -49,7 +49,7 @@
 - Bug correction: Historical download of AEMET data returns SunshineHours
 
 # Version 0.7.4
-- Added reference to publication <doi:10.1016/j.envsoft.2018.08.003>
+- Added reference to publication
 - Added citation reference.
 - Bug correction: Over-dimensioned vectors for temperature differences (same for precipitation).
 - Low-level interpolation routines made accessible to the user

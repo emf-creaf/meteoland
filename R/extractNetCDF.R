@@ -1,3 +1,50 @@
+# From package ncdf4.helpers
+.nc_get_climatologybounds_varlist <- function(f) {
+  dim.list <- names(f$dim)
+  is.climatology<- sapply(dim.list, function(x) {
+    if(f$dim[[x]]$create_dimvar && f$dim[[x]]$unlim) {
+      a <- ncdf4::ncatt_get(f, x, "climatology")
+      if(a$hasatt)
+        return(a$value)
+    }
+    return(NA)
+  })
+  return(unique(is.climatology[!is.na(is.climatology)]))
+}
+.nc_get_dimbounds_varlist <- function(f, v=NULL) {
+  dimension.vars <- names(f$dim)
+  dim.names <- if(is.null(v)) names(f$dim) else nc.get.dim.names(f, v)
+  return(unlist(sapply(names(f$dim), function(x) {
+    if(f$dim[[x]]$create_dimvar) {
+      a <- ncdf4::ncatt_get(f, x, "bounds");
+      if(a$hasatt)
+        return(a$value);
+    }
+    
+    ## Heuristic detection for broken files
+    bnds.vars <- c(paste(x, "bnds", sep="_"), paste("bounds", x, sep="_"))
+    bnds.present <- bnds.vars %in% names(f$var)
+    if(any(bnds.present))
+      return(bnds.vars[bnds.present])
+    
+    return(NULL);
+  } )))
+}
+.nc_get_varlist <- function(f, min.dims=1) {
+  var.list <- names(f$var)
+  enough.dims <- sapply(var.list, function(v) { length(f$var[[v]]$dim) >= min.dims } )
+  bounds <- .nc_get_dimbounds_varlist(f)
+  climatology.bounds <- nc_get_climatologybounds_varlist(f)
+  has.axis <- unlist(lapply(var.list, function(x) { a <- ncdf4::ncatt_get(f, x, "axis"); if(a$hasatt & nchar(a$value) == 1) return(x); return(NULL); } ))
+  
+  ## When things get really broken, we'll need this...
+  bnds.heuristic <- !grepl("_bnds", var.list)
+  
+  var.mask <- bnds.heuristic & enough.dims & (!(var.list %in% c(bounds, has.axis, climatology.bounds, "lat", "lon") | unlist(lapply(f$var, function(x) { return(x$prec == "char" | x$ndims == 0) }))))
+  
+  return(var.list[var.mask])
+}
+
 extractNetCDF<-function(ncdf_files, bbox = NULL, offset = 0, cells = NULL, export = TRUE, 
                         exportDir = getwd(), exportFormat = "meteoland/txt", mpfilename = "MP.txt") {
 
@@ -9,7 +56,7 @@ extractNetCDF<-function(ncdf_files, bbox = NULL, offset = 0, cells = NULL, expor
   ncin <- nc_open(ncname)
   lat <- ncvar_get(ncin, "lat")
   lon <- ncvar_get(ncin, "lon")
-  varlist <- nc.get.variable.list(ncin)
+  varlist <- .nc_get_varlist(ncin)
   nx = nrow(lat)
   ny = ncol(lat)
   cat(paste("NetCDF grid: nx",nx, "ny",ny,"ncells", nx*ny,"\n"))
@@ -141,7 +188,7 @@ extractNetCDF<-function(ncdf_files, bbox = NULL, offset = 0, cells = NULL, expor
           refDate = as.Date(s)
           datesfile <- as.character(seq.Date(refDate, length.out=maxday, by="day")[t])
 
-          varlist = nc.get.variable.list(ncin)
+          varlist = .nc_get_varlist(ncin)
           for(var in varlist) {
             if(var=="huss") {
               vec = ncvar_get(ncin,varid = var, start = c(xi, yi, 1), count=c(1,1,length(datesfile)))

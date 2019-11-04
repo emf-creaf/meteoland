@@ -2,6 +2,9 @@
  NEWS for R Package "meteoland"
 -------------------------------
 
+# Version 0.8.3
+- Remove dependencies of ncdf4.helpers
+
 # Version 0.8.2
 - Documentation converted to bookdown reference book.
 - Bug correction in function 'doQmapDeque'

@@ -60,8 +60,8 @@ precipitation_rainfallErosivity<-function(x, long, scale = "month", average = TR
     d_m = summarypoint(x, "Precipitation", fun="max", freq= "months", na.rm=T)
     if(average) {
       months = substr(names(p_m),6,7)
-      p_m = tapply(p_m, months, FUN="mean")
-      d_m = tapply(d_m, months, FUN="mean")
+      p_m = tapply(p_m, months, FUN="mean", na.rm=T)
+      d_m = tapply(d_m, months, FUN="mean", na.rm=T)
     }
     R_m = b0*p_m*sqrt(d_m)*(a+b1*long)
     return(R_m)
@@ -69,8 +69,8 @@ precipitation_rainfallErosivity<-function(x, long, scale = "month", average = TR
     p_y = summarypoint(x, "Precipitation", fun="sum", freq="years", na.rm=T)
     d_y = summarypoint(x, "Precipitation", fun="max", freq= "years", na.rm=T)
     if(average) {
-      p_y = mean(p_y)
-      d_y = mean(d_y)
+      p_y = mean(p_y, na.rm=T)
+      d_y = mean(d_y, na.rm=T)
     }
     R_y = b0*p_y*sqrt(d_y)*(a+b1*long)
     return(R_y)

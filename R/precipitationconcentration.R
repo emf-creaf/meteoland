@@ -52,8 +52,9 @@ precipitation_concentration<-function(p) {
 precipitation_rainfallErosivity<-function(x, long, scale = "month") {
   scale = match.arg(scale, c("month", "year"))
   b0 = 0.117
-  b1 = 2
-  a = -0.015
+  b1 = -0.015
+  a = 2
+  
   if(scale == "month") {
     p_m = summarypoint(x, "Precipitation", fun="sum", freq="months", na.rm=T)
     d_m = summarypoint(x, "Precipitation", fun="max", freq= "months", na.rm=T)

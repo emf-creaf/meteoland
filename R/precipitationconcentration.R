@@ -49,7 +49,7 @@ precipitation_concentration<-function(p) {
   ci =2*S/10000
   return(ci)
 }
-precipitation_rainfallErosivity<-function(x, long, scale = "month") {
+precipitation_rainfallErosivity<-function(x, long, scale = "month", average = TRUE) {
   scale = match.arg(scale, c("month", "year"))
   b0 = 0.117
   b1 = -0.015
@@ -58,16 +58,20 @@ precipitation_rainfallErosivity<-function(x, long, scale = "month") {
   if(scale == "month") {
     p_m = summarypoint(x, "Precipitation", fun="sum", freq="months", na.rm=T)
     d_m = summarypoint(x, "Precipitation", fun="max", freq= "months", na.rm=T)
-    months = substr(names(p_m),6,7)
-    p_m = tapply(p_m, months, FUN="mean")
-    d_m = tapply(d_m, months, FUN="mean")
+    if(average) {
+      months = substr(names(p_m),6,7)
+      p_m = tapply(p_m, months, FUN="mean")
+      d_m = tapply(d_m, months, FUN="mean")
+    }
     R_m = b0*p_m*sqrt(d_m)*(a+b1*long)
     return(R_m)
   } else {
     p_y = summarypoint(x, "Precipitation", fun="sum", freq="years", na.rm=T)
     d_y = summarypoint(x, "Precipitation", fun="max", freq= "years", na.rm=T)
-    p_y = mean(p_y)
-    d_y = mean(d_y)
+    if(average) {
+      p_y = mean(p_y)
+      d_y = mean(d_y)
+    }
     R_y = b0*p_y*sqrt(d_y)*(a+b1*long)
     return(R_y)
   }

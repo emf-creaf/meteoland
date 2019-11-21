@@ -10,13 +10,14 @@ Function \code{precipitation_concentration()} calculates daily precipitation con
 }
 \usage{
 precipitation_concentration(p)
-precipitation_rainfallErosivity(x, long, scale = "month")
+precipitation_rainfallErosivity(x, long, scale = "month", average = TRUE)
 }
 \arguments{
   \item{p}{A numeric vector with daily precipitation values.}
   \item{x}{A data frame of meteorological variables (dates as row names and variables as columns).}
   \item{long}{Longitude in degrees.}
   \item{scale}{Either 'month' or 'year'.}
+  \item{average}{Boolean flag to calculate multi-year averages before applying MedREM's formula.}
 }
 \value{
 Function \code{precipitation_concentration()}  returns a value between 0 (equal distribution of rainfall) and 1 (one day concentrates all rainfall). Function \code{precipitation_rainfallErosivity()} returns a vector of twelve values (one for each month) (in MJ·mm·ha-1·h-1·month-1) or one value (in in MJ·mm·ha-1·h-1·yr-1) depending on the scale.

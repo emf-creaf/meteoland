@@ -1,4 +1,4 @@
-precipitationconcentration<-function(p) {
+precipitation_concentration<-function(p) {
   p_max = ceiling(max(p, na.rm=TRUE))
   f = cut(p, breaks=c(0.1,1:p_max), include.lowest =TRUE, right=FALSE)
   #Frequency distribution per class
@@ -48,4 +48,17 @@ precipitationconcentration<-function(p) {
   S <- 5000 - A
   ci =2*S/10000
   return(ci)
+}
+precipitation_rainfallErosivity<-function(x, long) {
+  b0 = 0.117
+  b1 = 2
+  a = -0.015
+  #Calculate monthly cumulated precipitation
+  p_m = summarypoint(x, "Precipitation", fun="sum", freq="months", na.rm=T)
+  d_m = summarypoint(x, "Precipitation", fun="max", freq= "months", na.rm=T)
+  months = substr(names(p_m),6,7)
+  p_m = tapply(p_m, months, FUN="mean")
+  d_m = tapply(d_m, months, FUN="mean")
+  R_m = b0*p_m*sqrt(d_m)*(a+b1*long)
+  return(R_m)
 }

@@ -2,6 +2,9 @@
  NEWS for R Package "meteoland"
 -------------------------------
 
+# Version 0.8.4
+- New function to calculate rainfall erosivity 
+
 # Version 0.8.3
 - Remove dependencies of ncdf4.helpers
 

@@ -18,7 +18,7 @@ precipitation_rainfallErosivity(x, long)
   \item{long}{Longitude in degrees.}
 }
 \value{
-Function \code{precipitation_concentration()}  returns a value between 0 (equal distribution of rainfall) and 1 (one day concentrates all rainfall). Function \code{precipitation_rainfallErosivity()} returns a vector of twelve values (one for each month).
+Function \code{precipitation_concentration()}  returns a value between 0 (equal distribution of rainfall) and 1 (one day concentrates all rainfall). Function \code{precipitation_rainfallErosivity()} returns a vector of twelve values (one for each month) of rainfall erosivity (in MJ·mm·ha-1·h-1·yr-1).
 }
 \author{
 Miquel De \enc{Cáceres}{Caceres} Ainsa, CTFC.

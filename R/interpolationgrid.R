@@ -121,17 +121,17 @@
   pet = .PenmanPETPointsDay(latrad, grid$elevation, slorad, asprad, J, tmin, tmax,
                             rhmin, rhmax, rad, Ws, mPar$wind_height,
                             0.001, 0.25);
-  df = data.frame(MeanTemperature = units::set_units(as.vector(tmean),"celsius"),
-                  MinTemperature = units::set_units(as.vector(tmin),"celsius"),
-                  MaxTemperature = units::set_units(as.vector(tmax),"celsius"),
-                  Precipitation = units::set_units(as.vector(prec),"L/m^2"),
-                  MeanRelativeHumidity = units::set_units(rhmean,"%"),
-                  MinRelativeHumidity = units::set_units(rhmin,"%"),
-                  MaxRelativeHumidity = units::set_units(rhmax, "%"),
-                  Radiation = units::set_units(rad,"MJ"),
-                  WindSpeed = units::set_units(Ws,"m/s"),
-                  WindDirection = units::set_units(Wd,"degrees"),
-                  PET = units::set_units(pet,"L/m^2"))
+  df = data.frame(MeanTemperature = as.vector(tmean),#"celsius"),
+                  MinTemperature = as.vector(tmin),#"celsius"),
+                  MaxTemperature = as.vector(tmax),#"celsius"),
+                  Precipitation = as.vector(prec),#"L/m^2"),
+                  MeanRelativeHumidity = rhmean,#"%"),
+                  MinRelativeHumidity = rhmin,#"%"),
+                  MaxRelativeHumidity = rhmax, #"%"),
+                  Radiation = rad,#"MJ"),
+                  WindSpeed = Ws,#"m/s"),
+                  WindDirection = Wd,#"degrees"),
+                  PET = pet) #"L/m^2"))
   return(SpatialGridDataFrame(grid@grid, df, grid@proj4string))
 }
 

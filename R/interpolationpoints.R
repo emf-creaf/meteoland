@@ -122,17 +122,17 @@
                     0.001, 0.25);
 
   df = data.frame(DOY = DOY,
-                  MeanTemperature = units::set_units(as.vector(tmean),"celsius"),
-                  MinTemperature = units::set_units(as.vector(tmin),"celsius"),
-                  MaxTemperature = units::set_units(as.vector(tmax),"celsius"),
-                  Precipitation = units::set_units(as.vector(prec),"L/m^2"),
-                  MeanRelativeHumidity = units::set_units(rhmean,"%"),
-                  MinRelativeHumidity = units::set_units(rhmin,"%"),
-                  MaxRelativeHumidity = units::set_units(rhmax, "%"),
-                  Radiation = units::set_units(rad,"MJ"),
-                  WindSpeed = units::set_units(Wsp,"m/s"),
-                  WindDirection = units::set_units(Wdp,"degrees"),
-                  PET = units::set_units(pet,"L/m^2"),
+                  MeanTemperature = as.vector(tmean),#"celsius"),
+                  MinTemperature = as.vector(tmin),#"celsius"),
+                  MaxTemperature = as.vector(tmax),#"celsius"),
+                  Precipitation = as.vector(prec), #"L/m^2"),
+                  MeanRelativeHumidity = rhmean,#"%"),
+                  MinRelativeHumidity = rhmin,#"%"),
+                  MaxRelativeHumidity = rhmax, #"%"),
+                  Radiation = rad,#"MJ"),
+                  WindSpeed = Wsp,#"m/s"),
+                  WindDirection = Wdp,#"degrees"),
+                  PET = pet,#,"L/m^2"),
                   row.names = dates)
   return(df)
 }

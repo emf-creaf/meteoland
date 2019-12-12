@@ -47,7 +47,7 @@ The aspect value is then converted to compass direction values (0-360 degrees).
 Function \code{SpatialGridTopography} returns an object '\code{\link{SpatialGridTopography-class}}'.
 }
 \author{
-Miquel De \enc{Cáceres}{Caceres} Ainsa, Biodiversity and Landscape Ecology Laboratory, Centre Tecnologic Forestal de Catalunya
+Miquel De \enc{Cáceres}{Caceres} Ainsa, CTFC
 }
 \seealso{
 \code{\link{extractSpatialData}}, \code{\link{SpatialGridTopography-class}}

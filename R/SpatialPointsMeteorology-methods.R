@@ -102,3 +102,22 @@ print.SpatialPointsMeteorology <- function(x, ..., digits = getOption("digits"))
 }
 setMethod("print", "SpatialPointsMeteorology", function(x, ..., digits = getOption("digits")) print.SpatialPointsMeteorology(x, ..., digits))
 setMethod("show", "SpatialPointsMeteorology", function(object) print.SpatialPointsMeteorology(object))
+
+as.SpPtsMet.STFDF = function(from) {
+  
+  datavec = from@data
+  data = datavec[[1]]
+  if(length(datavec)>1) {
+    for(i in 2:length(datavec)) {
+      data = rbind(data, datavec[[i]]) 
+    }
+  }
+  time = as.POSIXct(as.Date(from@dates))
+  sp = as(from, "SpatialPoints")
+  spacetime::STFDF(sp, time, data)
+}
+setAs("SpatialPointsMeteorology", "STFDF", as.SpPtsMet.STFDF)
+as.SpPtsMet.stars = function(from) {
+  stars::st_as_stars(as.SpPtsMet.STFDF(from))
+}
+setAs("SpatialPointsMeteorology", "stars", as.SpPtsMet.stars)

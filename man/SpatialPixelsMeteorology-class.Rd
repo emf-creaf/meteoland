@@ -32,7 +32,9 @@ Class \code{"\linkS4class{Spatial}"}, by class "SpatialPixels", distance 3.
 \section{Methods}{
   \describe{
      \item{[}{\code{signature(x = "SpatialPixelsMeteorology", i = "ANY", ..., drop = "ANY")}: subsets the pixels and associated topography; only one dimension can be subsetted. If \code{drop = TRUE} the boundary box is recalculated.}
-    \item{spplot}{\code{signature(object = "SpatialPixelsTopography")}: allows plotting topography maps.}
+     \item{coerce}{\code{signature(x = "SpatialPixelsMeteorology", to = "STFDF")}: coerces into a spacetime STFDF object.}
+     \item{coerce}{\code{signature(x = "SpatialPixelsMeteorology", to = "stars")}: coerces into a stars object.}
+    \item{spplot}{\code{signature(object = "SpatialPixelsMeteorology")}: allows plotting maps.}
 	 }
 }
 \author{

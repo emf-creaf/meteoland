@@ -94,3 +94,23 @@ subs.SpatialGridMeteorology <- function(x, i, j, ..., drop = FALSE) {
   }
 }
 setMethod("[", "SpatialGridMeteorology", subs.SpatialGridMeteorology)
+
+
+as.SpGrdMet.STFDF = function(from) {
+
+  datavec = from@data
+  data = datavec[[1]]
+  if(length(datavec)>1) {
+    for(i in 2:length(datavec)) {
+       data = rbind(data, datavec[[i]]) 
+    }
+  }
+  time = as.POSIXct(as.Date(from@dates))
+  sp = as(from, "SpatialGrid")
+  spacetime::STFDF(sp, time, data)
+}
+setAs("SpatialGridMeteorology", "STFDF", as.SpGrdMet.STFDF)
+as.SpGrdMet.stars = function(from) {
+  stars::st_as_stars(as.SpGrdMet.STFDF(from))
+}
+setAs("SpatialGridMeteorology", "stars", as.SpGrdMet.stars)

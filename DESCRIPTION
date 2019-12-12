@@ -1,8 +1,8 @@
 Package: meteoland
 Type: Package
 Title: Landscape Meteorology Tools
-Version: 0.8.4
-Date: 2019-11-21
+Version: 0.8.5
+Date: 2019-12-12
 Authors@R: c(
 	person('Miquel', 'De Cáceres', role=c('aut','cre'),
 	email='miquelcaceres@gmail.com'),
@@ -15,7 +15,7 @@ URL: https://vegmod.ctfc.cat/software/meteoland/
 LazyData: TRUE
 Depends: R (>= 3.4.0), sp
 Imports: spdep, rgdal, ncdf4, httr, jsonlite, methods, Rcpp (>= 0.12.12)
-Suggests: knitr
+Suggests: knitr, spacetime, stars
 LinkingTo: Rcpp
 Encoding: UTF-8
 NeedsCompilation: yes

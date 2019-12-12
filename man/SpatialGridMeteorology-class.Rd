@@ -28,6 +28,8 @@ Class \code{"\linkS4class{Spatial}"}, by class "SpatialGrid", distance 2.
 \section{Methods}{
   \describe{
      \item{[}{\code{signature(x = "SpatialGridMeteorology", i = "ANY", j = "ANY", drop = "ANY")}: subsets the grid and associated meteorology; only rows (x values) and columns (y values) can be subsetted.}
+     \item{coerce}{\code{signature(x = "SpatialGridMeteorology", to = "STFDF")}: coerces into a spacetime STFDF object.}
+     \item{coerce}{\code{signature(x = "SpatialGridMeteorology", to = "stars")}: coerces into a stars object.}
   }
 }
 

@@ -96,3 +96,21 @@ print.SpatialPixelsMeteorology = function(x, ...) {
 setMethod("print", "SpatialPixelsMeteorology", function(x, ..., digits = getOption("digits")) print.SpatialPixelsMeteorology(x, ..., digits))
 setMethod("show", "SpatialPixelsMeteorology", function(object) print.SpatialPixelsMeteorology(object))
 
+
+as.SpPxMet.STFDF = function(from) {
+  datavec = from@data
+  data = datavec[[1]]
+  if(length(datavec)>1) {
+    for(i in 2:length(datavec)) {
+      data = rbind(data, datavec[[i]]) 
+    }
+  }
+  time = as.POSIXct(as.Date(from@dates))
+  sp = as(from, "SpatialPixels")
+  spacetime::STFDF(sp, time, data)
+}
+setAs("SpatialPixelsMeteorology", "STFDF", as.SpPxMet.STFDF)
+as.SpPxMet.stars = function(from) {
+  stars::st_as_stars(as.SpPxMet.STFDF(from))
+}
+setAs("SpatialPixelsMeteorology", "stars", as.SpPxMet.stars)

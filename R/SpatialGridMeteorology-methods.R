@@ -105,6 +105,7 @@ as.SpGrdMet.STFDF = function(from) {
        data = rbind(data, datavec[[i]]) 
     }
   }
+  data$Precipitation = set_units(data$Precipitation, "L/m^2")
   time = as.POSIXct(as.Date(from@dates))
   sp = as(from, "SpatialGrid")
   spacetime::STFDF(sp, time, data)

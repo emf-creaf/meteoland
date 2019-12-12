@@ -121,17 +121,17 @@
   pet = .PenmanPETPointsDay(latrad, pixels$elevation, slorad, asprad, J, tmin, tmax,
                             rhmin, rhmax, rad, Ws, mPar$wind_height,
                             0.001, 0.25);
-  df = data.frame(MeanTemperature = as.vector(tmean),
-                  MinTemperature = as.vector(tmin),
-                  MaxTemperature = as.vector(tmax),
-                  Precipitation = as.vector(prec),
-                  MeanRelativeHumidity = rhmean,
-                  MinRelativeHumidity = rhmin,
-                  MaxRelativeHumidity = rhmax,
-                  Radiation = rad,
-                  WindSpeed = as.vector(Ws),
-                  WindDirection = as.vector(Wd),
-                  PET = pet)
+  df = data.frame(MeanTemperature = units::set_units(as.vector(tmean),"celsius"),
+                  MinTemperature = units::set_units(as.vector(tmin),"celsius"),
+                  MaxTemperature = units::set_units(as.vector(tmax),"celsius"),
+                  Precipitation = units::set_units(as.vector(prec),"L/m^2"),
+                  MeanRelativeHumidity = units::set_units(rhmean,"%"),
+                  MinRelativeHumidity = units::set_units(rhmin,"%"),
+                  MaxRelativeHumidity = units::set_units(rhmax, "%"),
+                  Radiation = units::set_units(rad,"MJ"),
+                  WindSpeed = units::set_units(Ws,"m/s"),
+                  WindDirection = units::set_units(Wd,"degrees"),
+                  PET = units::set_units(pet,"L/m^2"))
   return(SpatialPixelsDataFrame(pixels@coords, data = df, grid=pixels@grid, proj4string= pixels@proj4string))
 }
 

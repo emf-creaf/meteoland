@@ -1,47 +1,51 @@
-.writemeteorologygridNetCDF<-function(data, grid, proj4string, date, file, format = "netCDF") {
+.writemeteorologygridNetCDF<-function(data, grid, proj4string, dates, file, format = "netCDF") {
   nx = grid@cells.dim[1]
   ny = grid@cells.dim[2]
   #Writes rows by decreasing order
-  putvargriddata<-function(nc, var, datavec) {
-    for(i in 1:ny) ncvar_put(nc, var, datavec[((i-1)*nx+1):(i*nx)], start=c(1,ny-i+1), count=c(nx,1))
+  putvargriddataday<-function(nc, var, datavec, day) {
+    for(i in 1:ny) ncvar_put(nc, varid=var, vals=datavec[((i-1)*nx+1):(i*nx)], start=c(1,ny-i+1, day), count=c(nx,1,1))
   }
   if(format=="netCDF") {
+    tunits = "days since 1970-01-01 00:00:00.0 -0:00"
     dimX <- ncdim_def( "X", "meters", sort(unique(coordinates(grid)[,1])))
     dimY <- ncdim_def( "Y", "meters", sort(unique(coordinates(grid)[,2])))
-    varMeanTemp <- ncvar_def( "MeanTemperature", "Celsius", list(dimX,dimY), NA)
-    varMinTemp <- ncvar_def( "MinTemperature", "Celsius", list(dimX,dimY), NA)
-    varMaxTemp <- ncvar_def( "MaxTemperature", "Celsius", list(dimX,dimY), NA)
-    varPrec <- ncvar_def( "Precipitation", "L/m2", list(dimX,dimY), NA)
-    varMeanRH <- ncvar_def( "MeanRelativeHumidity", "%", list(dimX,dimY), NA)
-    varMinRH <- ncvar_def( "MinRelativeHumidity", "%", list(dimX,dimY), NA)
-    varMaxRH <- ncvar_def( "MaxRelativeHumidity", "%", list(dimX,dimY), NA)
-    varRad <- ncvar_def( "Radiation", "MJ/m2", list(dimX,dimY), NA)
-    varWindSpeed <- ncvar_def( "WindSpeed", "m/s", list(dimX,dimY), NA)
-    varWindDirection <- ncvar_def( "WindDirection", "Degrees", list(dimX,dimY), NA)
-    varPET <- ncvar_def( "PET", "L/m2", list(dimX,dimY), NA)
+    time <- ncdim_def("time", tunits, as.double(as.Date(dates)))
+    varMeanTemp <- ncvar_def( "MeanTemperature", "Celsius", list(dimX,dimY, time), NA)
+    varMinTemp <- ncvar_def( "MinTemperature", "Celsius", list(dimX,dimY, time), NA)
+    varMaxTemp <- ncvar_def( "MaxTemperature", "Celsius", list(dimX,dimY, time), NA)
+    varPrec <- ncvar_def( "Precipitation", "L/m2", list(dimX,dimY, time), NA)
+    varMeanRH <- ncvar_def( "MeanRelativeHumidity", "%", list(dimX,dimY, time), NA)
+    varMinRH <- ncvar_def( "MinRelativeHumidity", "%", list(dimX,dimY, time), NA)
+    varMaxRH <- ncvar_def( "MaxRelativeHumidity", "%", list(dimX,dimY, time), NA)
+    varRad <- ncvar_def( "Radiation", "MJ/m2", list(dimX,dimY, time), NA)
+    varWindSpeed <- ncvar_def( "WindSpeed", "m/s", list(dimX,dimY, time), NA)
+    varWindDirection <- ncvar_def( "WindDirection", "Degrees", list(dimX,dimY, time), NA)
+    varPET <- ncvar_def( "PET", "L/m2", list(dimX,dimY, time), NA)
     nc <- nc_create(file, list(varMeanTemp,varMinTemp,varMaxTemp,varPrec,
                                varMeanRH, varMinRH,varMaxRH,
                                varRad, varWindSpeed, varWindDirection, varPET) )
     ncatt_put(nc, 0, "proj4string", as.character(proj4string))
-    ncatt_put(nc, 0, "date", as.character(date))
-    putvargriddata(nc,varMeanTemp, data$MeanTemperature)
-    putvargriddata(nc,varMinTemp, data$MinTemperature)
-    putvargriddata( nc, varMaxTemp, data$MaxTemperature)
-    putvargriddata( nc, varPrec, data$Precipitation)
-    putvargriddata( nc, varMeanRH, data$MeanRelativeHumidity)
-    putvargriddata( nc, varMinRH, data$MinRelativeHumidity)
-    putvargriddata( nc, varMaxRH, data$MaxRelativeHumidity)
-    putvargriddata( nc, varRad, data$Radiation)
-    putvargriddata( nc, varWindSpeed, data$WindSpeed)
-    putvargriddata( nc, varWindDirection, data$WindDirection)
-    putvargriddata( nc, varPET, data$PET)
+    for(j in 1:length(dates)) {
+      putvargriddataday(nc,varMeanTemp, data[[i]]$MeanTemperature,j)
+      putvargriddataday(nc,varMinTemp, data[[i]]$MinTemperature,j)
+      putvargriddataday( nc, varMaxTemp, data[[i]]$MaxTemperature,j)
+      putvargriddataday( nc, varPrec, data[[i]]$Precipitation,j)
+      putvargriddataday( nc, varMeanRH, data[[i]]$MeanRelativeHumidity,j)
+      putvargriddataday( nc, varMinRH, data[[i]]$MinRelativeHumidity,j)
+      putvargriddataday( nc, varMaxRH, data[[i]]$MaxRelativeHumidity,j)
+      putvargriddataday( nc, varRad, data[[i]]$Radiation,j)
+      putvargriddataday( nc, varWindSpeed, data[[i]]$WindSpeed,j)
+      putvargriddataday( nc, varWindDirection, data[[i]]$WindDirection,j)
+      putvargriddataday( nc, varPET, data[[i]]$PET,j)
+    }
     nc_close(nc)
   }
 }
-writemeteorologygrid<-function(object, date, file, format = "netCDF") {
-  if((!inherits(date,"Date"))&&(!inherits(date,"character"))) stop("'date' must be a 'character' or 'Date'")
-  date = as.character(date)
-  .writemeteorologygridNetCDF(object@data[[date]], object@grid, proj4string(object), date, file, format)
+writemeteorologygrid<-function(object, dates = NULL, file, format = "netCDF") {
+  if(!inherits(object,"SpatialGridMeteorology")) stop("'object' has to be of class 'SpatialGridMeteorology'.")
+  if(!is.null(dates)) dates = object@dates
+  if((!inherits(date,"Date"))&&(!inherits(dates,"character"))) stop("'dates' must be a 'character' or 'Date'")
+  .writemeteorologygridNetCDF(object@data[[as.character(dates)]], object@grid, proj4string(object), dates, file, format)
 }
 writemeteorologygridfiles<-function(object, dir=getwd(), format ="netCDF", metadatafile="MG.txt") {
   if(!inherits(object,"SpatialGridMeteorology")) stop("'object' has to be of class 'SpatialGridMeteorology'.")

@@ -38,8 +38,7 @@ export(correctionpoint, correctionpoints, correctionpoints.errors,
        utils_latentHeatVaporisationMol,utils_psychrometricConstant,
        utils_saturationVaporPressureCurveSlope,
        writemeteorologypixels, writemeteorologypixelsfiles,
-       writemeteorologygrid, writemeteorologygridfiles,
-       writemeteorologypoint, writemeteorologypointfiles)
+       writemeteorologygrid, writemeteorologypoint, writemeteorologypointfiles)
 exportClasses(MeteorologyProcedureData, MeteorologyInterpolationData, MeteorologyUncorrectedData)
 exportClasses(SpatialPointsMeteorology,SpatialPointsTopography,
               SpatialGridMeteorology,SpatialGridTopography,

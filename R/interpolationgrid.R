@@ -136,8 +136,8 @@
 }
 
 interpolationgrid<-function(object, grid, dates,
-                            export=FALSE, exportDir = getwd(), exportFormat = "netCDF",
-                            metadatafile = "MG.txt", verbose = TRUE) {
+                            export=FALSE, exportFile = NULL, exportFormat = "netCDF",
+                            verbose = TRUE) {
   if(!inherits(object,"MeteorologyInterpolationData")) stop("'object' has to be of class 'MeteorologyInterpolationData'.")
   if(!inherits(grid,"SpatialGridTopography")) stop("'grid' has to be of class 'SpatialGridTopography'.")
   if(!is.null(dates)) {
@@ -164,33 +164,32 @@ interpolationgrid<-function(object, grid, dates,
   l = vector("list", ndates)
 
   # Define meta data frame
-  dfout = data.frame(dir = rep(exportDir, ndates), filename=rep("", ndates))
-  dfout$dir = as.character(dfout$dir)
-  dfout$filename = as.character(dfout$filename)
-  rownames(dfout) = dates
+  # dfout = data.frame(dir = rep(exportDir, ndates), filename=rep("", ndates))
+  # dfout$dir = as.character(dfout$dir)
+  # dfout$filename = as.character(dfout$filename)
+  # rownames(dfout) = dates
 
+  if(export) nc =  .openmeteorologygridNetCDF(grid@grid, proj4string(grid), 
+                                             dates = dates, file = exportFile)
   for(i in 1:ndates) {
-    if(verbose) cat(paste("Date ", dates[i], " (",i,"/",ndates,") -",sep=""))
+    if(verbose) cat(paste("Interpolating day '", dates[i], "' (",i,"/",ndates,") - ",sep=""))
     m = .interpolateGridDay(object, grid, latitude, dates[i])
     if(export) {
-      if(exportFormat=="netCDF") dfout$filename[i] = paste(dates[i],".nc", sep="")
-      if(dfout$dir[i]!="") f = paste(dfout$dir[i],dfout$filename[i], sep="/")
-      else f = dfout$filename[i]
-      .writemeteorologygridNetCDF(m@data,m@grid, proj4string(m),dates[i],f,exportFormat)
-      if(verbose) cat(paste(" written to ",f, sep=""))
-      if(exportDir!="") f = paste(exportDir,metadatafile, sep="/")
-      else f = metadatafile
-      write.table(dfout,file= f,sep="\t", quote=FALSE)
+      dl = list(m@data)
+      names(dl) = as.character(dates[i])
+      .writemeteorologygridNetCDF(dl,
+                                  m@grid, proj4string(m), 
+                                  dates= as.Date(dates[i]), nc)
     } else {
       l[[i]] = m@data
-      if(verbose) cat(" done")
+      if(verbose) cat("done.\n")
     }
-    if(verbose) cat(".\n")
   }
   if(!export) {
     names(l) = dates
     return(SpatialGridMeteorology(grid@grid, grid@proj4string, l, dates))
   } else {
-    invisible(dfout)
+    cat(paste0("Closing '", exportFile,"'.\n"))
+    nc_close(nc)
   }
 }

@@ -136,7 +136,7 @@
 }
 
 interpolationgrid<-function(object, grid, dates,
-                            export=FALSE, exportFile = NULL, exportFormat = "netCDF",
+                            exportFile = NULL, exportFormat = "netCDF", add = FALSE, overwrite = FALSE,
                             verbose = TRUE) {
   if(!inherits(object,"MeteorologyInterpolationData")) stop("'object' has to be of class 'MeteorologyInterpolationData'.")
   if(!inherits(grid,"SpatialGridTopography")) stop("'grid' has to be of class 'SpatialGridTopography'.")
@@ -168,18 +168,16 @@ interpolationgrid<-function(object, grid, dates,
   # dfout$dir = as.character(dfout$dir)
   # dfout$filename = as.character(dfout$filename)
   # rownames(dfout) = dates
-
+  export = !is.null(exportFile)
   if(export) nc =  .openmeteorologygridNetCDF(grid@grid, proj4string(grid), 
-                                             dates = dates, file = exportFile)
+                                             dates = dates, file = exportFile, add = add, overwrite = overwrite)
   for(i in 1:ndates) {
     if(verbose) cat(paste("Interpolating day '", dates[i], "' (",i,"/",ndates,") - ",sep=""))
     m = .interpolateGridDay(object, grid, latitude, dates[i])
     if(export) {
       dl = list(m@data)
       names(dl) = as.character(dates[i])
-      .writemeteorologygridNetCDF(dl,
-                                  m@grid, proj4string(m), 
-                                  dates= as.Date(dates[i]), nc)
+      .writemeteorologygridNetCDF(dl,m@grid, proj4string(m), nc)
     } else {
       l[[i]] = m@data
       if(verbose) cat("done.\n")
@@ -189,7 +187,6 @@ interpolationgrid<-function(object, grid, dates,
     names(l) = dates
     return(SpatialGridMeteorology(grid@grid, grid@proj4string, l, dates))
   } else {
-    cat(paste0("Closing '", exportFile,"'.\n"))
-    nc_close(nc)
+    .closeNetCDF(exportFile,nc)
   }
 }

@@ -109,7 +109,7 @@
   nc_close(nc)
 }
 #Reads full NetCDF grid
-.readmeteorologygridNetCDF<-function(ncin, dates = NULL) {
+.readmeteorologyNetCDF<-function(ncin, dates = NULL, pixels = FALSE) {
   proj4string <- ncatt_get(ncin,0, "proj4string")$value
   if(proj4string!="NA") crs = CRS(proj4string)
   else crs = CRS(as.character(NA))
@@ -146,7 +146,21 @@
     for(i in 1:ncol(df)) df[is.na(df[,i]),i] =NA
     data[[j]] = df
   }
-  sgm = SpatialGridMeteorology(grid, proj4string = CRS(proj4string), 
-                               data = data, dates=dates)
-  return(sgm)
+  sm = NULL
+  if(!pixels) {
+    sm = SpatialGridMeteorology(grid, proj4string = CRS(proj4string), 
+                                 data = data, dates=dates)
+  } else {
+    #Remove empty grid cells
+    ccgrid = coordinates(grid)
+    sel = apply(as.matrix(df),1, function(x) {sum(is.na(x))<length(x)}) #Select points for which at least one value is non-missing
+    pts = SpatialPoints(ccgrid[sel,], proj4string = CRS(proj4string))
+    for(i in 1:length(data)) {
+      data[[i]] = data[[i]][sel,]
+    }
+    sm = SpatialPixelsMeteorology(pts, proj4string=pts@proj4string, 
+                             data= data, dates= dates,
+                             grid = grid)
+  }
+  return(sm)
 }

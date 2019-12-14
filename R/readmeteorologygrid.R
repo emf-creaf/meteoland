@@ -2,45 +2,56 @@ readmeteorologygrid<-function(file, dates = NULL, format = "netCDF") {
   nc = .openreadNetCDF(file)
   if(!is.null(dates)) {
     if((!inherits(dates,"Date"))&&(!inherits(dates,"character"))) stop("'dates' must be a 'character' or 'Date'")
-    sgm = .readmeteorologygridNetCDF(nc, dates = as.Date(dates))
+    sgm = .readmeteorologyNetCDF(nc, dates = as.Date(dates))
   } else {
-    sgm = .readmeteorologygridNetCDF(nc)
+    sgm = .readmeteorologyNetCDF(nc)
   }
   .closeNetCDF(file,nc)
   return(sgm)
 }
-readmeteorologygridfiles<-function(files, format="netCDF") {
-  if((!inherits(files,"character"))&&(!inherits(files,"data.frame"))) stop("'files' has to be a character vector or a data frame with columns 'dir' and 'filename'.")
-  if(inherits(files,"data.frame")) {
-    nfiles = nrow(files)
-    filevec = rep("", nfiles)
-    for(i in 1:nfiles) {
-      if(files$dir[i]!="") filevec[i] = paste(files$dir[i], files$filename[i], sep="/")
-      else filevec[i] = files$filename[i]
-    }
-    files = filevec
+readmeteorologypixels<-function(file, dates = NULL, format = "netCDF") {
+  nc = .openreadNetCDF(file)
+  if(!is.null(dates)) {
+    if((!inherits(dates,"Date"))&&(!inherits(dates,"character"))) stop("'dates' must be a 'character' or 'Date'")
+    spm = .readmeteorologyNetCDF(nc, dates = as.Date(dates), pixels=T)
   } else {
-    nfiles = length(files)
+    spm = .readmeteorologyNetCDF(nc, pixels=T)
   }
-  day1met = .readmeteorologygrid(files[1],format)
-  grid = day1met$sgdf@grid
-  proj4string = day1met$sgdf@proj4string
-  dstringvec = rep("", nfiles)
-  if(nfiles>1) {
-    dfvec = vector("list",nfiles)
-    dfvec[[1]] = day1met$sgdf@data
-    names(dfvec)[1] = day1met$date
-    dstringvec[1] =  day1met$date
-    for(i in 2:nfiles) {
-      dayimet = .readmeteorologygrid(files[i],format)
-      dfvec[[i]] = dayimet$sgdf@data
-      names(dfvec)[i] = dayimet$date
-      dstringvec[i] =  dayimet$date
-    }
-    return(SpatialGridMeteorology(grid, proj4string, dfvec, as.Date(dstringvec)))
-  }
-  return(day1met$sgdf)
+  .closeNetCDF(file,nc)
+  return(spm)
 }
+# readmeteorologygridfiles<-function(files, format="netCDF") {
+#   if((!inherits(files,"character"))&&(!inherits(files,"data.frame"))) stop("'files' has to be a character vector or a data frame with columns 'dir' and 'filename'.")
+#   if(inherits(files,"data.frame")) {
+#     nfiles = nrow(files)
+#     filevec = rep("", nfiles)
+#     for(i in 1:nfiles) {
+#       if(files$dir[i]!="") filevec[i] = paste(files$dir[i], files$filename[i], sep="/")
+#       else filevec[i] = files$filename[i]
+#     }
+#     files = filevec
+#   } else {
+#     nfiles = length(files)
+#   }
+#   day1met = .readmeteorologygrid(files[1],format)
+#   grid = day1met$sgdf@grid
+#   proj4string = day1met$sgdf@proj4string
+#   dstringvec = rep("", nfiles)
+#   if(nfiles>1) {
+#     dfvec = vector("list",nfiles)
+#     dfvec[[1]] = day1met$sgdf@data
+#     names(dfvec)[1] = day1met$date
+#     dstringvec[1] =  day1met$date
+#     for(i in 2:nfiles) {
+#       dayimet = .readmeteorologygrid(files[i],format)
+#       dfvec[[i]] = dayimet$sgdf@data
+#       names(dfvec)[i] = dayimet$date
+#       dstringvec[i] =  dayimet$date
+#     }
+#     return(SpatialGridMeteorology(grid, proj4string, dfvec, as.Date(dstringvec)))
+#   }
+#   return(day1met$sgdf)
+# }
 readmeteorologygridcells<-function(files, cellIndices, format="netCDF"){
   if((!inherits(files,"character"))&&(!inherits(files,"data.frame"))) stop("'files' has to be a character vector or a data frame with columns 'dir' and 'filename'.")
   if(inherits(files,"data.frame")) {

@@ -34,18 +34,11 @@
                     PET = readvargriddata(ncin, "PET", nx,ny))
     
     for(i in 1:ncol(df)) df[is.na(df[,i]),i] =NA
-    #Remove empty grid cells
-    ccgrid = coordinates(grid)
-    sel = apply(as.matrix(df),1, function(x) {sum(is.na(x))<length(x)}) #Select points for which at least one value is non-missing
-    spdf = SpatialPixelsDataFrame(ccgrid[sel,], data = df[sel,], grid = grid, proj4string = crs)
-    l = list(date = date, spdf = spdf)
-    return(l)
+
   }
 }
 
-readmeteorologypixels<-function(file, format = "netCDF") {
-  return(.readmeteorologypixelsNetCDF(file, format)$spdf)
-}
+
 readmeteorologypixelsfiles<-function(files, format="netCDF") {
   if((!inherits(files,"character"))&&(!inherits(files,"data.frame"))) stop("'files' has to be a character vector or a data frame with columns 'dir' and 'filename'.")
   if(inherits(files,"data.frame")) {

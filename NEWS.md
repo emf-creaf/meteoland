@@ -4,6 +4,7 @@
 
 # Version 0.8.5
 - New functions to convert SpatialPointsMeteorology, SpatialPixelsMeteorology and SpatialGridMeteorology into objects of packages 'spacetime' and 'stars'
+- Functions to read/write NetCDF files reprogrammed and improved.
 
 # Version 0.8.4
 - New function to calculate rainfall erosivity 

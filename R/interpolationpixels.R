@@ -136,8 +136,8 @@
 }
 
 interpolationpixels<-function(object, pixels, dates,
-                            export=FALSE, exportDir = getwd(), exportFormat = "netCDF",
-                            metadatafile = "MG.txt", verbose = TRUE) {
+                              exportFile = NULL, exportFormat = "netCDF", add = FALSE, overwrite = FALSE,
+                              verbose = TRUE) {
   if(!inherits(object,"MeteorologyInterpolationData")) stop("'object' has to be of class 'MeteorologyInterpolationData'.")
   if(!inherits(pixels,"SpatialPixelsTopography")) stop("'pixels' has to be of class 'SpatialPixelsTopography'.")
   if(!is.null(dates)) {
@@ -159,38 +159,30 @@ interpolationpixels<-function(object, pixels, dates,
   longlat = spTransform(as(pixels,"SpatialPoints"),CRS("+proj=longlat"))
   latitude = longlat@coords[,2]
   ndates = length(dates)
-  if(ndates==1) return(.interpolatePixelsDay(object, pixels, latitude, dates))
+  #Is export?
+  export = !is.null(exportFile)
+  if((ndates==1) && !export) return(.interpolatePixelsDay(object, pixels, latitude, dates))
   # Define vector of data frames
   l = vector("list", ndates)
 
-  # Define meta data frame
-  dfout = data.frame(dir = rep(exportDir, ndates), filename=rep("", ndates))
-  dfout$dir = as.character(dfout$dir)
-  dfout$filename = as.character(dfout$filename)
-  rownames(dfout) = dates
-
+  if(export) nc =  .openwriteNetCDF(pixels@grid, proj4string(pixels), 
+                                    dates = dates, file = exportFile, add = add, overwrite = overwrite)
   for(i in 1:ndates) {
-    if(verbose) cat(paste("Date ", dates[i], " (",i,"/",ndates,") -",sep=""))
+    if(verbose) cat(paste("Interpolating day '", dates[i], "' (",i,"/",ndates,") - ",sep=""))
     m = .interpolatePixelsDay(object, pixels, latitude, dates[i])
     if(export) {
-      if(exportFormat=="netCDF") dfout$filename[i] = paste(dates[i],".nc", sep="")
-      if(dfout$dir[i]!="") f = paste(dfout$dir[i],dfout$filename[i], sep="/")
-      else f = dfout$filename[i]
-      .writemeteorologypixelsNetCDF(m@data, pixels, proj4string(m),dates[i],f,exportFormat)
-      if(verbose) cat(paste(" written to ",f, sep=""))
-      if(exportDir!="") f = paste(exportDir,metadatafile, sep="/")
-      else f = metadatafile
-      write.table(dfout,file= f,sep="\t", quote=FALSE)
+      dl = list(m@data)
+      names(dl) = as.character(dates[i])
+      .writemeteorologypixelsNetCDF(dl,m, proj4string(m), nc)
     } else {
       l[[i]] = m@data
-      if(verbose) cat(" done")
+      if(verbose) cat(" done.\n")
     }
-    if(verbose) cat(".\n")
   }
   if(!export) {
     names(l) = dates
     return(SpatialPixelsMeteorology(as(pixels,"SpatialPoints"), data = l, dates, grid = pixels@grid, proj4string = pixels@proj4string))
   } else {
-    invisible(dfout)
+    .closeNetCDF(exportFile,nc)
   }
 }

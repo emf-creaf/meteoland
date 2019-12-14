@@ -1,4 +1,4 @@
-#Opens/creates a NetCDF file for writing data
+#Opens/creates a NetCDF for writing data
 .openwriteNetCDF<-function(grid, proj4string, dates, file, add=FALSE, overwrite = FALSE) {
   if(!add) {
     if(file.exists(file) & !overwrite) stop(paste0("File '",file,"' already exist. Use 'overwrite = TRUE' to force overwriting or 'add = TRUE' to add/replace content."))
@@ -31,6 +31,7 @@
   }
   return(nc)
 }
+#Opens a NetCDF for reading data
 .openreadNetCDF<-function(file) {
   if(!file.exists(file)) stop(paste0("File '", file, "' does not exist."))
   cat(paste0("Opening '", file,"' to read data.\n"))
@@ -48,6 +49,7 @@
   }
   for(i in 1:ny) ncvar_put(nc, varid=var, vals=datavecfull[((i-1)*nx+1):(i*nx)], start=c(1,ny-i+1, day), count=c(nx,1,1))
 }
+#Reads grid/pixels for a single variable and day
 .readvardataday<-function(ncin, varname, day) {
   nx = ncin$dim$X$len
   ny = ncin$dim$Y$len
@@ -103,12 +105,12 @@
 .writemeteorologypixelsNetCDF<-function(data, pixels, proj4string, nc) {
   .writemeteorologygridNetCDF(data, pixels@grid, proj4string, nc, index=pixels@grid.index)
 }
-#Closes file
+#Closes NetCDF
 .closeNetCDF<-function(file,nc) {
   cat(paste0("Closing '", file,"'.\n"))
   nc_close(nc)
 }
-#Reads full NetCDF grid
+#Reads NetCDF grid/pixels
 .readmeteorologyNetCDF<-function(ncin, dates = NULL, pixels = FALSE) {
   proj4string <- ncatt_get(ncin,0, "proj4string")$value
   if(proj4string!="NA") crs = CRS(proj4string)

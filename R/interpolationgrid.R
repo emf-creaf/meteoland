@@ -159,18 +159,14 @@ interpolationgrid<-function(object, grid, dates,
   longlat = spTransform(as(grid,"SpatialPoints"),CRS("+proj=longlat"))
   latitude = longlat@coords[,2]
   ndates = length(dates)
-  if(ndates==1) return(.interpolateGridDay(object, grid, latitude, dates))
+  #Is export?
+  export = !is.null(exportFile)
+  if((ndates==1) && !export) return(.interpolateGridDay(object, grid, latitude, dates))
   # Define vector of data frames
   l = vector("list", ndates)
 
-  # Define meta data frame
-  # dfout = data.frame(dir = rep(exportDir, ndates), filename=rep("", ndates))
-  # dfout$dir = as.character(dfout$dir)
-  # dfout$filename = as.character(dfout$filename)
-  # rownames(dfout) = dates
-  export = !is.null(exportFile)
-  if(export) nc =  .openmeteorologygridNetCDF(grid@grid, proj4string(grid), 
-                                             dates = dates, file = exportFile, add = add, overwrite = overwrite)
+  if(export) nc =  .openwriteNetCDF(grid@grid, proj4string(grid), 
+                                    dates = dates, file = exportFile, add = add, overwrite = overwrite)
   for(i in 1:ndates) {
     if(verbose) cat(paste("Interpolating day '", dates[i], "' (",i,"/",ndates,") - ",sep=""))
     m = .interpolateGridDay(object, grid, latitude, dates[i])

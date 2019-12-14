@@ -15,9 +15,9 @@ interpolationpoints(object, points, dates = NULL, export = FALSE,
                     exportDir = getwd(), exportFormat = "meteoland/txt",
                     metadatafile = "MP.txt", verbose=TRUE)
 interpolationpixels(object, pixels, dates, exportFile = NULL, exportFormat = "netCDF", 
-                    add = TRUE, overwrite = TRUE, verbose=TRUE)
+                    add = FALSE, overwrite = FALSE, verbose=TRUE)
 interpolationgrid(object, grid, dates, exportFile = NULL, exportFormat = "netCDF",
-                  add = TRUE, overwrite = TRUE, verbose=TRUE)
+                  add = FALSE, overwrite = FALSE, verbose=TRUE)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{

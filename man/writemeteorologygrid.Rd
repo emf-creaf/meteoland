@@ -10,8 +10,10 @@ Writes grid meteorology to the disk
 Functions to write grid meteorological data to the file system.
 }
 \usage{
-writemeteorologygrid(object, file, dates, format = "netCDF", add = FALSE, overwrite = FALSE)
-writemeteorologypixels(object, file, dates, format = "netCDF", add = FALSE, overwrite = FALSE)
+writemeteorologygrid(object, file, dates, format = "netCDF", 
+                     add = FALSE, overwrite = FALSE)
+writemeteorologypixels(object, file, dates, format = "netCDF", 
+                       add = FALSE, overwrite = FALSE)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{

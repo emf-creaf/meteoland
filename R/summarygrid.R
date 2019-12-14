@@ -1,52 +1,48 @@
-summarygrid<-function(griddata, dates = NULL) {
-  if(!inherits(griddata,"SpatialGridMeteorology") && !inherits(griddata,"data.frame")) stop("'griddata' has to be of class 'SpatialGridMeteorology' or 'data.frame'.")
-  if(inherits(griddata,"SpatialGridMeteorology")) gdates = griddata@dates
-  else gdates = row.names(griddata)
+summarygrid<-function(grid, var, fun=mean, freq=NULL, dates = NULL, months = NULL, ...) {
+  if(!inherits(grid,"SpatialGridMeteorology") && !inherits(grid,"character")) stop("'grid' has to be of class 'SpatialGridMeteorology' or a 'character'.")
+  VARS = c("MeanTemperature", "MinTemperature","MaxTemperature", "Precipitation",
+           "MeanRelativeHumidity", "MinRelativeHumidity", "MaxRelativeHumidity",
+           "Radiation", "WindSpeed", "WindDirection", "PET")
+  var = match.arg(var, VARS)
   
-  if(is.null(dates)) {
-    dates = gdates
+  if(inherits(grid,"SpatialGridMeteorology")) {
+    gt = grid@grid
+    nx = grid@cells.dim[1]
+    ny = grid@cells.dim[2]
+    gdates = grid@dates
+    crs = grid@proj4string
   } else {
-    if(!inherits(dates, "Date")) stop("'dates' has to be of class 'Date'")
-    if(sum(as.character(dates) %in% as.character(gdates))<length(dates)) stop("Some dates outside the available period.")
+    ncin = .openreadNetCDF(grid)
+    gt = .readgridtopologyNetCDF(ncin)
+    gdates = .readdatesNetCDF(ncin)
+    nx = ncin$dim$X$len
+    ny = ncin$dim$Y$len
+    crs = .readCRSNetCDF(ncin)
   }
-  ndates = length(dates)
   
-  cum = NULL
-  gt = NULL
-  proj4string = NULL
-  pb = txtProgressBar(0, ndates, 0, style = 3)
-  for(i in 1:ndates) {
-    setTxtProgressBar(pb, i)
-    if(inherits(griddata,"SpatialGridMeteorology")) {
-      obs = griddata@data[[i]]
-      if(is.null(cum)) {
-        cum = obs
-        gt = griddata@grid
-        proj4string = griddata@proj4string
-      } else {
-        cum = cum + obs
-      }
-    } else {
-      f = paste(griddata$dir[i], griddata$filename[i],sep="/")
-      if(!file.exists(f)) stop(paste("Observed file '", f,"' does not exist!", sep=""))
-      obs = readmeteorologygrid(f)
-      if(is.null(cum)) {
-        cum = obs@data
-        gt = obs@grid
-        proj4string = obs@proj4string
-      }else {
-        cum = cum + obs@data
-      }
+  npoints = nx*ny  
+  cat(paste("  Summarizing ", var, " in ", npoints," pixels...\n", sep=""))
+  dfvec = vector("list",npoints)
+  cnt = 1
+  pb = txtProgressBar(0, npoints, 0, style = 3)
+  for(j in 1:ny) {
+    for(i in 1:nx) {
+      setTxtProgressBar(pb, cnt)
+      vals = .readvardatapixel(ncin, ncin$var[[var]], i,j)
+      names(vals) = as.character(gdates)
+      dfvec[[cnt]] = .summaryvarpoint(vals, fun = fun, freq=freq, dates = dates, months = months,...)
+      cnt = cnt+1
     }
+  }  
+  noutvars = length(dfvec[[1]])
+  dfout = data.frame(matrix(NA,nrow=npoints, ncol=noutvars))
+  outvarnames = names(dfvec[[1]])
+  if(!is.null(outvarnames)) names(dfout) = outvarnames
+  cat(paste("  Arranging output...\n", sep=""))
+  pb = txtProgressBar(0, npoints, 0, style = 3)
+  for(i in 1:npoints) {
+    setTxtProgressBar(pb, i)
+    dfout[i,] = as.numeric(dfvec[[i]])
   }
-  cat("\n")
-  cum$MeanTemperature = cum$MeanTemperature/ndates
-  cum$MinTemperature = cum$MinTemperature/ndates
-  cum$MaxTemperature = cum$MaxTemperature/ndates
-  cum$MeanRelativeHumidity = cum$MeanRelativeHumidity/ndates
-  cum$MinRelativeHumidity = cum$MinRelativeHumidity/ndates
-  cum$MaxRelativeHumidity = cum$MaxRelativeHumidity/ndates
-  cum$Radiation = cum$Radiation/ndates
-  cum$WindSpeed = cum$WindSpeed/ndates
-  return(SpatialGridDataFrame(gt,cum, proj4string))
+  return(SpatialGridDataFrame(gt,dfout, proj4string=crs))
 }

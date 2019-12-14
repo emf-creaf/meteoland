@@ -39,8 +39,8 @@
 }
 
 #Reads values of time dimension
-.readdatesNetCDF<-function(nc) {
-  return(as.Date(nc$dim$time$vals, origin="1970-01-01"))
+.readdatesNetCDF<-function(ncin) {
+  return(as.Date(ncin$dim$time$vals, origin="1970-01-01"))
 }
 #writes a grid/pixels for a single variable and day
 .putvardataday<-function(nc, var, datavec, day, index=NULL) {
@@ -66,10 +66,10 @@
   return(v)
 }
 #Reads data for a single pixel and period 
-.readvardatapixel<-function(nci, varname, i, j) {
+.readvardatapixel<-function(ncin, varname, i, j) {
   ny = ncin$dim$Y$len
   nt = ncin$dim$time$len
-  return(ncvar_get(ncin, varname,start=c(1,ny-i+1,1), count=c(1,1,nt)))
+  return(ncvar_get(ncin, varname,start=c(i,ny-j+1,1), count=c(1,1,nt)))
 }
 #Writes full NetCDF grids
 .writemeteorologygridNetCDF<-function(data, grid, proj4string, nc, index=NULL) {
@@ -133,11 +133,15 @@
   grid = GridTopology(cellcentre.offset, cellsize, cells.dim)
   return(grid)
 }
-#Reads NetCDF grid/pixels
-.readmeteorologyNetCDF<-function(ncin, dates = NULL, pixels = FALSE) {
-  proj4string <- ncatt_get(ncin,0, "proj4string")$value
+.readCRSNetCDF<-function(ncin) {
+  proj4string = ncatt_get(ncin,0, "proj4string")$value
   if(proj4string!="NA") crs = CRS(proj4string)
   else crs = CRS(as.character(NA))
+  return(crs)
+}
+#Reads NetCDF grid/pixels
+.readmeteorologyNetCDF<-function(ncin, dates = NULL, pixels = FALSE) {
+  crs <- .readCRSNetCDF(ncin)
   dimX <- ncvar_get(ncin, "X")
   dimY <- ncvar_get(ncin, "Y")
   dates_file <- .readdatesNetCDF(ncin)
@@ -173,17 +177,17 @@
   }
   sm = NULL
   if(!pixels) {
-    sm = SpatialGridMeteorology(grid, proj4string = CRS(proj4string), 
+    sm = SpatialGridMeteorology(grid, proj4string = crs, 
                                  data = data, dates=dates)
   } else {
     #Remove empty grid cells
     ccgrid = coordinates(grid)
     sel = apply(as.matrix(df),1, function(x) {sum(is.na(x))<length(x)}) #Select points for which at least one value is non-missing
-    pts = SpatialPoints(ccgrid[sel,], proj4string = CRS(proj4string))
+    pts = SpatialPoints(ccgrid[sel,], proj4string = crs)
     for(i in 1:length(data)) {
       data[[i]] = data[[i]][sel,]
     }
-    sm = SpatialPixelsMeteorology(pts, proj4string=pts@proj4string, 
+    sm = SpatialPixelsMeteorology(pts, proj4string=crs, 
                              data= data, dates= dates,
                              grid = grid)
   }

@@ -1,45 +1,52 @@
-.readmeteorologygrid<-function(file, format = "netCDF") {
-  readvargriddata<-function(ncin, varname, nx, ny) {
+.readmeteorologygridNetCDF<-function(file) {
+  readvargriddataday<-function(ncin, varname, nx, ny, day) {
     v <- rep(NA, nx*ny)
     #Reads rows in decreasing order
     for(i in 1:ny) {
-      v[((i-1)*nx+1):(i*nx)] = ncvar_get(ncin, varname,start=c(1,ny-i+1), count=c(nx,1))
+      v[((i-1)*nx+1):(i*nx)] = ncvar_get(ncin, varname,start=c(1,ny-i+1,day), count=c(nx,1,1))
     }
     return(v)
   }
-  if(format=="netCDF") {
-    ncin <- nc_open(file)
-    proj4string <- ncatt_get(ncin,0, "proj4string")$value
-    if(proj4string!="NA") crs = CRS(proj4string)
-    else crs = CRS(as.character(NA))
-    date <- ncatt_get(ncin,0, "date")$value
-    dimX <- ncvar_get(ncin, "X")
-    dimY <- ncvar_get(ncin, "Y")
-    cellcentre.offset = c(min(dimX), min(dimY))
-    cellsize = c(dimX[2]-dimX[1], dimY[2]-dimY[1])
-    nx = length(dimX)
-    ny = length(dimY)
-    cells.dim = c(nx, ny)
-    grid = GridTopology(cellcentre.offset, cellsize, cells.dim)
-    df = data.frame(MeanTemperature = readvargriddata(ncin, "MeanTemperature", nx,ny),
-                    MinTemperature = readvargriddata(ncin, "MinTemperature", nx,ny),
-                    MaxTemperature = readvargriddata(ncin, "MaxTemperature", nx,ny),
-                    Precipitation = readvargriddata(ncin, "Precipitation", nx,ny),
-                    MeanRelativeHumidity = readvargriddata(ncin, "MeanRelativeHumidity", nx,ny),
-                    MinRelativeHumidity = readvargriddata(ncin, "MinRelativeHumidity", nx,ny),
-                    MaxRelativeHumidity = readvargriddata(ncin, "MaxRelativeHumidity", nx,ny),
-                    Radiation = readvargriddata(ncin, "Radiation", nx,ny),
-                    WindSpeed = readvargriddata(ncin, "WindSpeed", nx,ny),
-                    WindDirection = readvargriddata(ncin, "WindDirection", nx,ny),
-                    PET = readvargriddata(ncin, "PET", nx,ny))
+  cat(paste0("Opening '", file,"' to read data.\n"))
+  ncin <- nc_open(file)
+  proj4string <- ncatt_get(ncin,0, "proj4string")$value
+  if(proj4string!="NA") crs = CRS(proj4string)
+  else crs = CRS(as.character(NA))
+  dimX <- ncvar_get(ncin, "X")
+  dimY <- ncvar_get(ncin, "Y")
+  dates <- as.Date(ncvar_get(ncin, "time"), origin="1970-01-01")
+  cellcentre.offset = c(min(dimX), min(dimY))
+  cellsize = c(dimX[2]-dimX[1], dimY[2]-dimY[1])
+  nx = length(dimX)
+  ny = length(dimY)
+  cells.dim = c(nx, ny)
+  grid = GridTopology(cellcentre.offset, cellsize, cells.dim)
+  data = vector("list", length(dates))
+  names(data)<- as.character(dates)
+  for(day in 1:length(dates)) {
+    cat(paste0("Reading data for day '", as.character(dates[day]), "'.\n"))
+    df = data.frame(MeanTemperature = readvargriddataday(ncin, "MeanTemperature", nx,ny,day),
+                    MinTemperature = readvargriddataday(ncin, "MinTemperature", nx,ny,day),
+                    MaxTemperature = readvargriddataday(ncin, "MaxTemperature", nx,ny,day),
+                    Precipitation = readvargriddataday(ncin, "Precipitation", nx,ny,day),
+                    MeanRelativeHumidity = readvargriddataday(ncin, "MeanRelativeHumidity", nx,ny,day),
+                    MinRelativeHumidity = readvargriddataday(ncin, "MinRelativeHumidity", nx,ny,day),
+                    MaxRelativeHumidity = readvargriddataday(ncin, "MaxRelativeHumidity", nx,ny,day),
+                    Radiation = readvargriddataday(ncin, "Radiation", nx,ny,day),
+                    WindSpeed = readvargriddataday(ncin, "WindSpeed", nx,ny,day),
+                    WindDirection = readvargriddataday(ncin, "WindDirection", nx,ny,day),
+                    PET = readvargriddataday(ncin, "PET", nx,ny,day))
     for(i in 1:ncol(df)) df[is.na(df[,i]),i] =NA
-    sgdf = SpatialGridDataFrame(grid,df,crs)
-    l = list(date = date, sgdf = sgdf)
-    return(l)
+    data[[day]] = df
   }
+  cat(paste0("Closing '", file,"'.\n"))
+  nc_close(ncin)
+  sgm = SpatialGridMeteorology(grid, proj4string = CRS(proj4string), 
+                         data = data, dates=dates)
+  return(sgm)
 }
 readmeteorologygrid<-function(file, format = "netCDF") {
-  return(.readmeteorologygrid(file, format)$sgdf)
+  return(.readmeteorologygridNetCDF(file))
 }
 readmeteorologygridfiles<-function(files, format="netCDF") {
   if((!inherits(files,"character"))&&(!inherits(files,"data.frame"))) stop("'files' has to be a character vector or a data frame with columns 'dir' and 'filename'.")

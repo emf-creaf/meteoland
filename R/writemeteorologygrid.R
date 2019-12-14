@@ -85,6 +85,7 @@ writemeteorologygrid<-function(object, file, dates = NULL, format = "netCDF", ad
   cat(paste0("Closing '", file,"'.\n"))
   nc_close(nc)
 }
+
 # writemeteorologygridfiles<-function(object, dir=getwd(), format ="netCDF", metadatafile="MG.txt") {
 #   if(!inherits(object,"SpatialGridMeteorology")) stop("'object' has to be of class 'SpatialGridMeteorology'.")
 #   ndates = length(object@data)

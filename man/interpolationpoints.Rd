@@ -14,12 +14,10 @@ Interpolates meteorological data on spatial points/pixels/grid using an object o
 interpolationpoints(object, points, dates = NULL, export = FALSE,
                     exportDir = getwd(), exportFormat = "meteoland/txt",
                     metadatafile = "MP.txt", verbose=TRUE)
-interpolationpixels(object, pixels, dates, export = FALSE,
-                  exportDir=getwd(), exportFormat = "netCDF",
-                  metadatafile = "MG.txt", verbose=TRUE)
-interpolationgrid(object, grid, dates, export = FALSE,
-                  exportDir=getwd(), exportFormat = "netCDF",
-                  metadatafile = "MG.txt", verbose=TRUE)
+interpolationpixels(object, pixels, dates, exportFile = NULL, exportFormat = "netCDF", 
+                    add = TRUE, overwrite = TRUE, verbose=TRUE)
+interpolationgrid(object, grid, dates, exportFile = NULL, exportFormat = "netCDF",
+                  add = TRUE, overwrite = TRUE, verbose=TRUE)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -32,16 +30,19 @@ interpolationgrid(object, grid, dates, export = FALSE,
     If \code{export = FALSE} the result of interpolation is stored in memory. Otherwise the result is written in the disk (using the format specified in \code{exportFormat}).
   }
   \item{exportDir}{Output directory for interpolated meteorology data.}
+  \item{exportFile}{Output file for interpolated meteorology data.}
   \item{exportFormat}{Export format for meteorological data (see \code{\link{writemeteorologypoint}}).}
   \item{metadatafile}{The name of the ascii text file that will store the meta data describing all written files.}
   \item{verbose}{Boolean flag to print process information.}
+  \item{add}{Boolean flag to indicate that NetCDF exists and data should be added/replaced.}
+  \item{overwrite}{Boolean flag to force overwriting an existing NetCDF.}
 }
 \value{
 If \code{export = FALSE}, function \code{interpolationpoints} returns an object of \code{\link{SpatialPointsMeteorology-class}}. If \code{export = TRUE}, the function returns an object of class \code{\link{SpatialPointsDataFrame-class}} containing the meta data of the files written in the disk.
 
-If \code{export = FALSE}, function \code{interpolationpixels} returns an object of \code{\link{SpatialPixelsMeteorology-class}}. If \code{export = TRUE}, the function writes the results in files and a \code{data.frame} with columns 'dir' and 'filename' is returned.
+If \code{export = FALSE}, function \code{interpolationpixels} returns an object of \code{\link{SpatialPixelsMeteorology-class}}, or an object of \code{\link{SpatialPixelsDataFrame-class}} if a single date is interpolated. If \code{export = TRUE}, the function writes the results in a NetCDF.
 
-If \code{export = FALSE}, function \code{interpolationgrid} returns an object of \code{\link{SpatialGridMeteorology-class}}. If \code{export = TRUE}, the function writes the results in files and a \code{data.frame} with columns 'dir' and 'filename' is returned.
+If \code{export = FALSE}, function \code{interpolationgrid} returns an object of \code{\link{SpatialGridMeteorology-class}}, or an object of \code{\link{SpatialGridDataFrame-class}} if a single date is interpolated. If \code{export = TRUE}, the function writes the results in files and a \code{data.frame} with columns 'dir' and 'filename' is returned.
 }
 \details{
 If CRS projection is different between \code{object} and \code{points}/\code{pixels}/\code{grid}, the function transforms the coordinates of \code{points}/\code{pixels}/\code{grid} to adapt them to the CRS of \code{object}.

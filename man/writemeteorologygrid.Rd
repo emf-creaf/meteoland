@@ -1,7 +1,7 @@
 \encoding{UTF-8}
 \name{writemeteorologygrid}
 \alias{writemeteorologygrid}
-\alias{writemeteorologygridfiles}
+\alias{writemeteorologypixels}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{
 Writes grid meteorology to the disk
@@ -10,22 +10,21 @@ Writes grid meteorology to the disk
 Functions to write grid meteorological data to the file system.
 }
 \usage{
-writemeteorologygrid(object, date, file, format = "netCDF")
-writemeteorologygridfiles(object, dir=getwd(), format = "netCDF",
-                          metadatafile = "MG.txt")
+writemeteorologygrid(object, file, dates, format = "netCDF", add = FALSE, overwrite = FALSE)
+writemeteorologypixels(object, file, dates, format = "netCDF", add = FALSE, overwrite = FALSE)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
-  \item{object}{An object of class \code{\link{SpatialGridMeteorology-class}} with the meteorological data to be written.}
-  \item{date}{A \code{\link{Date}} object or a character string indicating the date of the meteorological grid to be written.}
+  \item{object}{An object of class \code{\link{SpatialGridMeteorology-class}} or class \code{\link{SpatialPixelsMeteorology-class}} with the meteorological data to be written.}
   \item{file}{A string with the file name to be written.}
+  \item{dates}{A \code{\link{Date}} vector object or a character string indicating the dates to be written.}
   \item{format}{Format of meteorological data. The only  accepted format is \code{"netCDF"}.}
-  \item{dir}{Output directory for meteorology data.}
-  \item{metadatafile}{The name of the file that will store the meta data describing all written files.}
+  \item{add}{Boolean flag to indicate that NetCDF exists and data should be added/replaced.}
+  \item{overwrite}{Boolean flag to force overwriting an existing NetCDF.}
 }
 
 \author{
-Miquel De \enc{Cáceres}{Caceres} Ainsa, Centre Tecnologic Forestal de Catalunya
+Miquel De \enc{Cáceres}{Caceres} Ainsa, CTFC
 }
 
 \seealso{

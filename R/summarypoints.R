@@ -1,23 +1,29 @@
+.summaryvarpoint<-function(x, fun="mean", freq=NULL, dates = NULL, months= NULL, ...) {
+  if(is.null(dates)) dates = as.Date(names(x))
+  if(!is.null(months)) {
+    m = as.numeric(format(dates,"%m"))
+    dates = dates[m %in% months]
+  }
+  if(is.null(freq)) {
+    v =  do.call(fun, args=list(x[as.character(dates)],...))
+  } else {
+    date.factor = cut(dates, breaks=freq)
+    v = tapply(x[as.character(dates)],INDEX=date.factor, FUN=fun,...)
+  }
+  return(v)
+}
+
 summarypoint<-function(x, var, fun="mean", freq=NULL, dates = NULL, months= NULL, ...) {
   if(!inherits(x,"data.frame")) stop("'x' has to be a data.frame.")
   VARS = c("MeanTemperature", "MinTemperature","MaxTemperature", "Precipitation",
            "MeanRelativeHumidity", "MinRelativeHumidity", "MaxRelativeHumidity",
            "Radiation", "WindSpeed", "WindDirection", "PET")
   var = match.arg(var, VARS)
-  
-  if(is.null(dates)) dates = as.Date(row.names(x))
-  if(!is.null(months)) {
-    m = as.numeric(format(dates,"%m"))
-    dates = dates[m %in% months]
-  }
-  if(is.null(freq)) {
-    df =  do.call(fun, args=list(x[as.character(dates),var],...))
-  } else {
-    date.factor = cut(dates, breaks=freq)
-    df = tapply(x[as.character(dates),var],INDEX=date.factor, FUN=fun,...)
-  }
-  return(df)
+  y = x[[var]]
+  names(y) = row.names(x)
+  return(.summaryvarpoint(y, fun=fun, freq=freq, dates = dates, months= months,...))
 }
+
 summarypoints<-function(points, var, fun=mean, freq=NULL, dates = NULL, months = NULL, ...) {
   if(!inherits(points,"SpatialPointsMeteorology") && !inherits(points,"SpatialPointsDataFrame")) stop("'points' has to be of class 'SpatialPointsMeteorology' or 'SpatialPointsDataFrame'.")
   VARS = c("MeanTemperature", "MinTemperature","MaxTemperature", "Precipitation",

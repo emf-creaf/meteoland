@@ -37,6 +37,11 @@
   cat(paste0("Opening '", file,"' to read data.\n"))
   return(nc_open(file))
 }
+
+#Reads values of time dimension
+.readdatesNetCDF<-function(nc) {
+  return(as.Date(nc$dim$time$vals, origin="1970-01-01"))
+}
 #writes a grid/pixels for a single variable and day
 .putvardataday<-function(nc, var, datavec, day, index=NULL) {
   nx = nc$dim$X$len
@@ -60,12 +65,18 @@
   }
   return(v)
 }
+#Reads data for a single pixel and period 
+.readvardatapixel<-function(nci, varname, i, j) {
+  ny = ncin$dim$Y$len
+  nt = ncin$dim$time$len
+  return(ncvar_get(ncin, varname,start=c(1,ny-i+1,1), count=c(1,1,nt)))
+}
 #Writes full NetCDF grids
 .writemeteorologygridNetCDF<-function(data, grid, proj4string, nc, index=NULL) {
   nx = nc$dim$X$len
   ny = nc$dim$Y$len
   dates = as.Date(names(data))
-  dates_file = as.Date(nc$dim$time$vals, origin="1970-01-01")
+  dates_file = .readdatesNetCDF(nc)
   if(nx != grid@cells.dim[1]) stop("Number of x-axis values does not match X dimension in nc file")
   if(ny != grid@cells.dim[2]) stop("Number of y-axis values does not match Y dimension in nc file")
   varMeanTemp = nc$var$MeanTemperature
@@ -79,7 +90,7 @@
   varWindSpeed = nc$var$WindSpeed
   varWindDirection = nc$var$WindDirection
   varPET = nc$var$PET
-  dates_file = as.Date(nc$dim$time$vals, origin="1970-01-01")
+  dates_file = .readdatesNetCDF(nc)
   if(sum(dates %in% dates_file)<length(dates)) stop("Time axis of nc file does not include all supplied dates")
   
   for(j in 1:length(dates)) {
@@ -110,6 +121,18 @@
   cat(paste0("Closing '", file,"'.\n"))
   nc_close(nc)
 }
+#Reads NetCDF grid topology
+.readgridtopologyNetCDF<-function(ncin) {
+  dimX <- ncvar_get(ncin, "X")
+  dimY <- ncvar_get(ncin, "Y")
+  cellcentre.offset = c(min(dimX), min(dimY))
+  cellsize = c(dimX[2]-dimX[1], dimY[2]-dimY[1])
+  nx = length(dimX)
+  ny = length(dimY)
+  cells.dim = c(nx, ny)
+  grid = GridTopology(cellcentre.offset, cellsize, cells.dim)
+  return(grid)
+}
 #Reads NetCDF grid/pixels
 .readmeteorologyNetCDF<-function(ncin, dates = NULL, pixels = FALSE) {
   proj4string <- ncatt_get(ncin,0, "proj4string")$value
@@ -117,7 +140,7 @@
   else crs = CRS(as.character(NA))
   dimX <- ncvar_get(ncin, "X")
   dimY <- ncvar_get(ncin, "Y")
-  dates_file <- as.Date(ncvar_get(ncin, "time"), origin="1970-01-01")
+  dates_file <- .readdatesNetCDF(ncin)
   if(!is.null(dates)) {
     if(sum(dates %in% dates_file)<length(dates)) stop("Time axis of nc file does not include all supplied dates")
   } else {

@@ -1,5 +1,5 @@
-#Opens/creates a NetCDF file for writing
-.openmeteorologygridNetCDF<-function(grid, proj4string, dates, file, add=FALSE, overwrite = FALSE) {
+#Opens/creates a NetCDF file for writing data
+.openwriteNetCDF<-function(grid, proj4string, dates, file, add=FALSE, overwrite = FALSE) {
   if(!add) {
     if(file.exists(file) & !overwrite) stop(paste0("File '",file,"' already exist. Use 'overwrite = TRUE' to force overwriting or 'add = TRUE' to add/replace content."))
     cat(paste0("Creating '", file,"'.\n"))
@@ -31,7 +31,12 @@
   }
   return(nc)
 }
-#writes a grid for a single variable and day
+.openreadNetCDF<-function(file) {
+  if(!file.exists(file)) stop(paste0("File '", file, "' does not exist."))
+  cat(paste0("Opening '", file,"' to read data.\n"))
+  return(nc_open(file))
+}
+#writes a grid/pixels for a single variable and day
 .putvardataday<-function(nc, var, datavec, day, index=NULL) {
   nx = nc$dim$X$len
   ny = nc$dim$Y$len
@@ -42,6 +47,16 @@
     datavecfull = datavec
   }
   for(i in 1:ny) ncvar_put(nc, varid=var, vals=datavecfull[((i-1)*nx+1):(i*nx)], start=c(1,ny-i+1, day), count=c(nx,1,1))
+}
+.readvardataday<-function(ncin, varname, day) {
+  nx = ncin$dim$X$len
+  ny = ncin$dim$Y$len
+  v <- rep(NA, nx*ny)
+  #Reads rows in decreasing order
+  for(i in 1:ny) {
+    v[((i-1)*nx+1):(i*nx)] = ncvar_get(ncin, varname,start=c(1,ny-i+1,day), count=c(nx,1,1))
+  }
+  return(v)
 }
 #Writes full NetCDF grids
 .writemeteorologygridNetCDF<-function(data, grid, proj4string, nc, index=NULL) {
@@ -92,4 +107,46 @@
 .closeNetCDF<-function(file,nc) {
   cat(paste0("Closing '", file,"'.\n"))
   nc_close(nc)
+}
+#Reads full NetCDF grid
+.readmeteorologygridNetCDF<-function(ncin, dates = NULL) {
+  proj4string <- ncatt_get(ncin,0, "proj4string")$value
+  if(proj4string!="NA") crs = CRS(proj4string)
+  else crs = CRS(as.character(NA))
+  dimX <- ncvar_get(ncin, "X")
+  dimY <- ncvar_get(ncin, "Y")
+  dates_file <- as.Date(ncvar_get(ncin, "time"), origin="1970-01-01")
+  if(!is.null(dates)) {
+    if(sum(dates %in% dates_file)<length(dates)) stop("Time axis of nc file does not include all supplied dates")
+  } else {
+    dates = dates_file
+  }
+  cellcentre.offset = c(min(dimX), min(dimY))
+  cellsize = c(dimX[2]-dimX[1], dimY[2]-dimY[1])
+  nx = length(dimX)
+  ny = length(dimY)
+  cells.dim = c(nx, ny)
+  grid = GridTopology(cellcentre.offset, cellsize, cells.dim)
+  data = vector("list", length(dates))
+  names(data)<- as.character(dates)
+  for(j in 1:length(dates)) {
+    day = which(dates_file==dates[j])
+    cat(paste0("Reading data for day '", as.character(dates[j]), "' at time position [",day, "].\n"))
+    df = data.frame(MeanTemperature = .readvardataday(ncin, "MeanTemperature", day),
+                    MinTemperature = .readvardataday(ncin, "MinTemperature", day),
+                    MaxTemperature = .readvardataday(ncin, "MaxTemperature", day),
+                    Precipitation = .readvardataday(ncin, "Precipitation", day),
+                    MeanRelativeHumidity = .readvardataday(ncin, "MeanRelativeHumidity", day),
+                    MinRelativeHumidity = .readvardataday(ncin, "MinRelativeHumidity", day),
+                    MaxRelativeHumidity = .readvardataday(ncin, "MaxRelativeHumidity", day),
+                    Radiation = .readvardataday(ncin, "Radiation", day),
+                    WindSpeed = .readvardataday(ncin, "WindSpeed", day),
+                    WindDirection = .readvardataday(ncin, "WindDirection", day),
+                    PET = .readvardataday(ncin, "PET", day))
+    for(i in 1:ncol(df)) df[is.na(df[,i]),i] =NA
+    data[[j]] = df
+  }
+  sgm = SpatialGridMeteorology(grid, proj4string = CRS(proj4string), 
+                               data = data, dates=dates)
+  return(sgm)
 }

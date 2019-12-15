@@ -23,6 +23,7 @@
       names(vals) = as.character(gdates)
       dfvec[[i]] = .summaryvarpoint(vals, fun = fun, freq=freq, dates = dates, months = months,...)
     }
+    cat("\n")
   } else {
     file = object
     ncin = .openreadNetCDF(file)
@@ -33,19 +34,29 @@
     crs = .readCRSNetCDF(ncin)
     points = SpatialPoints(coordinates(gt), proj4string = crs)
     npoints = nx*ny  
-    cat(paste("  Summarizing ", var, " in ", npoints," pixels...\n", sep=""))
+    cat(paste("  Summarizing ", var, " in ", npoints," grid pixels...\n", sep=""))
     dfvec = vector("list",npoints)
     cnt = 1
     pb = txtProgressBar(0, npoints, 0, style = 3)
+    sel = rep(TRUE, npoints)
     for(j in 1:ny) {
       for(i in 1:nx) {
         setTxtProgressBar(pb, cnt)
         vals = .readvardatapixel(ncin, ncin$var[[var]], i,j)
         names(vals) = as.character(gdates)
+        if(sum(!is.na(vals))==0) sel[cnt] = FALSE
         dfvec[[cnt]] = .summaryvarpoint(vals, fun = fun, freq=freq, dates = dates, months = months,...)
         cnt = cnt+1
       }
     }  
+    cat("\n")
+    if(pixels) {
+      #Remove empty grid cells
+      cat(paste("  Removing ", sum(!sel), " empty grid pixels...\n", sep=""))
+      points = points[sel]
+      dfvec = dfvec[sel]
+      npoints = length(points)
+    }
   }
   
   noutvars = length(dfvec[[1]])

@@ -155,7 +155,7 @@ interpolationpixels<-function(object, pixels, dates,
     gbbox = pixels@bbox
   }
   insidebox = (gbbox[1,1]>=bbox[1,1]) && (gbbox[1,2]<=bbox[1,2]) && (gbbox[2,1]>=bbox[2,1]) && (gbbox[2,2]<=bbox[2,2])
-  if(!insidebox) stop("Boundary box of target grid is not within boundary box of interpolation data object.")
+  if(!insidebox) warning("Boundary box of target grid is not within boundary box of interpolation data object.")
   longlat = spTransform(as(pixels,"SpatialPoints"),CRS("+proj=longlat"))
   latitude = longlat@coords[,2]
   ndates = length(dates)

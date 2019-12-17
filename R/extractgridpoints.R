@@ -35,7 +35,7 @@ extractgridindex<-function(grid, index) {
     return(df)
   }
 }
-extractgridpoints<-function(grid, points, verbose = TRUE) {
+extractgridpoints<-function(grid, points, verbose = FALSE) {
   if(!inherits(points,"SpatialPoints")) stop("'points' has to be of class 'SpatialPoints'.")
   if(!inherits(grid,"SpatialGridMeteorology") && !inherits(grid,"SpatialPixelsMeteorology") && !inherits(grid,"character")) 
     stop("'grid' has to be of class 'SpatialGridMeteorology', 'SpatialPixelsMeteorology' or 'character'.")

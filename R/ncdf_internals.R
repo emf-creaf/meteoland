@@ -32,9 +32,9 @@
   return(nc)
 }
 #Opens a NetCDF for reading data
-.openreadNetCDF<-function(file) {
+.openreadNetCDF<-function(file, verbose =TRUE) {
   if(!file.exists(file)) stop(paste0("File '", file, "' does not exist."))
-  cat(paste0("Opening '", file,"' to read data.\n"))
+  if(verbose) cat(paste0("Opening '", file,"' to read data.\n"))
   return(nc_open(file))
 }
 
@@ -70,6 +70,32 @@
   ny = ncin$dim$Y$len
   nt = ncin$dim$time$len
   return(ncvar_get(ncin, varname,start=c(i,ny-j+1,1), count=c(1,1,nt)))
+}
+.readdatapixel<-function(ncin, i, j) {
+  varMeanTemp = ncin$var$MeanTemperature
+  varMinTemp = ncin$var$MinTemperature
+  varMaxTemp = ncin$var$MaxTemperature
+  varPrec = ncin$var$Precipitation
+  varMeanRH = ncin$var$MeanRelativeHumidity
+  varMinRH = ncin$var$MinRelativeHumidity
+  varMaxRH = ncin$var$MaxRelativeHumidity
+  varRad = ncin$var$Radiation
+  varWindSpeed = ncin$var$WindSpeed
+  varWindDirection = ncin$var$WindDirection
+  varPET = ncin$var$PET
+  df = data.frame(MeanTemperature = .readvardatapixel(ncin,varMeanTemp, i,j),
+                  MinTemperature = .readvardatapixel(ncin,varMinTemp, i,j),
+                  MaxTemperature = .readvardatapixel(ncin,varMaxTemp, i,j),
+                  Precipitation = .readvardatapixel(ncin,varPrec, i,j),
+                  MeanRelativeHumidity = .readvardatapixel(ncin,varMeanRH, i,j),
+                  MinRelativeHumidity = .readvardatapixel(ncin,varMinRH, i,j),
+                  MaxRelativeHumidity = .readvardatapixel(ncin,varMaxRH, i,j),
+                  Radiation = .readvardatapixel(ncin,varRad, i,j),
+                  WindSpeed = .readvardatapixel(ncin,varWindSpeed, i,j),
+                  WindDirection = .readvardatapixel(ncin,varWindDirection, i,j),
+                  PET = .readvardatapixel(ncin,varPET, i,j),
+                  row.names = as.character(.readdatesNetCDF(ncin)))
+  return(df)
 }
 #Writes full NetCDF grids
 .writemeteorologygridNetCDF<-function(data, grid, proj4string, nc, index=NULL) {
@@ -117,8 +143,8 @@
   .writemeteorologygridNetCDF(data, pixels@grid, proj4string, nc, index=pixels@grid.index)
 }
 #Closes NetCDF
-.closeNetCDF<-function(file,nc) {
-  cat(paste0("Closing '", file,"'.\n"))
+.closeNetCDF<-function(file,nc, verbose=TRUE) {
+  if(verbose) cat(paste0("Closing '", file,"'.\n"))
   nc_close(nc)
 }
 #Reads NetCDF grid topology

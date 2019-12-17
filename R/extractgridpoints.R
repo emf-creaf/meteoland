@@ -1,61 +1,87 @@
-extractgridpoints<-function(griddata, points) {
-  if(!inherits(points,"SpatialPoints")) stop("'points' has to be of class 'SpatialPoints'.")
-  if(!inherits(griddata,"SpatialGridMeteorology") && !inherits(griddata,"SpatialPixelsMeteorology") && !inherits(griddata,"data.frame")) 
-    stop("'grid' has to be of class 'SpatialGridMeteorology', 'SpatialPixelsMeteorology' or 'data.frame'.")
-  if(inherits(griddata,"SpatialGridMeteorology") || inherits(griddata,"SpatialPixelsMeteorology")) gdates = griddata@dates
-  else gdates = row.names(griddata)
-  
-  dates = gdates
-  ndates = length(dates)
-  npoints = length(points)
-  
-  if(inherits(griddata,"SpatialGridMeteorology") || inherits(griddata,"SpatialPixelsMeteorology")) {
-    gt =  getGridTopology(griddata)
-    proj4string = griddata@proj4string
-    varnames = names(griddata@data[[1]])
+.extractSGMSPMindexdata<-function(grid, index) {
+  gdates = grid@dates
+  ndates = length(gdates)
+  varnames = names(grid@data[[1]])
+  df = data.frame(matrix(NA, nrow = ndates, ncol=length(varnames)))
+  colnames(df)= varnames
+  rownames(df)=as.character(gdates)
+  ng = nrow(grid@data[[1]])
+  if(inherits(grid,"SpatialPixelsMeteorology")) {
+    index = which(grid@grid.index==index)
+    if(length(index)==0) stop("This grid index does not have data.")
   } else {
-    f = paste(griddata$dir[1], griddata$filename[1],sep="/")
-    if(!file.exists(f)) stop(paste("Observed file '", f,"' does not exist!", sep=""))
-    obs = readmeteorologypixels(f)
-    gt = getGridTopology(obs)
-    proj4string = obs@proj4string
-    varnames = names(obs)
+    if(!(index %in% 1:ng)) stop(paste("Supplied grid index outside ", ng, " grid cells."))
   }
-  res = vector("list",npoints)
-  for(i in 1:npoints) {
-    res[[i]] = data.frame(matrix(NA, nrow = ndates, ncol=length(varnames)))
-    colnames(res[[i]])= varnames
-    rownames(res[[i]])=as.character(dates)
-  }
-  ind = getGridIndex(spTransform(points, proj4string)@coords, gt, TRUE)
-  if(inherits(griddata,"SpatialPixelsMeteorology")) {
-    sel = ind %in% griddata@grid.index
-    if(sum(sel)==0) stop("All points are outside the grid cells with data.")
-    else if(sum(sel)<length(sel)) warning(paste0(length(sel)- sum(sel)," point(s) fall(s) into grid cells that lack meteorology data and will be discarded."))
-    indices = rep(NA, sum(sel)) 
-    cnt = 1
-    for(id in ind[sel]) {
-      indices[cnt] = which(griddata@grid.index == id)
-      cnt = cnt + 1
-    }
-  } else {
-    indices = ind
-  }
-    
-  pb = txtProgressBar(0, ndates, 0, style = 3)
   for(i in 1:ndates) {
-    setTxtProgressBar(pb, i)
-    if(inherits(griddata,"SpatialGridMeteorology") || inherits(griddata,"SpatialPixelsMeteorology")) {
-      obs = griddata@data[[i]]
+    obs = grid@data[[i]]
+    df[i,] = obs[index,]
+  }
+  return(df)
+}
+extractgridindex<-function(grid, index) {
+  if(!inherits(grid,"SpatialGridMeteorology") && !inherits(grid,"SpatialPixelsMeteorology") && !inherits(grid,"character")) 
+    stop("'grid' has to be of class 'SpatialGridMeteorology', 'SpatialPixelsMeteorology' or 'character'.")
+  if(inherits(grid,"SpatialGridMeteorology") || inherits(grid,"SpatialPixelsMeteorology")) {
+    return(.extractSGMSPMindexdata(grid, index))
+  } else {
+    ncin = .openreadNetCDF(grid, verbose=FALSE)
+    gt = .readgridtopologyNetCDF(ncin)
+    cv = coordinatevalues(gt)
+    cci = coordinates(gt)[index,]
+    i = which(cv[[1]]==cci[1])
+    j = which(cv[[2]]==cci[2])
+    df = .readdatapixel(ncin, i,j)
+    .closeNetCDF(grid, ncin, verbose=FALSE)
+    return(df)
+  }
+}
+extractgridpoints<-function(grid, points, verbose = TRUE) {
+  if(!inherits(points,"SpatialPoints")) stop("'points' has to be of class 'SpatialPoints'.")
+  if(!inherits(grid,"SpatialGridMeteorology") && !inherits(grid,"SpatialPixelsMeteorology") && !inherits(grid,"character")) 
+    stop("'grid' has to be of class 'SpatialGridMeteorology', 'SpatialPixelsMeteorology' or 'character'.")
+  points = as(points,"SpatialPoints")
+
+  
+  if(inherits(grid,"SpatialGridMeteorology") || inherits(grid,"SpatialPixelsMeteorology")) {
+    gdates = grid@dates
+    gt =  getGridTopology(grid)
+    proj4string = grid@proj4string
+  } else {
+    ncin = .openreadNetCDF(grid, verbose=FALSE)
+    gdates = .readdatesNetCDF(ncin)
+    gt = .readgridtopologyNetCDF(ncin)
+    proj4string = .readCRSNetCDF(ncin)
+  }
+  
+  indices = getGridIndex(spTransform(points, proj4string)@coords, gt, all.inside = FALSE)
+  if(inherits(grid,"SpatialPixelsMeteorology")) {
+    indices[!(indices %in% grid@grid.index)] = NA
+  }
+  sel = !is.na(indices)
+  if(sum(sel)==0) stop("All points are outside the grid cells with data.")
+  else if(sum(sel)<length(sel)) if(verbose) cat(paste0(length(sel)- sum(sel)," point(s) fall(s) into grid cells that lack meteorology data and will be discarded.\n"))
+  indices = indices[sel]
+  points = points[sel]
+  npoints = length(points)
+  res = vector("list",npoints)
+
+  cv = coordinatevalues(gt)
+  ccind = coordinates(gt)[indices,, drop=FALSE]
+
+  if(verbose) pb = txtProgressBar(0, npoints, 0, style = 3)
+  for(i in 1:npoints) {
+    if(verbose) setTxtProgressBar(pb, i)
+    if(inherits(grid,"SpatialGridMeteorology") || inherits(grid,"SpatialPixelsMeteorology")) {
+      res[[i]] = .extractSGMSPMindexdata(grid, indices[i])
     } else {
-      f = paste(griddata$dir[i], griddata$filename[i],sep="/")
-      if(!file.exists(f)) stop(paste("Observed file '", f,"' does not exist!", sep=""))
-      obs = readmeteorologypixels(f)
-    }
-    for(j in 1:npoints) {
-      res[[j]][i,] = obs[indices[j],]
+      j = which(cv[[1]]==ccind[i,1])
+      k = which(cv[[2]]==ccind[i,2])
+      res[[i]] = .readdatapixel(ncin, j,k)
     }
   }
-  cat("\n")
-  return(SpatialPointsMeteorology(points, res, dates))
+  if(!inherits(grid,"SpatialGridMeteorology") && !inherits(grid,"SpatialPixelsMeteorology")) {
+    .closeNetCDF(grid, ncin, verbose=FALSE)
+  }
+  
+  return(SpatialPointsMeteorology(points, res, gdates))
 }

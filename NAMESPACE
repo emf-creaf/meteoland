@@ -38,6 +38,7 @@ export(averagearea,
        utils_airDensity, utils_averageDaylightTemperature, utils_latentHeatVaporisation,
        utils_latentHeatVaporisationMol,utils_psychrometricConstant,
        utils_saturationVaporPressureCurveSlope,
+       weathergenerator,
        writemeteorologypixels, writemeteorologygrid, 
        writemeteorologypoint, writemeteorologypointfiles)
 exportClasses(MeteorologyProcedureData, MeteorologyInterpolationData, MeteorologyUncorrectedData)

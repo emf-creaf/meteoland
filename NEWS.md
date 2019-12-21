@@ -2,6 +2,9 @@
  NEWS for R Package "meteoland"
 -------------------------------
 
+# Version 0.8.6
+- New function averagearea
+
 # Version 0.8.5
 - New functions to convert SpatialPointsMeteorology, SpatialPixelsMeteorology and SpatialGridMeteorology into objects of packages 'spacetime' and 'stars'
 - Functions to read/write NetCDF files reprogrammed and improved.

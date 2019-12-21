@@ -6,7 +6,8 @@ import(rgdal)
 import(methods)
 import(utils)
 useDynLib(meteoland, .registration = TRUE)
-export(correctionpoint, correctionpoints, correctionpoints.errors, 
+export(averagearea,
+       correctionpoint, correctionpoints, correctionpoints.errors, 
        correction_series,
        defaultCorrectionParams, defaultInterpolationParams,
        downloadSMCstationlist, downloadSMCvarmetadata,downloadSMCcurrentday, downloadSMChistorical,

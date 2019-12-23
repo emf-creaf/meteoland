@@ -104,7 +104,7 @@
   return(unlist(state))
 }
 
-weathergenerator<-function(x, dry_wet_threshold=0.3, wet_extreme_quantile_threshold=0.8) {
+weathergenerator<-function(x, params = defaultGenerationParams()) {
   months = as.numeric(format(as.Date(row.names(x)),"%m"))
   prec = x$Precipitation
   thresh <- .mc_state_threshold(prec, months, dry_wet_threshold = dry_wet_threshold, wet_extreme_quantile_threshold = wet_extreme_quantile_threshold)

@@ -4,6 +4,7 @@
 
 # Version 0.8.6
 - New function averagearea
+- New function defaultGenerationParams
 
 # Version 0.8.5
 - New functions to convert SpatialPointsMeteorology, SpatialPixelsMeteorology and SpatialGridMeteorology into objects of packages 'spacetime' and 'stars'

@@ -109,7 +109,10 @@
 # Apipattanavis, S., G. Podesta, B. Rajagopalan, and R. W. Katz (2007), A
 # semiparametric multivariate and multisite weather generator, Water
 # Resour. Res., 43, W11401, doi:10.1029/2006WR005714.
-weathergenerator<-function(x, params = defaultGenerationParams()) {
+weathergenerator<-function(object, params = defaultGenerationParams()) {
+  #Average weather over the area
+  x <- averagearea(object)
+  x <- x@data[[1]]
   months = as.numeric(format(as.Date(row.names(x)),"%m"))
   prec = x$Precipitation
   sd_prec = sd(prec)
@@ -165,9 +168,14 @@ weathergenerator<-function(x, params = defaultGenerationParams()) {
     days = c(days, d)
     prevSelectedDay = d
   }
-  y <- x[days, ]
-  y$DOYold = y$DOY
-  y$DOY = x$DOY
-  row.names(y) = row.names(x)
+  
+  y <- object
+  for(i in 1:length(object@data)) {
+    df1 <- object@data[[i]]
+    df2 <- df1[days, ]
+    df2$DOY = df1$DOY
+    row.names(df2) = row.names(df1)
+    y@data[[i]] = df2
+  }
   return(y)
 }

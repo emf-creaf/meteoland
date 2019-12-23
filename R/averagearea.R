@@ -8,6 +8,7 @@ averagearea<-function(object, na.rm=TRUE) {
   dates = object@dates
   df = data.frame(row.names=as.character(dates)) 
   cn = names(object@data[[1]])
+  if(!("DOY" %in% cn)) cn = c("DOY", cn)
   df[cn] = NA
   if(inherits(object,"SpatialPointsMeteorology")) {
     for(i in 1:length(dates)) {
@@ -19,8 +20,9 @@ averagearea<-function(object, na.rm=TRUE) {
     }
   } else {
     for(i in 1:length(dates)) {
-      df[i,] = apply(object@data[[i]], 2, mean, na.rm=na.rm)
+      df[i,-1] = apply(object@data[[i]], 2, mean, na.rm=na.rm)
     }
+    df$DOY = as.numeric(format(dates,"%j"))
   }
   data = list(df)
   return(SpatialPointsMeteorology(SpatialPoints(cc, proj4string = object@proj4string),data = data, dates))

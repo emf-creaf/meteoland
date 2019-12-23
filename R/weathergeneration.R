@@ -231,13 +231,15 @@
   as.numeric(df[['YEAR']][selection])
 }
 
-weathergeneration<-function(object, conditional = FALSE, 
-                            params = defaultGenerationParams()) {
+weathergeneration<-function(object,
+                            params = defaultGenerationParams(),
+                            verbose = TRUE) {
   if((!inherits(object,"SpatialPointsMeteorology")) 
      && (!inherits(object,"SpatialGridMeteorology")) 
      && (!inherits(object,"SpatialPixelsMeteorology"))) stop("'object' has to be of class 'Spatial_*_Meteorology'.")
   
   #Average weather over the area
+  if(verbose) cat("Calculating area-averaged weather...\n")
   x <- averagearea(object)
   x <- x@data[[1]]
  
@@ -245,9 +247,26 @@ weathergeneration<-function(object, conditional = FALSE,
   x$Month = as.numeric(format(as.Date(row.names(x)),"%m"))
   x$Year = as.numeric(format(as.Date(row.names(x)), "%Y"))
   
-  if(!conditional) {
-    days  = .mcknn_weathergeneration(x = x, params = params) 
-    selDatesYears = row.names(x)[days]
+  if(verbose) cat("Generating weather series...\n")
+  if(!params$conditional) {
+    selDays  = .mcknn_weathergeneration(x = x, params = params) 
+    selDatesYears = row.names(x)[selDays]
+    ratiosYears = rep(1, length(selDatesYears))
+    
+    if(params$adjust_annual_precip) {
+      r = sum(x$Precipitation, na.rm=T)/sum(x$Precipitation[selDays], na.rm=T)
+      r = min(max(r,params$min_ratio), params$max_ratio)
+      ratiosYears = rep(r, length(selDatesYears))
+    }
+    psim = tapply(x$Precipitation[selDays]*ratiosYears, x$Year, FUN=sum, na.rm=T)
+    ptarget = tapply(x$Precipitation, x$Year, FUN=sum, na.rm=T)
+    if(verbose) {
+      cat("Stats: \n")
+      df = data.frame(average = c(mean(ptarget),mean(psim)), 
+                      sd = c(sd(ptarget), sd(psim)), 
+                      row.names = c("target", "simulated"))
+      print(df)
+    }
   } else {
 
     # Calculate days per year
@@ -262,7 +281,12 @@ weathergeneration<-function(object, conditional = FALSE,
     sim_pyear <- .arima_simulate(model=ar_model, n=n_year)
     
     selDatesYears <- character()
+    ratiosYears = numeric()
+    if(verbose) pb = txtProgressBar(1, n_year, style=3)
+    psim = rep(NA, n_year)
+    ptarget = rep(NA, n_year)
     for(i in 1:n_year) {
+      if(verbose) setTxtProgressBar(pb, i)
       # create population of years with knn
       pop_years <- .knn_annual(prcp=as.numeric(sim_pyear[i]), obs_prcp=pyear, n=params$n_knn_annual)
       
@@ -278,6 +302,26 @@ weathergeneration<-function(object, conditional = FALSE,
       # Extract the dates corresponding to the selected rows
       selDates <- substr(row.names(pop_days)[selDays],1,10)
       selDatesYears = c(selDatesYears, selDates)
+      ratios<- rep(1, days_per_year[i])
+      if(params$adjust_annual_precip) {
+        r = sim_pyear[i]/sum(pop_days$Precipitation[selDays])
+        r = min(max(r, params$min_ratio), params$max_ratio)
+        ratios <- rep(r, days_per_year[i])
+      }
+      ratiosYears = c(ratiosYears, ratios)
+      psim[i] = sum(pop_days$Precipitation[selDays]*ratios)
+      ptarget[i] = sim_pyear[i]
+    }
+    cat("\n")
+    if(verbose) {
+      cat("Year comparison: \n")
+      df = data.frame(target = ptarget, simulated = psim)
+      print(df)
+      cat("Stats: \n")
+      df = data.frame(average = c(mean(ptarget),mean(psim)), 
+                      sd = c(sd(ptarget), sd(psim)), 
+                      row.names = c("target", "simulated"))
+      print(df)
     }
   }
   y <- object
@@ -286,6 +330,7 @@ weathergeneration<-function(object, conditional = FALSE,
       df1 <- object@data[[i]]
       df2 <- df1[selDatesYears, ]
       df2$DOY = df1$DOY
+      df2$Precipitation = df2$Precipitation*ratiosYears
       row.names(df2) = row.names(df1)
       y@data[[i]] = df2
     }
@@ -294,6 +339,7 @@ weathergeneration<-function(object, conditional = FALSE,
     y@dates = y@dates
     for(i in 1:length(selDatesYears)) {
       y@data[[i]] <- object@data[[selDatesYears[i]]]
+      y@data[[i]]$Precipitation = y@data[[i]]$Precipitation*ratiosYears[i]
     }
   }
   return(y)

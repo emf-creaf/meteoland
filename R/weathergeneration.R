@@ -109,11 +109,10 @@
 # Apipattanavis, S., G. Podesta, B. Rajagopalan, and R. W. Katz (2007), A
 # semiparametric multivariate and multisite weather generator, Water
 # Resour. Res., 43, W11401, doi:10.1029/2006WR005714.
-weathergenerator<-function(object, params = defaultGenerationParams()) {
-  #Average weather over the area
-  x <- averagearea(object)
-  x <- x@data[[1]]
-  months = as.numeric(format(as.Date(row.names(x)),"%m"))
+.mcknn_weathergeneration<-function(x, ndays = NULL, params = defaultGenerationParams()) {
+
+  months = x$Month
+  if(is.null(ndays)) ndays = length(months)
   prec = x$Precipitation
   sd_prec = sd(prec)
   meantemp = x$MeanTemperature
@@ -128,12 +127,12 @@ weathergenerator<-function(object, params = defaultGenerationParams()) {
   #Set variable weights
   w_prec = 100/sd_prec
   w_meantemp = 10/sd_meantemp
-
+  
   #Initialize selected days
   initial <- sample(which(months == months[1]),1)
   #Generate Precipitation State Series of M day length
-  pss <- .mc_sim(months, states[initial], transition)
-
+  pss <- .mc_sim(months[1:ndays], states[initial], transition)
+  
   #Initialize vector of selected days
   days <-initial
   
@@ -157,7 +156,7 @@ weathergenerator<-function(object, params = defaultGenerationParams()) {
     k <- ceiling(sqrt(Q)) 
     #Calculate weighted euclidean distances
     dq <- sqrt(w_prec*((prec[prevSelectedDay] - prec[selDays-1])^2)+
-               w_meantemp*((meantemp[prevSelectedDay] - meantemp[selDays-1])^2))
+                 w_meantemp*((meantemp[prevSelectedDay] - meantemp[selDays-1])^2))
     o <- order(dq)
     sel_knn <- (dq <= dq[o[k]])
     selDays = selDays[sel_knn]
@@ -168,14 +167,134 @@ weathergenerator<-function(object, params = defaultGenerationParams()) {
     days = c(days, d)
     prevSelectedDay = d
   }
+  return(days)
+}
+
+#' Run simulation of an arima model
+#'
+#' @param model arima model object
+#' @param n number of simulation timesteps
+#' @export
+#' @examples
+#' library(forecast)
+#' model <- auto.arima(sin(1:50)+rnorm(50)+10, max.p=2, max.q=2, max.P=0, max.Q=0, stationary=TRUE)
+#' arima_simulate(model, n=40)
+.arima_simulate <- function(model, n) {
+  sim <- arima.sim(n=n,
+                   list(ar=coef(model)[grepl('ar', names(coef(model)))],
+                        ma=coef(model)[grepl('ma', names(coef(model)))]),
+                   sd = sqrt(model$sigma2[[1]]))
   
+  # extract intercept
+  if ('intercept' %in% names(model$coef)) {
+    intercept <- model$coef['intercept']
+  } else {
+    intercept <- 0
+  }
+  
+  # add intercept (mean) to current simulation
+  sim <- sim + intercept
+  
+  return(zoo::coredata(sim))
+}
+
+#' Select k-Nearest Neighbor for Annual Simulation
+#'
+#' @param prcp target annual precipitation (scalar)
+#' @param obs_prcp historical annual precipitation as zoo object
+#' @param n number of years to sample
+#' @export
+#' @return vector of sampled years of length n
+.knn_annual <- function(prcp, obs_prcp, n=100) {
+  stopifnot(length(prcp)==1)
+  stopifnot(all(!is.na(obs_prcp)))
+  
+  k <- round(max(sqrt(length(obs_prcp)), 0.5*length(obs_prcp)), 0)
+  stopifnot(k > 0)
+  
+  df <- data.frame(YEAR=as.numeric(format(as.Date(names(obs_prcp)),"%Y")),
+                   PRCP=as.numeric(obs_prcp))
+  
+  # compute distances
+  df[, 'DISTANCE'] <- sqrt((prcp - df[['PRCP']])^2)
+  df <- df[order(df[['DISTANCE']]), ]
+  
+  # select k nearest
+  df <- df[1:min(nrow(df), k), ]
+  
+  # compute sampling probabilities
+  df[, 'ROW'] <- 1:nrow(df)
+  df[, 'PROB'] <- (1/df[, 'ROW'])/(sum(1/df[, 'ROW']))
+  stopifnot(abs(sum(df[['PROB']])-1) < 1e-7)
+  
+  selection <- sample(1:nrow(df), size=n, prob=df[['PROB']], replace=TRUE)
+  as.numeric(df[['YEAR']][selection])
+}
+
+weathergeneration<-function(object, conditional = FALSE, 
+                            params = defaultGenerationParams()) {
+  if((!inherits(object,"SpatialPointsMeteorology")) 
+     && (!inherits(object,"SpatialGridMeteorology")) 
+     && (!inherits(object,"SpatialPixelsMeteorology"))) stop("'object' has to be of class 'Spatial_*_Meteorology'.")
+  
+  #Average weather over the area
+  x <- averagearea(object)
+  x <- x@data[[1]]
+ 
+  # Add year and Month to daily data
+  x$Month = as.numeric(format(as.Date(row.names(x)),"%m"))
+  x$Year = as.numeric(format(as.Date(row.names(x)), "%Y"))
+  
+  if(!conditional) {
+    days  = .mcknn_weathergeneration(x = x, params = params) 
+    selDatesYears = row.names(x)[days]
+  } else {
+
+    # Calculate days per year
+    days_per_year = table(x$Year)
+    # Calculate annual precipitation
+    pyear = summarypoint(x, fun="sum", var = "Precipitation", freq = "year", na.rm=T)
+    pyear= pyear[!is.na(pyear)]
+    n_year = length(pyear)
+    # Fit ARIMA model
+    ar_model <- forecast::auto.arima(pyear, max.p=2, max.q=2, max.P=0, max.Q=0, stationary=TRUE)
+    # simulation ARIMA model
+    sim_pyear <- .arima_simulate(model=ar_model, n=n_year)
+    
+    selDatesYears <- character()
+    for(i in 1:n_year) {
+      # create population of years with knn
+      pop_years <- .knn_annual(prcp=as.numeric(sim_pyear[i]), obs_prcp=pyear, n=params$n_knn_annual)
+      
+      # Assemble daily data
+      pop_days <- lapply(pop_years, function(yr) {
+        x[which(x$Year==yr), ]
+      })
+      pop_days <- do.call(rbind, pop_days)
+      
+      # Fit weather generator with daily data and generate data for one year
+      selDays <- .mcknn_weathergeneration(pop_days, days_per_year[i], params)
+      
+      # Extract the dates corresponding to the selected rows
+      selDates <- substr(row.names(pop_days)[selDays],1,10)
+      selDatesYears = c(selDatesYears, selDates)
+    }
+  }
   y <- object
-  for(i in 1:length(object@data)) {
-    df1 <- object@data[[i]]
-    df2 <- df1[days, ]
-    df2$DOY = df1$DOY
-    row.names(df2) = row.names(df1)
-    y@data[[i]] = df2
+  if(inherits(object,"SpatialPointsMeteorology")) {
+    for(i in 1:length(object@data)) {
+      df1 <- object@data[[i]]
+      df2 <- df1[selDatesYears, ]
+      df2$DOY = df1$DOY
+      row.names(df2) = row.names(df1)
+      y@data[[i]] = df2
+    }
+  } else {
+    y@data = y@data
+    y@dates = y@dates
+    for(i in 1:length(selDatesYears)) {
+      y@data[[i]] <- object@data[[selDatesYears[i]]]
+    }
   }
   return(y)
 }

@@ -174,11 +174,6 @@
 #'
 #' @param model arima model object
 #' @param n number of simulation timesteps
-#' @export
-#' @examples
-#' library(forecast)
-#' model <- auto.arima(sin(1:50)+rnorm(50)+10, max.p=2, max.q=2, max.P=0, max.Q=0, stationary=TRUE)
-#' arima_simulate(model, n=40)
 .arima_simulate <- function(model, n) {
   sim <- arima.sim(n=n,
                    list(ar=coef(model)[grepl('ar', names(coef(model)))],
@@ -195,15 +190,14 @@
   # add intercept (mean) to current simulation
   sim <- sim + intercept
   
-  return(zoo::coredata(sim))
+  return(as.numeric(sim))
 }
 
 #' Select k-Nearest Neighbor for Annual Simulation
 #'
 #' @param prcp target annual precipitation (scalar)
-#' @param obs_prcp historical annual precipitation as zoo object
+#' @param obs_prcp historical annual precipitation
 #' @param n number of years to sample
-#' @export
 #' @return vector of sampled years of length n
 .knn_annual <- function(prcp, obs_prcp, n=100) {
   stopifnot(length(prcp)==1)
@@ -247,8 +241,8 @@ weathergeneration<-function(object,
   x$Month = as.numeric(format(as.Date(row.names(x)),"%m"))
   x$Year = as.numeric(format(as.Date(row.names(x)), "%Y"))
   
-  if(verbose) cat("Generating weather series...\n")
   if(!params$conditional) {
+    if(verbose) cat("\nGenerating weather series...\n")
     selDays  = .mcknn_weathergeneration(x = x, params = params) 
     selDatesYears = row.names(x)[selDays]
     ratiosYears = rep(1, length(selDatesYears))
@@ -261,14 +255,14 @@ weathergeneration<-function(object,
     psim = tapply(x$Precipitation[selDays]*ratiosYears, x$Year, FUN=sum, na.rm=T)
     ptarget = tapply(x$Precipitation, x$Year, FUN=sum, na.rm=T)
     if(verbose) {
-      cat("Stats: \n")
+      cat("\nAnnual precipitation stats: \n")
       df = data.frame(average = c(mean(ptarget),mean(psim)), 
                       sd = c(sd(ptarget), sd(psim)), 
                       row.names = c("target", "simulated"))
       print(df)
     }
   } else {
-
+    if(verbose) cat("\nAnnual precipitation model...\n")
     # Calculate days per year
     days_per_year = table(x$Year)
     # Calculate annual precipitation
@@ -277,9 +271,14 @@ weathergeneration<-function(object,
     n_year = length(pyear)
     # Fit ARIMA model
     ar_model <- forecast::auto.arima(pyear, max.p=2, max.q=2, max.P=0, max.Q=0, stationary=TRUE)
+    if(verbose) {
+      print(ar_model)
+      cat("\n")
+    }
     # simulation ARIMA model
     sim_pyear <- .arima_simulate(model=ar_model, n=n_year)
     
+    if(verbose) cat("\nGenerating weather series...\n")
     selDatesYears <- character()
     ratiosYears = numeric()
     if(verbose) pb = txtProgressBar(1, n_year, style=3)
@@ -314,10 +313,10 @@ weathergeneration<-function(object,
     }
     cat("\n")
     if(verbose) {
-      cat("Year comparison: \n")
+      cat("\nYear-to-year precipitation comparison: \n")
       df = data.frame(target = ptarget, simulated = psim)
       print(df)
-      cat("Stats: \n")
+      cat("\nAnnual precipitation stats: \n")
       df = data.frame(average = c(mean(ptarget),mean(psim)), 
                       sd = c(sd(ptarget), sd(psim)), 
                       row.names = c("target", "simulated"))

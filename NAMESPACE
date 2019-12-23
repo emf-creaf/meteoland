@@ -9,7 +9,7 @@ useDynLib(meteoland, .registration = TRUE)
 export(averagearea,
        correctionpoint, correctionpoints, correctionpoints.errors, 
        correction_series,
-       defaultCorrectionParams, defaultInterpolationParams,
+       defaultCorrectionParams, defaultGenerationParams, defaultInterpolationParams,
        downloadSMCstationlist, downloadSMCvarmetadata,downloadSMCcurrentday, downloadSMChistorical,
        downloadAEMETcurrentday,downloadAEMEThistorical, downloadAEMEThistoricalstationlist,
        extractgridindex,

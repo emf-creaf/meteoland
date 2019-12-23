@@ -18,11 +18,15 @@ weathergeneration(object, params = defaultGenerationParams(), verbose=TRUE)
   \item{verbose}{Boolean flag to print process information.}
 }
 \value{
+An object of the same class as the input \code{object}. Generated meteorological series are of the same length as the input.
 }
 \details{
-
+The implemented algorithm is based on Apipattanavis et al. (2007) for the non-conditional version, and on Steinschneider et al. (2013) for the conditional one. Much of the code was adapted from package 'weathergen' by Jeffrey D. Walker.
 }
 \references{
+Apipattanavis, S., G. Podesta, B. Rajagopalan, and R. W. Katz (2007), A semiparametric multivariate and multisite weather generator, Water Resour. Res., 43, W11401, doi:10.1029/2006WR005714.
+
+Steinschneider S., and Brown C. (2013) A semiparametric multivariate, multisite weather generator with low-frequency variability for use in climate risk assessments. Water Resour. Res., 49, 7205-7220, doi:10.1002/wrcr.20528.
 }
 \author{
 Miquel De \enc{Cáceres}{Caceres} Ainsa,  CTFC

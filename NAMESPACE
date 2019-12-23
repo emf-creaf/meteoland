@@ -54,7 +54,10 @@ importFrom(graphics, abline, hist, lines, par)
 importFrom(utils, read.table, setTxtProgressBar,
              txtProgressBar, write.table)
 importFrom(stats, 
-           arima.sim, cor, var, lm, aggregate, approx, na.omit, quantile, dist)
+           aggregate, approx, arima.sim, 
+           coef, cor, dist, 
+           var, sd,
+           lm, na.omit, quantile)
 
 S3method(summary, interpolation.cv)
 

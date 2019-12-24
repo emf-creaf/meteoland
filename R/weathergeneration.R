@@ -70,8 +70,10 @@
     idx <- which(months == month)
     if (length(idx) > 0) {
       x.month <- x[idx]
-      res <- c(dry_wet=dry_wet_threshold, wet_extreme = max(dry_wet_threshold+0.1,
-                                                       unname(quantile(x.month, probs=wet_extreme_quantile_threshold))))
+      x.month <- x.month[x.month>dry_wet_threshold]
+      if(length(x.month)>0) wet_extreme_threshold <- as.numeric(quantile(x.month, probs=wet_extreme_quantile_threshold))
+      else wet_extreme_threshold = dry_wet_threshold + 0.1
+      res <- c(dry_wet=dry_wet_threshold, wet_extreme = wet_extreme_threshold)
     } else {
       res <- c(dry_wet=NA, wet_extreme=NA)
     }
@@ -121,9 +123,10 @@
                                 dry_wet_threshold = params$dry_wet_threshold, 
                                 wet_extreme_quantile_threshold = params$wet_extreme_quantile_threshold)
   states <- .mc_assign_states(prec, months, thresh)
+  # print(thresh)
   statePrev <- c(NA, states[1:(length(states)-1)])
   transition <- .mc_fit(states, months)
-  
+  # print(transition)
   #Set variable weights
   w_prec = 100/sd_prec
   w_meantemp = 10/sd_meantemp

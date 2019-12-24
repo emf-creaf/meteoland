@@ -25,18 +25,18 @@ library(meteoland)
 
 Reliable meteorological data are a basic requirement for hydrological and ecological studies at the landscape scale. Given the large spatial variation of meteorology over complex terrains, meteorological records from a single weather station are often not representative of entire landscapes. Studies made on multiple sites over a landscape require different meteorological series for each site; and other studies may require meteorological data series for all grid cells of a landscape, in a continuous way. In these cases, spatial correlation between the meteorology series of different sites or cells must be taken into account. For example, the sequence of days with rain of contiguous cells will normally be the same or very similar, even if precipitation amounts may differ. Finally, studies addressing the impacts of climate change on forests and landscapes require downscaling coarse-scale predictions  of global or regional climate models to the landscape scale. When downscaling predictions for several locations in a landscape, spatial correlation of predictions is also important.
 
-With the aim to assist research of climatic impacts on forests, the R package `meteoland` provides utilities to estimate daily weather variables at any position over complex terrains:
+With the aim to assist research of climatic impacts on forests, the R package **meteoland** provides utilities to estimate daily weather variables at any position over complex terrains:
 
-1. Spatial interpolation of daily weather records from meteorological stations. }
-2. Statistical correction of meteorological data series (e.g. from climate models).}
+1. Spatial interpolation of daily weather records from meteorological stations. 
+2. Statistical correction of meteorological data series (e.g. from climate models).
+3. Multisite and multivariate stochastic weather generation.
 
-Using `meteoland` package is easy, but some ideas and concepts must be addresed
-to make the experience easy for new users. This vignette is intended as a working example to explain all the steps needed to get comfortable with `meteoland` workflow. We assume that the reader is more or less familiar with S4 classes of package **sp**. You will find detailed information regarding the package structure, its functions, and how calculations are done at the [vegmod website](http://vegmod.ctfc.cat/software/meteoland/).
+Using **meteoland** package is easy, but some ideas and concepts must be addresed to make the experience easy for new users. This vignette is intended as a working example to explain all the steps needed to get comfortable with **meteoland** workflow. We assume that the reader is more or less familiar with S4 spatial classes of package [**sp**](https://cran.r-project.org/package=sp). You will find detailed information regarding the package structure, its functions, and how calculations are done at the [vegmod website](http://vegmod.ctfc.cat/software/meteoland/).
 
 ## Installing and loading the package
 
-First of all, before starting to work with the package, we must install and load
-the library. `meteoland` stable version can be found at CRAN
+First of all, before starting to work with **meteoland**, we must install and load
+the library. Stable versions of the package can be found at CRAN
 (https://CRAN.R-project.org/package=meteoland), and it can be
 installed and loaded as any other R package:
 
@@ -45,7 +45,7 @@ install.packages("meteoland")
 library(meteoland)
 ```
 
-Alternatively, you can install the development version located at GitHub using the `devtools` package:
+Alternatively, you can install the development version located at GitHub using the **devtools** package:
 ```{r, eval = FALSE}
 library(devtools)
 install_github("vegmod/meteoland", 
@@ -92,9 +92,9 @@ Units should be in degrees Celsius for temperature and mm for precipitation.
 
 ## Building an interpolation data object
 
-Meteoland stores weather series for reference locations and interpolation parameters in a single object of class `MeteorologyInterpolationData`. There are several ways of building such objects, but we will first illustrate how to do it from the data we just presented.
+Package **meteoland** stores weather series for reference locations and interpolation parameters in a single object of class `MeteorologyInterpolationData`. There are several ways of building such objects, but we will first illustrate how to do it from the data we just presented.
 
-First we need to create an object of class `SpatialPoints` (see package **sp**) with the spatial coordinates of our stations and the coordinate system (here UTM 31N):
+First we need to create an object of class `SpatialPoints` (see package **sp**) with the spatial coordinates of our weather stations and the coordinate system (here UTM 31N):
 ```{r}
 sp = SpatialPoints(st_data[,c("X_UTM", "Y_UTM")],
                    proj4string = CRS("+proj=utm +zone=31 +ellps=WGS84 +datum=WGS84 +units=m +towgs84=0,0,0"))
@@ -110,12 +110,12 @@ interpolator <- MeteorologyInterpolationData(sp, elevation = st_data$elevation,
 class(interpolator)
 ```
 
-The resulting object is now ready to be used to perform interpolation on a set of target locations (see next section). We can inspect the amount of data in our interpolation object using function `interpolation.coverage`. For example, with:
+The resulting object is ready to be used to perform interpolation on a set of target locations (see next section). We can inspect the amount of data in our interpolation object using function `interpolation.coverage`. For example, with:
 ```{r}
 spatial_coverage <- interpolation.coverage(interpolator, type = 'spatial')
 head(spatial_coverage)
 ```
-we obtain the number of non-missing observations for each weather station and variable. Similarly, we can ask the number of non-missing observations for each date and variable using:
+we obtain the number of non-missing observations for each weather station and variable (i.e. the spatial coverage). Similarly, we can ask the number of non-missing observations for each date and variable (i.e. the temporal coverage) using:
 ```{r}
 temporal_coverage <- interpolation.coverage(interpolator, type = 'temporal')
 head(temporal_coverage)
@@ -152,7 +152,7 @@ legend("topright", legend = c("alpha = 3", "alpha = 6.25"), lty=c(1,2), bty="n")
 
 $R_p$ is automatically adjusted so that it has lower values in data-rich regions and is increased in data-poor regions. The method, however, requires the user to specify $N$, the average number of observations to be included for each target point. $R_p$ is then varied as a smooth function of the local density in such a way that this average is achieved over the spatial domain. It is important that the initial value of $R_p$ 
 
-In meteoland estimation of $Rp$ is done once for each target point, variable and day. Interpolation of temperature includes a correction for the effects of elevation. More specifically, a weighted least-squares regression is used to assess the relationship between temperature differences and elevation differences in weather station data and this relationship is applied to elevation differences between weather stations and the target point. Interpolation of relative humidity is done after transforming it to dew-point temperature. No correction for elevation is performed during interpolation, but elevation effects arise when back-transforming dew-point temperature to relative humidity. Interpolation of daily precipitation is complicated by the need to predict both precipitation occurrence and, conditioned on this, precipitation amount. Thornton et al. (1997) defined a binomial predictor of spatial precipitation occurrence as a function of the weighted occurrence at surrounding weather stations. Conditional on precipitation occurrence, the interpolation routine predicts precipitation amount, where weighted least-squares regression is also used to account for elevation effects. Interpolation of wind is performed in three different ways depending on the information available. If only wind speed data is available, the spatial interpolation with Gaussian weights is used on wind scalars as described above. If weather station data includes wind direction, a polar average is cal- culated using Gaussian weights. Finally, if static wind fields are also available the interpolation routine first finds, for each weather station the wind field that best matches the observed vector. Then, the wind vectors extracted from the selected wind fields are averaged as before. The details of how $R_p$ is estimated and, in general, how interpolation is done are given in a PDF vignette called 'Meteorology'.
+In meteoland estimation of $R_p$ is done once for each target point, variable and day. Interpolation of temperature includes a correction for the effects of elevation. More specifically, a weighted least-squares regression is used to assess the relationship between temperature differences and elevation differences in weather station data and this relationship is applied to elevation differences between weather stations and the target point. Interpolation of relative humidity is done after transforming it to dew-point temperature. No correction for elevation is performed during interpolation, but elevation effects arise when back-transforming dew-point temperature to relative humidity. Interpolation of daily precipitation is complicated by the need to predict both precipitation occurrence and, conditioned on this, precipitation amount. Thornton et al. (1997) defined a binomial predictor of spatial precipitation occurrence as a function of the weighted occurrence at surrounding weather stations. Conditional on precipitation occurrence, the interpolation routine predicts precipitation amount, where weighted least-squares regression is also used to account for elevation effects. Interpolation of wind is performed in three different ways depending on the information available. If only wind speed data is available, the spatial interpolation with Gaussian weights is used on wind scalars as described above. If weather station data includes wind direction, a polar average is cal- culated using Gaussian weights. Finally, if static wind fields are also available the interpolation routine first finds, for each weather station the wind field that best matches the observed vector. Then, the wind vectors extracted from the selected wind fields are averaged as before. Further details of how interpolation is done can be found [vegmod website](http://vegmod.ctfc.cat/software/meteoland/).
 
 Interpolation parameters $\alpha$ and $N$ can be different for each variable to be interpolated. The following table lists all the interpolation parameters (see also function `defaultInterpolationParameters()`)
 
@@ -178,7 +178,7 @@ Interpolation parameters $\alpha$ and $N$ can be different for each variable to 
 | `f_max` | 0.6 | Maximum value for precipitation regression extrapolations (0.6 equals to a maximum of 4 times extrapolation) |
 | `wind_height` | 10 | Wind measurement height (in m) |
 
-Parameter `St_Precipitation` controls the temporal smoothing that is applied to weather station data to calibrate regression, while parameters `pop_crit` and `f_max` are also particular to the estimation of precipitation (see details in Thornton et al. 1997). Parameter `St_TemperatureRange` is used for the estimation of solar radiation (see details in PDF vignette called 'Meteorology').
+Parameter `St_Precipitation` controls the temporal smoothing that is applied to weather station data to calibrate regression, while parameters `pop_crit` and `f_max` are also particular to the estimation of precipitation (see details in Thornton et al. 1997). Parameter `St_TemperatureRange` is used for the estimation of solar radiation.
 
 A parameter that is particularly important to understand is `initial_Rp`, which specifies the initial radius for the truncated spatial Gaussian kernel. By default its value is:
 ```{r}
@@ -200,8 +200,8 @@ This function returns an interpolation.calibration class object which contains s
 * Numeric matrix with the mean absolute error (MAE) values for each combination of parameters $N$ and
 $\alpha$.
 * Miminum value found for MAE.
-* Value for the $N$ parameter corresponding to the minumun MAE.
-* Value for the $\alpha$ parameter corresponding to the minimum MAE.
+* Value for the `N` parameter corresponding to the minumun MAE.
+* Value for the `alpha` parameter corresponding to the minimum MAE.
 * Matrix with the observed values.
 * Matrix with the predicted values for the optimum parameter combination.
 
@@ -229,7 +229,7 @@ data("examplegridtopography")
 
 elev = as(examplegridtopography[1:20,1:20], "SpatialGridDataFrame")["elevation"]
 ```
-The target for weather interpolation in `meteoland` can be a set of points, pixels or a whole grid. Again, the initial format of data can be very different. Here we assume you have a small grid of 400 (20x20) cells of 1ha in size, with elevation data in form of class `SpatialGridDataFrame` (see method `read.asciigrid` in package *sp*):
+The target for weather interpolation in **meteoland** can be a set of points, pixels or a whole grid. Again, the initial format of data can be very different. Here we assume you have a small grid of 400 (20x20) cells of 1ha in size, with elevation data in form of class `SpatialGridDataFrame` (see method `read.asciigrid` in package *sp*):
 ```{r}
 summary(elev)
 ```
@@ -241,7 +241,7 @@ sgt = SpatialGridTopography(as(elev, "SpatialGrid"), elevation = elev$elevation,
 sgt
 ```
 
-As you can see in the result, `meteoland` has calculated for us slope and aspect (both in degrees) from elevation data ^[Objects of class `SpatialGridTopography` can be initialized with user input values for slope and aspect too, but `meteoland` has its own routines when this are missing]. Slope and aspect are important for radiation calculations, which also requires relative humidity data. We can display elevation over the grid using:
+As you can see in the result, **meteoland** has calculated for us slope and aspect (both in degrees) from elevation data. Objects of class `SpatialGridTopography` can be initialized with user input values for slope and aspect too, but **meteoland** has its own routines when this are missing]. Slope and aspect are important for radiation calculations, which also requires relative humidity data. We can display elevation over the grid using:
 ```{r}
 spplot(sgt, "elevation")
 ```
@@ -285,7 +285,7 @@ sgdf_1 = SpatialGridDataFrame(grid = ml@grid, data = ml@data[[1]], proj4string =
 summary(sgdf_1)
 ```
 
-Results can be retrieved in this way and saved using `write.asciigrid` for its use outside R. The package also provides function for reading/writing NetCDFs (see function `writemeteorologygrid`) from `SpatialGridMeteorology` objects. 
+Results can be retrieved in this way and saved using `write.asciigrid` for its use outside R. The package also provides function for reading/writing NetCDFs (see function `writemeteorologygrid`) from `SpatialGridMeteorology` objects. Finally, the package allows interpolating on subsets of grid pixels in the same way as for full grids. This is done using objects of class `SpatialPixelsTopography` and calling function `interpolationpixels`, which will produce objects of class `SpatialPixelsMeteorology`.
 
 
 ## Interpolation on a set of points
@@ -362,7 +362,7 @@ length(proj_data)
 head(ref_data[[1]])
 head(proj_data[[1]])
 ```
-Note that these data frames should follow the conventions of `meteoland` for variable names and units. Finally, we need to specify the projection period, in this case one year:
+Note that these data frames should follow the conventions of **meteoland** for variable names and units. Finally, we need to specify the projection period, in this case one year:
 ```{r}
 proj_dates = seq(as.Date("2023-01-01"), as.Date("2023-12-31"), by="day")
 ```
@@ -428,5 +428,36 @@ lines(uncorrected@dates,
 legend("topright", legend=c("corrected","uncorrected", "Maximum", "Minimum"), 
        col=c("black","black", "red","blue"), lty=c(1,3,1,1), bty="n")
 
+```
+
+# Stochastic weather generation
+
+Recent versions of **meteoland** incorporate the possibility of generating stochastic weather series. Stochastic weather generators are algorithms that produce series of synthetic daily weather data. The parameters of the model are conditioned on existing meteorological records to ensure the characteristics of historic weather emerge in the daily stochastic process. 
+
+## Generating stochastic weather from historical data
+
+```{r}
+y <- weathergeneration(mp, verbose=FALSE)
+```
+
+```{r, fig =TRUE, fig.width=7, fig.height=7, echo = FALSE}
+par(mfrow=c(2,1))
+meteoplot(mp, 1, "MeanTemperature", ylab="Mean temperature (Celsius)", xlab="")
+title("Original")
+meteoplot(y, 1, "MeanTemperature", ylab="Mean temperature (Celsius)", xlab="")
+title("Synthetic")
+```
+
+```{r, fig =TRUE, fig.width=7, fig.height=7, echo = FALSE}
+par(mfrow=c(2,1))
+meteoplot(mp, 1, "Precipitation", ylab="Precipitation (mm)", xlab="")
+title("Original")
+meteoplot(y, 1, "Precipitation", ylab="Precipitation (mm)", xlab="")
+title("Synthetic")
+```
+
+One of the inputs of function `weathergeneration` is an list with algorithm parameters. The names of these parameters, and their default values, can be obtained from function `defaultGenerationParameters()`:
+```{r}
+defaultGenerationParams()
 ```
 

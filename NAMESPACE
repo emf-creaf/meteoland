@@ -56,7 +56,7 @@ importFrom(utils, read.table, setTxtProgressBar,
 importFrom(stats, 
            aggregate, approx, arima.sim, 
            coef, cor, dist, 
-           var, sd,
+           var, rlnorm, sd,
            lm, na.omit, quantile)
 
 S3method(summary, interpolation.cv)

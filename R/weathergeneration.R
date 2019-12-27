@@ -114,6 +114,7 @@
 .mcknn_weathergeneration<-function(x, ndays = NULL, params = defaultGenerationParams()) {
 
   months = x$Month
+  # print(sum(is.na(months)))
   if(is.null(ndays)) ndays = length(months)
   prec = x$Precipitation
   sd_prec = sd(prec)
@@ -143,7 +144,7 @@
   for(ic in 2:length(pss)) {
     # cat(paste0("ic", ic,":\n"))
     #Select days centered on the same DOY that have the same sequence of states simulated by the MC for day t and t-1
-    rangeSize = 2
+    rangeSize = params$range_size_days -1
     sel = rep(FALSE, length(states))
     while(sum(sel)==0) {
       rangeSize = rangeSize+1
@@ -233,18 +234,28 @@ weathergeneration<-function(object,
                             verbose = TRUE) {
   if((!inherits(object,"SpatialPointsMeteorology")) 
      && (!inherits(object,"SpatialGridMeteorology")) 
-     && (!inherits(object,"SpatialPixelsMeteorology"))) stop("'object' has to be of class 'Spatial_*_Meteorology'.")
+     && (!inherits(object,"SpatialPixelsMeteorology"))
+     && (!inherits(object,"data.frame"))) stop("'object' has to be of class 'Spatial_*_Meteorology' or a data frame with weather data.")
   
-  #Average weather over the area
-  if(verbose) cat("Calculating area-averaged weather...\n")
-  x <- averagearea(object)
-  x <- x@data[[1]]
+  match.arg(params$conditional, c("none", "arima", "input"))
+
+  if((inherits(object,"SpatialPointsMeteorology")) 
+     || (inherits(object,"SpatialGridMeteorology")) 
+     || (inherits(object,"SpatialPixelsMeteorology"))) {
+    #Average weather over the area
+    if(verbose) cat("Calculating area-averaged weather...\n")
+    x <- averagearea(object)
+    x <- x@data[[1]]
+  } else {
+    x = object
+  }
+     
  
   # Add year and Month to daily data
   x$Month = as.numeric(format(as.Date(row.names(x)),"%m"))
   x$Year = as.numeric(format(as.Date(row.names(x)), "%Y"))
   
-  if(!params$conditional) {
+  if(params$conditional=="none") {
     if(verbose) cat("\nGenerating weather series...\n")
     selDays  = .mcknn_weathergeneration(x = x, params = params) 
     selDatesYears = row.names(x)[selDays]
@@ -265,21 +276,29 @@ weathergeneration<-function(object,
       print(df)
     }
   } else {
-    if(verbose) cat("\nAnnual precipitation model...\n")
     # Calculate days per year
     days_per_year = table(x$Year)
     # Calculate annual precipitation
     pyear = summarypoint(x, fun="sum", var = "Precipitation", freq = "year", na.rm=T)
     pyear= pyear[!is.na(pyear)]
     n_year = length(pyear)
-    # Fit ARIMA model
-    ar_model <- forecast::auto.arima(pyear, max.p=2, max.q=2, max.P=0, max.Q=0, stationary=TRUE)
-    if(verbose) {
-      print(ar_model)
-      cat("\n")
+    if(params$conditional=="arima"){
+      if(verbose) cat("\nTarget annual precipitation from ARIMA model...\n")
+      # Fit ARIMA model
+      ar_model <- forecast::auto.arima(pyear, max.p=2, max.q=2, max.P=0, max.Q=0, stationary=TRUE)
+      if(verbose) {
+        print(ar_model)
+        cat("\n")
+      }
+      # simulation ARIMA model
+      sim_pyear <- .arima_simulate(model=ar_model, n=n_year)
+    } else {
+      if(verbose) cat("\nTarget annual precipitation from input...\n")
+      # Calculate observed mean annual temperature
+      # tyear = summarypoint(x, fun="mean", var = "MeanTemperature", freq = "year", na.rm=T)
+      # tyear= tyear[!is.na(tyear)]
+      sim_pyear = pyear
     }
-    # simulation ARIMA model
-    sim_pyear <- .arima_simulate(model=ar_model, n=n_year)
     
     if(verbose) cat("\nGenerating weather series...\n")
     selDatesYears <- character()
@@ -290,13 +309,35 @@ weathergeneration<-function(object,
     for(i in 1:n_year) {
       if(verbose) setTxtProgressBar(pb, i)
       # create population of years with knn
-      pop_years <- .knn_annual(prcp=as.numeric(sim_pyear[i]), obs_prcp=pyear, n=params$n_knn_annual)
+      if(params$conditional=="arima") {
+        pop_years <- .knn_annual(prcp=as.numeric(sim_pyear[i]), obs_prcp=pyear, 
+                                 n=params$n_knn_annual)
+      } else if (params$conditional=="input") {
+        if((1+params$range_size_years*2) < length(pyear)) {
+          rangeSize = params$range_size_years
+          ymin = i-rangeSize
+          ymax = i+rangeSize
+          ycor = ifelse(ymin<1, 1-ymin,0)
+          ycor = ifelse(ymax>length(pyear), length(pyear)-ymax,ycor)
+          ymin = ymin+ycor
+          ymax = ymax+ycor
+          yearrange <- ymin:ymax
+        } else {
+          yearrange <- 1:length(pyear)
+        }
+        yearrange <- yearrange[yearrange!=i]
+        pyear_i = pyear[yearrange]
+        tyear_i = tyear[yearrange]
+        pop_years <- .knn_annual(prcp=pyear[i], obs_prcp=pyear_i, 
+                                  n=params$n_knn_annual)
+      }
       
       # Assemble daily data
       pop_days <- lapply(pop_years, function(yr) {
         x[which(x$Year==yr), ]
       })
       pop_days <- do.call(rbind, pop_days)
+      # print(dim(pop_days))
       
       # Fit weather generator with daily data and generate data for one year
       selDays <- .mcknn_weathergeneration(pop_days, days_per_year[i], params)
@@ -317,12 +358,12 @@ weathergeneration<-function(object,
     cat("\n")
     if(verbose) {
       cat("\nYear-to-year precipitation comparison: \n")
-      df = data.frame(target = ptarget, simulated = psim)
+      df = data.frame(input = pyear, target = ptarget, simulated = psim)
       print(df)
       cat("\nAnnual precipitation stats: \n")
-      df = data.frame(average = c(mean(ptarget),mean(psim)), 
-                      sd = c(sd(ptarget), sd(psim)), 
-                      row.names = c("target", "simulated"))
+      df = data.frame(average = c(mean(pyear), mean(ptarget),mean(psim)), 
+                      sd = c(sd(pyear), sd(ptarget), sd(psim)), 
+                      row.names = c("input", "target", "simulated"))
       print(df)
     }
   }
@@ -336,13 +377,18 @@ weathergeneration<-function(object,
       row.names(df2) = row.names(df1)
       y@data[[i]] = df2
     }
-  } else {
+  } else if(inherits(object,"SpatialGridMeteorology") || inherits(object,"SpatialPixelsMeteorology")) {
     y@data = y@data
     y@dates = y@dates
     for(i in 1:length(selDatesYears)) {
       y@data[[i]] <- object@data[[selDatesYears[i]]]
       y@data[[i]]$Precipitation = y@data[[i]]$Precipitation*ratiosYears[i]
     }
+  } else {
+    y <- x[selDatesYears, ]
+    y$DOY = x$DOY
+    y$Precipitation = y$Precipitation*ratiosYears
+    row.names(y) = row.names(x)
   }
   return(y)
 }

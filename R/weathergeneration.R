@@ -291,13 +291,13 @@ weathergeneration<-function(object,
         cat("\n")
       }
       # simulation ARIMA model
-      sim_pyear <- .arima_simulate(model=ar_model, n=n_year)
+      target_pyear <- .arima_simulate(model=ar_model, n=n_year)
     } else {
       if(verbose) cat("\nTarget annual precipitation from input...\n")
       # Calculate observed mean annual temperature
       # tyear = summarypoint(x, fun="mean", var = "MeanTemperature", freq = "year", na.rm=T)
       # tyear= tyear[!is.na(tyear)]
-      sim_pyear = pyear
+      target_pyear = pyear
     }
     
     if(verbose) cat("\nGenerating weather series...\n")
@@ -310,7 +310,7 @@ weathergeneration<-function(object,
       if(verbose) setTxtProgressBar(pb, i)
       # create population of years with knn
       if(params$conditional=="arima") {
-        pop_years <- .knn_annual(prcp=as.numeric(sim_pyear[i]), obs_prcp=pyear, 
+        pop_years <- .knn_annual(prcp=as.numeric(target_pyear[i]), obs_prcp=pyear, 
                                  n=params$n_knn_annual)
       } else if (params$conditional=="input") {
         if((1+params$range_size_years*2) < length(pyear)) {
@@ -325,10 +325,11 @@ weathergeneration<-function(object,
         } else {
           yearrange <- 1:length(pyear)
         }
-        yearrange <- yearrange[yearrange!=i]
+        # yearrange <- yearrange[yearrange!=i]
         pyear_i = pyear[yearrange]
-        tyear_i = tyear[yearrange]
-        pop_years <- .knn_annual(prcp=pyear[i], obs_prcp=pyear_i, 
+        # tyear_i = tyear[yearrange]
+        target_pyear[i] <- rlnorm(n=1, meanlog = mean(log(pyear_i)), sdlog = sd(log(pyear_i)))
+        pop_years <- .knn_annual(prcp=target_pyear[i], obs_prcp=pyear_i, 
                                   n=params$n_knn_annual)
       }
       
@@ -347,13 +348,13 @@ weathergeneration<-function(object,
       selDatesYears = c(selDatesYears, selDates)
       ratios<- rep(1, days_per_year[i])
       if(params$adjust_annual_precip) {
-        r = sim_pyear[i]/sum(pop_days$Precipitation[selDays])
+        r = target_pyear[i]/sum(pop_days$Precipitation[selDays])
         r = min(max(r, params$min_ratio), params$max_ratio)
         ratios <- rep(r, days_per_year[i])
       }
       ratiosYears = c(ratiosYears, ratios)
       psim[i] = sum(pop_days$Precipitation[selDays]*ratios)
-      ptarget[i] = sim_pyear[i]
+      ptarget[i] = target_pyear[i]
     }
     cat("\n")
     if(verbose) {

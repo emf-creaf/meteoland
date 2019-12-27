@@ -13,7 +13,7 @@ defaultGenerationParams()
 \value{
 A list with the following items (default values in brackets):
 \itemize{
-\item{\code{conditional [= TRUE]}: A logical flag to indicate that weather generation is conditional on simulation of annual precipitation.}
+\item{\code{conditional [= "input"]}: A logical flag to indicate that weather generation is conditional on simulation of annual precipitation.}
 \item{\code{dry_wet_threshold [= 0.3]}: Precipitation threshold (mm) for separating dry from wet days.}
 \item{\code{wet_extreme_quantile_threshold  [= 0.8]}: Quantile for separating wet from extremely wet days.}
 \item{\code{n_knn_annual [= 100]}: Number of years re-sampled using K-nearest neighbour.}

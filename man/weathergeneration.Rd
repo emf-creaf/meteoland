@@ -21,7 +21,7 @@ weathergeneration(object, params = defaultGenerationParams(), verbose=TRUE)
 An object of the same class as the input \code{object}. Generated meteorological series are of the same length as the input.
 }
 \details{
-The implemented algorithm is based on Apipattanavis et al. (2007) for the non-conditional version, and on Steinschneider et al. (2013) for the conditional one. Much of the code was adapted from package 'weathergen' by Jeffrey D. Walker.
+The implemented algorithm is based on Apipattanavis et al. (2007) for the non-conditional version, and is similar to Steinschneider et al. (2013) for the conditional one. Part of the code was adapted from package 'weathergen' by Jeffrey D. Walker, whom we are grateful.
 }
 \references{
 Apipattanavis, S., G. Podesta, B. Rajagopalan, and R. W. Katz (2007), A semiparametric multivariate and multisite weather generator, Water Resour. Res., 43, W11401, doi:10.1029/2006WR005714.

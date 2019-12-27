@@ -432,32 +432,42 @@ legend("topright", legend=c("corrected","uncorrected", "Maximum", "Minimum"),
 
 # Stochastic weather generation
 
-Recent versions of **meteoland** incorporate the possibility of generating stochastic weather series. Stochastic weather generators are algorithms that produce series of synthetic daily weather data. The parameters of the model are conditioned on existing meteorological records to ensure the characteristics of historic weather emerge in the daily stochastic process. 
+Recent versions of **meteoland** incorporate the possibility of generating stochastic weather series. Stochastic weather generators are algorithms that produce series of synthetic daily weather data. The parameters of the model are conditioned on existing meteorological records to ensure the characteristics of input weather series emerge in the daily stochastic process. The algorithm available in **meteoland** is intended to be used to generate daily series of the same length as the input. It can be understood as a resampling algorithm that tries to preserve some properties of the input series. The algorithm is semi-parametric and based on a first-order Markov chain for weather days (classified into dry/wet/extreme wet) along with k-nearest neighbour (KNN) resampling of input days and years. The approach implemented in **meteoland** can be applied to any spatial structure (points/pixels/grid) and it preserves the spatial correlation and multivariate covariance structure of weather series (because it works on area-averaged weather and the chosen resampled days are applied to all points/pixels). 
 
-## Generating stochastic weather from historical data
+## Weather generation function
+
+Function `weathergeneration` can be used to generate synthetic weather series for a range of inputs, including a (non-spatial) data frame (corresponding to weather series of a single location) as well as objects of classes `SpatialPointsDataFrame`, `SpatialPixelsDataFrame` or `SpatialGridDataFrame`. The following calls the function with a `SpatialPointsDataFrame` object, while hiding console output:
 
 ```{r}
 y <- weathergeneration(mp, verbose=FALSE)
 ```
+The output of the function is of the same class as the input object:
 
-```{r, fig =TRUE, fig.width=7, fig.height=7, echo = FALSE}
-par(mfrow=c(2,1))
-meteoplot(mp, 1, "MeanTemperature", ylab="Mean temperature (Celsius)", xlab="")
-title("Original")
-meteoplot(y, 1, "MeanTemperature", ylab="Mean temperature (Celsius)", xlab="")
-title("Synthetic")
+```{r}
+class(y)
 ```
 
-```{r, fig =TRUE, fig.width=7, fig.height=7, echo = FALSE}
-par(mfrow=c(2,1))
-meteoplot(mp, 1, "Precipitation", ylab="Precipitation (mm)", xlab="")
-title("Original")
-meteoplot(y, 1, "Precipitation", ylab="Precipitation (mm)", xlab="")
-title("Synthetic")
+We use the following code to display the original and synthetic temperature and precipitation values at the monthly scale:
+```{r, fig =TRUE, fig.width=7, fig.height=7, echo = TRUE}
+par(mar=c(3,5,1,1), mfrow = c(2,1))
+meteoplot(mp, 1, "MeanTemperature", freq="months", fun="mean", ylab="Mean temperature (Celsius)", xlab="")
+meteoplot(y, 1, "MeanTemperature", freq="months", fun="mean", col="red", add=T)
+legend("bottomright", legend = c("original", "synthetic"), col=c("black", "red"), lty=1, bty="n")
+meteoplot(mp, 1, "Precipitation", freq="months", fun="sum", ylab="Precipitation (mm/month)", xlab="")
+meteoplot(y, 1, "Precipitation", freq="months", fun="sum", col="red", add=T)
+legend("bottomright", legend = c("original", "synthetic"), col=c("black", "red"), lty=1, bty="n")
 ```
+
+
+## Weather generation parameters
 
 One of the inputs of function `weathergeneration` is an list with algorithm parameters. The names of these parameters, and their default values, can be obtained from function `defaultGenerationParameters()`:
 ```{r}
 defaultGenerationParams()
 ```
 
+Among all parameters, the most important is `$conditional`, as it specifies the multiyear conditioning of the generated series:
+
+1. **"none"** - The non-conditional version is used, which is based on a first order Markov chain (MC) to simulate weather states (dry/wet/extreme wet) and a K-nearest neighbour (KNN) algorithm to select pairs of days with the same transition and similar weather for the initial state (as in Apipattanavis et al. 2007).
+2. **"arima"** - Annual precipitation is conditioned using a stationary auto-regressive (ARIMA) model and then a K-nearest neighbour algorithm is used to select a set of years to train the MC-KNN algorithm (similar to Steinschneider et al. 2013). Recommended if low-frequency variation of annual precipitation is to be acounted for in long series.
+3. **"window"** - The MC-KNN algorithm is trained with the subset of the input data corresponding to a window around the target year. Annual precipitation is conditioned using a lognormal random trial of the precipitation corresponding to the selected years. Recommended to generate stochastic series from climate change projections.

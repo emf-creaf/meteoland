@@ -237,7 +237,7 @@ weathergeneration<-function(object,
      && (!inherits(object,"SpatialPixelsMeteorology"))
      && (!inherits(object,"data.frame"))) stop("'object' has to be of class 'Spatial_*_Meteorology' or a data frame with weather data.")
   
-  match.arg(params$conditional, c("none", "arima", "input"))
+  match.arg(params$conditional, c("none", "arima", "window"))
 
   if((inherits(object,"SpatialPointsMeteorology")) 
      || (inherits(object,"SpatialGridMeteorology")) 
@@ -272,7 +272,7 @@ weathergeneration<-function(object,
       cat("\nAnnual precipitation stats: \n")
       df = data.frame(average = c(mean(ptarget),mean(psim)), 
                       sd = c(sd(ptarget), sd(psim)), 
-                      row.names = c("target", "simulated"))
+                      row.names = c("input/target", "simulated"))
       print(df)
     }
   } else {
@@ -293,7 +293,7 @@ weathergeneration<-function(object,
       # simulation ARIMA model
       target_pyear <- .arima_simulate(model=ar_model, n=n_year)
     } else {
-      if(verbose) cat("\nTarget annual precipitation from input...\n")
+      if(verbose) cat("\nTarget annual precipitation from moving-window...\n")
       # Calculate observed mean annual temperature
       # tyear = summarypoint(x, fun="mean", var = "MeanTemperature", freq = "year", na.rm=T)
       # tyear= tyear[!is.na(tyear)]
@@ -312,7 +312,7 @@ weathergeneration<-function(object,
       if(params$conditional=="arima") {
         pop_years <- .knn_annual(prcp=as.numeric(target_pyear[i]), obs_prcp=pyear, 
                                  n=params$n_knn_annual)
-      } else if (params$conditional=="input") {
+      } else if (params$conditional=="window") {
         if((1+params$range_size_years*2) < length(pyear)) {
           rangeSize = params$range_size_years
           ymin = i-rangeSize

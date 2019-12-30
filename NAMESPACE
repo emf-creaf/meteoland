@@ -48,7 +48,6 @@ exportClasses(SpatialPointsMeteorology,SpatialPointsTopography,
 exportMethods(subsample, spplot, "[", show)
 importFrom(Rcpp, evalCpp)
 importFrom(jsonlite,fromJSON)
-importFrom(forecast, auto.arima)
 importFrom(grDevices, colorRampPalette, topo.colors)
 importFrom(graphics, abline, hist, lines, par)
 importFrom(utils, read.table, setTxtProgressBar,

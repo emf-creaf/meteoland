@@ -14,8 +14,8 @@ License: GPL (>= 2)
 URL: https://vegmod.ctfc.cat/software/meteoland/
 LazyData: TRUE
 Depends: R (>= 3.4.0), sp
-Imports: spdep, rgdal, ncdf4, httr, forecast, jsonlite, methods, Rcpp (>= 0.12.12)
-Suggests: knitr, spacetime, stars
+Imports: spdep, rgdal, ncdf4, httr, jsonlite, methods, Rcpp (>= 0.12.12)
+Suggests: knitr, forecast, spacetime, stars
 LinkingTo: Rcpp
 Encoding: UTF-8
 NeedsCompilation: yes

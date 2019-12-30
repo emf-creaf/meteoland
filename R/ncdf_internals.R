@@ -40,7 +40,10 @@
 
 #Reads values of time dimension
 .readdatesNetCDF<-function(ncin) {
-  return(as.Date(ncin$dim$time$vals, origin="1970-01-01"))
+  tunits <- ncin$dim$time$units
+  s <- strsplit(tunits, " ")[[1]]
+  origin <- as.Date(s[3])
+  return(as.Date(ncin$dim$time$vals, origin=origin))
 }
 #writes a grid/pixels for a single variable and day
 .putvardataday<-function(nc, var, datavec, day, index=NULL) {
@@ -55,9 +58,7 @@
   for(i in 1:ny) ncvar_put(nc, varid=var, vals=datavecfull[((i-1)*nx+1):(i*nx)], start=c(1,ny-i+1, day), count=c(nx,1,1))
 }
 #Reads grid/pixels for a single variable and day
-.readvardataday<-function(ncin, varname, day) {
-  nx = ncin$dim$X$len
-  ny = ncin$dim$Y$len
+.readvardataday<-function(ncin, nx, ny, varname, day) {
   v <- rep(NA, nx*ny)
   #Reads rows in decreasing order
   for(i in 1:ny) {
@@ -99,8 +100,9 @@
 }
 #Writes full NetCDF grids
 .writemeteorologygridNetCDF<-function(data, grid, proj4string, nc, index=NULL) {
-  nx = nc$dim$X$len
-  ny = nc$dim$Y$len
+  grid_nc = .readgridtopologyNetCDF(nc)
+  nx = grid_nc@cells.dim[1]
+  ny = grid_nc@cells.dim[2]
   dates = as.Date(names(data))
   dates_file = .readdatesNetCDF(nc)
   if(nx != grid@cells.dim[1]) stop("Number of x-axis values does not match X dimension in nc file")
@@ -149,9 +151,16 @@
 }
 #Reads NetCDF grid topology
 .readgridtopologyNetCDF<-function(ncin) {
-  dimX <- ncvar_get(ncin, "X")
-  dimY <- ncvar_get(ncin, "Y")
-  cellcentre.offset = c(min(dimX), min(dimY))
+  if(("X" %in% names(ncin$dim)) && ("Y" %in% names(ncin$dim))) {
+    dimX <- ncvar_get(ncin, "X")
+    dimY <- ncvar_get(ncin, "Y")
+    cellcentre.offset = c(X = min(dimX), Y = min(dimY))
+  }
+  else if(("lon" %in% names(ncin$dim)) && ("lat" %in% names(ncin$dim))) {
+    dimX <- ncvar_get(ncin, "lon")
+    dimY <- ncvar_get(ncin, "lat")
+    cellcentre.offset = c(lon = min(dimX), lat = min(dimY))
+  }
   cellsize = c(dimX[2]-dimX[1], dimY[2]-dimY[1])
   nx = length(dimX)
   ny = length(dimY)
@@ -160,44 +169,48 @@
   return(grid)
 }
 .readCRSNetCDF<-function(ncin) {
-  proj4string = ncatt_get(ncin,0, "proj4string")$value
-  if(proj4string!="NA") crs = CRS(proj4string)
-  else crs = CRS(as.character(NA))
+  crs = CRS(as.character(NA))
+  patt <- ncatt_get(ncin,0, "proj4string")
+  if(patt$hasatt) {
+    proj4string = patt$value
+    if(proj4string!="NA") crs = CRS(proj4string)
+  }
   return(crs)
 }
 #Reads NetCDF grid/pixels
-.readmeteorologyNetCDF<-function(ncin, dates = NULL, pixels = FALSE) {
+.readmeteorologyNetCDF<-function(ncin, dates = NULL, pixels = FALSE, varmapping = NULL) {
   crs <- .readCRSNetCDF(ncin)
-  dimX <- ncvar_get(ncin, "X")
-  dimY <- ncvar_get(ncin, "Y")
+  grid <- .readgridtopologyNetCDF(ncin)
+  nx <- grid@cells.dim[1]
+  ny <- grid@cells.dim[2]
   dates_file <- .readdatesNetCDF(ncin)
   if(!is.null(dates)) {
     if(sum(dates %in% dates_file)<length(dates)) stop("Time axis of nc file does not include all supplied dates")
   } else {
     dates = dates_file
   }
-  cellcentre.offset = c(min(dimX), min(dimY))
-  cellsize = c(dimX[2]-dimX[1], dimY[2]-dimY[1])
-  nx = length(dimX)
-  ny = length(dimY)
-  cells.dim = c(nx, ny)
-  grid = GridTopology(cellcentre.offset, cellsize, cells.dim)
   data = vector("list", length(dates))
   names(data)<- as.character(dates)
+  if(is.null(varmapping)) {
+    varmapping = c(MeanTemperature = "MeanTemperature",
+                   MinTemperature = "MinTemperature",
+                   MaxTemperature = "MaxTemperature",
+                   Precipitation = "Precipitation",
+                   MeanRelativeHumidity = "MeanRelativeHumidity",
+                   MinRelativeHumidity = "MinRelativeHumidity",
+                   MaxRelativeHumidity = "MaxRelativeHumidity",
+                   Radiation = "Radiation",
+                   WindSpeed = "WindSpeed",
+                   WindDirection = "WindDirection",
+                   PET = "PET")
+  }
   for(j in 1:length(dates)) {
     day = which(dates_file==dates[j])
     cat(paste0("Reading data for day '", as.character(dates[j]), "' at time position [",day, "].\n"))
-    df = data.frame(MeanTemperature = .readvardataday(ncin, "MeanTemperature", day),
-                    MinTemperature = .readvardataday(ncin, "MinTemperature", day),
-                    MaxTemperature = .readvardataday(ncin, "MaxTemperature", day),
-                    Precipitation = .readvardataday(ncin, "Precipitation", day),
-                    MeanRelativeHumidity = .readvardataday(ncin, "MeanRelativeHumidity", day),
-                    MinRelativeHumidity = .readvardataday(ncin, "MinRelativeHumidity", day),
-                    MaxRelativeHumidity = .readvardataday(ncin, "MaxRelativeHumidity", day),
-                    Radiation = .readvardataday(ncin, "Radiation", day),
-                    WindSpeed = .readvardataday(ncin, "WindSpeed", day),
-                    WindDirection = .readvardataday(ncin, "WindDirection", day),
-                    PET = .readvardataday(ncin, "PET", day))
+    df = data.frame(row.names = 1:(nx*ny))
+    for(var in names(varmapping)) {
+      df[[var]] = .readvardataday(ncin, nx, ny, varmapping[[var]], day)
+    }
     for(i in 1:ncol(df)) df[is.na(df[,i]),i] =NA
     data[[j]] = df
   }

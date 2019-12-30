@@ -124,17 +124,17 @@
       day = which(dates_file==dates[j])
       cat(paste0("Writing data for day '", as.character(dates[j]), "' at time position [",day, "].\n"))
       df = data[[as.character(dates[j])]]
-      .putvardataday(nc,varMeanTemp, df$MeanTemperature,day, index)
-      .putvardataday(nc,varMinTemp, df$MinTemperature,day, index)
-      .putvardataday( nc, varMaxTemp, df$MaxTemperature,day, index)
-      .putvardataday( nc, varPrec, df$Precipitation,day, index)
-      .putvardataday( nc, varMeanRH, df$MeanRelativeHumidity,day, index)
-      .putvardataday( nc, varMinRH, df$MinRelativeHumidity,day, index)
-      .putvardataday( nc, varMaxRH, df$MaxRelativeHumidity,day, index)
-      .putvardataday( nc, varRad, df$Radiation,day, index)
-      .putvardataday( nc, varWindSpeed, df$WindSpeed,day, index)
-      .putvardataday( nc, varWindDirection, df$WindDirection,day, index)
-      .putvardataday( nc, varPET, df$PET,day, index)
+      if("MeanTemperature" %in% names(df)) .putvardataday(nc,varMeanTemp, df$MeanTemperature,day, index)
+      if("MinTemperature" %in% names(df)) .putvardataday(nc,varMinTemp, df$MinTemperature,day, index)
+      if("MaxTemperature" %in% names(df)) .putvardataday( nc, varMaxTemp, df$MaxTemperature,day, index)
+      if("Precipitation" %in% names(df)) .putvardataday( nc, varPrec, df$Precipitation,day, index)
+      if("MeanRelativeHumidity" %in% names(df)) .putvardataday( nc, varMeanRH, df$MeanRelativeHumidity,day, index)
+      if("MinRelativeHumidity" %in% names(df)) .putvardataday( nc, varMinRH, df$MinRelativeHumidity,day, index)
+      if("MaxRelativeHumidity" %in% names(df)) .putvardataday( nc, varMaxRH, df$MaxRelativeHumidity,day, index)
+      if("Radiation" %in% names(df)) .putvardataday( nc, varRad, df$Radiation,day, index)
+      if("WindSpeed" %in% names(df)) .putvardataday( nc, varWindSpeed, df$WindSpeed,day, index)
+      if("WindDirection" %in% names(df)) .putvardataday( nc, varWindDirection, df$WindDirection,day, index)
+      if("PET" %in% names(df)) .putvardataday( nc, varPET, df$PET,day, index)
     }
   }
 }

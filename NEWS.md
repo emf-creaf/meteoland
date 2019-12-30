@@ -5,6 +5,7 @@
 # Version 0.8.6
 - New function 'averagearea'
 - New functions 'defaultGenerationParams' and 'weathergeneration' implementing a multisite and multivariate weather generator
+- Modification of readmeteorologygrid/pixels to facilitate reading data from netCDF not created by meteoland
 
 # Version 0.8.5
 - New functions to convert SpatialPointsMeteorology, SpatialPixelsMeteorology and SpatialGridMeteorology into objects of packages 'spacetime' and 'stars'

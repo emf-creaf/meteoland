@@ -10,14 +10,15 @@ Reads grid meteorology from the disk
 Functions to read grid meteorological data from the disk.
 }
 \usage{
-readmeteorologygrid(file, dates = NULL, format = "netCDF")
-readmeteorologypixels(file, dates = NULL, format = "netCDF")
+readmeteorologygrid(file, dates = NULL, format = "netCDF", varmapping = NULL)
+readmeteorologypixels(file, dates = NULL, format = "netCDF", varmapping = NULL)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{file}{A string of the file name to be read.}
   \item{dates}{A character or Date vector to specify dates to be read.}
   \item{format}{Format of meteorological data. Currently, the only accepted format is \code{"netCDF"}.}
+  \item{varmapping}{Named character vector specifying a mapping of variables in the NetCDF into variables used in meteoland (e.g. \code{c(MinTemperature = "tmn")} specifies a map of variable 'tmn' to MinTemperature).}
 }
 \details{
   Function \code{readmeteorologygrid} reads a file containing the meteorology over a grid for a set of days. Function \code{readmeteorologypixels} reads a file containing the meteorology over a grid for a set of days and filters those pixels with missing data. 

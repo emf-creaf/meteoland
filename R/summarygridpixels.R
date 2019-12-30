@@ -29,8 +29,9 @@
     ncin = .openreadNetCDF(file)
     gt = .readgridtopologyNetCDF(ncin)
     gdates = .readdatesNetCDF(ncin)
-    nx = ncin$dim$X$len
-    ny = ncin$dim$Y$len
+    nx <- gt@cells.dim[1]
+    ny <- gt@cells.dim[2]
+    nt <- length(gdates)
     crs = .readCRSNetCDF(ncin)
     points = SpatialPoints(coordinates(gt), proj4string = crs)
     npoints = nx*ny  
@@ -42,7 +43,7 @@
     for(j in 1:ny) {
       for(i in 1:nx) {
         setTxtProgressBar(pb, cnt)
-        vals = .readvardatapixel(ncin, ncin$var[[var]], i,j)
+        vals = .readvardatapixel(ncin, ny, nt, ncin$var[[var]], i,j)
         names(vals) = as.character(gdates)
         if(sum(!is.na(vals))==0) sel[cnt] = FALSE
         dfvec[[cnt]] = .summaryvarpoint(vals, fun = fun, freq=freq, dates = dates, months = months,...)

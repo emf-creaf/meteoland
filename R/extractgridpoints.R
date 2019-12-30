@@ -26,11 +26,14 @@ extractgridindex<-function(grid, index) {
   } else {
     ncin = .openreadNetCDF(grid, verbose=FALSE)
     gt = .readgridtopologyNetCDF(ncin)
+    gdates = .readdatesNetCDF(ncin)
+    ny = gt@cells.dim[2]
+    nt = length(gdates)
     cv = coordinatevalues(gt)
     cci = coordinates(gt)[index,]
     i = which(cv[[1]]==cci[1])
     j = which(cv[[2]]==cci[2])
-    df = .readdatapixel(ncin, i,j)
+    df = .readdatapixel(ncin, ny, nt, i,j)
     .closeNetCDF(grid, ncin, verbose=FALSE)
     return(df)
   }

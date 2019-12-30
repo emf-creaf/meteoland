@@ -67,12 +67,10 @@
   return(v)
 }
 #Reads data for a single pixel and period 
-.readvardatapixel<-function(ncin, varname, i, j) {
-  ny = ncin$dim$Y$len
-  nt = ncin$dim$time$len
+.readvardatapixel<-function(ncin, ny, nt, varname, i, j) {
   return(ncvar_get(ncin, varname,start=c(i,ny-j+1,1), count=c(1,1,nt)))
 }
-.readdatapixel<-function(ncin, i, j) {
+.readdatapixel<-function(ncin, ny, nt, i, j) {
   varMeanTemp = ncin$var$MeanTemperature
   varMinTemp = ncin$var$MinTemperature
   varMaxTemp = ncin$var$MaxTemperature
@@ -84,17 +82,17 @@
   varWindSpeed = ncin$var$WindSpeed
   varWindDirection = ncin$var$WindDirection
   varPET = ncin$var$PET
-  df = data.frame(MeanTemperature = .readvardatapixel(ncin,varMeanTemp, i,j),
-                  MinTemperature = .readvardatapixel(ncin,varMinTemp, i,j),
-                  MaxTemperature = .readvardatapixel(ncin,varMaxTemp, i,j),
-                  Precipitation = .readvardatapixel(ncin,varPrec, i,j),
-                  MeanRelativeHumidity = .readvardatapixel(ncin,varMeanRH, i,j),
-                  MinRelativeHumidity = .readvardatapixel(ncin,varMinRH, i,j),
-                  MaxRelativeHumidity = .readvardatapixel(ncin,varMaxRH, i,j),
-                  Radiation = .readvardatapixel(ncin,varRad, i,j),
-                  WindSpeed = .readvardatapixel(ncin,varWindSpeed, i,j),
-                  WindDirection = .readvardatapixel(ncin,varWindDirection, i,j),
-                  PET = .readvardatapixel(ncin,varPET, i,j),
+  df = data.frame(MeanTemperature = .readvardatapixel(ncin, ny, nt, varMeanTemp, i,j),
+                  MinTemperature = .readvardatapixel(ncin,ny, nt, varMinTemp, i,j),
+                  MaxTemperature = .readvardatapixel(ncin,ny, nt, varMaxTemp, i,j),
+                  Precipitation = .readvardatapixel(ncin,ny, nt, varPrec, i,j),
+                  MeanRelativeHumidity = .readvardatapixel(ncin,ny, nt, varMeanRH, i,j),
+                  MinRelativeHumidity = .readvardatapixel(ncin,ny, nt, varMinRH, i,j),
+                  MaxRelativeHumidity = .readvardatapixel(ncin,ny, nt, varMaxRH, i,j),
+                  Radiation = .readvardatapixel(ncin,ny, nt, varRad, i,j),
+                  WindSpeed = .readvardatapixel(ncin,ny, nt, varWindSpeed, i,j),
+                  WindDirection = .readvardatapixel(ncin,ny, nt, varWindDirection, i,j),
+                  PET = .readvardatapixel(ncin,ny, nt, varPET, i,j),
                   row.names = as.character(.readdatesNetCDF(ncin)))
   return(df)
 }
@@ -209,9 +207,11 @@
     cat(paste0("Reading data for day '", as.character(dates[j]), "' at time position [",day, "].\n"))
     df = data.frame(row.names = 1:(nx*ny))
     for(var in names(varmapping)) {
-      df[[var]] = .readvardataday(ncin, nx, ny, varmapping[[var]], day)
+      if(varmapping[[var]] %in% names(ncin$var)) {
+        df[[var]] = .readvardataday(ncin, nx, ny, varmapping[[var]], day)
+      }
     }
-    for(i in 1:ncol(df)) df[is.na(df[,i]),i] =NA
+    if(ncol(df)>0) for(i in 1:ncol(df)) df[is.na(df[,i]),i] =NA
     data[[j]] = df
   }
   sm = NULL
@@ -222,9 +222,9 @@
     #Remove empty grid cells
     ccgrid = coordinates(grid)
     sel = apply(as.matrix(df),1, function(x) {sum(is.na(x))<length(x)}) #Select points for which at least one value is non-missing
-    pts = SpatialPoints(ccgrid[sel,], proj4string = crs)
+    pts = SpatialPoints(ccgrid[sel,, drop=FALSE], proj4string = crs)
     for(i in 1:length(data)) {
-      data[[i]] = data[[i]][sel,]
+      data[[i]] = data[[i]][sel,, drop=FALSE]
     }
     sm = SpatialPixelsMeteorology(pts, proj4string=crs, 
                              data= data, dates= dates,

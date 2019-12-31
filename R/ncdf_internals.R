@@ -230,7 +230,9 @@
   nx <- grid@cells.dim[1]
   ny <- grid@cells.dim[2]
   dates_file <- .readdatesNetCDF(ncin)
+  dates_file <- as.character(dates_file)
   if(!is.null(dates)) {
+    dates <- as.character(dates)
     if(sum(dates %in% dates_file)<length(dates)) stop("Time axis of nc file does not include all supplied dates")
   } else {
     dates = dates_file
@@ -256,7 +258,7 @@
   sm = NULL
   if(!pixels) {
     sm = SpatialGridMeteorology(grid, proj4string = crs, 
-                                 data = data, dates=dates)
+                                 data = data, dates=as.Date(dates))
   } else {
     #Remove empty grid cells
     ccgrid = coordinates(grid)
@@ -266,7 +268,7 @@
       data[[i]] = data[[i]][sel,, drop=FALSE]
     }
     sm = SpatialPixelsMeteorology(pts, proj4string=crs, 
-                             data= data, dates= dates,
+                             data= data, dates= as.Date(dates),
                              grid = grid)
   }
   return(sm)

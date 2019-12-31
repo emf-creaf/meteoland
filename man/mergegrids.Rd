@@ -8,7 +8,7 @@ Merges gridded data
 Merges gridded meteorological data into a single object
 }
 \usage{
-readmeteorologygrid(..., verbose=TRUE)
+mergegrids(..., verbose=TRUE)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{

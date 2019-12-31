@@ -3,7 +3,7 @@
 \alias{extractNetCDF}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{
-Extraction of climatic data from NetCDF files
+Extraction of climatic data from NetCDF files (deprecated)
 }
 \description{
 This function reads a set of NetCDF files (one per variable) and extracts data for a set of NetCDF cells that are specified using a boundary box (in lon/lat format) or a set of (x,y) grid indices.

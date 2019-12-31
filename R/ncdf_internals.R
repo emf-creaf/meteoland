@@ -58,12 +58,13 @@
   for(i in 1:ny) ncvar_put(nc, varid=var, vals=datavecfull[((i-1)*nx+1):(i*nx)], start=c(1,ny-i+1, day), count=c(nx,1,1))
 }
 #Reads grid/pixels for a single variable and day
-.readvardataday<-function(ncin, nx, ny, varname, day) {
+.readvardataday<-function(ncin, nx, ny, varname, day, selection = NULL) {
   v <- rep(NA, nx*ny)
   #Reads rows in decreasing order
   for(i in 1:ny) {
     v[((i-1)*nx+1):(i*nx)] = ncvar_get(ncin, varname,start=c(1,ny-i+1,day), count=c(nx,1,1))
   }
+  if(!is.null(selection)) v = v[selection]
   return(v)
 }
 #Reads data for a single pixel and period 
@@ -224,7 +225,9 @@
   return(df)
 }
 #Reads NetCDF grid/pixels
-.readmeteorologyNetCDF<-function(ncin, dates = NULL, pixels = FALSE, varmapping = NULL) {
+.readmeteorologyNetCDF<-function(ncin, dates = NULL, pixels = FALSE, 
+                                 bbox = NULL, offset = 0, 
+                                 varmapping = NULL) {
   crs <- .readCRSNetCDF(ncin)
   grid <- .readgridtopologyNetCDF(ncin)
   nx <- grid@cells.dim[1]
@@ -239,14 +242,26 @@
   }
   data = vector("list", length(dates))
   names(data)<- as.character(dates)
+  sel <- rep(TRUE, nx*ny)
+  if(!is.null(bbox)) {
+    print(grid)
+    cc = coordinates(grid)
+    cn = colnames(cc)
+    vec_x<-(cc[,cn[1]]+offset >=bbox[cn[1],1]) & (cc[,cn[1]] - offset <=bbox[cn[1],2])
+    vec_y<-(cc[,cn[2]]+offset >=bbox[cn[2],1]) & (cc[,cn[2]] -offset <=bbox[cn[2],2])
+    sel=vec_y & vec_x
+    grid <- points2grid(SpatialPoints(cc[sel,]))
+  }
   if(is.null(varmapping)) varmapping = .defaultMapping()
+  pb = txtProgressBar(1, length(dates), style=3)
   for(j in 1:length(dates)) {
     day = which(dates_file==dates[j])
-    cat(paste0("Reading data for day '", as.character(dates[j]), "' at time position [",day, "].\n"))
-    df = data.frame(row.names = 1:(nx*ny))
+    setTxtProgressBar(pb,j)
+    # cat(paste0("Reading data for day '", as.character(dates[j]), "' at time position [",day, "].\n"))
+    df = data.frame(row.names = 1:sum(sel))
     for(var in names(varmapping)) {
       if(varmapping[[var]] %in% names(ncin$var)) {
-        df[[var]] = .readvardataday(ncin, nx, ny, varmapping[[var]], day)
+        df[[var]] = .readvardataday(ncin, nx, ny, varmapping[[var]], day, sel)
       }
     }
     if(ncol(df)>0) {

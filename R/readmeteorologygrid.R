@@ -1,21 +1,23 @@
-readmeteorologygrid<-function(file, dates = NULL, format = "netCDF", varmapping = NULL) {
+readmeteorologygrid<-function(file, format = "netCDF", varmapping = NULL,
+                              dates = NULL, bbox = NULL, offset = 0) {
   nc = .openreadNetCDF(file)
   if(!is.null(dates)) {
     if((!inherits(dates,"Date"))&&(!inherits(dates,"character"))) stop("'dates' must be a 'character' or 'Date'")
-    sgm = .readmeteorologyNetCDF(nc, dates = as.Date(dates), varmapping = varmapping)
+    sgm = .readmeteorologyNetCDF(nc, dates = as.Date(dates), varmapping = varmapping, bbox = bbox, offset = offset)
   } else {
-    sgm = .readmeteorologyNetCDF(nc, varmapping = varmapping)
+    sgm = .readmeteorologyNetCDF(nc, varmapping = varmapping, bbox = bbox, offset = offset)
   }
   .closeNetCDF(file,nc)
   return(sgm)
 }
-readmeteorologypixels<-function(file, dates = NULL, format = "netCDF", varmapping = NULL) {
+readmeteorologypixels<-function(file, format = "netCDF", varmapping = NULL,
+                                dates = NULL, bbox = NULL, offset = 0) {
   nc = .openreadNetCDF(file)
   if(!is.null(dates)) {
     if((!inherits(dates,"Date"))&&(!inherits(dates,"character"))) stop("'dates' must be a 'character' or 'Date'")
-    spm = .readmeteorologyNetCDF(nc, dates = as.Date(dates), pixels=T, varmapping = varmapping)
+    spm = .readmeteorologyNetCDF(nc, dates = as.Date(dates), pixels=T, varmapping = varmapping, bbox = bbox, offset = offset)
   } else {
-    spm = .readmeteorologyNetCDF(nc, pixels=T, varmapping = varmapping)
+    spm = .readmeteorologyNetCDF(nc, pixels=T, varmapping = varmapping, bbox = bbox, offset = offset)
   }
   .closeNetCDF(file,nc)
   return(spm)

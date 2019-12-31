@@ -175,6 +175,54 @@
   }
   return(crs)
 }
+.defaultMapping<-function() {
+  varmapping = c(MeanTemperature = "MeanTemperature",
+                 MinTemperature = "MinTemperature",
+                 MaxTemperature = "MaxTemperature",
+                 Precipitation = "Precipitation",
+                 MeanRelativeHumidity = "MeanRelativeHumidity",
+                 MinRelativeHumidity = "MinRelativeHumidity",
+                 MaxRelativeHumidity = "MaxRelativeHumidity",
+                 Radiation = "Radiation",
+                 WindSpeed = "WindSpeed",
+                 WindDirection = "WindDirection",
+                 PET = "PET")
+}
+.unitConversion<-function(df, ncin, varmapping) {
+  if("Precipitation" %in% names(varmapping)) {
+    if(varmapping[["Precipitation"]] %in% names(ncin$var)) {
+      prunits = ncin$var[[varmapping[["Precipitation"]]]]$units
+      if(prunits == "kg m-2 s-1") {
+        df$Precipitation =  df$Precipitation*24*3600
+      }
+    }
+  }
+  if("MeanTemperature" %in% names(varmapping)) {
+    if(varmapping[["MeanTemperature"]] %in% names(ncin$var)) {
+      prunits = ncin$var[[varmapping[["MeanTemperature"]]]]$units
+      if(prunits == "K") {
+        df$MeanTemperature =  df$MeanTemperature - 273.15
+      }
+    }
+  }
+  if("MinTemperature" %in% names(varmapping)) {
+    if(varmapping[["MinTemperature"]] %in% names(ncin$var)) {
+      prunits = ncin$var[[varmapping[["MinTemperature"]]]]$units
+      if(prunits == "K") {
+        df$MinTemperature =  df$MinTemperature - 273.15
+      }
+    }
+  }
+  if("MaxTemperature" %in% names(varmapping)) {
+    if(varmapping[["MaxTemperature"]] %in% names(ncin$var)) {
+      prunits = ncin$var[[varmapping[["MaxTemperature"]]]]$units
+      if(prunits == "K") {
+        df$MaxTemperature =  df$MaxTemperature - 273.15
+      }
+    }
+  }
+  return(df)
+}
 #Reads NetCDF grid/pixels
 .readmeteorologyNetCDF<-function(ncin, dates = NULL, pixels = FALSE, varmapping = NULL) {
   crs <- .readCRSNetCDF(ncin)
@@ -189,19 +237,7 @@
   }
   data = vector("list", length(dates))
   names(data)<- as.character(dates)
-  if(is.null(varmapping)) {
-    varmapping = c(MeanTemperature = "MeanTemperature",
-                   MinTemperature = "MinTemperature",
-                   MaxTemperature = "MaxTemperature",
-                   Precipitation = "Precipitation",
-                   MeanRelativeHumidity = "MeanRelativeHumidity",
-                   MinRelativeHumidity = "MinRelativeHumidity",
-                   MaxRelativeHumidity = "MaxRelativeHumidity",
-                   Radiation = "Radiation",
-                   WindSpeed = "WindSpeed",
-                   WindDirection = "WindDirection",
-                   PET = "PET")
-  }
+  if(is.null(varmapping)) varmapping = .defaultMapping()
   for(j in 1:length(dates)) {
     day = which(dates_file==dates[j])
     cat(paste0("Reading data for day '", as.character(dates[j]), "' at time position [",day, "].\n"))
@@ -211,7 +247,10 @@
         df[[var]] = .readvardataday(ncin, nx, ny, varmapping[[var]], day)
       }
     }
-    if(ncol(df)>0) for(i in 1:ncol(df)) df[is.na(df[,i]),i] =NA
+    if(ncol(df)>0) {
+      df = .unitConversion(df, ncin, varmapping)
+      for(i in 1:ncol(df)) df[is.na(df[,i]),i] =NA
+    }
     data[[j]] = df
   }
   sm = NULL

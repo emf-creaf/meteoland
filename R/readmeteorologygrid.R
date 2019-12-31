@@ -1,26 +1,40 @@
-readmeteorologygrid<-function(file, format = "netCDF", varmapping = NULL,
+readmeteorologygrid<-function(files, format = "netCDF", varmapping = NULL,
                               dates = NULL, bbox = NULL, offset = 0) {
-  nc = .openreadNetCDF(file)
-  if(!is.null(dates)) {
-    if((!inherits(dates,"Date"))&&(!inherits(dates,"character"))) stop("'dates' must be a 'character' or 'Date'")
-    sgm = .readmeteorologyNetCDF(nc, dates = as.Date(dates), varmapping = varmapping, bbox = bbox, offset = offset)
-  } else {
-    sgm = .readmeteorologyNetCDF(nc, varmapping = varmapping, bbox = bbox, offset = offset)
+  nfiles = length(files)
+  l = vector("list", nfiles)
+  for(i in 1:nfiles) {
+    nc = .openreadNetCDF(files[i])
+    if(!is.null(dates)) {
+      if((!inherits(dates,"Date"))&&(!inherits(dates,"character"))) stop("'dates' must be a 'character' or 'Date'")
+      sgm = .readmeteorologyNetCDF(nc, dates = as.Date(dates), varmapping = varmapping, bbox = bbox, offset = offset)
+    } else {
+      sgm = .readmeteorologyNetCDF(nc, varmapping = varmapping, bbox = bbox, offset = offset)
+    }
+    .closeNetCDF(files[i],nc)
+    l[[i]] = sgm
   }
-  .closeNetCDF(file,nc)
-  return(sgm)
+  if(nfiles==1) return(l[[1]])
+  cat("\nMerging gridded data...\n")
+  return(mergegrids(l))
 }
-readmeteorologypixels<-function(file, format = "netCDF", varmapping = NULL,
+readmeteorologypixels<-function(files, format = "netCDF", varmapping = NULL,
                                 dates = NULL, bbox = NULL, offset = 0) {
-  nc = .openreadNetCDF(file)
-  if(!is.null(dates)) {
-    if((!inherits(dates,"Date"))&&(!inherits(dates,"character"))) stop("'dates' must be a 'character' or 'Date'")
-    spm = .readmeteorologyNetCDF(nc, dates = as.Date(dates), pixels=T, varmapping = varmapping, bbox = bbox, offset = offset)
-  } else {
-    spm = .readmeteorologyNetCDF(nc, pixels=T, varmapping = varmapping, bbox = bbox, offset = offset)
+  nfiles = length(files)
+  l = vector("list", nfiles)
+  for(i in 1:nfiles) {
+    nc = .openreadNetCDF(files[i])
+    if(!is.null(dates)) {
+      if((!inherits(dates,"Date"))&&(!inherits(dates,"character"))) stop("'dates' must be a 'character' or 'Date'")
+      spm = .readmeteorologyNetCDF(nc, dates = as.Date(dates), pixels=T, varmapping = varmapping, bbox = bbox, offset = offset)
+    } else {
+      spm = .readmeteorologyNetCDF(nc, pixels=T, varmapping = varmapping, bbox = bbox, offset = offset)
+    }
+    .closeNetCDF(files[i],nc)
+    l[[i]] = spm
   }
-  .closeNetCDF(file,nc)
-  return(spm)
+  if(nfiles==1) return(l[[1]])
+  cat("\nMerging gridded data...\n")
+  return(mergegrids(l))
 }
 # readmeteorologygridfiles<-function(files, format="netCDF") {
 #   if((!inherits(files,"character"))&&(!inherits(files,"data.frame"))) stop("'files' has to be a character vector or a data frame with columns 'dir' and 'filename'.")

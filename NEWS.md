@@ -4,6 +4,7 @@
 
 # Version 0.8.7
 - New function 'mergegrids'
+- Reading multiple grid/pixels files
 
 # Version 0.8.6
 - New function 'averagearea'

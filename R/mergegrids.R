@@ -1,11 +1,12 @@
 mergegrids<-function(..., verbose = TRUE) {
-  l <- list(...)
+  l <- as.list(...)
   ng <- length(l)
   mg_1 = l[[1]]
   dates = mg_1@dates
   vars = names(mg_1@data[[1]])
   npx = nrow(mg_1@data[[1]])
   gt_1 = mg_1@grid
+  pixels = inherits(mg_1, "SpatialPixelsMeteorology")
   for(i in 2:ng) {
     mg_i <- l[[i]]
     gt_i <- mg_i@grid
@@ -14,6 +15,11 @@ mergegrids<-function(..., verbose = TRUE) {
     if(sum(gt_i@cellsize==gt_1@cellsize)<2) stop("Grids have to be congruent.")
     if(sum(gt_i@cells.dim==gt_1@cells.dim)<2) stop("Grids have to be congruent.")
     if(!identicalCRS(mg_1,mg_i)) stop("CRSs have to be identical.")
+    if(pixels) {
+      gi_1 = gt_1@grid.index
+      gi_i = gt_i@grid.index
+      if(sum(gi_1==gi_i)<length(gi_1)) stop("Grid indices need to be the same.")
+    }
     dates = c(dates, mg_i@dates)
     vars = c(vars, vars_i)
   }
@@ -37,6 +43,11 @@ mergegrids<-function(..., verbose = TRUE) {
     }
     data[[i]] = df
   }
-  sgm = SpatialGridMeteorology(gt_1, proj4string = mg_1@proj4string, data = data, dates = dates)
+  if(pixels) {
+    points = SpatialPoints(coordinates(mg_1), proj4string = mg_1@proj4string)
+    sgm = SpatialPixelsMeteorology(points = points, grid = gt_1, proj4string = mg_1@proj4string, data = data, dates = dates)
+  } else {
+    sgm = SpatialGridMeteorology(gt_1, proj4string = mg_1@proj4string, data = data, dates = dates)
+  }
   return(sgm)
 }

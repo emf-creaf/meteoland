@@ -2,7 +2,7 @@
 .openwriteNetCDF<-function(grid, proj4string, dates, file, add=FALSE, overwrite = FALSE) {
   if(!add) {
     if(file.exists(file) & !overwrite) stop(paste0("File '",file,"' already exist. Use 'overwrite = TRUE' to force overwriting or 'add = TRUE' to add/replace content."))
-    cat(paste0("Creating '", file,"'.\n"))
+    cat(paste0("\nCreating '", file,"'.\n"))
     nx = grid@cells.dim[1]
     ny = grid@cells.dim[2]
     tunits = "days since 1970-01-01 00:00:00.0 -0:00"
@@ -34,7 +34,7 @@
 #Opens a NetCDF for reading data
 .openreadNetCDF<-function(file, verbose =TRUE) {
   if(!file.exists(file)) stop(paste0("File '", file, "' does not exist."))
-  if(verbose) cat(paste0("Opening '", file,"' to read data.\n"))
+  if(verbose) cat(paste0("\nOpening '", file,"' to read data.\n"))
   return(nc_open(file))
 }
 
@@ -145,7 +145,7 @@
 }
 #Closes NetCDF
 .closeNetCDF<-function(file,nc, verbose=TRUE) {
-  if(verbose) cat(paste0("Closing '", file,"'.\n"))
+  if(verbose) cat(paste0("\nClosing '", file,"'.\n"))
   nc_close(nc)
 }
 #Reads NetCDF grid topology
@@ -244,7 +244,7 @@
   names(data)<- as.character(dates)
   sel <- rep(TRUE, nx*ny)
   if(!is.null(bbox)) {
-    print(grid)
+    # print(grid)
     cc = coordinates(grid)
     cn = colnames(cc)
     vec_x<-(cc[,cn[1]]+offset >=bbox[cn[1],1]) & (cc[,cn[1]] - offset <=bbox[cn[1],2])

@@ -2,6 +2,9 @@
  NEWS for R Package "meteoland"
 -------------------------------
 
+# Version 0.8.7
+- New function 'mergegrids'
+
 # Version 0.8.6
 - New function 'averagearea'
 - New functions 'defaultGenerationParams' and 'weathergeneration' implementing a multisite and multivariate weather generator

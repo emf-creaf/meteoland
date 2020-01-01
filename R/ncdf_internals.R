@@ -24,6 +24,9 @@
                                varMeanRH, varMinRH,varMaxRH,
                                varRad, varWindSpeed, varWindDirection, varPET) )
     ncatt_put(nc, 0, "proj4string", as.character(proj4string))
+    ncatt_put(nc, "X", "axis", "X")
+    ncatt_put(nc, "Y", "axis", "Y")
+    ncatt_put(nc, "time", "axis", "T")
   } else {
     if(!file.exists(file)) stop(paste0("File '", file, "' does not exist."))
     cat(paste0("Opening '", file,"' to add/replace data.\n"))

@@ -1,15 +1,18 @@
 .isLongLat<-function(proj4string) {
   if(inherits(proj4string, "CRS")) args = proj4string@projargs
   else args = proj4string
+  if(is.na(args)) return(FALSE)
   s = strsplit(args," ")[[1]]
   return("+proj=longlat" %in% s)
 }
 .projUnits<-function(proj4string) {
   if(inherits(proj4string, "CRS")) args = proj4string@projargs
   else args = proj4string
-  s = strsplit(strsplit(args," ")[[1]],"=")
-  for(i in 1:length(s)) {
-    if(s[[i]][1]=="+units") return(s[[i]][2])
+  if(!is.na(args)) {
+    s = strsplit(strsplit(args," ")[[1]],"=")
+    for(i in 1:length(s)) {
+      if(s[[i]][1]=="+units") return(s[[i]][2])
+    }
   }
   return("unknown")
 }
@@ -64,17 +67,23 @@
                                  varMeanRH, varMinRH,varMaxRH,
                                  varRad, varWindSpeed, varWindDirection, varPET) )
     } else {
-      #Define additional lon/lat variables
-      varLon <- ncvar_def( "lon", "degrees_east", list(dimX,dimY), missval = NULL, longname = "longitude")
-      varLat <- ncvar_def( "lat", "degrees_north", list(dimX,dimY), missval =NULL, longname = "latitude")
-      nc <- nc_create(file, list(varLon, varLat, varMeanTemp,varMinTemp,varMaxTemp,varPrec,
-                                 varMeanRH, varMinRH,varMaxRH,
-                                 varRad, varWindSpeed, varWindDirection, varPET) )
       # Fill data for lon/lat variables
-      spt_lonlat = spTransform(SpatialPoints(coordinates(grid), CRS(proj4string)), CRS("+proj=longlat +datum=WGS84"))
-      lonlat = coordinates(spt_lonlat)
-      .putvardata(nc, varLon, lonlat[,1])
-      .putvardata(nc, varLat, lonlat[,2])
+      if(!is.na(proj4string)) {
+        #Define additional lon/lat variables
+        varLon <- ncvar_def( "lon", "degrees_east", list(dimX,dimY), missval = NULL, longname = "longitude")
+        varLat <- ncvar_def( "lat", "degrees_north", list(dimX,dimY), missval =NULL, longname = "latitude")
+        nc <- nc_create(file, list(varLon, varLat, varMeanTemp,varMinTemp,varMaxTemp,varPrec,
+                                   varMeanRH, varMinRH,varMaxRH,
+                                   varRad, varWindSpeed, varWindDirection, varPET) )
+        spt_lonlat = spTransform(SpatialPoints(coordinates(grid), CRS(proj4string)), CRS("+proj=longlat +datum=WGS84"))
+        lonlat = coordinates(spt_lonlat)
+        .putvardata(nc, varLon, lonlat[,1])
+        .putvardata(nc, varLat, lonlat[,2])
+      } else {
+        nc <- nc_create(file, list(varMeanTemp,varMinTemp,varMaxTemp,varPrec,
+                                   varMeanRH, varMinRH,varMaxRH,
+                                   varRad, varWindSpeed, varWindDirection, varPET) )
+      }
       
       # Indicate axes
       ncatt_put(nc, "x", "axis", "X")
@@ -227,6 +236,9 @@
   if(patt$hasatt) {
     proj4string = patt$value
     if(proj4string!="NA") crs = CRS(proj4string)
+  }
+  if(("lon" %in% names(ncin$dim)) && ("lat" %in% names(ncin$dim))) {
+    crs = CRS("+proj=longlat")
   }
   return(crs)
 }

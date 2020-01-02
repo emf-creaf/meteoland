@@ -1,3 +1,36 @@
+.isLongLat<-function(proj4string) {
+  if(inherits(proj4string, "CRS")) args = proj4string@projargs
+  else args = proj4string
+  s = strsplit(args," ")[[1]]
+  return("+proj=longlat" %in% s)
+}
+.projUnits<-function(proj4string) {
+  if(inherits(proj4string, "CRS")) args = proj4string@projargs
+  else args = proj4string
+  s = strsplit(strsplit(args," ")[[1]],"=")
+  for(i in 1:length(s)) {
+    if(s[[i]][1]=="+units") return(s[[i]][2])
+  }
+  return("unknown")
+}
+#writes a grid/pixels for a single variable and day
+.putvardataday<-function(nc, var, datavec, day, index=NULL) {
+  nx = nc$dim$x$len
+  ny = nc$dim$y$len
+  if(!is.null(index)) {
+    datavecfull = rep(NA, ny*nx)
+    datavecfull[index] = datavec
+  } else {
+    datavecfull = datavec
+  }
+  for(i in 1:ny) ncvar_put(nc, varid=var, vals=datavecfull[((i-1)*nx+1):(i*nx)], start=c(1,ny-i+1, day), count=c(nx,1,1))
+}
+#writes a grid/pixels for a single variable 
+.putvardata<-function(nc, var, datavec) {
+  nx = nc$dim$x$len
+  ny = nc$dim$y$len
+  for(i in 1:ny) ncvar_put(nc, varid=var, vals=datavec[((i-1)*nx+1):(i*nx)], start=c(1,ny-i+1), count=c(nx,1))
+}
 #Opens/creates a NetCDF for writing data
 .openwriteNetCDF<-function(grid, proj4string, dates, file, add=FALSE, overwrite = FALSE) {
   if(!add) {
@@ -6,8 +39,14 @@
     nx = grid@cells.dim[1]
     ny = grid@cells.dim[2]
     tunits = "days since 1970-01-01 00:00:00.0 -0:00"
-    dimX <- ncdim_def( "X", "meters", sort(unique(coordinates(grid)[,1])))
-    dimY <- ncdim_def( "Y", "meters", sort(unique(coordinates(grid)[,2])))
+    if(.isLongLat(proj4string)) {
+      dimX <- ncdim_def( "lon", "degrees_east", sort(unique(coordinates(grid)[,1])))
+      dimY <- ncdim_def( "lat", "degrees_north", sort(unique(coordinates(grid)[,2])))
+    } else {
+      pr_units = .projUnits(proj4string)
+      dimX <- ncdim_def( "x", pr_units, sort(unique(coordinates(grid)[,1])), longname = "x coordinate of projection")
+      dimY <- ncdim_def( "y", pr_units, sort(unique(coordinates(grid)[,2])), longname = "y coordinate of projection")
+    }
     time <- ncdim_def("time", tunits, as.double(as.Date(dates)))
     varMeanTemp <- ncvar_def( "MeanTemperature", "Celsius", list(dimX,dimY, time), NA)
     varMinTemp <- ncvar_def( "MinTemperature", "Celsius", list(dimX,dimY, time), NA)
@@ -20,12 +59,28 @@
     varWindSpeed <- ncvar_def( "WindSpeed", "m/s", list(dimX,dimY, time), NA)
     varWindDirection <- ncvar_def( "WindDirection", "Degrees", list(dimX,dimY, time), NA)
     varPET <- ncvar_def( "PET", "L/m2", list(dimX,dimY, time), NA)
-    nc <- nc_create(file, list(varMeanTemp,varMinTemp,varMaxTemp,varPrec,
-                               varMeanRH, varMinRH,varMaxRH,
-                               varRad, varWindSpeed, varWindDirection, varPET) )
+    if(.isLongLat(proj4string)) {
+      nc <- nc_create(file, list(varMeanTemp,varMinTemp,varMaxTemp,varPrec,
+                                 varMeanRH, varMinRH,varMaxRH,
+                                 varRad, varWindSpeed, varWindDirection, varPET) )
+    } else {
+      #Define additional lon/lat variables
+      varLon <- ncvar_def( "lon", "degrees_east", list(dimX,dimY), missval = NULL, longname = "longitude")
+      varLat <- ncvar_def( "lat", "degrees_north", list(dimX,dimY), missval =NULL, longname = "latitude")
+      nc <- nc_create(file, list(varLon, varLat, varMeanTemp,varMinTemp,varMaxTemp,varPrec,
+                                 varMeanRH, varMinRH,varMaxRH,
+                                 varRad, varWindSpeed, varWindDirection, varPET) )
+      # Fill data for lon/lat variables
+      spt_lonlat = spTransform(SpatialPoints(coordinates(grid), CRS(proj4string)), CRS("+proj=longlat +datum=WGS84"))
+      lonlat = coordinates(spt_lonlat)
+      .putvardata(nc, varLon, lonlat[,1])
+      .putvardata(nc, varLat, lonlat[,2])
+      
+      # Indicate axes
+      ncatt_put(nc, "x", "axis", "X")
+      ncatt_put(nc, "y", "axis", "Y")
+    }
     ncatt_put(nc, 0, "proj4string", as.character(proj4string))
-    ncatt_put(nc, "X", "axis", "X")
-    ncatt_put(nc, "Y", "axis", "Y")
     ncatt_put(nc, "time", "axis", "T")
   } else {
     if(!file.exists(file)) stop(paste0("File '", file, "' does not exist."))
@@ -34,72 +89,7 @@
   }
   return(nc)
 }
-#Opens a NetCDF for reading data
-.openreadNetCDF<-function(file, verbose =TRUE) {
-  if(!file.exists(file)) stop(paste0("File '", file, "' does not exist."))
-  if(verbose) cat(paste0("\nOpening '", file,"' to read data.\n"))
-  return(nc_open(file))
-}
 
-#Reads values of time dimension
-.readdatesNetCDF<-function(ncin) {
-  tunits <- ncin$dim$time$units
-  s <- strsplit(tunits, " ")[[1]]
-  origin <- as.Date(s[3])
-  return(as.Date(ncin$dim$time$vals, origin=origin))
-}
-#writes a grid/pixels for a single variable and day
-.putvardataday<-function(nc, var, datavec, day, index=NULL) {
-  nx = nc$dim$X$len
-  ny = nc$dim$Y$len
-  if(!is.null(index)) {
-    datavecfull = rep(NA, ny*nx)
-    datavecfull[index] = datavec
-  } else {
-    datavecfull = datavec
-  }
-  for(i in 1:ny) ncvar_put(nc, varid=var, vals=datavecfull[((i-1)*nx+1):(i*nx)], start=c(1,ny-i+1, day), count=c(nx,1,1))
-}
-#Reads grid/pixels for a single variable and day
-.readvardataday<-function(ncin, nx, ny, varname, day, selection = NULL) {
-  v <- rep(NA, nx*ny)
-  #Reads rows in decreasing order
-  for(i in 1:ny) {
-    v[((i-1)*nx+1):(i*nx)] = ncvar_get(ncin, varname,start=c(1,ny-i+1,day), count=c(nx,1,1))
-  }
-  if(!is.null(selection)) v = v[selection]
-  return(v)
-}
-#Reads data for a single pixel and period 
-.readvardatapixel<-function(ncin, ny, nt, varname, i, j) {
-  return(ncvar_get(ncin, varname,start=c(i,ny-j+1,1), count=c(1,1,nt)))
-}
-.readdatapixel<-function(ncin, ny, nt, i, j) {
-  varMeanTemp = ncin$var$MeanTemperature
-  varMinTemp = ncin$var$MinTemperature
-  varMaxTemp = ncin$var$MaxTemperature
-  varPrec = ncin$var$Precipitation
-  varMeanRH = ncin$var$MeanRelativeHumidity
-  varMinRH = ncin$var$MinRelativeHumidity
-  varMaxRH = ncin$var$MaxRelativeHumidity
-  varRad = ncin$var$Radiation
-  varWindSpeed = ncin$var$WindSpeed
-  varWindDirection = ncin$var$WindDirection
-  varPET = ncin$var$PET
-  df = data.frame(MeanTemperature = .readvardatapixel(ncin, ny, nt, varMeanTemp, i,j),
-                  MinTemperature = .readvardatapixel(ncin,ny, nt, varMinTemp, i,j),
-                  MaxTemperature = .readvardatapixel(ncin,ny, nt, varMaxTemp, i,j),
-                  Precipitation = .readvardatapixel(ncin,ny, nt, varPrec, i,j),
-                  MeanRelativeHumidity = .readvardatapixel(ncin,ny, nt, varMeanRH, i,j),
-                  MinRelativeHumidity = .readvardatapixel(ncin,ny, nt, varMinRH, i,j),
-                  MaxRelativeHumidity = .readvardatapixel(ncin,ny, nt, varMaxRH, i,j),
-                  Radiation = .readvardatapixel(ncin,ny, nt, varRad, i,j),
-                  WindSpeed = .readvardatapixel(ncin,ny, nt, varWindSpeed, i,j),
-                  WindDirection = .readvardatapixel(ncin,ny, nt, varWindDirection, i,j),
-                  PET = .readvardatapixel(ncin,ny, nt, varPET, i,j),
-                  row.names = as.character(.readdatesNetCDF(ncin)))
-  return(df)
-}
 #Writes full NetCDF grids
 .writemeteorologygridNetCDF<-function(data, grid, proj4string, nc, index=NULL) {
   grid_nc = .readgridtopologyNetCDF(nc)
@@ -146,6 +136,62 @@
 .writemeteorologypixelsNetCDF<-function(data, pixels, proj4string, nc) {
   .writemeteorologygridNetCDF(data, pixels@grid, proj4string, nc, index=pixels@grid.index)
 }
+#Opens a NetCDF for reading data
+.openreadNetCDF<-function(file, verbose =TRUE) {
+  if(!file.exists(file)) stop(paste0("File '", file, "' does not exist."))
+  if(verbose) cat(paste0("\nOpening '", file,"' to read data.\n"))
+  return(nc_open(file))
+}
+
+#Reads values of time dimension
+.readdatesNetCDF<-function(ncin) {
+  tunits <- ncin$dim$time$units
+  s <- strsplit(tunits, " ")[[1]]
+  origin <- as.Date(s[3])
+  return(as.Date(ncin$dim$time$vals, origin=origin))
+}
+
+#Reads grid/pixels for a single variable and day
+.readvardataday<-function(ncin, nx, ny, varname, day, selection = NULL) {
+  v <- rep(NA, nx*ny)
+  #Reads rows in decreasing order
+  for(i in 1:ny) {
+    v[((i-1)*nx+1):(i*nx)] = ncvar_get(ncin, varname,start=c(1,ny-i+1,day), count=c(nx,1,1))
+  }
+  if(!is.null(selection)) v = v[selection]
+  return(v)
+}
+#Reads data for a single pixel and period 
+.readvardatapixel<-function(ncin, ny, nt, varname, i, j) {
+  return(ncvar_get(ncin, varname,start=c(i,ny-j+1,1), count=c(1,1,nt)))
+}
+.readdatapixel<-function(ncin, ny, nt, i, j) {
+  varMeanTemp = ncin$var$MeanTemperature
+  varMinTemp = ncin$var$MinTemperature
+  varMaxTemp = ncin$var$MaxTemperature
+  varPrec = ncin$var$Precipitation
+  varMeanRH = ncin$var$MeanRelativeHumidity
+  varMinRH = ncin$var$MinRelativeHumidity
+  varMaxRH = ncin$var$MaxRelativeHumidity
+  varRad = ncin$var$Radiation
+  varWindSpeed = ncin$var$WindSpeed
+  varWindDirection = ncin$var$WindDirection
+  varPET = ncin$var$PET
+  df = data.frame(MeanTemperature = .readvardatapixel(ncin, ny, nt, varMeanTemp, i,j),
+                  MinTemperature = .readvardatapixel(ncin,ny, nt, varMinTemp, i,j),
+                  MaxTemperature = .readvardatapixel(ncin,ny, nt, varMaxTemp, i,j),
+                  Precipitation = .readvardatapixel(ncin,ny, nt, varPrec, i,j),
+                  MeanRelativeHumidity = .readvardatapixel(ncin,ny, nt, varMeanRH, i,j),
+                  MinRelativeHumidity = .readvardatapixel(ncin,ny, nt, varMinRH, i,j),
+                  MaxRelativeHumidity = .readvardatapixel(ncin,ny, nt, varMaxRH, i,j),
+                  Radiation = .readvardatapixel(ncin,ny, nt, varRad, i,j),
+                  WindSpeed = .readvardatapixel(ncin,ny, nt, varWindSpeed, i,j),
+                  WindDirection = .readvardatapixel(ncin,ny, nt, varWindDirection, i,j),
+                  PET = .readvardatapixel(ncin,ny, nt, varPET, i,j),
+                  row.names = as.character(.readdatesNetCDF(ncin)))
+  return(df)
+}
+
 #Closes NetCDF
 .closeNetCDF<-function(file,nc, verbose=TRUE) {
   if(verbose) cat(paste0("\nClosing '", file,"'.\n"))
@@ -157,6 +203,11 @@
     dimX <- ncvar_get(ncin, "X")
     dimY <- ncvar_get(ncin, "Y")
     cellcentre.offset = c(X = min(dimX), Y = min(dimY))
+  }
+  else if(("x" %in% names(ncin$dim)) && ("y" %in% names(ncin$dim))) {
+    dimX <- ncvar_get(ncin, "x")
+    dimY <- ncvar_get(ncin, "y")
+    cellcentre.offset = c(x = min(dimX), y = min(dimY))
   }
   else if(("lon" %in% names(ncin$dim)) && ("lat" %in% names(ncin$dim))) {
     dimX <- ncvar_get(ncin, "lon")

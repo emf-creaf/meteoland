@@ -4,10 +4,10 @@
 \alias{readmeteorologypixels}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{
-Reads grid meteorology from the disk
+Reads gridded meteorology from the disk
 }
 \description{
-Functions to read grid meteorological data from the disk.
+Functions to read gridded meteorological data from the disk.
 }
 \usage{
 readmeteorologygrid(files, format = "netCDF", varmapping = NULL,
@@ -26,6 +26,8 @@ readmeteorologypixels(files, format = "netCDF", varmapping = NULL,
 }
 \details{
   Function \code{readmeteorologygrid} reads one or several files containing the meteorology over a grid for a set of days. Function \code{readmeteorologypixels} reads one or several file containing the meteorology over a grid for a set of days and filters those pixels with missing data. If more than one file is specificated, the functions read all of them and then try to merge the data into a single meteorology object (see function \code{\link{mergegrids}}).
+  
+  The functions are primarily meant to read NetCDF written by package meteoland, but also to import data written by other software. Rotated grids cannot be read at present.
 }
 \value{
 Function \code{readmeteorologygridfiles} returns an object \code{\link{SpatialGridMeteorology-class}}. Function \code{readmeteorologypixels} returns an object \code{\link{SpatialPixelsMeteorology-class}}.

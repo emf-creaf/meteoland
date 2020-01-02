@@ -3,7 +3,7 @@
 -------------------------------
 
 # Version 0.8.7
-- New function 'mergegrids'
+- New functions 'mergegrids' and 'mergepoints'
 - Reading multiple grid/pixels files
 
 # Version 0.8.6

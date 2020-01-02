@@ -1,5 +1,6 @@
 mergegrids<-function(..., verbose = TRUE) {
-  l <- as.list(...)
+  l <- list(...)
+  if(inherits(l[[1]], "list")) l = l[[1]]
   ng <- length(l)
   mg_1 = l[[1]]
   dates = mg_1@dates
@@ -50,4 +51,49 @@ mergegrids<-function(..., verbose = TRUE) {
     sgm = SpatialGridMeteorology(gt_1, proj4string = mg_1@proj4string, data = data, dates = dates)
   }
   return(sgm)
+}
+
+mergepoints<-function(..., verbose = TRUE) {
+  l <- list(...)
+  if(inherits(l[[1]], "list")) l = l[[1]]
+  ng <- length(l)
+  mg_1 = l[[1]]
+  dates = mg_1@dates
+  vars = names(mg_1@data[[1]])
+  cc = mg_1@coords
+  for(i in 2:ng) {
+    mg_i <- l[[i]]
+    vars_i = names(mg_i@data[[1]])
+    if(!identicalCRS(mg_1,mg_i)) stop("CRSs have to be identical.")
+    dates = c(dates, mg_i@dates)
+    vars = c(vars, vars_i)
+    cc = rbind(cc, mg_i@coords)
+  }
+  dates = sort(unique(dates))
+  nt = length(dates)
+  vars = unique(vars)
+  npts= nrow(cc)
+  rownames(cc)<-1:npts
+  data = vector("list", npts)
+  if(verbose) pb = txtProgressBar(1, ng, style=3)
+  cnt = 0
+  for(j in 1:ng) {
+    mg_j = l[[j]]
+    npt_j = nrow(mg_j@coords)
+    for(i in 1:npt_j) {
+      cnt = cnt + 1
+      if(verbose) setTxtProgressBar(pb, cnt)
+      m = matrix(NA, nrow = nt, ncol = length(vars))
+      df = as.data.frame(m, row.names=1:nt)
+      names(df) <-vars
+      row.names(df)<-as.character(dates)
+      df_i = mg_j@data[[i]]
+      df[row.names(df_i),names(df_i)] = df_i
+      data[[cnt]] = df
+      names(data)[cnt] = names(mg_j@data)[i]
+    }
+  }
+  spm = SpatialPointsMeteorology(points = SpatialPoints(cc, proj4string = mg_1@proj4string),
+                                 data = data, dates = dates)
+  return(spm)
 }

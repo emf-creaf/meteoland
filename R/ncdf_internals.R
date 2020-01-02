@@ -223,6 +223,12 @@
     dimY <- ncvar_get(ncin, "lat")
     cellcentre.offset = c(lon = min(dimX), lat = min(dimY))
   }
+  else if(("rlon" %in% names(ncin$dim)) && ("rlat" %in% names(ncin$dim))) {
+    dimX <- ncvar_get(ncin, "rlon")
+    dimY <- ncvar_get(ncin, "rlat")
+    cellcentre.offset = c(rlon = min(dimX), rlat = min(dimY))
+    warning("rotated grid!")
+  }
   cellsize = c(dimX[2]-dimX[1], dimY[2]-dimY[1])
   nx = length(dimX)
   ny = length(dimY)
@@ -263,6 +269,14 @@
         df$Precipitation =  df$Precipitation*24*3600
       }
     }
+  } 
+  if("Radiation" %in% names(varmapping)) {
+    if(varmapping[["Radiation"]] %in% names(ncin$var)) {
+      prunits = ncin$var[[varmapping[["Radiation"]]]]$units
+      if(prunits == "W m-2") {
+        df$Radiation =  df$Radiation*3600*24/1000000 #From W/m2 to MJ/m2
+      }
+    }
   }
   if("MeanTemperature" %in% names(varmapping)) {
     if(varmapping[["MeanTemperature"]] %in% names(ncin$var)) {
@@ -291,7 +305,7 @@
   return(df)
 }
 #Reads NetCDF grid/pixels
-.readmeteorologyNetCDF<-function(ncin, dates = NULL, pixels = FALSE, 
+.readmeteorologygridNetCDF<-function(ncin, dates = NULL, pixels = FALSE, 
                                  bbox = NULL, offset = 0, 
                                  varmapping = NULL) {
   crs <- .readCRSNetCDF(ncin)

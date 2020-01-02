@@ -12,11 +12,11 @@ Functions to read gridded meteorological data from the disk.
 }
 \usage{
 readmeteorologygrid(files, format = "netCDF", varmapping = NULL,
-                    dates = NULL, bbox = NULL, offset = 0)
+                    dates = NULL, bbox = NULL, offset = 0, verbose = FALSE)
 readmeteorologypixels(files, format = "netCDF", varmapping = NULL,
-                      dates = NULL, bbox = NULL, offset = 0)
+                      dates = NULL, bbox = NULL, offset = 0, verbose = FALSE)
 readmeteorologygridpoints(files, format = "netCDF", varmapping = NULL,
-                      dates = NULL, bbox = NULL, offset = 0)
+                      dates = NULL, bbox = NULL, offset = 0, verbose = FALSE)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -26,6 +26,7 @@ readmeteorologygridpoints(files, format = "netCDF", varmapping = NULL,
   \item{dates}{A character or Date vector to specify subset of dates to be read.}
   \item{bbox}{Boundary box (2 x 2 matrix) specifying the minimum and maximum coordinates of a study area.}
   \item{offset}{A buffer to include NetCDF cells that are at a certain distance around the boundary box.}
+  \item{verbose}{A logical flag to output process information in the console.}
 }
 \details{
   Function \code{readmeteorologygrid} reads one or several files containing the meteorology over a grid for a set of days. Function \code{readmeteorologypixels} reads one or several file containing the meteorology over a grid for a set of days and filters those pixels with missing data. If more than one file is specificated, the functions read all of them and then try to merge the data into a single meteorology object (see function \code{\link{mergegrids}}).

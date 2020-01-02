@@ -166,14 +166,14 @@ interpolationpixels<-function(object, pixels, dates,
   l = vector("list", ndates)
 
   if(export) nc =  .openwriteNetCDF(pixels@grid, proj4string(pixels), 
-                                    dates = dates, file = exportFile, add = add, overwrite = overwrite)
+                                    dates = dates, file = exportFile, add = add, overwrite = overwrite, verbose = verbose)
   for(i in 1:ndates) {
     if(verbose) cat(paste("Interpolating day '", dates[i], "' (",i,"/",ndates,") - ",sep=""))
     m = .interpolatePixelsDay(object, pixels, latitude, dates[i])
     if(export) {
       dl = list(m@data)
       names(dl) = as.character(dates[i])
-      .writemeteorologypixelsNetCDF(dl,m, proj4string(m), nc)
+      .writemeteorologypixelsNetCDF(dl,m, proj4string(m), nc, verbose = verbose)
     } else {
       l[[i]] = m@data
       if(verbose) cat(" done.\n")
@@ -183,6 +183,6 @@ interpolationpixels<-function(object, pixels, dates,
     names(l) = dates
     return(SpatialPixelsMeteorology(as(pixels,"SpatialPoints"), data = l, dates, grid = pixels@grid, proj4string = pixels@proj4string))
   } else {
-    .closeNetCDF(exportFile,nc)
+    .closeNetCDF(exportFile,nc, verbose = verbose)
   }
 }

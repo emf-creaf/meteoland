@@ -1,6 +1,7 @@
 \encoding{UTF-8}
 \name{writemeteorologygrid}
 \alias{writemeteorologygrid}
+\alias{writemeteorologygridpixel}
 \alias{writemeteorologypixels}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{
@@ -11,9 +12,10 @@ Functions to write grid meteorological data to the file system.
 }
 \usage{
 writemeteorologygrid(object, file, dates, format = "netCDF", 
-                     add = FALSE, overwrite = FALSE)
+                     add = FALSE, overwrite = FALSE, verbose = FALSE)
 writemeteorologypixels(object, file, dates, format = "netCDF", 
-                       add = FALSE, overwrite = FALSE)
+                       add = FALSE, overwrite = FALSE, verbose = FALSE)
+writemeteorologygridpixel(file, index, data, verbose = FALSE)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -23,6 +25,9 @@ writemeteorologypixels(object, file, dates, format = "netCDF",
   \item{format}{Format of meteorological data. The only  accepted format is \code{"netCDF"}.}
   \item{add}{Boolean flag to indicate that NetCDF exists and data should be added/replaced.}
   \item{overwrite}{Boolean flag to force overwriting an existing NetCDF.}
+  \item{verbose}{A logical flag to output process information in the console.}
+  \item{index}{Integer indicating the grid index position to be written.}
+  \item{data}{A data frame with meteorological data corresponding to a pixel.}
 }
 
 \author{

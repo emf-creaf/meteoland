@@ -39,17 +39,17 @@
   return(ncvar_put(ncin, varname, vals = datavec, start=c(i,ny-j+1,1), count=c(1,1,nt)))
 }
 #Opens/creates a NetCDF to add data
-.openaddNetCDF<-function(file) {
+.openaddNetCDF<-function(file, verbose = FALSE) {
   if(!file.exists(file)) stop(paste0("File '", file, "' does not exist."))
-  cat(paste0("Opening '", file,"' to add/replace data.\n"))
+  if(verbose) cat(paste0("Opening '", file,"' to add/replace data.\n"))
   nc <- nc_open(file, write = T)
   return(nc)
 }
 #Opens/creates a NetCDF for writing data
-.openwriteNetCDF<-function(grid, proj4string, dates, file, add=FALSE, overwrite = FALSE) {
+.openwriteNetCDF<-function(grid, proj4string, dates, file, add=FALSE, overwrite = FALSE, verbose = FALSE) {
   if(!add) {
     if(file.exists(file) & !overwrite) stop(paste0("File '",file,"' already exist. Use 'overwrite = TRUE' to force overwriting or 'add = TRUE' to add/replace content."))
-    cat(paste0("\nCreating '", file,"'.\n"))
+    if(verbose) cat(paste0("\nCreating '", file,"'.\n"))
     nx = grid@cells.dim[1]
     ny = grid@cells.dim[2]
     tunits = "days since 1970-01-01 00:00:00.0 -0:00"
@@ -109,7 +109,7 @@
   return(nc)
 }
 #Writes full NetCDF grids
-.writemeteorologygridNetCDF<-function(data, grid, proj4string, nc, index=NULL) {
+.writemeteorologygridNetCDF<-function(data, grid, proj4string, nc, index=NULL, verbose = FALSE) {
   grid_nc = .readgridtopologyNetCDF(nc)
   nx = grid_nc@cells.dim[1]
   ny = grid_nc@cells.dim[2]
@@ -134,7 +134,7 @@
   for(j in 1:length(dates)) {
     if(as.character(dates[j]) %in% names(data)) {
       day = which(dates_file==dates[j])
-      cat(paste0("Writing data for day '", as.character(dates[j]), "' at time position [",day, "].\n"))
+      if(verbose) cat(paste0("Writing data for day '", as.character(dates[j]), "' at time position [",day, "].\n"))
       df = data[[as.character(dates[j])]]
       if("MeanTemperature" %in% names(df)) .putvardataday(nc,varMeanTemp, df$MeanTemperature,day, index)
       if("MinTemperature" %in% names(df)) .putvardataday(nc,varMinTemp, df$MinTemperature,day, index)
@@ -151,8 +151,8 @@
   }
 }
 #Writes pixels in a NetCDF grid
-.writemeteorologypixelsNetCDF<-function(data, pixels, proj4string, nc) {
-  .writemeteorologygridNetCDF(data, pixels@grid, proj4string, nc, index=pixels@grid.index)
+.writemeteorologypixelsNetCDF<-function(data, pixels, proj4string, nc, verbose = FALSE) {
+  .writemeteorologygridNetCDF(data, pixels@grid, proj4string, nc, index=pixels@grid.index, verbose = verbose)
 }
 #Opens a NetCDF for reading data
 .openreadNetCDF<-function(file, verbose =TRUE) {
@@ -318,7 +318,7 @@
 #Reads NetCDF grid/pixels
 .readmeteorologygridNetCDF<-function(ncin, dates = NULL, pixels = FALSE, 
                                  bbox = NULL, offset = 0, 
-                                 varmapping = NULL) {
+                                 varmapping = NULL, verbose = FALSE) {
   crs <- .readCRSNetCDF(ncin)
   grid <- .readgridtopologyNetCDF(ncin)
   nx <- grid@cells.dim[1]
@@ -344,10 +344,10 @@
     grid <- points2grid(SpatialPoints(cc[sel,]))
   }
   if(is.null(varmapping)) varmapping = .defaultMapping()
-  pb = txtProgressBar(1, length(dates), style=3)
+  if(verbose) pb = txtProgressBar(1, length(dates), style=3)
   for(j in 1:length(dates)) {
     day = which(dates_file==dates[j])
-    setTxtProgressBar(pb,j)
+    if(verbose) setTxtProgressBar(pb,j)
     # cat(paste0("Reading data for day '", as.character(dates[j]), "' at time position [",day, "].\n"))
     df = data.frame(row.names = 1:sum(sel))
     for(var in names(varmapping)) {
@@ -437,7 +437,7 @@
 }
 .readmeteorologygridpointsNetCDF<-function(ncin, dates = NULL, 
                                            bbox = NULL, offset = 0, 
-                                           varmapping = NULL) {
+                                           varmapping = NULL, verbose = FALSE) {
   dates_file <- .readdatesNetCDF(ncin)
   dates_file <- as.character(dates_file)
   if(!is.null(dates)) {
@@ -481,8 +481,10 @@
   npts = sum(sel)
   nt = length(dates_file)
   data = vector("list", npts)
-  cat(paste0("Number of points to read ", npts,":\n"))
-  pb = txtProgressBar(1, npts, style=3)
+  if(verbose) {
+    cat(paste0("Number of points to read ", npts,":\n"))
+    pb = txtProgressBar(1, npts, style=3)
+  }
   
   if(rotated) {
     cc = matrix(nrow=0, ncol=2)
@@ -491,7 +493,7 @@
     for(xi in 1:nrow(sel)) {
       for(yi in 1:ncol(sel)) {
         if(sel[xi,yi]) {
-          setTxtProgressBar(pb,cnt)
+          if(verbose) setTxtProgressBar(pb,cnt)
           cc_i = c(lon[xi, yi], lat[xi, yi])
           cc = rbind(cc, cc_i)
           df = data.frame(row.names = as.character(dates))

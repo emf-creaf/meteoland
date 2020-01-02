@@ -166,14 +166,14 @@ interpolationgrid<-function(object, grid, dates,
   l = vector("list", ndates)
 
   if(export) nc =  .openwriteNetCDF(grid@grid, proj4string(grid), 
-                                    dates = dates, file = exportFile, add = add, overwrite = overwrite)
+                                    dates = dates, file = exportFile, add = add, overwrite = overwrite, verbose = verbose)
   for(i in 1:ndates) {
     if(verbose) cat(paste("Interpolating day '", dates[i], "' (",i,"/",ndates,") - ",sep=""))
     m = .interpolateGridDay(object, grid, latitude, dates[i])
     if(export) {
       dl = list(m@data)
       names(dl) = as.character(dates[i])
-      .writemeteorologygridNetCDF(dl,m@grid, proj4string(m), nc)
+      .writemeteorologygridNetCDF(dl,m@grid, proj4string(m), nc, verbose = verbose)
     } else {
       l[[i]] = m@data
       if(verbose) cat("done.\n")
@@ -183,6 +183,6 @@ interpolationgrid<-function(object, grid, dates,
     names(l) = dates
     return(SpatialGridMeteorology(grid@grid, grid@proj4string, l, dates))
   } else {
-    .closeNetCDF(exportFile,nc)
+    .closeNetCDF(exportFile,nc, verbose = verbose)
   }
 }

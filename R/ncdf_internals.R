@@ -227,7 +227,6 @@
     dimX <- ncvar_get(ncin, "rlon")
     dimY <- ncvar_get(ncin, "rlat")
     cellcentre.offset = c(rlon = min(dimX), rlat = min(dimY))
-    warning("rotated grid!")
   }
   cellsize = c(dimX[2]-dimX[1], dimY[2]-dimY[1])
   nx = length(dimX)
@@ -244,6 +243,9 @@
     if(proj4string!="NA") crs = CRS(proj4string)
   }
   if(("lon" %in% names(ncin$dim)) && ("lat" %in% names(ncin$dim))) {
+    crs = CRS("+proj=longlat")
+  }
+  if(("rlon" %in% names(ncin$dim)) && ("rlat" %in% names(ncin$dim))) {
     crs = CRS("+proj=longlat")
   }
   return(crs)
@@ -367,4 +369,142 @@
                              grid = grid)
   }
   return(sm)
+}
+
+
+# Functions copied from package ncdf4.helpers to avoid dependencies
+.nc_get_dimnames <- function(f, v) {
+  if(missing(v)) {
+    d <- unlist(lapply(f$dim, function(x) { return(x$name) }))
+    names(d) <- NULL
+    return(d)
+  } else
+    return(unlist(lapply(f$var[[v]]$dim, function(x) { return(x$name) })))
+}
+.nc_get_climatologybounds_varlist <- function(f) {
+  dim.list <- names(f$dim)
+  is.climatology<- sapply(dim.list, function(x) {
+    if(f$dim[[x]]$create_dimvar && f$dim[[x]]$unlim) {
+      a <- ncdf4::ncatt_get(f, x, "climatology")
+      if(a$hasatt)
+        return(a$value)
+    }
+    return(NA)
+  })
+  return(unique(is.climatology[!is.na(is.climatology)]))
+}
+.nc_get_dimbounds_varlist <- function(f, v=NULL) {
+  dimension.vars <- names(f$dim)
+  dim.names <- if(is.null(v)) names(f$dim) else .nc_get_dimnames(f, v)
+  return(unlist(sapply(names(f$dim), function(x) {
+    if(f$dim[[x]]$create_dimvar) {
+      a <- ncdf4::ncatt_get(f, x, "bounds");
+      if(a$hasatt)
+        return(a$value);
+    }
+    
+    ## Heuristic detection for broken files
+    bnds.vars <- c(paste(x, "bnds", sep="_"), paste("bounds", x, sep="_"))
+    bnds.present <- bnds.vars %in% names(f$var)
+    if(any(bnds.present))
+      return(bnds.vars[bnds.present])
+    
+    return(NULL);
+  } )))
+}
+.nc_get_varlist <- function(f, min.dims=1) {
+  var.list <- names(f$var)
+  enough.dims <- sapply(var.list, function(v) { length(f$var[[v]]$dim) >= min.dims } )
+  bounds <- .nc_get_dimbounds_varlist(f)
+  climatology.bounds <- .nc_get_climatologybounds_varlist(f)
+  has.axis <- unlist(lapply(var.list, function(x) { a <- ncdf4::ncatt_get(f, x, "axis"); if(a$hasatt & nchar(a$value) == 1) return(x); return(NULL); } ))
+  
+  ## When things get really broken, we'll need this...
+  bnds.heuristic <- !grepl("_bnds", var.list)
+  
+  var.mask <- bnds.heuristic & enough.dims & (!(var.list %in% c(bounds, has.axis, climatology.bounds, "lat", "lon") | unlist(lapply(f$var, function(x) { return(x$prec == "char" | x$ndims == 0) }))))
+  
+  return(var.list[var.mask])
+}
+.readmeteorologygridpointsNetCDF<-function(ncin, dates = NULL, 
+                                           bbox = NULL, offset = 0, 
+                                           varmapping = NULL) {
+  dates_file <- .readdatesNetCDF(ncin)
+  dates_file <- as.character(dates_file)
+  if(!is.null(dates)) {
+    dates <- as.character(dates)
+    if(sum(dates %in% dates_file)<length(dates)) stop("Time axis of nc file does not include all supplied dates")
+  } else {
+    dates = dates_file
+  }
+  if(is.null(varmapping)) varmapping = .defaultMapping()
+  
+  crs <- .readCRSNetCDF(ncin)
+  grid <- .readgridtopologyNetCDF(ncin) # Can be a rotated topology
+  rotated = (names(grid@cellcentre.offset)[1] == "rlon")
+  if(!rotated) {
+    nx <- grid@cells.dim[1]
+    ny <- grid@cells.dim[2]
+    
+    sel <- rep(TRUE, nx*ny)
+    if(!is.null(bbox)) {
+      # print(grid)
+      cc = coordinates(grid)
+      cn = colnames(cc)
+      vec_x<-(cc[,cn[1]]+offset >=bbox[cn[1],1]) & (cc[,cn[1]] - offset <=bbox[cn[1],2])
+      vec_y<-(cc[,cn[2]]+offset >=bbox[cn[2],1]) & (cc[,cn[2]] -offset <=bbox[cn[2],2])
+      sel=vec_y & vec_x
+    }
+    
+  } else {
+    lat <- ncvar_get(ncin, "lat")
+    lon <- ncvar_get(ncin, "lon")
+    nx = nrow(lat)
+    ny = ncol(lat)
+    sel = matrix(FALSE, nrow=nx, ncol=ny)
+    if(!is.null(bbox)) {
+      veclat<-(lat+offset >=bbox[2,1]) & (lat -offset <=bbox[2,2])
+      veclon<-(lon+offset >=bbox[1,1]) & (lon - offset <=bbox[1,2])
+      sel=veclat & veclon
+    }
+  }
+  
+  npts = sum(sel)
+  nt = length(dates_file)
+  data = vector("list", npts)
+  cat(paste0("Number of points to read ", npts,":\n"))
+  pb = txtProgressBar(1, npts, style=3)
+  
+  if(rotated) {
+    cc = matrix(nrow=0, ncol=2)
+    colnames(cc)<-c("lon", "lat")
+    cnt = 1
+    for(xi in 1:nrow(sel)) {
+      for(yi in 1:ncol(sel)) {
+        if(sel[xi,yi]) {
+          setTxtProgressBar(pb,cnt)
+          cc_i = c(lon[xi, yi], lat[xi, yi])
+          cc = rbind(cc, cc_i)
+          df = data.frame(row.names = as.character(dates))
+          df[,"DOY"] = as.POSIXlt(as.Date(dates))$yday+1
+          for(var in names(varmapping)) {
+            if(varmapping[[var]] %in% names(ncin$var)) {
+              df[[var]] = ncvar_get(ncin, varmapping[[var]],start=c(xi,yi,1), count=c(1,1,nt))
+            }
+          }
+          if(ncol(df)>0) {
+            df = .unitConversion(df, ncin, varmapping)
+            for(i in 1:ncol(df)) df[is.na(df[,i]),i] =NA
+          }
+          data[[cnt]] = df
+          cnt = cnt+1
+        }
+      }
+    }
+  }
+
+  rownames(cc)<-1:nrow(cc)
+  spm = SpatialPointsMeteorology(SpatialPoints(cc, proj4string = crs), 
+                                data = data, dates=as.Date(dates))
+  return(spm)
 }

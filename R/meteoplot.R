@@ -5,7 +5,7 @@ meteoplot<-function(object, index=1, var="MeanTemperature",
     stop("'object' should be of class 'data.frame', SpatialPointsMeteorology' or 'SpatialPointsDataFrame'.")
   
   VARS = c("MeanTemperature", "MinTemperature","MaxTemperature","MaxMinTemperatureDiff","MaxMeanTemperatureDiff", "MinMeanTemperatureDiff","Precipitation",
-           "MeanRelativeHumidity", "MinRelativeHumidity", "MaxRelativeHumidity",
+           "SpecificHumidity", "MeanRelativeHumidity", "MinRelativeHumidity", "MaxRelativeHumidity",
            "Radiation", "WindSpeed", "WindDirection", "PET")
   var = match.arg(var, VARS)
   

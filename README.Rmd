@@ -14,6 +14,7 @@ With the aim to assist research of climatic impacts on forests, the R package `m
 
 + Spatial interpolation of daily weather records from meteorological stations.
 + Statistical correction of meteorological data series (e.g. from climate models).
++ Multisite and multivariate stochastic weather generation.
 
 A more detailed introduction to the package functionality can be found in De Cáceres et al. (2018).
 

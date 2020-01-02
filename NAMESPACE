@@ -41,7 +41,7 @@ export(averagearea,
        utils_latentHeatVaporisationMol,utils_psychrometricConstant,
        utils_saturationVaporPressureCurveSlope,
        weathergeneration,
-       writemeteorologypixels, writemeteorologygrid, 
+       writemeteorologypixels, writemeteorologygrid, writemeteorologygridpixel,
        writemeteorologypoint, writemeteorologypointfiles)
 exportClasses(MeteorologyProcedureData, MeteorologyInterpolationData, MeteorologyUncorrectedData)
 exportClasses(SpatialPointsMeteorology,SpatialPointsTopography,

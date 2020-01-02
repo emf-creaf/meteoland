@@ -34,6 +34,17 @@
   ny = nc$dim$y$len
   for(i in 1:ny) ncvar_put(nc, varid=var, vals=datavec[((i-1)*nx+1):(i*nx)], start=c(1,ny-i+1), count=c(nx,1))
 }
+#writes data for a single pixel
+.putvardatapixel<-function(ncin, ny, nt, varname, i, j, datavec) {
+  return(ncvar_put(ncin, varname, vals = datavec, start=c(i,ny-j+1,1), count=c(1,1,nt)))
+}
+#Opens/creates a NetCDF to add data
+.openaddNetCDF<-function(file) {
+  if(!file.exists(file)) stop(paste0("File '", file, "' does not exist."))
+  cat(paste0("Opening '", file,"' to add/replace data.\n"))
+  nc <- nc_open(file, write = T)
+  return(nc)
+}
 #Opens/creates a NetCDF for writing data
 .openwriteNetCDF<-function(grid, proj4string, dates, file, add=FALSE, overwrite = FALSE) {
   if(!add) {
@@ -54,14 +65,14 @@
     varMeanTemp <- ncvar_def( "MeanTemperature", "Celsius", list(dimX,dimY, time), NA)
     varMinTemp <- ncvar_def( "MinTemperature", "Celsius", list(dimX,dimY, time), NA)
     varMaxTemp <- ncvar_def( "MaxTemperature", "Celsius", list(dimX,dimY, time), NA)
-    varPrec <- ncvar_def( "Precipitation", "L/m2", list(dimX,dimY, time), NA)
+    varPrec <- ncvar_def( "Precipitation", "l m-2", list(dimX,dimY, time), NA)
     varMeanRH <- ncvar_def( "MeanRelativeHumidity", "%", list(dimX,dimY, time), NA)
     varMinRH <- ncvar_def( "MinRelativeHumidity", "%", list(dimX,dimY, time), NA)
     varMaxRH <- ncvar_def( "MaxRelativeHumidity", "%", list(dimX,dimY, time), NA)
-    varRad <- ncvar_def( "Radiation", "MJ/m2", list(dimX,dimY, time), NA)
-    varWindSpeed <- ncvar_def( "WindSpeed", "m/s", list(dimX,dimY, time), NA)
-    varWindDirection <- ncvar_def( "WindDirection", "Degrees", list(dimX,dimY, time), NA)
-    varPET <- ncvar_def( "PET", "L/m2", list(dimX,dimY, time), NA)
+    varRad <- ncvar_def( "Radiation", "MJ m-2", list(dimX,dimY, time), NA)
+    varWindSpeed <- ncvar_def( "WindSpeed", "m s-1", list(dimX,dimY, time), NA)
+    varWindDirection <- ncvar_def( "WindDirection", "degrees_north", list(dimX,dimY, time), NA)
+    varPET <- ncvar_def( "PET", "l m-2", list(dimX,dimY, time), NA)
     if(.isLongLat(proj4string)) {
       nc <- nc_create(file, list(varMeanTemp,varMinTemp,varMaxTemp,varPrec,
                                  varMeanRH, varMinRH,varMaxRH,
@@ -74,7 +85,7 @@
         varLat <- ncvar_def( "lat", "degrees_north", list(dimX,dimY), missval =NULL, longname = "latitude")
         nc <- nc_create(file, list(varLon, varLat, varMeanTemp,varMinTemp,varMaxTemp,varPrec,
                                    varMeanRH, varMinRH,varMaxRH,
-                                   varRad, varWindSpeed, varWindDirection, varPET) )
+                                   varRad, varWindSpeed, varWindDirection, varPET), force_v4 = T)
         spt_lonlat = spTransform(SpatialPoints(coordinates(grid), CRS(proj4string)), CRS("+proj=longlat +datum=WGS84"))
         lonlat = coordinates(spt_lonlat)
         .putvardata(nc, varLon, lonlat[,1])
@@ -82,7 +93,7 @@
       } else {
         nc <- nc_create(file, list(varMeanTemp,varMinTemp,varMaxTemp,varPrec,
                                    varMeanRH, varMinRH,varMaxRH,
-                                   varRad, varWindSpeed, varWindDirection, varPET) )
+                                   varRad, varWindSpeed, varWindDirection, varPET), force_v4 = T)
       }
       
       # Indicate axes
@@ -91,14 +102,12 @@
     }
     ncatt_put(nc, 0, "proj4string", as.character(proj4string))
     ncatt_put(nc, "time", "axis", "T")
-  } else {
-    if(!file.exists(file)) stop(paste0("File '", file, "' does not exist."))
-    cat(paste0("Opening '", file,"' to add/replace data.\n"))
-    nc <- nc_open(file, write = T)
+  } 
+  else {
+    return(.openaddNetCDF(file))
   }
   return(nc)
 }
-
 #Writes full NetCDF grids
 .writemeteorologygridNetCDF<-function(data, grid, proj4string, nc, index=NULL) {
   grid_nc = .readgridtopologyNetCDF(nc)

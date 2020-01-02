@@ -3,6 +3,7 @@
 -------------------------------
 
 # Version 0.8.7
+- New function 'readmeteorologygridpoints'
 - New functions 'mergegrids' and 'mergepoints'
 - Reading multiple grid/pixels files
 

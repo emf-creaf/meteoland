@@ -612,3 +612,53 @@
                                 data = data, dates=as.Date(dates))
   return(spm)
 }
+
+.readmeteorologypointsNetCDF<-function(ncin, dates = NULL, 
+                                       varmapping = NULL, verbose = FALSE) {
+  dates_file <- .readdatesNetCDF(ncin)
+  dates_file <- as.character(dates_file)
+  if(!is.null(dates)) {
+    dates <- as.character(dates)
+    if(sum(dates %in% dates_file)<length(dates)) stop("Time axis of nc file does not include all supplied dates")
+  } else {
+    dates = dates_file
+  }
+  if(is.null(varmapping)) varmapping = .defaultMapping()
+  
+  crs <- .readCRSNetCDF(ncin)
+  if(.isLongLat(crs)) {
+    x <- ncvar_get(ncin, "lat")
+    y <- ncvar_get(ncin, "lon")
+    cc = cbind(x,y)
+    colnames(cc)<-c("lon", "lat")
+  } else {
+    x <- ncvar_get(ncin, "x")
+    y <- ncvar_get(ncin, "y")
+    cc = cbind(x,y)
+  }
+  npts = nrow(cc)
+  nt = length(dates_file)
+  data = vector("list", npts)
+  ids <- ncvar_get(ncin, "station_name")
+  rownames(cc)<-ids
+  names(data)<-ids
+  if(verbose) pb = txtProgressBar(1, npts, style=3)
+  for(i in 1:npts) {
+    if(verbose) setTxtProgressBar(pb,i)
+    df = data.frame(row.names = as.character(dates))
+    df[,"DOY"] = as.POSIXlt(as.Date(dates))$yday+1
+    for(var in names(varmapping)) {
+      if(varmapping[[var]] %in% names(ncin$var)) {
+        df[[var]] = ncvar_get(ncin, varmapping[[var]], start=c(i,1), count=c(1,nt))
+      }
+    }
+    if(ncol(df)>0) {
+      df = .unitConversion(df, ncin, varmapping)
+      for(j in 1:ncol(df)) df[is.na(df[,j]),j] =NA
+    }
+    data[[i]] = df
+  }
+  spm = SpatialPointsMeteorology(SpatialPoints(cc, proj4string = crs), 
+                                 data = data, dates=as.Date(dates))
+  return(spm)
+}

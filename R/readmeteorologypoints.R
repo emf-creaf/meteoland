@@ -60,3 +60,21 @@ readmeteorologypointfiles<-function(points, files=NULL, dates = NULL, format="me
   cat("\n")
   return(SpatialPointsMeteorology(as(points,"SpatialPoints"), dfvec, dates))
 }
+readmeteorologypoints<-function(files, dates = NULL, format = "netCDF", varmapping = NULL, verbose = FALSE) {
+  nfiles = length(files)
+  l = vector("list", nfiles)
+  for(i in 1:nfiles) {
+    nc = .openreadNetCDF(files[i], verbose = verbose)
+    if(!is.null(dates)) {
+      if((!inherits(dates,"Date"))&&(!inherits(dates,"character"))) stop("'dates' must be a 'character' or 'Date'")
+      spm = .readmeteorologypointsNetCDF(nc, dates = as.Date(dates), varmapping = varmapping, verbose = verbose)
+    } else {
+      spm = .readmeteorologypointsNetCDF(nc, varmapping = varmapping, verbose = verbose)
+    }
+    .closeNetCDF(files[i],nc, verbose = verbose)
+    l[[i]] = spm
+  }
+  if(nfiles==1) return(l[[1]])
+  if(verbose) cat("\nMerging point data...\n")
+  return(mergepoints(l, verbose = verbose))
+}

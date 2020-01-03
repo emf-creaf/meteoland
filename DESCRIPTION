@@ -2,7 +2,7 @@ Package: meteoland
 Type: Package
 Title: Landscape Meteorology Tools
 Version: 0.8.8
-Date: 2020-01-02
+Date: 2020-01-03
 Authors@R: c(
 	person('Miquel', 'De Cáceres', role=c('aut','cre'),
 	email='miquelcaceres@gmail.com'),

@@ -165,7 +165,7 @@ interpolationgrid<-function(object, grid, dates,
   # Define vector of data frames
   l = vector("list", ndates)
 
-  if(export) nc =  .openwriteNetCDF(grid@grid, proj4string(grid), 
+  if(export) nc =  .openwritegridNetCDF(grid@grid, proj4string(grid), 
                                     dates = dates, file = exportFile, add = add, overwrite = overwrite, verbose = verbose)
   for(i in 1:ndates) {
     if(verbose) cat(paste("Interpolating day '", dates[i], "' (",i,"/",ndates,") - ",sep=""))

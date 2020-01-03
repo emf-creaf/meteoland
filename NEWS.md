@@ -2,6 +2,9 @@
  NEWS for R Package "meteoland"
 -------------------------------
 
+# Version 0.8.8
+- New function 'writemeteorologypoints' for storing point data as netCDF
+
 # Version 0.8.7
 - New function 'readmeteorologygridpoints'
 - New function 'writemeteorologygridpixel'

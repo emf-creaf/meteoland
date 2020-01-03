@@ -49,3 +49,11 @@ writemeteorologypointfiles<-function(object, dir=getwd(), format ="meteoland/txt
   write.table(as.data.frame(spdf),file= f,sep="\t", quote=FALSE)
   invisible(spdf)
 }
+
+writemeteorologypoints<-function(object, file, format = "netCDF", overwrite = FALSE, verbose = FALSE) {
+  if(!inherits(object,"SpatialPointsMeteorology")) stop("'object' has to be of class 'SpatialGridMeteorology'.")
+  nc = .openwritepointNetCDF(object@coords, proj4string = proj4string(object), dates = object@dates,
+                        file=file, overwrite = overwrite, verbose = verbose)
+  .writemeteorologygpointsNetCDF(data = object@data, nc=nc, verbose = verbose)
+  .closeNetCDF(file,nc, verbose = verbose)
+}

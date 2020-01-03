@@ -45,8 +45,8 @@
   nc <- nc_open(file, write = T)
   return(nc)
 }
-#Opens/creates a NetCDF for writing data
-.openwriteNetCDF<-function(grid, proj4string, dates, file, add=FALSE, overwrite = FALSE, verbose = FALSE) {
+#Opens/creates a NetCDF for writing grid data
+.openwritegridNetCDF<-function(grid, proj4string, dates, file, add=FALSE, overwrite = FALSE, verbose = FALSE) {
   if(!add) {
     if(file.exists(file) & !overwrite) stop(paste0("File '",file,"' already exist. Use 'overwrite = TRUE' to force overwriting or 'add = TRUE' to add/replace content."))
     if(verbose) cat(paste0("\nCreating '", file,"'.\n"))
@@ -61,7 +61,7 @@
       dimX <- ncdim_def( "x", pr_units, sort(unique(coordinates(grid)[,1])), longname = "x coordinate of projection")
       dimY <- ncdim_def( "y", pr_units, sort(unique(coordinates(grid)[,2])), longname = "y coordinate of projection")
     }
-    time <- ncdim_def("time", tunits, as.double(as.Date(dates)))
+    time <- ncdim_def("time", tunits, as.double(as.Date(dates)), longname = "time of measurement")
     varMeanTemp <- ncvar_def( "MeanTemperature", "Celsius", list(dimX,dimY, time), NA)
     varMinTemp <- ncvar_def( "MinTemperature", "Celsius", list(dimX,dimY, time), NA)
     varMaxTemp <- ncvar_def( "MaxTemperature", "Celsius", list(dimX,dimY, time), NA)
@@ -108,6 +108,99 @@
   }
   return(nc)
 }
+#Opens/creates a NetCDF for writing point data
+.openwritepointNetCDF<-function(coords, proj4string, dates, file, add = FALSE, overwrite = FALSE, verbose = FALSE) {
+  if(!add) {
+    if(file.exists(file) & !overwrite) stop(paste0("File '",file,"' already exist. Use 'overwrite = TRUE' to force overwriting or 'add = TRUE' to add/replace content."))
+    if(verbose) cat(paste0("\nCreating '", file,"'.\n"))
+    tunits = "days since 1970-01-01 00:00:00.0 -0:00"
+    time <- ncdim_def("time", tunits, as.double(as.Date(dates)), longname = "time of measurement")
+    np = nrow(coords)
+    station <- ncdim_def("station", "", vals = 1:np)
+    stationName <-ncvar_def("station_name", "", list(station), missval = NULL, longname = "station name")
+    varMeanTemp <- ncvar_def( "MeanTemperature", "Celsius", list(station, time), NA)
+    varMinTemp <- ncvar_def( "MinTemperature", "Celsius", list(station, time), NA)
+    varMaxTemp <- ncvar_def( "MaxTemperature", "Celsius", list(station, time), NA)
+    varPrec <- ncvar_def( "Precipitation", "l m-2", list(station, time), NA)
+    varMeanRH <- ncvar_def( "MeanRelativeHumidity", "%", list(station, time), NA)
+    varMinRH <- ncvar_def( "MinRelativeHumidity", "%", list(station, time), NA)
+    varMaxRH <- ncvar_def( "MaxRelativeHumidity", "%", list(station, time), NA)
+    varRad <- ncvar_def( "Radiation", "MJ m-2", list(station, time), NA)
+    varWindSpeed <- ncvar_def( "WindSpeed", "m s-1", list(station, time), NA)
+    varWindDirection <- ncvar_def( "WindDirection", "degrees_north", list(station, time), NA)
+    varPET <- ncvar_def( "PET", "l m-2", list(station, time), NA)
+    if(.isLongLat(proj4string)) {
+      varX <- ncvar_def( "lon", "degrees_east", list(station), missval = NULL)
+      varY <- ncvar_def( "lat", "degrees_north", list(station), missval = NULL)
+      nc <- nc_create(file, list(stationName, varX, varY, varMeanTemp,varMinTemp,varMaxTemp,varPrec,
+                                 varMeanRH, varMinRH,varMaxRH,
+                                 varRad, varWindSpeed, varWindDirection, varPET), force_v4 = T)
+      ncvar_put(nc, varid=varX, vals=coords[,1], start=c(1), count=c(np))
+      ncvar_put(nc, varid=varY, vals=coords[,2], start=c(1), count=c(np))
+    } else {
+      pr_units = .projUnits(proj4string)
+      varX <- ncvar_def( "x", pr_units, list(station), missval = NULL, longname = "x coordinate of projection")
+      varY <- ncvar_def( "y", pr_units, list(station), missval = NULL, longname = "y coordinate of projection")
+      varLon <- ncvar_def( "lon", "degrees_east", list(station), missval = NULL)
+      varLat <- ncvar_def( "lat", "degrees_north", list(station), missval = NULL)
+      nc <- nc_create(file, list(stationName, varX, varY, varLon, varLat, varMeanTemp,varMinTemp,varMaxTemp,varPrec,
+                                 varMeanRH, varMinRH,varMaxRH,
+                                 varRad, varWindSpeed, varWindDirection, varPET), force_v4 = T)
+      ncvar_put(nc, varid=varX, vals=coords[,1], start=c(1), count=c(np))
+      ncvar_put(nc, varid=varY, vals=coords[,2], start=c(1), count=c(np))
+      spt_lonlat = spTransform(SpatialPoints(coords, CRS(proj4string)), CRS("+proj=longlat +datum=WGS84"))
+      lonlat = coordinates(spt_lonlat)
+      ncvar_put(nc, varid=varLon, vals=lonlat[,1], start=c(1), count=c(np))
+      ncvar_put(nc, varid=varLat, vals=lonlat[,2], start=c(1), count=c(np))
+    }
+    ncvar_put(nc, varid=stationName, vals=rownames(coords), start=c(1), count=c(np))
+    
+    # Indicate axes
+    ncatt_put(nc, stationName, "cf_role", "timeseries_id")
+    ncatt_put(nc, 0, "featureType", "timeSeries")
+    ncatt_put(nc, 0, "proj4string", as.character(proj4string))
+    ncatt_put(nc, "time", "axis", "T")
+  } else {
+    return(.openaddNetCDF(file))
+  }
+  return(nc)
+}
+
+.writemeteorologygpointNetCDF<-function(df, nc, i) {
+  nt = nc$dim$time$len
+  varMeanTemp = nc$var$MeanTemperature
+  varMinTemp = nc$var$MinTemperature
+  varMaxTemp = nc$var$MaxTemperature
+  varPrec = nc$var$Precipitation
+  varMeanRH = nc$var$MeanRelativeHumidity
+  varMinRH = nc$var$MinRelativeHumidity
+  varMaxRH = nc$var$MaxRelativeHumidity
+  varRad = nc$var$Radiation
+  varWindSpeed = nc$var$WindSpeed
+  varWindDirection = nc$var$WindDirection
+  varPET = nc$var$PET
+  if("MeanTemperature" %in% names(df)) ncvar_put(nc, varid=varMeanTemp, vals=df$MeanTemperature, start=c(i,1), count=c(1,nt))
+  if("MinTemperature" %in% names(df)) ncvar_put(nc, varid=varMinTemp, vals=df$MinTemperature, start=c(i,1), count=c(1,nt))
+  if("MaxTemperature" %in% names(df)) ncvar_put(nc, varid=varMaxTemp, vals=df$MaxTemperature, start=c(i,1), count=c(1,nt))
+  if("Precipitation" %in% names(df)) ncvar_put(nc, varid=varPrec, vals=df$Precipitation, start=c(i,1), count=c(1,nt))
+  if("MeanRelativeHumidity" %in% names(df)) ncvar_put(nc, varid=varMeanRH, vals=df$MeanRelativeHumidity, start=c(i,1), count=c(1,nt))
+  if("MinRelativeHumidity" %in% names(df)) ncvar_put(nc, varid=varMinRH, vals=df$MinRelativeHumidity, start=c(i,1), count=c(1,nt))
+  if("MaxRelativeHumidity" %in% names(df)) ncvar_put(nc, varid=varMaxRH, vals=df$MaxRelativeHumidity, start=c(i,1), count=c(1,nt))
+  if("Radiation" %in% names(df)) ncvar_put(nc, varid=varRad, vals=df$Radiation, start=c(i,1), count=c(1,nt))
+  if("WindSpeed" %in% names(df)) ncvar_put(nc, varid=varWindSpeed, vals=df$WindSpeed, start=c(i,1), count=c(1,nt))
+  if("WindDirection" %in% names(df)) ncvar_put(nc, varid=varWindDirection, vals=df$WindDirection, start=c(i,1), count=c(1,nt))
+  if("PET" %in% names(df)) ncvar_put(nc, varid=varPET, vals=df$PET, start=c(i,1), count=c(1,nt))
+}
+#Writes full NetCDF points
+.writemeteorologygpointsNetCDF<-function(data, nc, verbose = FALSE) {
+  np = nc$dim$station$len
+  if(length(data)!=np) stop("Number of points does not match netCDF definition!")
+  for(i in 1:np) {
+    if(verbose) cat(paste0("Writing data for point '", names(data)[i], "'.\n"))
+    .writemeteorologygpointNetCDF(data[[i]], nc, i)
+  }
+}
+
 #Writes full NetCDF grids
 .writemeteorologygridNetCDF<-function(data, grid, proj4string, nc, index=NULL, verbose = FALSE) {
   grid_nc = .readgridtopologyNetCDF(nc)

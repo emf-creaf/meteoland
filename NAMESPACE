@@ -42,7 +42,7 @@ export(averagearea,
        utils_saturationVaporPressureCurveSlope,
        weathergeneration,
        writemeteorologypixels, writemeteorologygrid, writemeteorologygridpixel,
-       writemeteorologypoint, writemeteorologypointfiles)
+       writemeteorologypoint, writemeteorologypoints, writemeteorologypointfiles)
 exportClasses(MeteorologyProcedureData, MeteorologyInterpolationData, MeteorologyUncorrectedData)
 exportClasses(SpatialPointsMeteorology,SpatialPointsTopography,
               SpatialGridMeteorology,SpatialGridTopography,

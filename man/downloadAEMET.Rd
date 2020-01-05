@@ -13,7 +13,7 @@ Download data from the Spanish National Meterology Agency (AEMET)
 \usage{
 downloadAEMEThistoricalstationlist(api)
 downloadAEMEThistorical(api, dates, station_id, export = FALSE, exportDir = getwd(), 
-                    exportFormat = "meteoland/txt", metadatafile = "MP.txt", 
+                    exportFormat = "meteoland/txt", metadataFile = "MP.txt", 
                     verbose = TRUE)
 downloadAEMETcurrentday(api, daily = TRUE, verbose = TRUE)
 }
@@ -25,7 +25,7 @@ downloadAEMETcurrentday(api, daily = TRUE, verbose = TRUE)
   \item{export}{If \code{export = FALSE} the downloaded data is stored in memory. Otherwise the result is written on the disk (using the format specified in \code{exportFormat}).}
   \item{exportDir}{Output directory for downloaded meteorology.}
   \item{exportFormat}{Format of meteorological data. Current accepted formats are \code{"castanea"} and \code{"meteoland"}.}
-  \item{metadatafile}{The name of the file that will store the meta data describing all written files.}
+  \item{metadataFile}{The name of the file that will store the meta data describing all written files.}
   \item{verbose}{Boolean flag to print process information.}
   \item{daily}{Boolean flag. Are data to be returned at a daily or hourly scale?}
 }

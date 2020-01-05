@@ -3,7 +3,7 @@
 ### AEMET
 downloadAEMEThistorical <- function(api, dates, station_id, export = FALSE, exportDir = getwd(),
                                 exportFormat = "meteoland/txt",
-                                metadatafile = "MP.txt", verbose=TRUE){
+                                metadataFile = "MP.txt", verbose=TRUE){
   # nonUTF8 = "\u00D1\u00C0\u00C1\u00C8\u00C9\u00D2\u00D3\u00CC\u00CD\u00DC\u00CF"
   # cname.func <- function(x){
   #   regmatches(x,gregexpr('(?<=\\n\\s{2}\\")[[:print:]]+(?=\\"\\s\\:)', x, perl = T))[[1]]
@@ -202,8 +202,8 @@ downloadAEMEThistorical <- function(api, dates, station_id, export = FALSE, expo
         writemeteorologypoint(data_list[[i]], f, exportFormat)
         if(verbose) cat(paste("\n  File written to ",f, "\n", sep=""))
         if(exportDir!=""){
-          f = paste(exportDir,metadatafile, sep="/")
-        }else{f = metadatafile}
+          f = paste(exportDir,metadataFile, sep="/")
+        }else{f = metadataFile}
         spdf = SpatialPointsDataFrame(points, dfout)
         write.table(as.data.frame(spdf),file= f,sep="\t", quote=FALSE)
       }
@@ -223,7 +223,7 @@ downloadAEMEThistorical <- function(api, dates, station_id, export = FALSE, expo
 
 # download the met data
 downloadSMChistorical <- function(api, dates, station_id=NULL, variable_code=NULL, 
-                                  export = FALSE, exportDir = getwd(), exportFormat = "meteoland/txt", metadatafile = "MP.txt",
+                                  export = FALSE, exportDir = getwd(), exportFormat = "meteoland/txt", metadataFile = "MP.txt",
                                   verbose=TRUE){
 
   # defaults to variables required in meteoland
@@ -341,8 +341,8 @@ downloadSMChistorical <- function(api, dates, station_id=NULL, variable_code=NUL
         writemeteorologypoint(data_list[[i]], f, exportFormat)
         if(verbose) cat(paste("\n  File written to ",f, "\n", sep=""))
         if(exportDir!=""){
-          f = paste(exportDir,metadatafile, sep="/")
-        }else{f = metadatafile}
+          f = paste(exportDir,metadataFile, sep="/")
+        }else{f = metadataFile}
         write.table(dfout,file= f,sep="\t", quote=FALSE)
       }
     } else{

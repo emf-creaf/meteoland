@@ -23,7 +23,7 @@ writemeteorologypoint<-function(data, file, format = "meteoland/txt") {
 }
 # Writes multiple files, one for each point
 writemeteorologypointfiles<-function(object, dir=getwd(), format ="meteoland/txt",
-                                     metadatafile="MP.txt") {
+                                     metadataFile="MP.txt") {
   format = match.arg(format, c("meteoland/txt", "meteoland/rds", "castanea/txt", "castanea/rds"))
   if(!inherits(object,"SpatialPointsMeteorology")) stop("'object' has to be of class 'SpatialPointsMeteorology'.")
   npoints = length(object@data)
@@ -46,8 +46,8 @@ writemeteorologypointfiles<-function(object, dir=getwd(), format ="meteoland/txt
     else f = dfout$filename[i]
     writemeteorologypoint(object@data[[i]], f, format)
   }
-  if(dir!="") f = paste(dir,metadatafile, sep="/")
-  else f = metadatafile
+  if(dir!="") f = paste(dir,metadataFile, sep="/")
+  else f = metadataFile
   write.table(as.data.frame(spdf),file= f,sep="\t", quote=FALSE)
   invisible(spdf)
 }

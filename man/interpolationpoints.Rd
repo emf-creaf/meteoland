@@ -5,15 +5,16 @@
 \alias{interpolationgrid}
 
 \title{
-Interpolates daily meteorology over a landscape
+Interpolate daily meteorology over a landscape
 }
 \description{
-Interpolates meteorological data on spatial points/pixels/grid using an object of class \code{\link{MeteorologyInterpolationData-class}}.
+Functions to interpolate meteorological data for spatial locations (at points, grid pixels or full grids) using an object of class \code{\link{MeteorologyInterpolationData-class}}.
 }
 \usage{
 interpolationpoints(object, points, dates = NULL, export = FALSE,
-                    exportDir = getwd(), exportFormat = "meteoland/txt",
-                    metadatafile = "MP.txt", verbose=TRUE)
+                    exportDir = getwd(), exportFile = NULL, 
+                    exportFormat = "meteoland/txt",
+                    metadataFile = "MP.txt", verbose=TRUE)
 interpolationpixels(object, pixels, dates, exportFile = NULL, exportFormat = "netCDF", 
                     add = FALSE, overwrite = FALSE, verbose=TRUE)
 interpolationgrid(object, grid, dates, exportFile = NULL, exportFormat = "netCDF",
@@ -29,16 +30,16 @@ interpolationgrid(object, grid, dates, exportFile = NULL, exportFormat = "netCDF
   \item{export}{
     If \code{export = FALSE} the result of interpolation is stored in memory. Otherwise the result is written in the disk (using the format specified in \code{exportFormat}).
   }
-  \item{exportDir}{Output directory for interpolated meteorology data.}
-  \item{exportFile}{Output file for interpolated meteorology data.}
-  \item{exportFormat}{Export format for meteorological data (see \code{\link{writemeteorologypoint}}).}
-  \item{metadatafile}{The name of the ascii text file that will store the meta data describing all written files.}
+  \item{exportDir}{Output directory for interpolated meteorology data files (txt/rds format).}
+  \item{exportFile}{Output file for interpolated meteorology data (netCDF format).}
+  \item{exportFormat}{Export format for meteorological data (see \code{\link{writemeteorologypoint}}).  If format is \code{"meteoland/txt"},  \code{"meteoland/rds"}, \code{"castanea/txt"} or \code{"castanea/rds"} the function tries to write one file per point in \code{exportDir}. If format is \code{"netCDF"} the function will write data to a single file specified by \code{exportFile}.}
+  \item{metadataFile}{The name of the ascii text file that will store the meta data describing all written files.}
   \item{verbose}{Boolean flag to print process information.}
   \item{add}{Boolean flag to indicate that NetCDF exists and data should be added/replaced.}
   \item{overwrite}{Boolean flag to force overwriting an existing NetCDF.}
 }
 \value{
-If \code{export = FALSE}, function \code{interpolationpoints} returns an object of \code{\link{SpatialPointsMeteorology-class}}. If \code{export = TRUE}, the function returns an object of class \code{\link{SpatialPointsDataFrame-class}} containing the meta data of the files written in the disk.
+If \code{export = FALSE}, function \code{interpolationpoints} returns an object of \code{\link{SpatialPointsMeteorology-class}}. If \code{export = TRUE} files and written in the disk. For text/rds format the function returns an object of class \code{\link{SpatialPointsDataFrame-class}} containing point meta data.
 
 If \code{export = FALSE}, function \code{interpolationpixels} returns an object of \code{\link{SpatialPixelsMeteorology-class}}, or an object of \code{\link{SpatialPixelsDataFrame-class}} if a single date is interpolated. If \code{export = TRUE}, the function writes the results in a NetCDF.
 

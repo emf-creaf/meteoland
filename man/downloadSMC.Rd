@@ -18,7 +18,7 @@ downloadSMCcurrentday(api, daily_meteoland = TRUE, variable_code=NULL,
                       station_id=NULL, date = Sys.Date(), verbose=TRUE)
 downloadSMChistorical(api, dates, station_id=NULL, variable_code=NULL, export = FALSE, 
                       exportDir = getwd(), exportFormat = "meteoland/txt",
-                      metadatafile = "MP.txt", verbose=TRUE)                      
+                      metadataFile = "MP.txt", verbose=TRUE)                      
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -32,7 +32,7 @@ downloadSMChistorical(api, dates, station_id=NULL, variable_code=NULL, export = 
   \item{export}{If \code{export = FALSE} the downloaded data is stored in memory. Otherwise the result is written on the disk (using the format specified in \code{exportFormat}).}
   \item{exportDir}{Output directory for downloaded meteorology.}
   \item{exportFormat}{Format of meteorological data. Current accepted formats are \code{"castanea"} and \code{"meteoland"}.}
-  \item{metadatafile}{The name of the file that will store the meta data describing all written files.}
+  \item{metadataFile}{The name of the file that will store the meta data describing all written files.}
   \item{verbose}{Boolean flag to print process information.}
 }
 \details{

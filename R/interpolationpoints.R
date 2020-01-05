@@ -138,9 +138,11 @@
 }
 
 interpolationpoints<-function(object, points, dates = NULL,
-                              export=FALSE, exportDir = getwd(), exportFormat = "meteoland/txt",
-                              metadatafile = "MP.txt", verbose=TRUE) {
-  exportFormat = match.arg(exportFormat, c("meteoland/txt", "meteoland/rds", "castanea/txt", "castanea/rds", "netCDF"))
+                              export=FALSE, exportDir = getwd(), exportFile = NULL, 
+                              exportFormat = "meteoland/txt",
+                              metadataFile = "MP.txt", verbose=TRUE) {
+  if(export) exportFormat = match.arg(exportFormat, c("meteoland/txt", "meteoland/rds", "castanea/txt", "castanea/rds", "netCDF"))
+  
   if(!inherits(object,"MeteorologyInterpolationData")) stop("'object' has to be of class 'MeteorologyInterpolationData'.")
   if(!inherits(points,"SpatialPointsTopography")) stop("'points' has to be of class 'SpatialPointsTopography'.")
   intpoints = as(points, "SpatialPoints")
@@ -165,27 +167,32 @@ interpolationpoints<-function(object, points, dates = NULL,
   aspect = points@data$aspect
   longlat = spTransform(points,CRS("+proj=longlat"))
   latitude = longlat@coords[,2]
-
+  bbox = object@bbox
+  
   
   if(exportFormat %in% c("meteoland/txt","castanea/txt")) formatType = "txt"
   else if (exportFormat %in% c("meteoland/rds","castanea/rds")) formatType = "rds"
   else if (exportFormat %in% c("netCDF")) formatType = "netCDF"
   
   # Define vector of data frames
-  dfvec = vector("list",npoints)
-  dfout = data.frame(dir = rep(exportDir, npoints), filename=paste0(ids,".", formatType))
-  dfout$dir = as.character(dfout$dir)
-  dfout$filename = as.character(dfout$filename)
-  dfout$format = exportFormat
-  rownames(dfout) = ids
-  spdf = SpatialPointsDataFrame(as(points,"SpatialPoints"), dfout)
-  colnames(spdf@coords)<-c("x","y")
-  bbox = object@bbox
   
-  if(exportFormat=="netCDF") {
-    ncfile = exportDir
+  if(export & exportFormat %in% c("meteoland/txt","castanea/txt", "meteoland/rds","castanea/rds")) {
+    dfout = data.frame(dir = rep(exportDir, npoints), filename=paste0(ids,".", formatType))
+    dfout$dir = as.character(dfout$dir)
+    dfout$filename = as.character(dfout$filename)
+    dfout$format = exportFormat
+    rownames(dfout) = ids
+    spdf = SpatialPointsDataFrame(as(points,"SpatialPoints"), dfout)
+    colnames(spdf@coords)<-c("x","y")
+  }
+  else if(export & exportFormat=="netCDF") {
+    if(is.null(exportFile)) stop("File 'exportFile' cannot be null when exporting to netCDF!")
+    ncfile = exportFile
     if(is.null(dates)) dates = object@dates
     nc <-.openwritepointNetCDF(coordinates(points), proj4string(points), dates = dates, file = ncfile, overwrite = TRUE, verbose = verbose)
+  }
+  else {
+    dfvec = vector("list",npoints)
   }
   for(i in 1:npoints) {
     if(verbose) cat(paste("Processing point '",ids[i],"' (",i,"/",npoints,") -",sep=""))
@@ -203,8 +210,8 @@ interpolationpoints<-function(object, points, dates = NULL,
         else f = dfout$filename[i]
         writemeteorologypoint(df, f, exportFormat)
         if(verbose) cat(paste(" written to ",f, sep=""))
-        if(exportDir!="") f = paste(exportDir,metadatafile, sep="/")
-        else f = metadatafile
+        if(exportDir!="") f = paste(exportDir,metadataFile, sep="/")
+        else f = metadataFile
         write.table(as.data.frame(spdf),file= f,sep="\t", quote=FALSE)
       } else {
         if(verbose) cat(paste0(" written to netCDF"))

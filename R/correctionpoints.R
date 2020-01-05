@@ -27,9 +27,11 @@ correctionpoint<-function(obs, mod, proj, dates = NULL, params = defaultCorrecti
 }
 # Bias-correction of all variables for multiple points
 correctionpoints<-function(object, points, topodata = NULL, dates = NULL, export = FALSE,
-                            exportDir = getwd(), exportFormat = "meteoland/txt",
-                            metadatafile = "MP.txt", corrOut = FALSE, verbose=TRUE) {
+                           exportDir = getwd(), exportFile = NULL, exportFormat = "meteoland/txt",
+                           metadataFile = "MP.txt", corrOut = FALSE, verbose=TRUE) {
 
+  if(export) exportFormat = match.arg(exportFormat, c("meteoland/txt", "meteoland/rds", "castanea/txt", "castanea/rds", "netCDF"))
+  
   #Check input classes
   if(!inherits(object,"MeteorologyUncorrectedData")) stop("'object' has to be of class 'MeteorologyUncorrectedData'.")
   if(!inherits(points,"SpatialPointsMeteorology") && !inherits(points,"SpatialPointsDataFrame")) stop("'points' has to be of class 'SpatialPointsMeteorology' or 'SpatialPointsDataFrame'.")
@@ -61,7 +63,6 @@ correctionpoints<-function(object, points, topodata = NULL, dates = NULL, export
     asprad = topodata$aspect*(pi/180)
   }
   # Define vector of data frames
-  dfvec = vector("list",npoints)
   mbiasvec = vector("list", npoints)
   
   if(inherits(points,"SpatialPointsMeteorology")) {
@@ -74,16 +75,27 @@ correctionpoints<-function(object, points, topodata = NULL, dates = NULL, export
   
   if(exportFormat %in% c("meteoland/txt","castanea/txt")) formatType = "txt"
   else if (exportFormat %in% c("meteoland/rds","castanea/rds")) formatType = "rds"
+  else if (exportFormat %in% c("netCDF")) formatType = "netCDF"
   
-  dfout = data.frame(dir = rep(exportDir, npoints), filename=paste0(ids,".", formatType))
-  dfout$dir = as.character(dfout$dir)
-  dfout$filename = as.character(dfout$filename)
-  dfout$format = exportFormat
-  rownames(dfout) = ids
-  spdf = SpatialPointsDataFrame(as(points,"SpatialPoints"), dfout)
-  colnames(spdf@coords)<-c("x","y")
 
-
+  if(export & exportFormat %in% c("meteoland/txt","castanea/txt", "meteoland/rds","castanea/rds")) {
+    dfout = data.frame(dir = rep(exportDir, npoints), filename=paste0(ids,".", formatType))
+    dfout$dir = as.character(dfout$dir)
+    dfout$filename = as.character(dfout$filename)
+    dfout$format = exportFormat
+    rownames(dfout) = ids
+    spdf = SpatialPointsDataFrame(as(points,"SpatialPoints"), dfout)
+    colnames(spdf@coords)<-c("x","y")
+  }
+  else if(export & exportFormat=="netCDF") {
+    if(is.null(exportFile)) stop("File 'exportFile' cannot be null when exporting to netCDF!")
+    ncfile = exportFile
+    if(is.null(dates)) dates = object@dates
+    nc <-.openwritepointNetCDF(coordinates(points), proj4string(points), dates = dates, file = ncfile, overwrite = TRUE, verbose = verbose)
+  } else {
+    dfvec = vector("list",npoints)
+  }
+  
   #Loop over all points
   for(i in 1:npoints) {
     if(verbose) cat(paste("Correcting point '",ids[i],"' (",i,"/",npoints,") -",sep=""))
@@ -161,13 +173,18 @@ correctionpoints<-function(object, points, topodata = NULL, dates = NULL, export
       dfvec[[i]] =df
       if(verbose) cat(" done")
     } else {
-      if(dfout$dir[i]!="") f = paste(dfout$dir[i],dfout$filename[i], sep="/")
-      else f = dfout$filename[i]
-      writemeteorologypoint(df, f, dfout$format[i])
-      if(verbose) cat(paste(" written to ",f, sep=""))
-      if(exportDir!="") f = paste(exportDir,metadatafile, sep="/")
-      else f = metadatafile
-      write.table(as.data.frame(spdf),file= f,sep="\t", quote=FALSE)
+      if(exportFormat!="netCDF") {
+        if(dfout$dir[i]!="") f = paste(dfout$dir[i],dfout$filename[i], sep="/")
+        else f = dfout$filename[i]
+        writemeteorologypoint(df, f, dfout$format[i])
+        if(verbose) cat(paste(" written to ",f, sep=""))
+        if(exportDir!="") f = paste(exportDir,metadataFile, sep="/")
+        else f = metadataFile
+        write.table(as.data.frame(spdf),file= f,sep="\t", quote=FALSE)
+      } else {
+        if(verbose) cat(paste0(" written to netCDF"))
+        .writemeteorologygpointNetCDF(df,nc,i)
+      }
     }
     if(verbose) cat(".\n")
   }
@@ -177,8 +194,14 @@ correctionpoints<-function(object, points, topodata = NULL, dates = NULL, export
       return(list(SpatialPointsMeteorology(points = points, data = dfvec, dates = dates),
                   mbiasvec))
     }
+  } else {
+    if(exportFormat!="netCDF") {
+      if(!corrOut) invisible(spdf)
+      else invisible(list(spdf,mbiasvec))
+    } else {
+      .closeNetCDF(ncfile, nc)
+      if(corrOut) invisible(mbiasvec)
+    }    
   }
-  if(!corrOut) invisible(spdf)
-  else invisible(list(spdf,mbiasvec))
 }
 

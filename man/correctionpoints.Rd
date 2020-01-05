@@ -14,7 +14,7 @@ correctionpoint(obs, mod, proj, dates = NULL,
                 params = defaultCorrectionParams(), verbose=TRUE)
 correctionpoints(object, points, topodata = NULL, dates = NULL,
                  export = FALSE, exportDir = getwd(), exportFormat = "meteoland/txt",
-                 metadatafile = "MP.txt", corrOut = FALSE, verbose = TRUE)
+                 metadataFile = "MP.txt", corrOut = FALSE, verbose = TRUE)
 correctionpoints.errors(object, points, topodata = NULL, 
                   error.type="residuals.cv",keep.data = FALSE, verbose = FALSE)
   
@@ -33,9 +33,10 @@ correctionpoints.errors(object, points, topodata = NULL,
   \item{export}{
     If \code{export = FALSE} the result of correction is stored in memory. Otherwise the result is written in the disk (using the format specified in \code{exportFormat}).
   }
-  \item{exportDir}{Output directory for corrected meteorology.}
-  \item{metadatafile}{The name of the file that will store the meta data describing all written files.}
-  \item{exportFormat}{Export format for meteorological data (see \code{\link{writemeteorologypoint}}).}
+  \item{exportDir}{Output directory for corrected meteorology data (txt/rds format).}
+  \item{exportFile}{Output file for corrected meteorology data (netCDF format).}
+  \item{metadataFile}{The name of the file that will store the meta data describing all written files.}
+  \item{exportFormat}{Export format for meteorological data (see \code{\link{writemeteorologypoint}}).  If format is \code{"meteoland/txt"},  \code{"meteoland/rds"}, \code{"castanea/txt"} or \code{"castanea/rds"} the function tries to write one file per point in \code{exportDir}. If format is \code{"netCDF"} the function will write data to a single file specified by \code{exportFile}.}
   \item{corrOut}{Boolean flag to indicate that correction parameters (i.e. calculated biases) should be included with the output. Setting \code{corrOut = TRUE} changes the returned value.}
   \item{verbose}{Boolean flag to print process information.}
   \item{error.type}{String to specify the error to be evaluated, either \code{"before"} (before correction), \code{"residual"} (after correction) or \code{"residual.cv"} (after correction, but using cross-validation).}
@@ -44,12 +45,16 @@ correctionpoints.errors(object, points, topodata = NULL,
 \details{
 Function \code{correctionpoints} performs statistical correction of predicted climatic data for all points supplied in \code{points} whereas \code{correctionpoint} performs statistical correction of one single point. Observed meteorological data for each point typically comes from a nearby meteorological station, but they can be the result of interpolating the meteorology of several stations (see \code{\link{MeteorologyInterpolationData}}) or they can be extracted from reanalyzed meteorology (e.g. EU-WATCH) (see \code{\link{extractNetCDF}}).
 
-For each target point, \code{correctionpoints} function first determines the predicted cell where the point falls. Then it calls \code{correctionpoint}. In turn, \code{correctionpoint} determines the dates that are shared in observed and predicted data for the historical period. These meteorological data of dates are used to conduct the correction of predicted climatic data for the future period. Corrections biases are calculated and applied for the twelve months separately. The user can control the methods used for correction of each meteorological variable by changing the slot \code{params} in \code{object} (see class \code{\link{MeteorologyUncorrectedData-class}}) or the parameter \code{params} to \code{correctionpoint}. Three options are allowed (see \code{\link{defaultCorrectionParams}}): (a) 'unbias' for shifting the mean; (b) 'scaling' for multiplication by a factor; and (c) 'quantmap' for empirical quantile mapping between observed and modelled data (\enc{Déqué}{Deque} 2007).
+For each target point, \code{correctionpoints} function first determines the predicted cell where the point falls according to the euclidean distance in the geographic space of \code{object}. Then it calls \code{correctionpoint}. In turn, \code{correctionpoint} determines the dates that are shared in observed and predicted data for the historical period. These meteorological data of dates are used to conduct the correction of predicted climatic data for the future period. Corrections biases are calculated and applied for the twelve months separately. The user can control the methods used for correction of each meteorological variable by changing the slot \code{params} in \code{object} (see class \code{\link{MeteorologyUncorrectedData-class}}) or the parameter \code{params} to \code{correctionpoint}. Three options are allowed (see \code{\link{defaultCorrectionParams}}): (a) 'unbias' for shifting the mean; (b) 'scaling' for multiplication by a factor; and (c) 'quantmap' for empirical quantile mapping between observed and modelled data (\enc{Déqué}{Deque} 2007).
 
 A difficulty arises for quantile mapping when the variables bounded by zero, such as precipitation. As the models tend to drizzle (or may have lower frequency of precipitation events), the probability of precipitation in the model may be greater or lower than that observed. To correct this, when model precipitation is zero an observed value is randomly chosen in the interval where the observed cumulative frequency is less than or equal to the probability of no precipitation in the model. This procedure ensures that the probability of precipitation after correction is equal to that observed (\enc{Boé}{Boe} 2007).
 }
 \value{
-If \code{export = FALSE}, the function \code{correctionpoints} returns an object of class \code{\link{SpatialPointsMeteorology-class}} with the downscaled meteorology for each point. If \code{export=TRUE} function \code{correctionpoints} returns an object of class \code{\link{SpatialPointsDataFrame-class}} containing the meta data of the files written in the disk. If \code{corrOut = TRUE} the previous structures are embedded in a list which also contains an object with the calculated correction factors (biases, mappings) for each point and month. Function \code{correctionpoints.errors} (\code{keep.data = FALSE}) returns a data frame with the mean absolute error (MAE) and bias for each variable and point. If \code{keep.data = TRUE} then the function also returns a list of data frames with the uncorrected/corrected series used in the comparisons with observations.  
+\itemize{
+\item{Function \code{correctionpoint} returns a data frame.}
+\item{If \code{export = FALSE}, the function \code{correctionpoints} returns an object of class \code{\link{SpatialPointsMeteorology-class}} with the bias-corrected meteorology for each point. If \code{export=TRUE} then bias-corrected data is written into the disk. For txt/rds export formats, the function returns an object of class \code{\link{SpatialPointsDataFrame-class}} containing the meta data of the files written in the disk. For netCDF export format the function returns \code{NULL}. If \code{corrOut = TRUE} the function returns a list which contains any previous output and an object with the calculated correction factors (biases, mappings) for each point and month.}
+\item{Function \code{correctionpoints.errors} (\code{keep.data = FALSE}) returns a data frame with the mean absolute error (MAE) and bias for each variable and point. If \code{keep.data = TRUE} then the function also returns a list of data frames with the uncorrected/corrected series used in the comparisons with observations.}
+}
 }
 \references{
 \enc{Boé}{Boe} J, Terray L, Habets F, Martin E (2007) Statistical and dynamical downscaling of the Seine basin climate for hydro-meteorological studies. Int J Climatol 27:1643–1655. doi: 10.1002/joc.1602
@@ -59,7 +64,7 @@ De Caceres M, Martin-StPaul N, Turco M, Cabon A, Granda V (2018) Estimating dail
 \enc{Déqué}{Deque} M (2007) Frequency of precipitation and temperature extremes over France in an anthropogenic scenario: Model results and statistical correction according to observed values. Glob Planet Change 57:16–26. doi: 10.1016/j.gloplacha.2006.11.030
 }
 \author{
-Miquel De \enc{Cáceres}{Caceres} Ainsa, Centre Tecnologic Forestal de Catalunya
+Miquel De \enc{Cáceres}{Caceres} Ainsa, CTFC
 
 Nicolas Martin, INRA-Avignon
 }

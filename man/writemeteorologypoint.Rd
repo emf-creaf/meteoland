@@ -2,19 +2,19 @@
 \name{writemeteorologypoint}
 \alias{writemeteorologypoint}
 \alias{writemeteorologypointfiles}
-%- Also NEED an '\alias' for EACH other topic documented here.
 \title{
 Writes point meteorology to the disk
 }
 \description{
-Functions to write point meteorological data to ascii files in different formats.
+Functions to write point meteorological data to disk files in different formats.
 }
 \usage{
 writemeteorologypoint(data, file, format = "meteoland/txt")
 writemeteorologypointfiles(object, dir=getwd(), format = "meteoland/txt",
                            metadatafile="MP.txt")
+writemeteorologypoints(object, file, format = "netCDF", 
+                       overwrite = FALSE, verbose = FALSE)
 }
-%- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{data}{An data frame with meteorological data.}
   \item{file}{A string with the file name to be written.}
@@ -23,9 +23,12 @@ writemeteorologypointfiles(object, dir=getwd(), format = "meteoland/txt",
   \item{dir}{Output directory for meteorology data.}
   \item{metadatafile}{The name of the file that will store the meta data describing all written files.}
 }
-
+\details{
+ Function \code{writemeteorologypoint} writes data series of a single location (i.e. a data frame) to ascii or rds files. Function \code{writemeteorologypointfiles} takes an object of \code{\link{SpatialPointsMeteorology-class}} and writes one file for each data point in the same formats as \code{writemeteorologypoint}. In addition, it writes a metadata file (see argument \code{metadatafile}) with point coordinates, station names and file names. Both functions share the same accepted formats, which are \code{"meteoland/txt"},  \code{"meteoland/rds"}, \code{"castanea/txt"} and \code{"castanea/rds"}.
+ Function \code{writemeteorologypoints} takes an object of \code{\link{SpatialPointsMeteorology-class}} and writes all its content in a single file (i.e. a netCDF).
+}
 \author{
-Miquel De \enc{Cáceres}{Caceres} Ainsa, Centre Tecnologic Forestal de Catalunya
+Miquel De \enc{Cáceres}{Caceres} Ainsa, CTFC
 
 Nicolas Martin, INRA-Avignon
 }

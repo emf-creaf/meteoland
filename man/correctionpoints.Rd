@@ -13,8 +13,9 @@ Functions \code{correctionpoint} and \code{correctionpoints} perform correction 
 correctionpoint(obs, mod, proj, dates = NULL, 
                 params = defaultCorrectionParams(), verbose=TRUE)
 correctionpoints(object, points, topodata = NULL, dates = NULL,
-                 export = FALSE, exportDir = getwd(), exportFormat = "meteoland/txt",
-                 metadataFile = "MP.txt", corrOut = FALSE, verbose = TRUE)
+                 export = FALSE, exportDir = getwd(), exportFile = NULL,
+                 exportFormat = "meteoland/txt", metadataFile = "MP.txt", 
+                 corrOut = FALSE, verbose = TRUE)
 correctionpoints.errors(object, points, topodata = NULL, 
                   error.type="residuals.cv",keep.data = FALSE, verbose = FALSE)
   

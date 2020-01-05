@@ -5,6 +5,7 @@
 # Version 0.8.8
 - New functions 'writemeteorologypoints' and 'readmeteorologypoints' for storing/reading point data as/from netCDF
 - Functions 'interpolationpoints' and 'correctionpoints' can now write their result to netCDF
+- Function 'summarypoints' can now produce summaries reading from netCDF
 
 # Version 0.8.7
 - New function 'readmeteorologygridpoints'

@@ -24,7 +24,7 @@
       dfvec[[i]] = .summaryvarpoint(vals, fun = fun, freq=freq, dates = dates, months = months,...)
     }
     cat("\n")
-  } else {
+  } else if(inherits(object,"character")) {
     file = object
     ncin = .openreadNetCDF(file)
     gt = .readgridtopologyNetCDF(ncin)
@@ -51,6 +51,7 @@
       }
     }  
     cat("\n")
+    .closeNetCDF(file, ncin)
     if(pixels) {
       #Remove empty grid cells
       cat(paste("  Removing ", sum(!sel), " empty grid pixels...\n", sep=""))
@@ -58,8 +59,7 @@
       dfvec = dfvec[sel]
       npoints = length(points)
     }
-  }
-  
+  } 
   noutvars = length(dfvec[[1]])
   dfout = data.frame(matrix(NA,nrow=npoints, ncol=noutvars))
   outvarnames = names(dfvec[[1]])

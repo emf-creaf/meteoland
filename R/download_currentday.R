@@ -216,3 +216,40 @@ downloadSMCcurrentday <- function(api, daily_meteoland=TRUE, variable_code=NULL,
     return(data)
   }
 }
+
+
+#### MeteoGalicia
+downloadMGcurrentday <- function(station_id=NULL, verbose = TRUE) {
+  url_base <- "http://servizos.meteogalicia.es/rss/observacion/ultimosHorariosEstacions.action?numHoras=24"
+  idpar <- c("TA_AVG_1.5m", "PP_SUM_1.5m")
+  if(!is.null(station_id)) {
+    if(verbose) cat(paste0("Downloading hourly data from: ", paste(station_id,collapse = ","),"\n"))
+    url <- paste0(url_base,"&idEst=",paste(station_id,collapse = ","),"&idParam=",paste(idpar,collapse=","))
+  } else {
+    if(verbose)cat("Downloading hourly data from all available stations\n")
+    url <- paste0(url_base,"&idParam=",paste(idpar,collapse=","))
+  }
+  data_df <- jsonlite::fromJSON(txt=url)[[1]]
+  ids <- data_df[["idEstacion"]]
+  stationNames <- data_df[["estacion"]]
+  instantes <- data_df[["listaInstantes"]]
+  IDvec = character()
+  Lec = character()
+  Prec = numeric()
+  for(i in 1:length(instantes)) {
+    lec_i = instantes[[i]]$instanteLecturaUTC
+    med_i = instantes[[i]]$listaMedidas
+    Lec = c(Lec, lec_i)
+    IDvec = c(IDvec, rep(ids[i], length(lec_i)))
+    Prec_i = rep(NA, length(med_i))
+    for(j in 1:length(med_i)) Prec_i[j] = med_i[[j]][1,"valor"]
+    Prec = c(Prec, Prec_i)
+  }
+  df = data.frame(ID = IDvec,
+             Time = as.POSIXlt(sub("T", " ",Lec), format = "%Y-%m-%d %H:%M:%S"),
+             Precipitation = Prec)
+  for(i in 1:length(instantes)) {
+    listaMedidas = instantes[[i]]
+  }
+  return(instantes)
+}

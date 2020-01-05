@@ -2,6 +2,9 @@
  NEWS for R Package "meteoland"
 -------------------------------
 
+# Version 0.8.9
+- New functions to download data from 'meteogalicia' (MG)
+
 # Version 0.8.8
 - New functions 'writemeteorologypoints' and 'readmeteorologypoints' for storing/reading point data as/from netCDF
 - Functions 'interpolationpoints' and 'correctionpoints' can now write their result to netCDF

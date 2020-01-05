@@ -88,3 +88,22 @@ downloadSMCstationlist <- function(api, date = NULL){
   row.names(data_sp) <- data_sp@data$ID
   return(data_sp)
 }
+
+
+### MeteoGalicia
+downloadMGstationlist <- function() {
+  url_base <- "http://servizos.meteogalicia.es/rss/observacion/listaEstacionsMeteo.action"
+  data_df <- jsonlite::fromJSON(txt=url_base)[[1]]
+  
+  data_sp <- SpatialPointsDataFrame(data = data.frame(ID = data_df$idEstacion,
+                                                      name = data_df$estacion,
+                                                      municipality = data_df$concello,
+                                                      province = data_df$provincia,
+                                                      lon = data_df$lon,
+                                                      lat = data_df$lat,
+                                                      elevation = data_df$altitude),
+                                    coords = cbind(as.numeric(data_df$utmx), as.numeric(data_df$utmy)), 
+                                    proj4string = CRS("+init=epsg:25829"))
+  row.names(data_sp) <- data_sp@data$ID
+  return(data_sp)
+}

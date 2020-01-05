@@ -248,7 +248,7 @@
   .writemeteorologygridNetCDF(data, pixels@grid, proj4string, nc, index=pixels@grid.index, verbose = verbose)
 }
 #Opens a NetCDF for reading data
-.openreadNetCDF<-function(file, verbose =TRUE) {
+.openreadNetCDF<-function(file, verbose =FALSE) {
   if(!file.exists(file)) stop(paste0("File '", file, "' does not exist."))
   if(verbose) cat(paste0("\nOpening '", file,"' to read data.\n"))
   return(nc_open(file))
@@ -304,7 +304,7 @@
 }
 
 #Closes NetCDF
-.closeNetCDF<-function(file,nc, verbose=TRUE) {
+.closeNetCDF<-function(file,nc, verbose=FALSE) {
   if(verbose) cat(paste0("\nClosing '", file,"'.\n"))
   nc_close(nc)
 }

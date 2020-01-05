@@ -1,26 +1,44 @@
 extractpointdates<-function(points, dates = NULL, verbose=FALSE) {
-  if(!inherits(points,"SpatialPointsMeteorology") && !inherits(points,"SpatialPointsDataFrame")) stop("'points' has to be of class 'SpatialPointsMeteorology' or 'SpatialPointsDataFrame'.")
-  if(class(dates)!="Date") stop("'dates' has to be of class 'Date'.")
-  npoints = length(points)
-  ndates = length(dates)
-  if(verbose) cat(paste("  Extracting ", ndates, " dates from ", npoints," points...\n", sep=""))
+  if(!inherits(points,"SpatialPointsMeteorology") 
+     && !inherits(points,"SpatialPointsDataFrame")
+     && !inherits(points,"character")) stop("'points' has to be of class 'SpatialPointsMeteorology', 'SpatialPointsDataFrame' or a character string.")
+  if(!is.null(dates)) if(class(dates)!="Date") stop("'dates' has to be of class 'Date'.")
   
-  dfvec = vector("list",npoints)
-  if(inherits(points,"SpatialPointsMeteorology")) {
-    if(!is.null(names(points@data))) ids = names(points@data)
-    else ids = 1:npoints
+  if(inherits(points,"SpatialPointsMeteorology") || inherits(points,"SpatialPointsDataFrame")) {
+    if(is.null(dates)) dates = points@dates
+    npoints = length(points)
+    dfvec = vector("list",npoints)
+    if(inherits(points,"SpatialPointsMeteorology")) {
+      if(!is.null(names(points@data))) ids = names(points@data)
+      else ids = 1:npoints
+    } else {
+      if(!is.null(rownames(points@data))) ids = rownames(points@data)
+      else ids = 1:npoints
+    }
+    ptsout = as(points,"SpatialPoints")
   } else {
-    if(!is.null(rownames(points@data))) ids = rownames(points@data)
-    else ids = 1:npoints
+    file = points
+    ncin = .openreadNetCDF(file)
+    crs = .readCRSNetCDF(ncin)
+    cc = .readpointcoordinatesNetCDF(ncin, crs)
+    ids = rownames(cc)
+    dates_file = .readdatesNetCDF(ncin)
+    varmapping = .defaultMapping()
+    ptsout = SpatialPoints(cc, crs)
   }
+  
+  npoints = length(ids)
+  ndates = length(dates)
   dateschar =as.character(dates)
+  if(verbose) cat(paste("  Extracting ", ndates, " dates from ", npoints," points...\n", sep=""))
   res = vector("list", ndates)
+  
   if(verbose)  pb = txtProgressBar(0, npoints, 0, style = 3)
   for(i in 1:npoints) {
     if(verbose) setTxtProgressBar(pb, i)
     if(inherits(points,"SpatialPointsMeteorology")) {
       obs = points@data[[i]]
-    } else {
+    } else if(inherits(points,"SpatialPointsDataFrame")) {
       f = paste(points@data$dir[i], points@data$filename[i],sep="/")
       if(!file.exists(f)) stop(paste("Observed file '", f,"' does not exist!", sep=""))
       if("format" %in% names(points@data)) { ##Format specified
@@ -28,6 +46,8 @@ extractpointdates<-function(points, dates = NULL, verbose=FALSE) {
       } else {
         obs = readmeteorologypoint(f)
       }
+    } else {
+      obs = .readmeteorologypointNetCDF(ncin,i, dates_file, varmapping)
     }
     for(d in 1:ndates) {
       if(is.null(res[[d]])) {
@@ -39,8 +59,10 @@ extractpointdates<-function(points, dates = NULL, verbose=FALSE) {
     }
   }
   if(verbose) cat("\n")
+  if(inherits(points,"character")) .closeNetCDF(file,ncin)
+  
   for(d in 1:ndates) {
-    res[[d]] = SpatialPointsDataFrame(as(points,"SpatialPoints"),res[[d]])
+    res[[d]] = SpatialPointsDataFrame(ptsout,res[[d]])
   }
   if(ndates==1) res = res[[1]]
   return(res)

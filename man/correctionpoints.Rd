@@ -64,7 +64,7 @@ Miquel De \enc{Cáceres}{Caceres} Ainsa, Centre Tecnologic Forestal de Catalunya
 Nicolas Martin, INRA-Avignon
 }
 \seealso{
-\code{\link{penman}}, \code{\link{extractNetCDF}}, \code{\link{SpatialPointsMeteorology-class}}, \code{\link{writemeteorologypointfiles}}, \code{\link{MeteorologyUncorrectedData}}, \code{\link{MeteorologyInterpolationData}}
+\code{\link{penman}}, \code{\link{SpatialPointsMeteorology-class}}, \code{\link{writemeteorologypointfiles}}, \code{\link{MeteorologyUncorrectedData}}, \code{\link{MeteorologyInterpolationData}}
 }
 \examples{
 data(examplegridtopography)

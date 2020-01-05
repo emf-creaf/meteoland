@@ -3,7 +3,6 @@
 \alias{writemeteorologygrid}
 \alias{writemeteorologygridpixel}
 \alias{writemeteorologypixels}
-%- Also NEED an '\alias' for EACH other topic documented here.
 \title{
 Writes grid meteorology to the disk
 }
@@ -17,7 +16,6 @@ writemeteorologypixels(object, file, dates, format = "netCDF",
                        add = FALSE, overwrite = FALSE, verbose = FALSE)
 writemeteorologygridpixel(file, index, data, verbose = FALSE)
 }
-%- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{object}{An object of class \code{\link{SpatialGridMeteorology-class}} or class \code{\link{SpatialPixelsMeteorology-class}} with the meteorological data to be written.}
   \item{file}{A string with the file name to be written.}
@@ -29,7 +27,9 @@ writemeteorologygridpixel(file, index, data, verbose = FALSE)
   \item{index}{Integer indicating the grid index position to be written.}
   \item{data}{A data frame with meteorological data corresponding to a pixel.}
 }
-
+\details{
+Functions \code{writemeteorologygrid} and \code{writemeteorologypixels} writes grided meteorological data (i.e. class \code{\link{SpatialGridMeteorology-class}} or class \code{\link{SpatialPixelsMeteorology-class}}, respectively) into a netCDF, with the possibility to overwrite existing data. Function \code{writemeteorologygridpixel} is meant to add/replace data in a netCDF corresponding to a specific pixel identified by its grid index.
+}
 \author{
 Miquel De \enc{Cáceres}{Caceres} Ainsa, CTFC
 }

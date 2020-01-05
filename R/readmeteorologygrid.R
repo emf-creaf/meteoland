@@ -1,3 +1,4 @@
+# Reads one or many gridded data and merges the result into a SpatialGridMeteorology
 readmeteorologygrid<-function(files, format = "netCDF", varmapping = NULL,
                               dates = NULL, bbox = NULL, offset = 0, verbose = FALSE) {
   nfiles = length(files)
@@ -17,6 +18,7 @@ readmeteorologygrid<-function(files, format = "netCDF", varmapping = NULL,
   if(verbose) cat("\nMerging gridded data...\n")
   return(mergegrids(l, verbose = verbose))
 }
+# Reads one or many gridded data, subsets pixels with non missing data, and merges the result into a SpatialPixelsMeteorology
 readmeteorologypixels<-function(files, format = "netCDF", varmapping = NULL,
                                 dates = NULL, bbox = NULL, offset = 0, verbose = FALSE) {
   nfiles = length(files)
@@ -36,6 +38,7 @@ readmeteorologypixels<-function(files, format = "netCDF", varmapping = NULL,
   if(verbose) cat("\nMerging gridded data...\n")
   return(mergegrids(l, verbose = verbose))
 }
+# Reads a subset of grid cells from one or many files and merges the result as a SpatialPointsMeteorology
 readmeteorologygridpoints<-function(files, format = "netCDF", varmapping = NULL,
                                     dates = NULL, bbox = NULL, offset = 0, verbose = FALSE) {
   nfiles = length(files)

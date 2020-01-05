@@ -1,3 +1,4 @@
+# Writes one file with meteorology data series of a data frame
 writemeteorologypoint<-function(data, file, format = "meteoland/txt") {
   format = match.arg(format, c("meteoland/txt", "meteoland/rds", "castanea/txt", "castanea/rds"))
   if(format=="castanea/txt" || format=="castanea/rds") {
@@ -20,6 +21,7 @@ writemeteorologypoint<-function(data, file, format = "meteoland/txt") {
     saveRDS(data,file)
   }
 }
+# Writes multiple files, one for each point
 writemeteorologypointfiles<-function(object, dir=getwd(), format ="meteoland/txt",
                                      metadatafile="MP.txt") {
   format = match.arg(format, c("meteoland/txt", "meteoland/rds", "castanea/txt", "castanea/rds"))
@@ -49,11 +51,11 @@ writemeteorologypointfiles<-function(object, dir=getwd(), format ="meteoland/txt
   write.table(as.data.frame(spdf),file= f,sep="\t", quote=FALSE)
   invisible(spdf)
 }
-
-writemeteorologypoints<-function(object, file, format = "netCDF", overwrite = FALSE, verbose = FALSE) {
+# Writes point meteorology to netCDF
+writemeteorologypoints<-function(object, file, format = "netCDF", add = FALSE, overwrite = FALSE, verbose = FALSE) {
   if(!inherits(object,"SpatialPointsMeteorology")) stop("'object' has to be of class 'SpatialGridMeteorology'.")
   nc = .openwritepointNetCDF(object@coords, proj4string = proj4string(object), dates = object@dates,
-                        file=file, overwrite = overwrite, verbose = verbose)
+                        file=file, add = add, overwrite = overwrite, verbose = verbose)
   .writemeteorologygpointsNetCDF(data = object@data, nc=nc, verbose = verbose)
   .closeNetCDF(file,nc, verbose = verbose)
 }

@@ -3,7 +3,6 @@
 \alias{readmeteorologygrid}
 \alias{readmeteorologypixels}
 \alias{readmeteorologygridpoints}
-%- Also NEED an '\alias' for EACH other topic documented here.
 \title{
 Reads gridded meteorology from the disk
 }
@@ -18,7 +17,6 @@ readmeteorologypixels(files, format = "netCDF", varmapping = NULL,
 readmeteorologygridpoints(files, format = "netCDF", varmapping = NULL,
                       dates = NULL, bbox = NULL, offset = 0, verbose = FALSE)
 }
-%- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{files}{Character vector with the file names to be read.}
   \item{format}{Format of meteorological data. Currently, the only accepted format is \code{"netCDF"}.}
@@ -33,10 +31,13 @@ readmeteorologygridpoints(files, format = "netCDF", varmapping = NULL,
   
   Function \code{readmeteorologygridpoints} is similar to the preceding ones, but is meant to extract specific grid pixels and return them as spatial points. If more than one file is specificated, the function reads all of them and then tries to merge the data into a single meteorology object (see function \code{\link{mergepoints}}).
   
-  The functions are primarily meant to read NetCDF written by package meteoland, but also to import data written by other software. Rotated grids should not be read using functions \code{readmeteorologygrid} or \code{readmeteorologypixels}.
+  The functions are primarily meant to read NetCDF written by package meteoland, but also to import data written by other software. In this case, a mapping can be supplied to map variable names in the netCDF to variables used in meteoland. Rotated grids should not be read using functions \code{readmeteorologygrid} or \code{readmeteorologypixels}.
 }
 \value{
-Function \code{readmeteorologygrid} returns an object \code{\link{SpatialGridMeteorology-class}}. Function \code{readmeteorologypixels} returns an object \code{\link{SpatialPixelsMeteorology-class}}. Function \code{readmeteorologygridpoints} returns an object \code{\link{SpatialPointsMeteorology-class}}.
+\itemize{
+\item{Function \code{readmeteorologygrid} returns an object \code{\link{SpatialGridMeteorology-class}}.}
+\item{Function \code{readmeteorologypixels} returns an object \code{\link{SpatialPixelsMeteorology-class}}.} \item{Function \code{readmeteorologygridpoints} returns an object \code{\link{SpatialPointsMeteorology-class}}.}
+}
 }
 
 \author{

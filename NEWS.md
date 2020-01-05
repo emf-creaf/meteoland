@@ -3,7 +3,7 @@
 -------------------------------
 
 # Version 0.8.8
-- New function 'writemeteorologypoints' for storing point data as netCDF
+- New functions 'writemeteorologypoints' and 'readmeteorologypoints' for storing/reading point data as/from netCDF
 - Function 'interpolationpoints' can now write netCDF
 
 # Version 0.8.7

@@ -4,6 +4,7 @@
 
 # Version 0.8.9
 - New functions to download data from 'meteogalicia' (MG)
+- Improvements in function 'reshapeworldmet'
 
 # Version 0.8.8
 - New functions 'writemeteorologypoints' and 'readmeteorologypoints' for storing/reading point data as/from netCDF

@@ -20,8 +20,10 @@ reshapeworldmet<-function(hourly_data, output="SpatialPointsMeteorology", comple
     if(verbose) setTxtProgressBar(pb, i)
     data_df = s[[i]]
     varnames <-c("code", "lon","lat", "station", "elev", "date", "air_temp", "atmos_pres", "RH",  "precip_6", "wd", "ws")
+    varnames <- varnames[varnames %in% names(data_df)]
     data_df <- data_df[,varnames]
     numvar <- c("lon","lat","elev","air_temp", "precip_6", "RH", "wd", "ws")
+    numvar <- numvar[numvar %in% names(data_df)]
     data_df[,numvar] <- sapply(data_df[,numvar],as.numeric)
     
     df_dates = levels(as.factor(as.Date(data_df$date)))
@@ -53,11 +55,34 @@ reshapeworldmet<-function(hourly_data, output="SpatialPointsMeteorology", comple
     coords$lat[i] = data_agg$lat[1,"mean"]
     elevation[i] = data_agg$elev[1,"mean"]
     
-    data_out <- data.frame(MeanTemperature = data_agg$air_temp[,"mean"], MinTemperature = data_agg$air_temp[,"min"], MaxTemperature = data_agg$air_temp[,"max"],
-                          Precipitation = data_agg$precip_6[,"sum"], 
-                          MeanRelativeHumidity = data_agg$RH[,"mean"], MinRelativeHumidity = data_agg$RH[,"min"], MaxRelativeHumidity = data_agg$RH[,"max"],
-                          WindSpeed = data_agg$ws[,"mean"], WindDirection = wd_agg$wd,
-                          row.names = as.character(df_dates))
+    data_out <- data.frame(row.names = as.character(df_dates))
+    if("air_temp" %in% varnames) {
+      data_out$MeanTemperature = data_agg$air_temp[,"mean"]
+      data_out$MinTemperature = data_agg$air_temp[,"min"]
+      data_out$MaxTemperature = data_agg$air_temp[,"max"]
+    } else {
+      data_out$MeanTemperature = NA
+      data_out$MinTemperature = NA
+      data_out$MaxTemperature = NA
+    }
+    if("precip_6" %in% varnames) {
+      data_out$Precipitation = data_agg$precip_6[,"sum"] 
+    } else {
+      data_out$Precipitation = NA
+    }
+    if("RH" %in% varnames) {
+      data_out$MeanRelativeHumidity = data_agg$RH[,"mean"]
+      data_out$MinRelativeHumidity = data_agg$RH[,"min"]
+      data_out$MaxRelativeHumidity = data_agg$RH[,"max"]
+    } else {
+      data_out$MeanRelativeHumidity = NA
+      data_out$MinRelativeHumidity = NA
+      data_out$MaxRelativeHumidity = NA
+    }
+    if("ws" %in% varnames) data_out$WindSpeed = data_agg$ws[,"mean"]
+    else data_out$WindSpeed = NA
+    if("wd" %in% varnames) data_out$WindDirection = wd_agg$wd
+    else data_out$WindDirection = NA
     if(complete) data_out<-meteocomplete(data_out, 
                                          latitude = coords$lat[i],
                                          elevation = elevation[i],

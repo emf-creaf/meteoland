@@ -18,23 +18,18 @@ library(worldmet)
 ```
 
 ```{r}
-sg_st = getMeta(country="SG", plot = FALSE) #Senegal
-ga_st = getMeta(country="GA", plot = FALSE) #Gambia
-gv_st = getMeta(country="GV", plot = FALSE) #Guinea
-ml_st = getMeta(country="ML", plot = FALSE) #Mali
-mr_st = getMeta(country="MR", plot = FALSE) #Mauritania
-pu_st = getMeta(country="PU", plot = FALSE) #Guinea-Bissau
-codes <- c(sg_st$code, ga_st$code, gv_st$code, ml_st$code, mr_st$code, pu_st$code)
+#Senegal / Gambia/ Guinea/ Mali/ Mauritania /Guinea bissau
+countries <- c("SG", "GA", "GV", "ML", "MR", "PU")
+sg_st = getMeta(country=countries, plot = FALSE) 
 ```
 
 Download hourly weather station data for year 2018
 ```{r}
-hour2018<-importNOAA(code = codes, year=2018, precip= TRUE)
+hour2018<-importNOAA(code = sg_st$code, year=2018, precip= TRUE)
 ```
 Reshape downloaded hourly data into daily data in form of an object `SpatialPointsMeteorology`:
 ```{r}
 spt_sen<-reshapeworldmet(hour2018, output = "SpatialPointsMeteorology", verbose=FALSE)
-spt_mid<-reshapeworldmet(hour2018, output = "MeteorologyInterpolationData", verbose=FALSE)
 ```
 
 
@@ -79,6 +74,12 @@ spplot(sgt, "aspect")
 ## Performing interpolation
 
 ```{r}
+spt_mid<-reshapeworldmet(hour2018, output = "MeteorologyInterpolationData", 
+                         proj4string = CRS("+init=epsg:32628"),
+                         verbose=FALSE)
+```
+
+```{r}
 mid <- interpolationgrid(spt_mid, grid = sgt, dates=as.Date(c("2018-03-15", "2018-07-30")))
 ```
 
@@ -87,5 +88,5 @@ spplot(mid,1,"MeanTemperature")
 ```
 
 ```{r, fig=TRUE}
-spplot(mid,2,"MeanTemperature")
+spplot(mid,1,"MeanRelativeHumidity")
 ```

@@ -1,4 +1,5 @@
-reshapeworldmet<-function(hourly_data, output="SpatialPointsMeteorology", complete=TRUE, verbose = TRUE) {
+reshapeworldmet<-function(hourly_data, output="SpatialPointsMeteorology", 
+                          proj4string = NULL, complete=TRUE, verbose = TRUE) {
   output <- match.arg(output, c("SpatialPointsMeteorology", "SpatialPointsTopography", "MeteorologyInterpolationData"))
   x= as.data.frame(hourly_data)
   s = split(x, x$code)
@@ -99,6 +100,10 @@ reshapeworldmet<-function(hourly_data, output="SpatialPointsMeteorology", comple
   
   sp <- SpatialPoints(coords = coords,
                       proj4string = CRS("+proj=longlat"))
+  if(!is.null(proj4string)) {
+    if(inherits(proj4string,"character")) proj4string = CRS(proj4string)
+    sp = spTransform(sp, proj4string)
+  }
   spt <- SpatialPointsTopography(sp, elevation)
   spm <- SpatialPointsMeteorology(sp, l, dates = as.Date(dates))
   if(output=="SpatialPointsMeteorology") return(spm)

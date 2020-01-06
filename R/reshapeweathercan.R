@@ -1,4 +1,5 @@
-reshapeweathercan<-function(hourly_data, daily_data = NULL, output="SpatialPointsMeteorology", complete=TRUE, verbose = TRUE) {
+reshapeweathercan<-function(hourly_data, daily_data = NULL, output="SpatialPointsMeteorology", 
+                            proj4string = NULL, complete=TRUE, verbose = TRUE) {
   output <- match.arg(output, c("SpatialPointsMeteorology", "SpatialPointsTopography", "MeteorologyInterpolationData"))
   hourly_data= as.data.frame(hourly_data)
   s_hourly = split(hourly_data, hourly_data$station_id)
@@ -135,7 +136,10 @@ reshapeweathercan<-function(hourly_data, daily_data = NULL, output="SpatialPoint
   }
   sp <- SpatialPoints(coords = coords,
                       proj4string = CRS("+proj=longlat"))
-
+  if(!is.null(proj4string)) {
+    if(inherits(proj4string,"character")) proj4string = CRS(proj4string)
+    sp = spTransform(sp, proj4string)
+  }
   if(output %in% c("SpatialPointsMeteorology", "MeteorologyInterpolationData")) {
     spm <- SpatialPointsMeteorology(sp, l, dates = as.Date(dates))
     if(output == "SpatialPointsMeteorology") {

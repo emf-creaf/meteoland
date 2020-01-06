@@ -8,10 +8,11 @@ Reshapes data from 'worldmet' or 'weathercan'
 Reshapes weather station data acquired using the 'worldmet' or 'weathercan' R packages into formats useful for meteoland
 }
 \usage{
-reshapeworldmet(hourly_data, output = "SpatialPointsMeteorology", complete = TRUE,
+reshapeworldmet(hourly_data, output = "SpatialPointsMeteorology", 
+                proj4string = NULL, complete = TRUE,
                 verbose = TRUE)
 reshapeweathercan(hourly_data, daily_data = NULL, output = "SpatialPointsMeteorology",
-                  complete = TRUE, verbose = TRUE)
+                  proj4string = NULL, complete = TRUE, verbose = TRUE)
 }
 \arguments{
   \item{hourly_data}{
@@ -22,6 +23,9 @@ reshapeweathercan(hourly_data, daily_data = NULL, output = "SpatialPointsMeteoro
   }
   \item{output}{
      Kind of output desired. Either '\code{\link{SpatialPointsTopography}}', '\code{\link{SpatialPointsMeteorology}}' or '\code{\link{MeteorologyInterpolationData}}'.
+  }
+  \item{proj4string}{
+     A string or CRS to change the coordinate reference system of the output. If NULL the spatial reference will be geographic coordinates (i.e. \code{CRS("+proj=longlat")}). When reshaping to \code{MeteorologyInterpolationData} it is recommended to use a reference system with meters in units, such as UTM.
   }
   \item{complete}{ A flag to indicate that missing variables should be completed using function \code{\link{meteocomplete}}}
   \item{verbose}{A flag to show information of the reshape process in the console output.}

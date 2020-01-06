@@ -236,7 +236,7 @@ downloadMGcurrentday <- function(station_id=NULL, daily = TRUE, verbose = TRUE) 
   }
   data_df <- jsonlite::fromJSON(txt=url)[[1]]
   
-  if(verbose) cat(paste0("Arranging hourly data"))
+  if(verbose) cat(paste0("Arranging hourly data\n"))
   ids <- data_df[["idEstacion"]]
   stationNames <- data_df[["estacion"]]
   instantes <- data_df[["listaInstantes"]]
@@ -257,8 +257,9 @@ downloadMGcurrentday <- function(station_id=NULL, daily = TRUE, verbose = TRUE) 
     else df_all = rbind(df_all, df_i)
   }
   if(daily) {
-    if(verbose)cat("\nDownloading station info\n")
+    if(verbose)cat("Downloading station info\n")
     MGstation_sp = downloadMGstationlist()
+    if(verbose)cat("Aggregating to daily scale\n")
     MGstation_sp<- MGstation_sp[MGstation_sp$ID %in% unique(df_all$ID),]
     data_agg <- aggregate(df_all[,names(idpar)],list(ID = df_all$ID), 
                           function(x){
@@ -286,5 +287,6 @@ downloadMGcurrentday <- function(station_id=NULL, daily = TRUE, verbose = TRUE) 
     data_sp = SpatialPointsDataFrame(SpatialPoints(MGstation_sp@coords[rownms,], MGstation_sp@proj4string), data_df)
     return(data_sp)
   }
+  if(verbose)cat("\nHourly results are returned\n")
   return(df_all)
 }

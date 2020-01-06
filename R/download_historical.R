@@ -355,3 +355,86 @@ downloadSMChistorical <- function(api, dates, station_id=NULL, variable_code=NUL
     return(data)
   }
 }
+
+#### MeteoGalicia
+downloadMGhistorical <- function(date_from, date_to, station_id = NULL, verbose=TRUE) {
+  url_base <- "http://servizos.meteogalicia.es/rss/observacion/datosDiariosEstacionsMeteo.action?"
+  idpar <- c(MeanTemperature = "TA_AVG_1.5m", 
+             MinTemperature = "TA_MIN_1.5m", 
+             MaxTemperature = "TA_MAX_1.5m", 
+             MeanRelativeHumidity = "HR_AVG_1.5m", 
+             MinRelativeHumidity = "HR_MIN_1.5m", 
+             MaxRelativeHumidity = "HR_MAX_1.5m", 
+             Precipitation = "PP_SUM_1.5m", 
+             WindSpeed = "VV_AVG_2m",
+             WindDirection = "DVP_MODA_2m",
+             Radiation = "IRD_SUM_1.5m",
+             PET = "ET0_SUM_1.5m")
+  date_from = format(as.Date(date_from),"%d/%m/%Y")
+  date_to = format(as.Date(date_to),"%d/%m/%Y")
+  if(!is.null(station_id)) {
+    if(verbose) cat(paste0("Downloading historic daily data from: ", paste(station_id,collapse = ","),"...\n"))
+    url <- paste0(url_base,"idEst=",paste(station_id,collapse = ","),"&idParam=",paste(idpar,collapse=","), 
+                  "&dataIni=",date_from,"&dataFin=",date_to)
+  } else {
+    if(verbose)cat("Downloading historic daily data from all available stations...\n")
+    url <- paste0(url_base,"idParam=",paste(idpar,collapse=","),
+                  "&dataIni=",date_from,"&dataFin=",date_to)
+  }
+  data_df <- jsonlite::fromJSON(txt=url)[[1]]
+
+  if(verbose) cat(paste0("Arranging station data...\n"))
+  dates = as.Date(data_df$data)
+  #get unique station codes
+  if(is.null(station_id)) {
+    station_id = character()
+    for(i in 1:length(data_df$listaEstacions)) {
+      station_id = c(station_id, data_df$listaEstacions[[i]]$idEstacion)
+    }
+    station_id = unique(station_id)
+  }
+  #get station coordinates
+  cc = matrix(nrow=length(station_id), ncol=2)
+  colnames(cc) <- c("utmx", "utmy")
+  rownames(cc) <- station_id
+  # stdata = data.frame(ID = station_id,
+  #                   name = NA,
+  #                   municipality = NA,
+  #                   province = NA)
+  for(i in 1:length(station_id)) {
+    for(j in 1:length(data_df$listaEstacions)) {
+      w = which(data_df$listaEstacions[[j]]$idEstacion==station_id[i])
+      if(length(w)==1) {
+        # stdata[i,"name"] = data_df$listaEstacions[[j]]$estacion
+        # stdata[i,"municipality"] = data_df$listaEstacions[[j]]$concello
+        # stdata[i,"province"] = data_df$listaEstacions[[j]]$provincia
+        cc[i,1] = as.numeric(data_df$listaEstacions[[j]]$utmx[w])
+        cc[i,2] = as.numeric(data_df$listaEstacions[[j]]$utmy[w])
+      }
+    }
+  }
+  if(verbose) cat(paste0("Arranging daily weather data...\n"))
+  #get meteo data
+  data_vec = vector("list", length(station_id))
+  names(data_vec)<-as.character(station_id)
+  for(i in 1:length(station_id)) {
+    df_i = data.frame(DOY = as.POSIXlt(dates)$yday+1, row.names=dates)
+    df_i[names(idpar)] = NA
+    for(j in 1:length(data_df$listaEstacions)) {
+      w = which(data_df$listaEstacions[[j]]$idEstacion==station_id[i]) #Find position of this station
+      if(length(w)==1) {
+        med_ij = data_df$listaEstacions[[j]]$listaMedidas[[w]]
+        for(var in names(idpar)) {
+          if(idpar[[var]] %in% med_ij$codigoParametro) df_i[j,var] <- mean(med_ij[med_ij$codigoParametro==idpar[[var]],"valor"], na.rm=T)
+        }
+      }
+    } 
+    df_i$Radiation = df_i$Radiation/100 # From 10kJ to MJ
+    df_i[df_i==-9999] = NA # Change missing values
+    data_vec[[i]] = df_i
+  }
+  
+  return(SpatialPointsMeteorology(SpatialPoints(cc, CRS("+init=epsg:25829")),
+                                  dates = dates,
+                                  data = data_vec))
+}

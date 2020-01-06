@@ -31,15 +31,14 @@ reshapeworldmet<-function(hourly_data, output="SpatialPointsMeteorology", comple
                       
     data_agg <- aggregate(data_df[,numvar],list(date = as.Date(data_df$date)), 
                           function(x){
-                            mean<-mean(x,na.rm=T)
-                            min<-min(x,na.rm=T)
-                            max<-max(x,na.rm=T)
-                            sum<-sum(x,na.rm=T)
-                            if(is.infinite(mean)) mean <- NA
-                            if(is.infinite(min)) min <- NA
-                            if(is.infinite(max)) max <- NA
-                            if(is.infinite(sum)) sum <- NA
-                            return(c(mean=mean,min=min,max=max,sum=sum))})
+                            if(sum(is.na(x))<length(x)) {
+                              mean<-mean(x,na.rm=T)
+                              min<-min(x,na.rm=T)
+                              max<-max(x,na.rm=T)
+                              sum<-sum(x,na.rm=T)
+                              return(c(mean=mean,min=min,max=max,sum=sum))
+                            } 
+                            return(c(mean=NA, min=NA, max=NA, sum=NA))})
 
     # wind direction
     wd_agg <- aggregate(list(wd = data_df$wd),list(date = as.Date(data_df$date)),

@@ -1,0 +1,87 @@
+---
+title: "Interpolation over Senegal"
+author: "Miquel De Cáceres"
+date: "6 de gener de 2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(meteoland)
+```
+
+## Accessing weather station data
+
+
+```{r}
+library(worldmet)
+```
+
+```{r}
+sg_st = getMeta(country="SG", plot = FALSE)
+ga_st = getMeta(country="GA", plot = FALSE)
+codes <- c(sg_st$code, ga_st$code)
+```
+
+Download hourly weather station data for year 2018
+```{r}
+hour2018<-importNOAA(code = codes, year=2018, precip= TRUE)
+```
+Reshape downloaded hourly data into daily data in form of an object `SpatialPointsMeteorology`:
+```{r}
+spt_sen<-reshapeworldmet(hour2018, output = "SpatialPointsMeteorology", verbose=FALSE)
+spt_mid<-reshapeworldmet(hour2018, output = "MeteorologyInterpolationData", verbose=FALSE)
+```
+
+
+## Accessing elevation data
+
+Download elevation data for senegal
+```{r, echo=FALSE}
+library(raster)
+elev_raster <- getData('alt', country="SEN")
+```
+
+
+```{r}
+plot(elev_raster)
+plot(spt_sen, add=TRUE)
+```
+
+Reproject raster into UTM to have meters as coordinate units
+```{r}
+elev_utm = projectRaster(elev_raster, crs = CRS("+init=epsg:32628"))
+```
+Reshape into a `SpatialGridDataFrame`:
+```{r}
+elev_sgd = as(elev_utm, "SpatialGridDataFrame")
+```
+
+Build object of `SpatialGridTopography`
+```{r}
+sgt <- SpatialGridTopography(elev_sgd@grid, elevation = elev_sgd$SEN_msk_alt, 
+                             proj4string = proj4string(elev_sgd))
+```
+
+Check slope and aspect calculated by meteoland
+```{r, fig=TRUE}
+spplot(sgt, "slope")
+```
+
+```{r, fig=TRUE}
+spplot(sgt, "aspect")
+```
+
+## Performing interpolation
+
+```{r}
+mid <- interpolationgrid(spt_mid, grid = sgt, dates=as.Date(c("2018-03-15", "2018-07-30")))
+```
+
+```{r, fig=TRUE}
+spplot(mid,1,"MeanTemperature")
+```
+
+```{r, fig=TRUE}
+spplot(mid,2,"MeanTemperature")
+```

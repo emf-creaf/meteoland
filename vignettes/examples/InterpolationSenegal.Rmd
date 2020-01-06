@@ -18,9 +18,13 @@ library(worldmet)
 ```
 
 ```{r}
-sg_st = getMeta(country="SG", plot = FALSE)
-ga_st = getMeta(country="GA", plot = FALSE)
-codes <- c(sg_st$code, ga_st$code)
+sg_st = getMeta(country="SG", plot = FALSE) #Senegal
+ga_st = getMeta(country="GA", plot = FALSE) #Gambia
+gv_st = getMeta(country="GV", plot = FALSE) #Guinea
+ml_st = getMeta(country="ML", plot = FALSE) #Mali
+mr_st = getMeta(country="MR", plot = FALSE) #Mauritania
+pu_st = getMeta(country="PU", plot = FALSE) #Guinea-Bissau
+codes <- c(sg_st$code, ga_st$code, gv_st$code, ml_st$code, mr_st$code, pu_st$code)
 ```
 
 Download hourly weather station data for year 2018

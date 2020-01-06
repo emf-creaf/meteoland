@@ -219,9 +219,14 @@ downloadSMCcurrentday <- function(api, daily_meteoland=TRUE, variable_code=NULL,
 
 
 #### MeteoGalicia
-downloadMGcurrentday <- function(station_id=NULL, verbose = TRUE) {
+downloadMGcurrentday <- function(station_id=NULL, daily = TRUE, verbose = TRUE) {
   url_base <- "http://servizos.meteogalicia.es/rss/observacion/ultimosHorariosEstacions.action?numHoras=24"
-  idpar <- c("TA_AVG_1.5m", "PP_SUM_1.5m")
+  idpar <- c(MeanTemperature = "TA_AVG_1.5m", 
+             MinTemperature = "TA_MIN_1.5m", 
+             MaxTemperature = "TA_MAX_1.5m", 
+             MeanRelativeHumidity = "HR_AVG_1.5m", 
+             Precipitation = "PP_SUM_1.5m", 
+             WindSpeed = "VV_AVG_2m")
   if(!is.null(station_id)) {
     if(verbose) cat(paste0("Downloading hourly data from: ", paste(station_id,collapse = ","),"\n"))
     url <- paste0(url_base,"&idEst=",paste(station_id,collapse = ","),"&idParam=",paste(idpar,collapse=","))
@@ -230,26 +235,56 @@ downloadMGcurrentday <- function(station_id=NULL, verbose = TRUE) {
     url <- paste0(url_base,"&idParam=",paste(idpar,collapse=","))
   }
   data_df <- jsonlite::fromJSON(txt=url)[[1]]
+  
+  if(verbose) cat(paste0("Arranging hourly data"))
   ids <- data_df[["idEstacion"]]
   stationNames <- data_df[["estacion"]]
   instantes <- data_df[["listaInstantes"]]
-  IDvec = character()
-  Lec = character()
-  Prec = numeric()
+  df_all = NULL
   for(i in 1:length(instantes)) {
     lec_i = instantes[[i]]$instanteLecturaUTC
     med_i = instantes[[i]]$listaMedidas
-    Lec = c(Lec, lec_i)
-    IDvec = c(IDvec, rep(ids[i], length(lec_i)))
-    Prec_i = rep(NA, length(med_i))
-    for(j in 1:length(med_i)) Prec_i[j] = med_i[[j]][1,"valor"]
-    Prec = c(Prec, Prec_i)
+    df_i = data.frame(ID = rep(ids[i], length(lec_i)),
+                    Time = as.POSIXlt(sub("T", " ",lec_i), format = "%Y-%m-%d %H:%M:%S"))
+    for(var in names(idpar)) {
+      df_i[[var]] = NA
+      for(h in 1:length(med_i)) {
+        med_ih = med_i[[h]]
+        if(idpar[[var]] %in% med_ih$codigoParametro) df_i[h,var] <- mean(med_ih[med_ih$codigoParametro==idpar[[var]],"valor"], na.rm=T)
+      }
+    }
+    if(is.null(df_all)) df_all = df_i
+    else df_all = rbind(df_all, df_i)
   }
-  df = data.frame(ID = IDvec,
-             Time = as.POSIXlt(sub("T", " ",Lec), format = "%Y-%m-%d %H:%M:%S"),
-             Precipitation = Prec)
-  for(i in 1:length(instantes)) {
-    listaMedidas = instantes[[i]]
+  if(daily) {
+    if(verbose)cat("\nDownloading station info\n")
+    MGstation_sp = downloadMGstationlist()
+    MGstation_sp<- MGstation_sp[MGstation_sp$ID %in% unique(df_all$ID),]
+    data_agg <- aggregate(df_all[,names(idpar)],list(ID = df_all$ID), 
+                          function(x){
+                            if(sum(is.na(x))<length(x)) {
+                              mean<-mean(x,na.rm=T)
+                              min<-min(x,na.rm=T)
+                              max<-max(x,na.rm=T)
+                              sum<-sum(x,na.rm=T)
+                              return(c(mean=mean,min=min,max=max,sum=sum))
+                            } 
+                            return(c(mean=NA, min=NA, max=NA, sum=NA))})
+    rownms = as.character(data_agg$ID)
+    data_df <- data.frame(ID = data_agg$ID, name = MGstation_sp@data[rownms,"name"], 
+                          lon = MGstation_sp@data[rownms,"lon"],
+                          lat = MGstation_sp@data[rownms,"lat"], 
+                          elevation = MGstation_sp@data[rownms,"elevation"],
+                          MeanTemperature = data_agg[["MeanTemperature"]][ ,"mean"], 
+                          MinTemperature = data_agg[["MinTemperature"]][ ,"min"], 
+                          MaxTemperature = data_agg[["MaxTemperature"]][ ,"max"],
+                          Precipitation = data_agg[["Precipitation"]][ ,"sum"], 
+                          MeanRelativeHumidity = data_agg[["MeanRelativeHumidity"]][ ,"mean"], 
+                          MinRelativeHumidity = data_agg[["MeanRelativeHumidity"]][ ,"min"], 
+                          MaxRelativeHumidity = data_agg[["MeanRelativeHumidity"]][ ,"max"],
+                          WindSpeed = data_agg[["WindSpeed"]][ ,"mean"])
+    data_sp = SpatialPointsDataFrame(SpatialPoints(MGstation_sp@coords[rownms,], MGstation_sp@proj4string), data_df)
+    return(data_sp)
   }
-  return(instantes)
+  return(df_all)
 }

@@ -10,46 +10,50 @@ knitr::opts_chunk$set(echo = TRUE)
 library(meteoland)
 ```
 
+In this document we show how to obtain and process the topographic and weather data needed by package **meteoland** to conduct weather interpolation over a given country. We'll use Senegal as case study.
+
 ## Accessing weather station data
 
-
+We start by loading package **worldmet**, which provides access to over 30.000 weather stations across the globe:
 ```{r}
 library(worldmet)
 ```
-
+In order to download weather data, we must first obtain the codes of the weather stations available for our study area. This can be done using function `getMeta()` from worldmet, which we use to know available weather stations for Senegal and neighbouring countries:
 ```{r}
-#Senegal / Gambia/ Guinea/ Mali/ Mauritania /Guinea bissau
+#Country codes for Senegal / Gambia/ Guinea/ Mali/ Mauritania /Guinea bissau
 countries <- c("SG", "GA", "GV", "ML", "MR", "PU")
 sg_st = getMeta(country=countries, plot = FALSE) 
+sg_st
 ```
-
-Download hourly weather station data for year 2018
+Let's assume that we want to interpolate weather for year 2018. We can download hourly weather station data for the selected stations and year 2018 using function `importNOAA()`:
 ```{r}
 hour2018<-importNOAA(code = sg_st$code, year=2018, precip= TRUE)
 ```
-Reshape downloaded hourly data into daily data in form of an object `SpatialPointsMeteorology`:
+Some stations/years were missing. Using function `reshapeworldmet()` from meteoland, we can reshape downloaded hourly data into daily data in form of an object `SpatialPointsMeteorology`:
 ```{r}
 spt_sen<-reshapeworldmet(hour2018, output = "SpatialPointsMeteorology", verbose=FALSE)
+spt_sen
 ```
 
 
 ## Accessing elevation data
 
-Download elevation data for senegal
+We can use function `getData()` from package **raster** to download elevation data for Senegal:
 ```{r, echo=FALSE}
 library(raster)
 elev_raster <- getData('alt', country="SEN")
+elev_raster
 ```
-
-
+The previous function returns a `Raster` grid object in geographic coordinates, which we can plot along with the station locations:
 ```{r}
 plot(elev_raster)
 plot(spt_sen, add=TRUE)
 ```
 
-Reproject raster into UTM to have meters as coordinate units
+Reproject the raster to 29N UTM to have meters as coordinate units
 ```{r}
 elev_utm = projectRaster(elev_raster, crs = CRS("+init=epsg:32628"))
+elev_utm
 ```
 Reshape into a `SpatialGridDataFrame`:
 ```{r}
@@ -60,15 +64,16 @@ Build object of `SpatialGridTopography`
 ```{r}
 sgt <- SpatialGridTopography(elev_sgd@grid, elevation = elev_sgd$SEN_msk_alt, 
                              proj4string = proj4string(elev_sgd))
+spxt <- as(sgt, "SpatialPixelsTopography")
 ```
 
 Check slope and aspect calculated by meteoland
 ```{r, fig=TRUE}
-spplot(sgt, "slope")
+spplot(spxt, "slope")
 ```
 
 ```{r, fig=TRUE}
-spplot(sgt, "aspect")
+spplot(spxt, "aspect")
 ```
 
 ## Performing interpolation
@@ -80,7 +85,7 @@ spt_mid<-reshapeworldmet(hour2018, output = "MeteorologyInterpolationData",
 ```
 
 ```{r}
-mid <- interpolationgrid(spt_mid, grid = sgt, dates=as.Date(c("2018-03-15", "2018-07-30")))
+mid <- interpolationpixels(spt_mid, spxt, dates=as.Date(c("2018-03-15", "2018-07-30")))
 ```
 
 ```{r, fig=TRUE}

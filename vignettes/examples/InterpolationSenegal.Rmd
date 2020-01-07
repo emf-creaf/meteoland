@@ -1,5 +1,5 @@
 ---
-title: "Interpolation over Senegal"
+title: "Daily weather interpolation over Senegal"
 author: "Miquel De Cáceres"
 date: "6 de gener de 2020"
 output: html_document
@@ -15,7 +15,7 @@ In this document we show how to obtain and process the topographic and weather d
 ## Accessing weather station data
 
 We start by loading package **worldmet**, which provides access to over 30.000 weather stations across the globe:
-```{r}
+```{r, echo = FALSE}
 library(worldmet)
 ```
 In order to download weather data, we must first obtain the codes of the weather stations available for our study area. This can be done using function `getMeta()` from worldmet, which we use to know available weather stations for Senegal and neighbouring countries:
@@ -29,45 +29,65 @@ Let's assume that we want to interpolate weather for year 2018. We can download 
 ```{r}
 hour2018<-importNOAA(code = sg_st$code, year=2018, precip= TRUE)
 ```
-Some stations/years were missing. Using function `reshapeworldmet()` from meteoland, we can reshape downloaded hourly data into daily data in form of an object `SpatialPointsMeteorology`:
+Six stations had missing data for year 2018 and were excluded from the output. Using function `reshapeworldmet()` from meteoland, we can reshape the hourly data of the remaining stations into daily data in form of an object `SpatialPointsMeteorology`:
 ```{r}
 spt_sen<-reshapeworldmet(hour2018, output = "SpatialPointsMeteorology", verbose=FALSE)
 spt_sen
 ```
 
+We can display the time series of one of the weather stations using
+```{r}
+meteoplot(spt_sen, 5, "MeanTemperature", ylab ="Mean temperature (ºC)")
+```
+
+While `SpatialPointsMeteorology` is the class that meteoland uses for point weather series, a special object of class `MeteorologyInterpolationData` needs to be created for interpolation, containing not only station weather but also station elevation and interpolation parameters. This can be obtained using the same function `reshapeworldmet()`:
+
+```{r}
+spt_mid<-reshapeworldmet(hour2018, output = "MeteorologyInterpolationData", 
+                         proj4string = CRS("+init=epsg:32628"),
+                         verbose=FALSE)
+spt_mid
+```
+
+Note that we specified a CRS projection (parameter `proj4string`) to UTM28N. This is because interpolation should be preferably conducted on a projected coordinate reference system with easting and northing in meters.
 
 ## Accessing elevation data
 
-We can use function `getData()` from package **raster** to download elevation data for Senegal:
+To perform weather interpolation, we need the topography (elevation, slope, aspect) of the target area. We can use function `getData()` from package **raster** to download elevation data for Senegal:
 ```{r, echo=FALSE}
 library(raster)
 elev_raster <- getData('alt', country="SEN")
 elev_raster
 ```
-The previous function returns a `Raster` grid object in geographic coordinates, which we can plot along with the station locations:
+The previous function returns a `RasterLayer` grid object in geographic coordinates, which we can plot along with the weather station point locations:
 ```{r}
 plot(elev_raster)
 plot(spt_sen, add=TRUE)
 ```
 
-Reproject the raster to 29N UTM to have meters as coordinate units
+In order to estimate slope and aspect it is important that the spatial reference system is in coordinates that have meters as units. We can reproject our raster to 28N UTM using function `projectRaster()` from package **raster**:
 ```{r}
 elev_utm = projectRaster(elev_raster, crs = CRS("+init=epsg:32628"))
 elev_utm
 ```
-Reshape into a `SpatialGridDataFrame`:
+Package meteoland allows deriving slope and aspect from elevation (i.e. DEM) data when builidng objects of class `SpatialGridTopography`. To this aim, we need first to cast our `RasterLayer` object into a `SpatialGridDataFrame` and then call function `SpatialGridTopography()`:
 ```{r}
 elev_sgd = as(elev_utm, "SpatialGridDataFrame")
-```
-
-Build object of `SpatialGridTopography`
-```{r}
 sgt <- SpatialGridTopography(elev_sgd@grid, elevation = elev_sgd$SEN_msk_alt, 
                              proj4string = proj4string(elev_sgd))
+sgt
+```
+The spatial grid contains many grid cells falling on the sea. We can exclude them by transforming our topography to class `SpatialPixelsTopography`:
+
+```{r}
 spxt <- as(sgt, "SpatialPixelsTopography")
 ```
-
-Check slope and aspect calculated by meteoland
+This new object has almost half the number of pixels of the original grid:
+```{r}
+dim(coordinates(sgt))
+dim(spxt@coords)
+```
+We can check the slope and aspect calculated by meteoland using plot functions:
 ```{r, fig=TRUE}
 spplot(spxt, "slope")
 ```
@@ -78,20 +98,28 @@ spplot(spxt, "aspect")
 
 ## Performing interpolation
 
-```{r}
-spt_mid<-reshapeworldmet(hour2018, output = "MeteorologyInterpolationData", 
-                         proj4string = CRS("+init=epsg:32628"),
-                         verbose=FALSE)
-```
-
+We are now ready to perform the interpolation of weather over the study area. Since our spatial target are grid pixels, we need to call function `interpolationpixels` with: (a) our object `MeteorologyInterpolationData`; (b) our target topography (i.e. in this case `SpatialPixelsTopography`); and (c) a vector of dates (here two distinct days) among the period with available data (year 2018):
 ```{r}
 mid <- interpolationpixels(spt_mid, spxt, dates=as.Date(c("2018-03-15", "2018-07-30")))
 ```
+A warning is launched because some grid points (hopefully not many) are outside the boundary box of the station data. At this point the resulting data can be exported via netCDF, displayed using function `spplot` or transformed into other spatio-temporal spatial structures. Here we will first transform the output to package `stars`:
 
+```{r}
+mid_stars <- as(mid, "stars")
+```
+Now we use plot functions defined for stars objects to display mean daily temperature interpolation estimates:
 ```{r, fig=TRUE}
-spplot(mid,1,"MeanTemperature")
+plot(mid_stars["MeanTemperature"])
 ```
 
+As well as those for relative humidity:
 ```{r, fig=TRUE}
-spplot(mid,1,"MeanRelativeHumidity")
+plot(mid_stars["MeanRelativeHumidity"])
 ```
+
+And radiation in MJ/day:
+```{r, fig=TRUE}
+plot(mid_stars["Radiation"])
+```
+Note that in the case of date "2018-07-30", there was a prediction of rain in some areas, which decreases the estimated daily radiation.
+

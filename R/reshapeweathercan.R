@@ -139,6 +139,8 @@ reshapeweathercan<-function(hourly_data, daily_data = NULL, output="SpatialPoint
   if(!is.null(proj4string)) {
     if(inherits(proj4string,"character")) proj4string = CRS(proj4string)
     sp = spTransform(sp, proj4string)
+    colnames(sp@coords)<-c("x","y")
+    rownames(sp@bbox)<-c("x","y")
   }
   if(output %in% c("SpatialPointsMeteorology", "MeteorologyInterpolationData")) {
     spm <- SpatialPointsMeteorology(sp, l, dates = as.Date(dates))

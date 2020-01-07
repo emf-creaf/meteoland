@@ -46,10 +46,9 @@ While `SpatialPointsMeteorology` is the class that meteoland uses for point weat
 spt_mid<-reshapeworldmet(hour2018, output = "MeteorologyInterpolationData", 
                          proj4string = CRS("+init=epsg:32628"),
                          verbose=FALSE)
-spt_mid
 ```
 
-Note that we specified a CRS projection (parameter `proj4string`) to UTM28N. This is because interpolation should be preferably conducted on a projected coordinate reference system with easting and northing in meters.
+Note that we specified a coordinate reference system (CRS) to UTM28N (via EPSG initialization). This is because interpolation should be preferably conducted on a projected  with easting and northing in meters.
 
 ## Accessing elevation data
 

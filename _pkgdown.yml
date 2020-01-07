@@ -8,3 +8,10 @@ home:
     href: http://vegmod.ctfc.cat/meteolandweb
     
 
+articles:
+- title: Get started
+  contents:
+  - starts_with("UserGuide")
+- title: Examples
+  contents:
+  - starts_with("InterpolationSenegal")

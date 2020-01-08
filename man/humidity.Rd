@@ -24,7 +24,8 @@ humidity_relative2specific(Tc, HR)
 A numeric vector with specific or relative humidity.
 }
 \author{
-Nicholas Martin-StPaul, INRA 
+Nicholas Martin-StPaul, INRA
+
 Miquel De \enc{Cáceres}{Caceres} Ainsa, CTFC
 }
 \seealso{\code{\link{meteocomplete}}}

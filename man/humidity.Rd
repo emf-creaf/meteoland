@@ -16,7 +16,6 @@ humidity_relative2specific(Tc, HR)
 \arguments{
   \item{Tc}{A numeric vector of temperature in degrees Celsius.}
   \item{HS}{A numeric vector of specific humidity (unitless).}
-  \item{HS}{A numeric vector of specific humidity (unitless).}
   \item{HR}{A numeric vector of relative Humidity (in \%).}
   \item{allowSaturated}{Logical flag to allow values over 100\%}
 }

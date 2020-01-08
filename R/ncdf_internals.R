@@ -198,6 +198,7 @@
   for(i in 1:np) {
     if(verbose) cat(paste0("Writing data for point '", names(data)[i], "'.\n"))
     .writemeteorologygpointNetCDF(data[[i]], nc, i)
+    nc_sync(nc) # Flushes writing so that we avoid losing data if process crashes
   }
 }
 
@@ -240,6 +241,7 @@
       if("WindSpeed" %in% names(df)) .putvardataday( nc, varWindSpeed, df$WindSpeed,day, index)
       if("WindDirection" %in% names(df)) .putvardataday( nc, varWindDirection, df$WindDirection,day, index)
       if("PET" %in% names(df)) .putvardataday( nc, varPET, df$PET,day, index)
+      nc_sync(nc) # Flushes writing
     }
   }
 }

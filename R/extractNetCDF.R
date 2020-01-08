@@ -173,7 +173,7 @@ extractNetCDF<-function(ncdf_files, bbox = NULL, offset = 0, cells = NULL, expor
         }
         close(pb)
         if(sum((!is.na(df$MeanTemperature)) & (!is.na(df$SpecificHumidity)))>0) {
-          df$MeanRelativeHumidity = .HSHR(Tc=df$MeanTemperature ,HS=df$SpecificHumidity, allowSaturated = TRUE)
+          df$MeanRelativeHumidity = humidity_specific2relative(Tc=df$MeanTemperature ,HS=df$SpecificHumidity, allowSaturated = TRUE)
         }
         if(!export) {
           dfvec[[cnt]] = df

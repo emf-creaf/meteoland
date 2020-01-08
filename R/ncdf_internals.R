@@ -575,12 +575,13 @@
   nt = length(dates_file)
   data = vector("list", npts)
   if(verbose) {
-    cat(paste0("Number of points to read ", npts,":\n"))
-    pb = txtProgressBar(1, npts, style=3)
+    cat(paste0("Defining ", npts," points:\n"))
+    pb = txtProgressBar(0, npts, style=3)
   }
   
   if(rotated) {
     cc = matrix(nrow=0, ncol=2)
+    xy = matrix(nrow=0, ncol=2)
     colnames(cc)<-c("lon", "lat")
     cnt = 1
     for(xi in 1:nrow(sel)) {
@@ -588,25 +589,40 @@
         if(sel[xi,yi]) {
           if(verbose) setTxtProgressBar(pb,cnt)
           cc_i = c(lon[xi, yi], lat[xi, yi])
+          xy = rbind(xy, c(xi,yi))
           cc = rbind(cc, cc_i)
           df = data.frame(row.names = as.character(dates))
           df[,"DOY"] = as.POSIXlt(as.Date(dates))$yday+1
-          for(var in names(varmapping)) {
-            if(varmapping[[var]] %in% names(ncin$var)) {
-              df[[var]] = ncvar_get(ncin, varmapping[[var]],start=c(xi,yi,1), count=c(1,1,nt))
-            }
-          }
-          if(ncol(df)>0) {
-            df = .unitConversion(df, ncin, varmapping)
-            for(i in 1:ncol(df)) df[is.na(df[,i]),i] =NA
-          }
           data[[cnt]] = df
           cnt = cnt+1
         }
       }
     }
+    ## Read variables
+    for(var in names(varmapping)) {
+      if(varmapping[[var]] %in% names(ncin$var)) {
+        if(verbose) {
+          cat(paste0("\nMapping variable ", varmapping[[var]], " to ", var,"...\n"))
+          pb = txtProgressBar(0, npts, style=3)
+        }
+        values = ncvar_get(ncin, varmapping[[var]]) # read whole variable
+        for(i in 1:nrow(xy)) {
+          if(verbose) setTxtProgressBar(pb,i)
+          df = data[[i]]
+          df[[var]] = values[xy[i,1],xy[i,2],]
+          data[[i]] = df
+        }  
+      }
+    }
+    for(i in 1:nrow(xy)) {
+      df = data[[i]]
+      if(ncol(df)>0) {
+        df = .unitConversion(df, ncin, varmapping)
+        for(j in 1:ncol(df)) df[is.na(df[j]),j] =NA
+        data[[i]] = df
+      }
+    }
   }
-
   rownames(cc)<-1:nrow(cc)
   spm = SpatialPointsMeteorology(SpatialPoints(cc, proj4string = crs), 
                                 data = data, dates=as.Date(dates))

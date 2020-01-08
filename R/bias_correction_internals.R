@@ -163,8 +163,8 @@ doQmapDeque <- function(x,fobj){
     corrPrec[[m]] = .corrParam(DatTemp, ModelTempHist, varmethods, "Precipitation", qstep=qstep)
     corrRad[[m]] = .corrParam(DatTemp, ModelTempHist, varmethods, "Radiation", qstep=qstep)
     corrWS[[m]] = .corrParam(DatTemp, ModelTempHist, varmethods, "WindSpeed", qstep=qstep)
-    HSData<-.HRHS(Tc=DatTemp[,"MeanTemperature"] ,HR=DatTemp[,"MeanRelativeHumidity"])
-    HSmodelHist<-.HRHS(Tc=ModelTempHist[,"MeanTemperature"] ,HR=ModelTempHist[,"MeanRelativeHumidity"])
+    HSData<-humidity_relative2specific(Tc=DatTemp[,"MeanTemperature"] ,HR=DatTemp[,"MeanRelativeHumidity"])
+    HSmodelHist<-humidity_relative2specific(Tc=ModelTempHist[,"MeanTemperature"] ,HR=ModelTempHist[,"MeanRelativeHumidity"])
     if(varmethods["MeanRelativeHumidity"]=="unbias") {
       corrHS[[m]]<-mean(HSmodelHist-HSData, na.rm=TRUE)
     } else if(varmethods["MeanRelativeHumidity"]=="scaling") {
@@ -256,17 +256,17 @@ doQmapDeque <- function(x,fobj){
     
     #Correction RH
     #First transform RH into specific humidity
-    HSmodelFut<-.HRHS(Tc=ModelTempFut[,"MeanTemperature"] ,HR=ModelTempFut[,"MeanRelativeHumidity"])
+    HSmodelFut<-humidity_relative2specific(Tc=ModelTempFut[,"MeanTemperature"] ,HR=ModelTempFut[,"MeanRelativeHumidity"])
     #Second compute and apply the bias to specific humidity
     HSmodelFut.cor<-.corrApply(HSmodelFut, mbias$corrHS[[m]], mbias$varmethods["MeanRelativeHumidity"])
     #Back transform to relative humidity (mean, max, min)
-    ModelTempFut.RHM.cor<-.HSHR(Tc=ModelTempFut.TM.cor ,HS=HSmodelFut.cor, allow_saturated)
+    ModelTempFut.RHM.cor<-humidity_specific2relative(Tc=ModelTempFut.TM.cor ,HS=HSmodelFut.cor, allow_saturated)
     ModelTempFut.RHM.cor[ModelTempFut.RHM.cor<0]<-0
     ModelTempFut.RHM.cor[ModelTempFut.RHM.cor>100]<-100
-    ModelTempFut.RHX.cor<-.HSHR(Tc=ModelTempFut.TN.cor ,HS=HSmodelFut.cor, allow_saturated)
+    ModelTempFut.RHX.cor<-humidity_specific2relative(Tc=ModelTempFut.TN.cor ,HS=HSmodelFut.cor, allow_saturated)
     ModelTempFut.RHX.cor[ModelTempFut.RHX.cor<0]<-0
     ModelTempFut.RHX.cor[ModelTempFut.RHX.cor>100]<-100
-    ModelTempFut.RHN.cor<-.HSHR(Tc=ModelTempFut.TX.cor ,HS=HSmodelFut.cor, allow_saturated)
+    ModelTempFut.RHN.cor<-humidity_specific2relative(Tc=ModelTempFut.TX.cor ,HS=HSmodelFut.cor, allow_saturated)
     ModelTempFut.RHN.cor[ModelTempFut.RHN.cor<0]<-0
     ModelTempFut.RHN.cor[ModelTempFut.RHN.cor>100]<-100
     

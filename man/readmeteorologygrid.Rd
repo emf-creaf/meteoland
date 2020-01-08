@@ -15,7 +15,8 @@ readmeteorologygrid(files, format = "netCDF", varmapping = NULL,
 readmeteorologypixels(files, format = "netCDF", varmapping = NULL,
                       dates = NULL, bbox = NULL, offset = 0, verbose = FALSE)
 readmeteorologygridpoints(files, format = "netCDF", varmapping = NULL,
-                      dates = NULL, bbox = NULL, offset = 0, verbose = FALSE)
+                      dates = NULL, bbox = NULL, offset = 0, 
+                      relativehumidity = FALSE, verbose = FALSE)
 }
 \arguments{
   \item{files}{Character vector with the file names to be read.}
@@ -24,6 +25,7 @@ readmeteorologygridpoints(files, format = "netCDF", varmapping = NULL,
   \item{dates}{A character or Date vector to specify subset of dates to be read.}
   \item{bbox}{Boundary box (2 x 2 matrix) specifying the minimum and maximum coordinates of a study area.}
   \item{offset}{A buffer to include NetCDF cells that are at a certain distance around the boundary box.}
+  \item{relativehumidity}{A logical flag to indicate estimation of relative humidity from specific humidity if possible.}
   \item{verbose}{A logical flag to output process information in the console.}
 }
 \details{

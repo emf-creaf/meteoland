@@ -1,5 +1,5 @@
 #Functions to switch from relative humidity to specific humidity
-.HSHR<-function(Tc, HS, allowSaturated = FALSE){
+humidity_specific2relative<-function(Tc, HS, allowSaturated = FALSE){
 
 
   #-------------------------------------------------------------
@@ -21,7 +21,7 @@
   if(!allowSaturated) HR[HR>100]=100 # On ne passe pas audessus de 100
   return(HR)
 }
-.HRHS<-function(Tc, HR){
+humidity_relative2specific<-function(Tc, HR){
 
   #-------------------------------------------------------------
   #D?claration des constantes pour le calcul de l'HR et de la T en ?C

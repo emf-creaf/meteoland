@@ -40,7 +40,8 @@ readmeteorologypixels<-function(files, format = "netCDF", varmapping = NULL,
 }
 # Reads a subset of grid cells from one or many files and merges the result as a SpatialPointsMeteorology
 readmeteorologygridpoints<-function(files, format = "netCDF", varmapping = NULL,
-                                    dates = NULL, bbox = NULL, offset = 0, verbose = FALSE) {
+                                    dates = NULL, bbox = NULL, offset = 0, 
+                                    relativehumidity = FALSE, verbose = FALSE) {
   nfiles = length(files)
   l = vector("list", nfiles)
   for(i in 1:nfiles) {
@@ -56,7 +57,24 @@ readmeteorologygridpoints<-function(files, format = "netCDF", varmapping = NULL,
   }
   if(nfiles==1) return(l[[1]])
   if(verbose) cat("\nMerging point data...\n")
-  return(mergepoints(l, verbose = verbose))
+  mp = mergepoints(l, verbose = verbose)
+  if(relativehumidity) {
+    if(verbose) cat("\nCompleting relative humidity...\n")
+    for(i in 1:length(mp@data)) {
+      df = mp@data[[i]]
+      if(!("MeanRelativeHumidity" %in% names(df)) && ("SpecificHumidity" %in% names(df)) && ("MeanTemperature" %in% names(df))) {
+        df$MeanRelativeHumidity = humidity_specific2relative(df$MeanTemperature, df$SpecificHumidity)
+      }
+      if(!("MinRelativeHumidity" %in% names(df)) && ("SpecificHumidity" %in% names(df)) && ("MaxTemperature" %in% names(df))) {
+        df$MinRelativeHumidity = humidity_specific2relative(df$MaxTemperature, df$SpecificHumidity)
+      }
+      if(!("MaxRelativeHumidity" %in% names(df)) && ("SpecificHumidity" %in% names(df)) && ("MinTemperature" %in% names(df))) {
+        df$MaxRelativeHumidity = humidity_specific2relative(df$MinTemperature, df$SpecificHumidity)
+      }
+      mp@data[[i]] = df
+    }
+  }
+  return(mp)
 }
 
 # readmeteorologygridfiles<-function(files, format="netCDF") {

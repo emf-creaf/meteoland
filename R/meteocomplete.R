@@ -25,21 +25,21 @@ meteocomplete<-function(x, latitude, elevation, slope, aspect) {
       hs = x$SpecificHumidity[j]
       #Mean relative humidity
       if(is.na(x$MeanRelativeHumidity[j])) {
-        rhmean = .HSHR(tmean, hs)
+        rhmean = humidity_specific2relative(tmean, hs)
         x$MeanRelativeHumidity[j] = rhmean
       } else {
         rhmean = x$MeanRelativeHumidity[j]
       }
       #Minimum relative humidity
       if(is.na(x$MinRelativeHumidity[j])) {
-        rhmin = .HSHR(tmax, hs)
+        rhmin = humidity_specific2relative(tmax, hs)
         x$MinRelativeHumidity[j] = rhmin
       } else {
         rhmin = x$MinRelativeHumidity[j]
       }
       #Maximum relative humidity
       if(is.na(x$MaxRelativeHumidity[j])) {
-        rhmax = .HSHR(tmin, hs)
+        rhmax = humidity_specific2relative(tmin, hs)
         x$MaxRelativeHumidity[j] = rhmax
       } else {
         rhmax = x$MaxRelativeHumidity[j]

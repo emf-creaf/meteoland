@@ -42,8 +42,8 @@
       corrPrec = .corrParam(DatTemp, ModelTempHist, varmethods, "Precipitation", qstep = qstep)
       corrRad = .corrParam(DatTemp, ModelTempHist, varmethods, "Radiation", qstep = qstep)
       corrWS = .corrParam(DatTemp, ModelTempHist, varmethods, "WindSpeed", qstep = qstep)
-      HSData<-.HRHS(Tc=DatTemp[,"MeanTemperature"] ,HR=DatTemp[,"MeanRelativeHumidity"])
-      HSmodelHist<-.HRHS(Tc=ModelTempHist[,"MeanTemperature"] ,HR=ModelTempHist[,"MeanRelativeHumidity"])
+      HSData<-humidity_relative2specific(Tc=DatTemp[,"MeanTemperature"] ,HR=DatTemp[,"MeanRelativeHumidity"])
+      HSmodelHist<-humidity_relative2specific(Tc=ModelTempHist[,"MeanTemperature"] ,HR=ModelTempHist[,"MeanRelativeHumidity"])
       if(varmethods["MeanRelativeHumidity"]=="unbias") {
         corrHS<-mean(HSmodelHist-HSData, na.rm=TRUE)
       } else if(varmethods["MeanRelativeHumidity"]=="scaling") {
@@ -97,13 +97,13 @@
 
       #Correction RH
       #First transform RH into specific humidity
-      HSmodelFut<-.HRHS(Tc=ModelTempHistMonth$MeanTemperature[i] ,HR=ModelTempHistMonth$MeanRelativeHumidity[i])
+      HSmodelFut<-humidity_relative2specific(Tc=ModelTempHistMonth$MeanTemperature[i] ,HR=ModelTempHistMonth$MeanRelativeHumidity[i])
       #Second apply the bias to specific humidity
       HSmodelFut.cor<-.corrApply(HSmodelFut, corrHS, varmethods["MeanRelativeHumidity"])
       #Back transform to relative humidity (mean, max, min)
-      DataCV$MeanRelativeHumidity[indices[i]]<-min(100,max(0,.HSHR(Tc=DataCV$MeanTemperature[indices[i]] ,HS=HSmodelFut.cor, allow_saturated)))
-      DataCV$MaxRelativeHumidity[indices[i]]<-min(100,max(0,.HSHR(Tc=DataCV$MinTemperature[indices[i]] ,HS=HSmodelFut.cor, allow_saturated)))
-      DataCV$MinRelativeHumidity[indices[i]]<-min(100,max(0,.HSHR(Tc=DataCV$MaxTemperature[indices[i]] ,HS=HSmodelFut.cor, allow_saturated)))
+      DataCV$MeanRelativeHumidity[indices[i]]<-min(100,max(0,humidity_specific2relative(Tc=DataCV$MeanTemperature[indices[i]] ,HS=HSmodelFut.cor, allow_saturated)))
+      DataCV$MaxRelativeHumidity[indices[i]]<-min(100,max(0,humidity_specific2relative(Tc=DataCV$MinTemperature[indices[i]] ,HS=HSmodelFut.cor, allow_saturated)))
+      DataCV$MinRelativeHumidity[indices[i]]<-min(100,max(0,humidity_specific2relative(Tc=DataCV$MaxTemperature[indices[i]] ,HS=HSmodelFut.cor, allow_saturated)))
 
       #Check RHmin <= RHmean <= RHmax
       DataCV$MinRelativeHumidity[indices[i]] = pmin(DataCV$MinRelativeHumidity[indices[i]], DataCV$MaxRelativeHumidity[indices[i]])
@@ -223,10 +223,10 @@ correctionpoints.errors<-function(object, points, topodata = NULL,
       dataone = rcmhist
       #Fill minimum and maximum relative humidity if missing
       if(!("MinRelativeHumidity" %in% names(dataone))) {
-        dataone$MinRelativeHumidity=.HSHR(dataone$MaxTemperature, dataone$SpecificHumidity, mPar$allow_saturated)
+        dataone$MinRelativeHumidity=humidity_specific2relative(dataone$MaxTemperature, dataone$SpecificHumidity, mPar$allow_saturated)
       }
       if(!("MaxRelativeHumidity" %in% names(dataone))) {
-        dataone$MaxRelativeHumidity=.HSHR(dataone$MinTemperature, dataone$SpecificHumidity, mPar$allow_saturated)
+        dataone$MaxRelativeHumidity=humidity_specific2relative(dataone$MinTemperature, dataone$SpecificHumidity, mPar$allow_saturated)
       }
     }else if(error.type=="residuals") {#Residuals before correction
       mbias = .monthbiasonepoint(obs,rcmhist, mPar$varmethods, verbose)

@@ -135,7 +135,7 @@
   return(SpatialGridDataFrame(grid@grid, df, grid@proj4string))
 }
 
-interpolationgrid<-function(object, grid, dates,
+interpolationgrid<-function(object, grid, dates = NULL,
                             exportFile = NULL, exportFormat = "netCDF", add = FALSE, overwrite = FALSE,
                             verbose = TRUE) {
   if(!inherits(object,"MeteorologyInterpolationData")) stop("'object' has to be of class 'MeteorologyInterpolationData'.")

@@ -135,7 +135,7 @@
   return(SpatialPixelsDataFrame(pixels@coords, data = df, grid=pixels@grid, proj4string= pixels@proj4string))
 }
 
-interpolationpixels<-function(object, pixels, dates,
+interpolationpixels<-function(object, pixels, dates = NULL,
                               exportFile = NULL, exportFormat = "netCDF", add = FALSE, overwrite = FALSE,
                               verbose = TRUE) {
   if(!inherits(object,"MeteorologyInterpolationData")) stop("'object' has to be of class 'MeteorologyInterpolationData'.")

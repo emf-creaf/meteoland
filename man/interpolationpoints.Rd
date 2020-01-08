@@ -15,9 +15,11 @@ interpolationpoints(object, points, dates = NULL, export = FALSE,
                     exportDir = getwd(), exportFile = NULL, 
                     exportFormat = "meteoland/txt",
                     metadataFile = "MP.txt", verbose=TRUE)
-interpolationpixels(object, pixels, dates, exportFile = NULL, exportFormat = "netCDF", 
+interpolationpixels(object, pixels, dates = NULL, 
+                    exportFile = NULL, exportFormat = "netCDF", 
                     add = FALSE, overwrite = FALSE, verbose=TRUE)
-interpolationgrid(object, grid, dates, exportFile = NULL, exportFormat = "netCDF",
+interpolationgrid(object, grid, dates = NULL, 
+                  exportFile = NULL, exportFormat = "netCDF",
                   add = FALSE, overwrite = FALSE, verbose=TRUE)
 }
 %- maybe also 'usage' for other objects documented here.

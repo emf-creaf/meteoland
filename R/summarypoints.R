@@ -1,14 +1,17 @@
 .summaryvarpoint<-function(x, fun="mean", freq=NULL, dates = NULL, months= NULL, ...) {
   if(is.null(dates)) dates = as.Date(names(x))
+  else {
+    x = x[as.character(dates)]
+  }
   if(!is.null(months)) {
     m = as.numeric(format(dates,"%m"))
     dates = dates[m %in% months]
   }
   if(is.null(freq)) {
-    v =  do.call(fun, args=list(x[as.character(dates)],...))
+    v =  do.call(fun, args=list(x,...))
   } else {
     date.factor = cut(dates, breaks=freq)
-    v = tapply(x[as.character(dates)],INDEX=date.factor, FUN=fun,...)
+    v = tapply(x,INDEX=date.factor, FUN=fun,...)
   }
   return(v)
 }

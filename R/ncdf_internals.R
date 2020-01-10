@@ -661,7 +661,7 @@
   }
   return(df)
 }
-.readmeteorologypointsNetCDF<-function(ncin, dates = NULL, 
+.readmeteorologypointsNetCDF<-function(ncin, dates = NULL, stations = NULL,
                                        varmapping = NULL, verbose = FALSE) {
   dates_file <- .readdatesNetCDF(ncin)
   dates_file <- as.character(dates_file)
@@ -675,16 +675,35 @@
   
   crs <- .readCRSNetCDF(ncin)
   cc <- .readpointcoordinatesNetCDF(ncin, crs)
-  
+  indices = 1:nrow(cc)
+  if(!is.null(stations)) {
+    ids = rownames(cc)
+    if(inherits(stations, "character")) {
+      if(sum(!(stations %in% ids))>0) {
+        nc_close(ncin)
+        stop("Some station names are not recognized.")
+      }
+      indices = rep(NA, length(stations))
+      for(i in 1:length(stations)) {
+        indices[i] = which(ids==stations[i])[1]
+      }
+    } else if(inherits(stations, "integer") || inherits(stations, "numeric")) {
+      if(sum(!(stations %in% (1:length(ids))))>0) {
+        stop("Some station indices are outside the valid range.")
+      }
+      indices = stations
+    }
+  } 
+  cc =cc[indices, , drop=FALSE]
   npts = nrow(cc)
   nt = length(dates_file)
   data = vector("list", npts)
   names(data)<-rownames(cc)
   
-  if(verbose) pb = txtProgressBar(1, npts, style=3)
+  if(verbose) pb = txtProgressBar(0, npts, style=3)
   for(i in 1:npts) {
     if(verbose) setTxtProgressBar(pb,i)
-    df = .readmeteorologypointNetCDF(ncin, i, dates_file, varmapping)
+    df = .readmeteorologypointNetCDF(ncin, indices[i], dates_file, varmapping)
     df = df[as.character(dates),]
     data[[i]] = df
   }

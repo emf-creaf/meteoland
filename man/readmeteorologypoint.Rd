@@ -13,7 +13,7 @@ Functions to read point meteorological data from the disks in different formats.
 readmeteorologypoint(file, dates = NULL, format = "meteoland/txt", sep="\t")
 readmeteorologypointfiles(points, files=NULL, dates = NULL, format="meteoland/txt", 
                           sep="\t")
-readmeteorologypoints(files, dates = NULL, format = "netCDF", 
+readmeteorologypoints(files, dates = NULL, stations = NULL, format = "netCDF", 
                       varmapping = NULL, verbose = FALSE)
 }
 \arguments{
@@ -23,6 +23,7 @@ readmeteorologypoints(files, dates = NULL, format = "netCDF",
   \item{dates}{Object of class \code{"Date"} describing a subset of dates to be extracted from meteorological series. If \code{NULL} the whole period read from files is kept.}
   \item{format}{Format of meteorological data. Current accepted formats for \code{readmeteorologypoint} and \code{readmeteorologypointfiles} are \code{"meteoland/txt"},  \code{"meteoland/rds"}, \code{"castanea/txt"} and \code{"castanea/rds"}. The only accepted format for \code{readmeteorologypoints} is \code{"netCDF"}.}
   \item{sep}{The field separator character for ascii text files (see \code{\link{read.table}}).}
+  \item{stations}{An integer vector or string vector identifying point indices or station names in the netCDF.}
   \item{varmapping}{Named character vector specifying a mapping of variables in the NetCDF into variables used in meteoland (e.g. \code{c(MinTemperature = "tmn")} specifies a map of variable 'tmn' to MinTemperature).}
   \item{verbose}{A logical flag to output process information in the console.}
 }

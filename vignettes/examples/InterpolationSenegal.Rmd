@@ -122,3 +122,9 @@ plot(mid_stars["Radiation"])
 ```
 Note that in the case of date "2018-07-30", there was a prediction of rain in some areas, which decreases the estimated daily radiation.
 
+## Exporting the result as netCDF
+Finally, we can export the interpolation result back on a netCDF, for its use in other software:
+```{r}
+writemeteorologypixels(mid, "foo.nc", overwrite = T, verbose=T)
+```
+

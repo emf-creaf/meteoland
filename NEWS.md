@@ -2,6 +2,9 @@
  NEWS for R Package "meteoland"
 -------------------------------
 
+# Version 0.9.0
+- New functions 'extractgriddates' and 'extractpixelsdates'
+
 # Version 0.8.9
 - New functions to download data from 'meteogalicia' (MG)
 - Improvements in function 'reshapeworldmet'

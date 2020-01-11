@@ -67,3 +67,43 @@ extractpointdates<-function(points, dates = NULL, verbose=FALSE) {
   if(ndates==1) res = res[[1]]
   return(res)
 }
+
+.extractgridpixelsdates<-function(object, pixels = FALSE, dates = NULL, verbose = FALSE) {
+  if(!is.null(dates)) 
+    if((!inherits(dates,"Date")) && (!inherits(dates,"character"))) 
+       stop("'dates' has to be of class 'Date' or 'character'.")
+  if(inherits(object,"SpatialGridMeteorology")) {
+    if(is.null(dates)) dates = object@dates
+    dates<-as.character(dates)
+    res = vector("list", length(dates))
+    names(res)<-dates
+    for(i in 1:length(dates)) {
+      res[[i]] = SpatialGridDataFrame(object@grid, object@data[[dates[i]]], object@proj4string)
+    }
+  }
+  else if(inherits(object,"SpatialPixelsMeteorology")) {
+    if(is.null(dates)) dates = object@dates
+    dates<-as.character(dates)
+    res = vector("list", length(dates))
+    names(res)<-dates
+    for(i in 1:length(dates)) {
+      res[[i]] = SpatialPixelsDataFrame(object@coords, data = object@data[[dates[i]]], 
+                                        grid = object@grid, proj4string = object@proj4string)
+    }
+  }
+  if(length(res)==1) return(res[[1]])
+  return(res)  
+}
+extractgriddates<-function(grid, dates = NULL, verbose=FALSE) {
+  if(!inherits(grid,"SpatialGridMeteorology") 
+     && !inherits(grid,"character")) 
+    stop("'grid' has to be of class 'SpatialGridMeteorology', or the string of a file name.")
+  return(.extractgridpixelsdates(grid, pixels = FALSE, dates = dates, verbose = verbose))
+}
+
+extractpixelsdates<-function(pixels, dates = NULL, verbose=FALSE) {
+  if(!inherits(pixels,"SpatialPixelsMeteorology") 
+     && !inherits(pixels,"character")) 
+    stop("'pixels' has to be of class 'SpatialPixelsMeteorology', or the string of a file name.")
+  return(.extractgridpixelsdates(pixels, pixels = TRUE, dates = dates, verbose = verbose))
+}

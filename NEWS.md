@@ -3,7 +3,7 @@
 -------------------------------
 
 # Version 0.9.0
-- New functions 'extractgriddates' and 'extractpixelsdates'
+- New functions 'extractdates' replacing and generalizing 'extractpointdates'.
 
 # Version 0.8.9
 - New functions to download data from 'meteogalicia' (MG)

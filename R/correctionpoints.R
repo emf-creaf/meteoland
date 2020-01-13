@@ -183,7 +183,7 @@ correctionpoints<-function(object, points, topodata = NULL, dates = NULL, export
         write.table(as.data.frame(spdf),file= f,sep="\t", quote=FALSE)
       } else {
         if(verbose) cat(paste0(" written to netCDF"))
-        .writemeteorologygpointNetCDF(df,nc,i)
+        .writemeteorologypointNetCDF(df,nc,i)
       }
     }
     if(verbose) cat(".\n")

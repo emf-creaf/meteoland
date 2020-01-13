@@ -200,6 +200,8 @@
 #adds or replaces points to NetCDF
 .addreplacemeteorologypointsNetCDF<-function(object, nc, verbose = FALSE) {
   crs <- .readCRSNetCDF(nc)
+  dates_files <- .readdatesNetCDF(nc)
+  if(sum(dates_files==object@dates)<length(dates_files)) stop("Dates do not match between netCDF and object")
   if(crs@projargs != proj4string(object)) stop("Point data does not have the same CRS as the netCDF")
   data <- object@data
   coords <- object@coords

@@ -76,7 +76,7 @@
     if(.isLongLat(proj4string)) {
       nc <- nc_create(file, list(varMeanTemp,varMinTemp,varMaxTemp,varPrec,
                                  varMeanRH, varMinRH,varMaxRH,
-                                 varRad, varWindSpeed, varWindDirection, varPET) )
+                                 varRad, varWindSpeed, varWindDirection, varPET), force_v4 = T)
     } else {
       # Fill data for lon/lat variables
       if(!is.na(proj4string)) {

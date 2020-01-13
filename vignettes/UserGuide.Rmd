@@ -328,9 +328,9 @@ df_1 = mp@data[[1]]
 head(df_1)
 ```
 
-This data frame can now be written into a file for its analysis outside R. The package also provides its own functions to write/read point meteorology data in different formats. If we are interested in inspecting the interpolation result by date, instead of by point, we can use function `extractpointdates`, which returns objects of class `SpatialGridDataFrame`:
+This data frame can now be written into a file for its analysis outside R. The package also provides its own functions to write/read point meteorology data in different formats. If we are interested in inspecting the interpolation result by date, instead of by point, we can use function `extractdates`, which returns objects of class `SpatialGridDataFrame`:
 ```{r}
-dt_4 = extractpointdates(mp, as.Date("2001-01-04"), verbose = FALSE)
+dt_4 = extractdates(mp, as.Date("2001-01-04"), verbose = FALSE)
 dt_4
 ```
 

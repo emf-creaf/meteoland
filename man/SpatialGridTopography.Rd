@@ -50,7 +50,7 @@ Function \code{SpatialGridTopography} returns an object '\code{\link{SpatialGrid
 Miquel De \enc{Cáceres}{Caceres} Ainsa, CTFC
 }
 \seealso{
-\code{\link{extractSpatialData}}, \code{\link{SpatialGridTopography-class}}
+\code{\link{SpatialGridTopography-class}}
 }
 \references{
 Burrough, P. A. and McDonell, R.A., 1998. Principles of Geographical Information Systems (Oxford University Press, New York), p. 190.

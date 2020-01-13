@@ -3,7 +3,7 @@
 -------------------------------
 
 # Version 0.9.0
-- New functions 'extractdates' replacing and generalizing 'extractpointdates'.
+- New functions 'extractdates' and 'extractvars' replacing and generalizing 'extractpointdates'.
 - Function 'summarypoints' can summarize all variables at once.
 
 # Version 0.8.9

@@ -69,6 +69,50 @@ extractpointdates<-function(points, dates = NULL, verbose=FALSE) {
   return(res)
 }
 
+extractvars<-function(object, vars, verbose = FALSE) {
+  if((!inherits(object,"SpatialPointsMeteorology"))
+     && (!inherits(object,"SpatialGridMeteorology"))
+     && (!inherits(object,"SpatialPixelsMeteorology"))
+     && (!inherits(object,"character"))) 
+    stop("'object' has to be of class 'Spatial*Meteorology' of a file name.")
+  
+  for(i in 1:length(vars)) vars[i]<- match.arg(vars[i], c("MeanTemperature", "MinTemperature", "MaxTemperature",
+                            "MeanRelativeHumidity", "MinRelativeHumidity", "MaxRelativeHumidity",
+                            "Precipitation", "Radiation", "WindSpeed", "WindDirection", "SpecificHumidity", "PET"))
+  if(inherits(object,"SpatialGridMeteorology")) {
+    dates = object@dates
+    dates<-as.character(dates)
+    res = vector("list", length(vars))
+    names(res)<-vars
+    npts = nrow(coordinates(object))
+    for(i in 1:length(vars)) {
+      df = data.frame(row.names=1:npts)
+      for(j in 1:length(dates)) {
+        dfj = object@data[[j]]
+        df[[dates[j]]] = dfj[[vars[i]]]
+      }
+      res[[i]] = SpatialGridDataFrame(object@grid, df, object@proj4string)
+    }
+  }
+  else if(inherits(object,"SpatialPixelsMeteorology")) {
+    dates = object@dates
+    dates<-as.character(dates)
+    res = vector("list", length(vars))
+    names(res)<-vars
+    npts = nrow(coordinates(object))
+    for(i in 1:length(vars)) {
+      df = data.frame(row.names=1:npts)
+      for(j in 1:length(dates)) {
+        dfj = object@data[[j]]
+        df[[dates[j]]] = dfj[[vars[i]]]
+      }
+      res[[i]] = SpatialPixelsDataFrame(object@coords, data = df, 
+                                        grid = object@grid, proj4string = object@proj4string)
+    }
+  }
+  if(length(res)==1) return(res[[1]])
+  return(res)  
+}
 extractdates<-function(object, dates = NULL, verbose=FALSE) {
   if((!inherits(object,"SpatialPointsMeteorology"))
      && (!inherits(object,"SpatialGridMeteorology"))

@@ -33,7 +33,7 @@ summarypoints<-function(points, var, fun=mean, freq=NULL, dates = NULL, months =
      && !inherits(points,"character")) stop("'points' has to be of class 'SpatialPointsMeteorology', 'SpatialPointsDataFrame' or a character string.")
   VARS = c("MeanTemperature", "MinTemperature","MaxTemperature", "Precipitation",
            "MeanRelativeHumidity", "MinRelativeHumidity", "MaxRelativeHumidity",
-           "Radiation", "WindSpeed", "WindDirection", "PET")
+           "Radiation", "WindSpeed", "WindDirection", "PET", "ALL")
   var = match.arg(var, VARS)
   
   if(inherits(points,"SpatialPointsMeteorology") || inherits(points,"SpatialPointsDataFrame")) {
@@ -78,21 +78,56 @@ summarypoints<-function(points, var, fun=mean, freq=NULL, dates = NULL, months =
     } else {
       obs = .readmeteorologypointNetCDF(ncin,i, dates_file, varmapping)
     }
-    dfvec[[i]] = summarypoint(x=obs,var=var,fun=fun, freq=freq, dates=dates,months=months,...)
+    if(var!="ALL") {
+      dfvec[[i]] = summarypoint(x=obs,var=var,fun=fun, freq=freq, dates=dates,months=months,...)
+    } else {
+      mean_temp = summarypoint(x=obs,var="MeanTemperature",fun="mean", freq=freq, dates=dates,months=months,...)
+      min_temp = summarypoint(x=obs,var="MinTemperature",fun="mean", freq=freq, dates=dates,months=months,...)
+      max_temp = summarypoint(x=obs,var="MaxTemperature",fun="mean", freq=freq, dates=dates,months=months,...)
+      prec = summarypoint(x=obs,var="Precipitation",fun="sum", freq=freq, dates=dates,months=months,...)
+      dfvec[[i]] = data.frame(MeanTemperature = mean_temp, 
+                              MinTemperature = min_temp, 
+                              MaxTemperature = max_temp, 
+                              Precipitation = prec, 
+                              row.names = names(mean_temp))
+      if("MeanRelativeHumidity" %in% names(obs)) {
+        dfvec[[i]]$MeanRelativeHumidity = summarypoint(x=obs,var="MeanRelativeHumidity",fun="mean", freq=freq, dates=dates,months=months,...)
+      }
+      if("MinRelativeHumidity" %in% names(obs)) {
+        dfvec[[i]]$MinRelativeHumidity = summarypoint(x=obs,var="MinRelativeHumidity",fun="mean", freq=freq, dates=dates,months=months,...)
+      }
+      if("MaxRelativeHumidity" %in% names(obs)) {
+        dfvec[[i]]$MaxRelativeHumidity = summarypoint(x=obs,var="MaxRelativeHumidity",fun="mean", freq=freq, dates=dates,months=months,...)
+      }
+      if("Radiation" %in% names(obs)) {
+        dfvec[[i]]$Radiation = summarypoint(x=obs,var="Radiation",fun="mean", freq=freq, dates=dates,months=months,...)
+      }
+      if("WindSpeed" %in% names(obs)) {
+        dfvec[[i]]$WindSpeed = summarypoint(x=obs,var="WindSpeed",fun="mean", freq=freq, dates=dates,months=months,...)
+      }
+      if("PET" %in% names(obs)) {
+        dfvec[[i]]$PET = summarypoint(x=obs,var="PET",fun="sum", freq=freq, dates=dates,months=months,...)
+      }
+    }
   }
   cat("\n")
   if(inherits(points,"character")) .closeNetCDF(file,ncin)
     
-  noutvars = length(dfvec[[1]])
-  dfout = data.frame(matrix(NA,nrow=npoints, ncol=noutvars))
-  rownames(dfout) = ids
-  outvarnames = names(dfvec[[1]])
-  if(!is.null(outvarnames)) names(dfout) = outvarnames
-  cat(paste("  Arranging output...\n", sep=""))
-  pb = txtProgressBar(0, npoints, 0, style = 3)
-  for(i in 1:npoints) {
-    setTxtProgressBar(pb, i)
-    dfout[i,] = as.numeric(dfvec[[i]])
+  if(var!="ALL") {
+    noutvars = length(dfvec[[1]])
+    dfout = data.frame(matrix(NA,nrow=npoints, ncol=noutvars))
+    rownames(dfout) = ids
+    outvarnames = names(dfvec[[1]])
+    if(!is.null(outvarnames)) names(dfout) = outvarnames
+    cat(paste("  Arranging output...\n", sep=""))
+    pb = txtProgressBar(0, npoints, 0, style = 3)
+    for(i in 1:npoints) {
+      setTxtProgressBar(pb, i)
+      dfout[i,] = as.numeric(dfvec[[i]])
+    }
+    return(SpatialPointsDataFrame(ptsout,dfout))
+  } else {
+    datesout = as.Date(row.names(dfvec[[1]]))
+    return(SpatialPointsMeteorology(ptsout, dfvec, datesout))
   }
-  return(SpatialPointsDataFrame(ptsout,dfout))
 }

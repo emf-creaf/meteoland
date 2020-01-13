@@ -43,6 +43,9 @@ Additional parameters to \code{fun}.
   \item{pixels}{An object of class \code{\link{SpatialPixelsMeteorology-class}} with the meteorological data for  grid pixels, or a string pointing to a NetCDF.}
   \item{object}{An object of class \code{\link{MeteorologyInterpolationData-class}}.}
 }
+\details{
+If \code{var="ALL"} then function \code{summarypoints} produces a summary of all variables with default statistics and returns an object of class \code{SpatialPointsMeteorology}.
+}
 \value{
 \itemize{
 \item{Function \code{summarypoint} returns a named vector of values with dates as names.}
@@ -53,7 +56,7 @@ Additional parameters to \code{fun}.
 \author{
 Miquel De \enc{Cáceres}{Caceres} Ainsa, CTFC
 
-Antoine Cabon,CTFC
+Antoine Cabon, CTFC
 }
 \seealso{
 \code{\link{SpatialPointsMeteorology-class}}

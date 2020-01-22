@@ -675,8 +675,8 @@
 
 .readpointcoordinatesNetCDF<-function(ncin, crs) {
   if(.isLongLat(crs)) {
-    x <- ncvar_get(ncin, "lat")
-    y <- ncvar_get(ncin, "lon")
+    x <- ncvar_get(ncin, "lon")
+    y <- ncvar_get(ncin, "lat")
     cc = cbind(x,y)
     colnames(cc)<-c("lon", "lat")
   } else {

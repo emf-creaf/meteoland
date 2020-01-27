@@ -61,7 +61,7 @@
       dimX <- ncdim_def( "x", pr_units, sort(unique(coordinates(grid)[,1])), longname = "x coordinate of projection")
       dimY <- ncdim_def( "y", pr_units, sort(unique(coordinates(grid)[,2])), longname = "y coordinate of projection")
     }
-    time <- ncdim_def("time", tunits, as.double(as.Date(dates)), longname = "time of measurement")
+    time <- ncdim_def("time", tunits, as.double(as.Date(dates)), longname = "time of measurement",unlim = TRUE)
     varMeanTemp <- ncvar_def( "MeanTemperature", "Celsius", list(dimX,dimY, time), NA)
     varMinTemp <- ncvar_def( "MinTemperature", "Celsius", list(dimX,dimY, time), NA)
     varMaxTemp <- ncvar_def( "MaxTemperature", "Celsius", list(dimX,dimY, time), NA)
@@ -245,7 +245,7 @@
 }
 
 #Writes full NetCDF grids
-.writemeteorologygridNetCDF<-function(data, grid, proj4string, nc, index=NULL, verbose = FALSE) {
+.writemeteorologygridNetCDF<-function(data, grid, proj4string, nc, index=NULL, add = FALSE, verbose = FALSE) {
   grid_nc = .readgridtopologyNetCDF(nc)
   nx = grid_nc@cells.dim[1]
   ny = grid_nc@cells.dim[2]
@@ -265,7 +265,19 @@
   varWindDirection = nc$var$WindDirection
   varPET = nc$var$PET
   dates_file = .readdatesNetCDF(nc)
-  if(sum(dates %in% dates_file)<length(dates)) stop("Time axis of nc file does not include all supplied dates")
+  
+  w = which(!(dates %in% dates_file))
+  if(length(w)>0) {
+    if(verbose) cat(paste0("Adding new ", length(w), " dates.\n"))
+    for(i in 1:length(w)) {
+      if(as.Date(dates[w])>dates_file[length(dates_file)]) {
+        ncvar_put(nc,"time", as.double(as.Date(dates[w])), start= length(dates_file)+1, count = 1)
+      } else {
+        stop(paste0("New date ", dates[w]," is not later than the last date in nc file!"))
+      }
+      dates_file = .readdatesNetCDF(nc)
+    }
+  }
   
   for(j in 1:length(dates)) {
     if(as.character(dates[j]) %in% names(data)) {
@@ -303,7 +315,7 @@
   tunits <- ncin$dim$time$units
   s <- strsplit(tunits, " ")[[1]]
   origin <- as.Date(s[3])
-  return(as.Date(ncin$dim$time$vals, origin=origin))
+  return(as.Date(ncvar_get(ncin,"time"), origin=origin))
 }
 
 #Reads grid/pixels for a single variable and day

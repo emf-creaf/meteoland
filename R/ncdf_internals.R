@@ -270,10 +270,10 @@
   if(length(w)>0) {
     if(verbose) cat(paste0("Adding new ", length(w), " dates.\n"))
     for(i in 1:length(w)) {
-      if(as.Date(dates[w])>dates_file[length(dates_file)]) {
-        ncvar_put(nc,"time", as.double(as.Date(dates[w])), start= length(dates_file)+1, count = 1)
+      if(as.Date(dates[w[i]])>dates_file[length(dates_file)]) {
+        ncvar_put(nc,"time", as.double(as.Date(dates[w[i]])), start= length(dates_file)+1, count = 1)
       } else {
-        stop(paste0("New date ", dates[w]," is not later than the last date in nc file!"))
+        stop(paste0("New date ", dates[w[i]]," is not later than the last date in nc file!"))
       }
       dates_file = .readdatesNetCDF(nc)
     }

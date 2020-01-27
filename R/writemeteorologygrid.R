@@ -5,7 +5,7 @@ writemeteorologygrid<-function(object, file, dates = NULL, format = "netCDF", ad
   if((!inherits(dates,"Date"))&&(!inherits(dates,"character"))) stop("'dates' must be a 'character' or 'Date'")
   nc = .openwritegridNetCDF(object@grid, proj4string = proj4string(object), dates = dates,
                                   file=file, add= add, overwrite = overwrite, verbose = verbose)
-  .writemeteorologygridNetCDF(data = object@data[as.character(dates)], 
+  if(length(dates)>0) .writemeteorologygridNetCDF(data = object@data[as.character(dates)], 
                               grid=object@grid, proj4string = proj4string(object), 
                               nc=nc, verbose = verbose)
   .closeNetCDF(file,nc, verbose = verbose)
@@ -17,7 +17,7 @@ writemeteorologypixels<-function(object, file, dates = NULL, format = "netCDF", 
   if((!inherits(dates,"Date"))&&(!inherits(dates,"character"))) stop("'dates' must be a 'character' or 'Date'")
   nc = .openwritegridNetCDF(object@grid, proj4string = proj4string(object), dates = dates,
                                   file=file, add= add, overwrite = overwrite, verbose = verbose)
-  .writemeteorologypixelsNetCDF(data = object@data[as.character(dates)], 
+  if(length(dates)>0) .writemeteorologypixelsNetCDF(data = object@data[as.character(dates)], 
                                 pixels=object, proj4string = proj4string(object), 
                                 nc=nc)
   .closeNetCDF(file,nc, verbose = verbose)

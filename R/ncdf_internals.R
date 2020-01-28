@@ -29,16 +29,43 @@
   # Assumes time dimension is the last
   for(i in 1:ny) ncvar_put(nc, varid=var, vals=datavecfull[((i-1)*nx+1):(i*nx)], start=c(1,ny-i+1, day), count=c(nx,1,1))
 }
+.putgridday<-function(nc, df, day, index=NULL) {
+  if("MeanTemperature" %in% names(df)) .putgridvardataday(nc,"MeanTemperature", df$MeanTemperature,day, index)
+  if("MinTemperature" %in% names(df)) .putgridvardataday(nc,"MinTemperature", df$MinTemperature,day, index)
+  if("MaxTemperature" %in% names(df)) .putgridvardataday( nc, "MaxTemperature", df$MaxTemperature,day, index)
+  if("Precipitation" %in% names(df)) .putgridvardataday( nc, "Precipitation", df$Precipitation,day, index)
+  if("MeanRelativeHumidity" %in% names(df)) .putgridvardataday( nc, "MeanRelativeHumidity", df$MeanRelativeHumidity,day, index)
+  if("MinRelativeHumidity" %in% names(df)) .putgridvardataday( nc, "MinRelativeHumidity", df$MinRelativeHumidity,day, index)
+  if("MaxRelativeHumidity" %in% names(df)) .putgridvardataday( nc, "MaxRelativeHumidity", df$MaxRelativeHumidity,day, index)
+  if("Radiation" %in% names(df)) .putgridvardataday( nc, "Radiation", df$Radiation,day, index)
+  if("WindSpeed" %in% names(df)) .putgridvardataday( nc, "WindSpeed", df$WindSpeed,day, index)
+  if("WindDirection" %in% names(df)) .putgridvardataday( nc, "WindDirection", df$WindDirection,day, index)
+  if("PET" %in% names(df)) .putgridvardataday( nc, "PET", df$PET,day, index)
+}
 #writes a grid/pixels for a single variable (no temporal dimension)
 .putgridvardata<-function(nc, var, datavec) {
   nx = nc$dim$x$len
   ny = nc$dim$y$len
   for(i in 1:ny) ncvar_put(nc, varid=var, vals=datavec[((i-1)*nx+1):(i*nx)], start=c(1,ny-i+1), count=c(nx,1))
 }
-#writes data for a single pixel
-.putgridvardatapixel<-function(ncin, ny, nt, varname, i, j, datavec) {
+#writes data for a single pixel starting at time position t
+.putgridvardatapixel<-function(ncin, ny, varname, i, j, t, datavec) {
+  nt = length(datavec)
   # Assumes time dimension is the last
-  return(ncvar_put(ncin, varname, vals = datavec, start=c(i,ny-j+1,1), count=c(1,1,nt)))
+  return(ncvar_put(ncin, varname, vals = datavec, start=c(i,ny-j+1,t), count=c(1,1,nt)))
+}
+.putgridpixel<-function(ncin, ny, i,j,t, df) {
+  if("MeanTemperature" %in% names(df)) .putgridvardatapixel(ncin,ny,"MeanTemperature",  i,j,t, df$MeanTemperature)
+  if("MinTemperature" %in% names(df)) .putgridvardatapixel(ncin,ny,"MinTemperature",  i,j,t, df$MinTemperature)
+  if("MaxTemperature" %in% names(df)) .putgridvardatapixel( ncin, ny,"MaxTemperature",  i,j,t, df$MaxTemperature)
+  if("Precipitation" %in% names(df)) .putgridvardatapixel( ncin, ny,"Precipitation",  i,j,t, df$Precipitation)
+  if("MeanRelativeHumidity" %in% names(df)) .putgridvardatapixel( ncin, ny,"MeanRelativeHumidity",  i,j,t, df$MeanRelativeHumidity)
+  if("MinRelativeHumidity" %in% names(df)) .putgridvardatapixel( ncin, ny,"MinRelativeHumidity",  i,j,t, df$MinRelativeHumidity)
+  if("MaxRelativeHumidity" %in% names(df)) .putgridvardatapixel( ncin, ny,"MaxRelativeHumidity",  i,j,t, df$MaxRelativeHumidity)
+  if("Radiation" %in% names(df)) .putgridvardatapixel( ncin, ny,"Radiation",  i,j,t, df$Radiation)
+  if("WindSpeed" %in% names(df)) .putgridvardatapixel( ncin, ny,"WindSpeed",  i,j,t, df$WindSpeed)
+  if("WindDirection" %in% names(df)) .putgridvardatapixel( ncin, ny,"WindDirection", i,j,t, df$WindDirection)
+  if("PET" %in% names(df)) .putgridvardatapixel( ncin, ny,"PET", i,j,t, df$PET)
 }
 #Opens/creates a NetCDF to add data
 .openaddNetCDF<-function(file, verbose = FALSE) {
@@ -277,23 +304,32 @@
       dates_file = .readdatesNetCDF(nc)
     }
   }
-  for(j in 1:length(dates)) {
-    if(as.character(dates[j]) %in% names(data)) {
-      day = which(dates_file==dates[j])
-      if(verbose) cat(paste0("Writing data for day '", as.character(dates[j]), "' at time position [",day, "].\n"))
-      df = data[[as.character(dates[j])]]
-      if("MeanTemperature" %in% names(df)) .putgridvardataday(nc,"MeanTemperature", df$MeanTemperature,day, index)
-      if("MinTemperature" %in% names(df)) .putgridvardataday(nc,"MinTemperature", df$MinTemperature,day, index)
-      if("MaxTemperature" %in% names(df)) .putgridvardataday( nc, "MaxTemperature", df$MaxTemperature,day, index)
-      if("Precipitation" %in% names(df)) .putgridvardataday( nc, "Precipitation", df$Precipitation,day, index)
-      if("MeanRelativeHumidity" %in% names(df)) .putgridvardataday( nc, "MeanRelativeHumidity", df$MeanRelativeHumidity,day, index)
-      if("MinRelativeHumidity" %in% names(df)) .putgridvardataday( nc, "MinRelativeHumidity", df$MinRelativeHumidity,day, index)
-      if("MaxRelativeHumidity" %in% names(df)) .putgridvardataday( nc, "MaxRelativeHumidity", df$MaxRelativeHumidity,day, index)
-      if("Radiation" %in% names(df)) .putgridvardataday( nc, "Radiation", df$Radiation,day, index)
-      if("WindSpeed" %in% names(df)) .putgridvardataday( nc, "WindSpeed", df$WindSpeed,day, index)
-      if("WindDirection" %in% names(df)) .putgridvardataday( nc, "WindDirection", df$WindDirection,day, index)
-      if("PET" %in% names(df)) .putgridvardataday( nc, "PET", df$PET,day, index)
-      nc_sync(nc) # Flushes writing
+  if(!byPixel) {
+    for(j in 1:length(dates)) {
+      if(as.character(dates[j]) %in% names(data)) {
+        day = which(dates_file==dates[j])
+        if(verbose) cat(paste0("Writing data for day '", as.character(dates[j]), "' at time position [",day, "].\n"))
+        .putgridday(nc = nc, df = data[[as.character(dates[j])]], 
+                    day = day, index = index)
+        nc_sync(nc) # Flushes writing
+      }
+    }
+  } else {
+    cv = coordinatevalues(grid_nc)
+    cc = coordinates(grid_nc)
+    if(!is.null(index)) cc = cc[index,]
+    varnames = names(data[[1]])
+    t = which(as.character(dates_file)==as.character(dates[1]))
+    df = data.frame(matrix(NA, nrow = length(dates), ncol=length(varnames)))
+    colnames(df)= varnames
+    rownames(df)=as.character(dates)
+    if(verbose) pb = txtProgressBar(0, nrow(cc), style=3)
+    for(px in 1:nrow(cc)) {
+      if(verbose) setTxtProgressBar(pb,px)
+      for(d in 1:length(dates)) df[d,] = data[[d]][px,]
+      i = which(cv[[1]]==cc[px,1])
+      j = which(cv[[2]]==cc[px,2])
+      .putgridpixel(nc,ny, i,j,t,df)
     }
   }
 }

@@ -26,7 +26,7 @@
     cat("\n")
   } else if(inherits(object,"character")) {
     file = object
-    ncin = .openreadgridNetCDF(file)
+    ncin = .openreadgridNetCDF(file, readByPixels = TRUE, verbose= FALSE)
     gt = .readgridtopologyNetCDF(ncin)
     gdates = .readdatesNetCDF(ncin)
     nx <- gt@cells.dim[1]

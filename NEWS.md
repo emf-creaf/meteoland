@@ -6,6 +6,8 @@
 - New functions 'extractdates' and 'extractvars' replacing and generalizing 'extractpointdates'.
 - Function 'summarypoints' can summarize all variables at once.
 - Unlimited NetCDF time dimension for grids and station dimension for points.
+- Grids/pixels with no dates allowed
+- Time (unlimited) is written as last dimension in grids, but can be read as first or last dimension
 
 # Version 0.8.9
 - New functions to download data from 'meteogalicia' (MG)

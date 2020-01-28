@@ -48,7 +48,9 @@
   return(nc)
 }
 #Opens/creates a NetCDF for writing grid data
-.openwritegridNetCDF<-function(grid, proj4string, dates, file, chunksizes = NA, add=FALSE, overwrite = FALSE, verbose = FALSE) {
+.openwritegridNetCDF<-function(grid, proj4string, dates, file, 
+                               byPixel = FALSE, chunksizes = NA, 
+                               add=FALSE, overwrite = FALSE, verbose = FALSE) {
   if(!add) {
     if(file.exists(file) & !overwrite) stop(paste0("File '",file,"' already exist. Use 'overwrite = TRUE' to force overwriting or 'add = TRUE' to add/replace content."))
     if(verbose) cat(paste0("\nCreating '", file,"'.\n"))
@@ -65,6 +67,9 @@
     }
     time <- ncdim_def("time", tunits, as.double(as.Date(dates)), longname = "time of measurement",unlim = TRUE)
     nt = length(dates)
+    if(byPixel) {
+      chunksizes = c(1,1,length(dates))
+    }
     varMeanTemp <- ncvar_def( "MeanTemperature", "Celsius", list(dimX,dimY,time), NA, chunksizes = chunksizes)
     varMinTemp <- ncvar_def( "MinTemperature", "Celsius", list(dimX,dimY,time), NA, chunksizes = chunksizes)
     varMaxTemp <- ncvar_def( "MaxTemperature", "Celsius", list(dimX,dimY,time), NA, chunksizes = chunksizes)
@@ -248,7 +253,9 @@
 }
 
 #Writes full NetCDF grids
-.writemeteorologygridNetCDF<-function(data, grid, proj4string, nc, index=NULL, add = FALSE, verbose = FALSE) {
+.writemeteorologygridNetCDF<-function(data, grid, proj4string, nc, 
+                                      index=NULL,  
+                                      byPixel = FALSE, verbose = FALSE) {
   grid_nc = .readgridtopologyNetCDF(nc)
   nx = grid_nc@cells.dim[1]
   ny = grid_nc@cells.dim[2]
@@ -291,8 +298,10 @@
   }
 }
 #Writes pixels in a NetCDF grid
-.writemeteorologypixelsNetCDF<-function(data, pixels, proj4string, nc, verbose = FALSE) {
-  .writemeteorologygridNetCDF(data, pixels@grid, proj4string, nc, index=pixels@grid.index, verbose = verbose)
+.writemeteorologypixelsNetCDF<-function(data, pixels, proj4string, nc, 
+                                        byPixel, verbose = FALSE) {
+  .writemeteorologygridNetCDF(data, pixels@grid, proj4string, nc = nc, 
+                              index=pixels@grid.index, byPixel = byPixel, verbose = verbose)
 }
 
 #Opens a NetCDF for reading data

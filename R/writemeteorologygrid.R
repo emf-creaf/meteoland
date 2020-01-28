@@ -1,25 +1,30 @@
 # Writes grid meteorological data (SpatialGridMeteorology) into a netCDF
-writemeteorologygrid<-function(object, file, dates = NULL, format = "netCDF", chunksizes = NA, add=FALSE, overwrite = FALSE, verbose = FALSE) {
+writemeteorologygrid<-function(object, file, dates = NULL, format = "netCDF", 
+                               byPixel = FALSE, chunksizes = NA, 
+                               add=FALSE, overwrite = FALSE, verbose = FALSE) {
   if(!inherits(object,"SpatialGridMeteorology")) stop("'object' has to be of class 'SpatialGridMeteorology'.")
   if(is.null(dates)) dates = object@dates
   if((!inherits(dates,"Date"))&&(!inherits(dates,"character"))) stop("'dates' must be a 'character' or 'Date'")
   nc = .openwritegridNetCDF(object@grid, proj4string = proj4string(object), dates = dates,
-                                  file=file, chunksizes = chunksizes, add= add, overwrite = overwrite, verbose = verbose)
+                            file=file, byPixel = byPixel, chunksizes = chunksizes, 
+                            add= add, overwrite = overwrite, verbose = verbose)
   if(length(dates)>0) .writemeteorologygridNetCDF(data = object@data[as.character(dates)], 
                               grid=object@grid, proj4string = proj4string(object), 
-                              nc=nc, verbose = verbose)
+                              nc=nc, byPixel = byPixel, verbose = verbose)
   .closeNetCDF(file,nc, verbose = verbose)
 }
 # Writes grid meteorological data (SpatialPixelMeteorology) into a netCDF
-writemeteorologypixels<-function(object, file, dates = NULL, format = "netCDF", chunksizes = NA, add=FALSE, overwrite = FALSE, verbose = FALSE) {
+writemeteorologypixels<-function(object, file, dates = NULL, format = "netCDF", 
+                                 byPixel = FALSE, chunksizes = NA, 
+                                 add=FALSE, overwrite = FALSE, verbose = FALSE) {
   if(!inherits(object,"SpatialPixelsMeteorology")) stop("'object' has to be of class 'SpatialPixelsMeteorology'.")
   if(is.null(dates)) dates = object@dates
   if((!inherits(dates,"Date"))&&(!inherits(dates,"character"))) stop("'dates' must be a 'character' or 'Date'")
   nc = .openwritegridNetCDF(object@grid, proj4string = proj4string(object), dates = dates,
-                                  file=file, chunksizes = chunksizes, add= add, overwrite = overwrite, verbose = verbose)
+                                  file=file, byPixel = byPixel, chunksizes = chunksizes, add= add, overwrite = overwrite, verbose = verbose)
   if(length(dates)>0) .writemeteorologypixelsNetCDF(data = object@data[as.character(dates)], 
                                 pixels=object, proj4string = proj4string(object), 
-                                nc=nc)
+                                byPixel = byPixel, nc=nc)
   .closeNetCDF(file,nc, verbose = verbose)
 }
 # Replaces the content of a grid pixel in an existing netCDF

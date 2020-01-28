@@ -115,13 +115,22 @@ setAs("SpatialPixelsMeteorology", "STFDF", as.SpPxMet.STFDF)
 
 as.SpPxMet.SpPtsMet = function(from) {
   points = as(from, "SpatialPoints")
+  dates = from@dates
   indices = from@grid.index
   npoints = length(indices)
+  ndates = length(dates)
   data = vector("list",npoints)
+  rownames(points@coords) = 1:npoints
+  names(data) = 1:npoints
+  varnames = names(from@data[[1]])
   for(i in 1:npoints) {
-    data[[i]] = .extractSGMSPMindexdata(from, indices[i])
+    df = data.frame(matrix(NA, nrow = ndates, ncol=length(varnames)))
+    colnames(df)= varnames
+    rownames(df)=as.character(dates)
+    for(j in 1:ndates) df[j,] = from@data[[j]][i,]
+    data[[i]] = df
   }
-  SpatialPointsMeteorology(points, data = data, dates = from@dates)
+  SpatialPointsMeteorology(points, data = data, dates = dates)
 }
 setAs("SpatialPixelsMeteorology", "SpatialPointsMeteorology", as.SpPxMet.SpPtsMet)
 

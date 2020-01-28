@@ -48,7 +48,7 @@ summarypoints<-function(points, var, fun=mean, freq=NULL, dates = NULL, months =
     ptsout = as(points,"SpatialPoints")
   } else {
     file = points
-    ncin = .openreadNetCDF(file)
+    ncin = .openreadpointsNetCDF(file)
     crs = .readCRSNetCDF(ncin)
     cc = .readpointcoordinatesNetCDF(ncin, crs)
     ids = rownames(cc)

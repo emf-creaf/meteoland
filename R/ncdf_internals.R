@@ -305,14 +305,12 @@
 .writemeteorologypixelsNetCDF<-function(data, pixels, proj4string, nc, verbose = FALSE) {
   .writemeteorologygridNetCDF(data, pixels@grid, proj4string, nc, index=pixels@grid.index, verbose = verbose)
 }
+
 #Opens a NetCDF for reading data
-.openreadgridNetCDF<-function(file, readByPixels = FALSE, verbose =FALSE) {
+.openreadgridNetCDF<-function(file, verbose =FALSE) {
   if(!file.exists(file)) stop(paste0("File '", file, "' does not exist."))
   if(verbose) cat(paste0("\nOpening '", file,"' to read data.\n"))
   nc = nc_open(file)
-  if(readByPixels) { #Changes chunck sizes of
-
-  }
   return(nc)
 }
 

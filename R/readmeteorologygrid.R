@@ -4,7 +4,7 @@ readmeteorologygrid<-function(files, format = "netCDF", varmapping = NULL,
   nfiles = length(files)
   l = vector("list", nfiles)
   for(i in 1:nfiles) {
-    nc = .openreadgridNetCDF(files[i], readByPixels = FALSE, verbose = verbose)
+    nc = .openreadgridNetCDF(files[i], verbose = verbose)
     if(!is.null(dates)) {
       if((!inherits(dates,"Date"))&&(!inherits(dates,"character"))) stop("'dates' must be a 'character' or 'Date'")
       sgm = .readmeteorologygridNetCDF(nc, dates = as.Date(dates), varmapping = varmapping, bbox = bbox, offset = offset, verbose = verbose)
@@ -24,7 +24,7 @@ readmeteorologypixels<-function(files, format = "netCDF", varmapping = NULL,
   nfiles = length(files)
   l = vector("list", nfiles)
   for(i in 1:nfiles) {
-    nc = .openreadgridNetCDF(files[i], readByPixels = FALSE, verbose = verbose)
+    nc = .openreadgridNetCDF(files[i], verbose = verbose)
     if(!is.null(dates)) {
       if((!inherits(dates,"Date"))&&(!inherits(dates,"character"))) stop("'dates' must be a 'character' or 'Date'")
       spm = .readmeteorologygridNetCDF(nc, dates = as.Date(dates), pixels=T, varmapping = varmapping, bbox = bbox, offset = offset, verbose = verbose)
@@ -45,7 +45,7 @@ readmeteorologygridpoints<-function(files, format = "netCDF", varmapping = NULL,
   nfiles = length(files)
   l = vector("list", nfiles)
   for(i in 1:nfiles) {
-    nc = .openreadgridNetCDF(files[i], readByPixels = TRUE, verbose = verbose)
+    nc = .openreadgridNetCDF(files[i], verbose = verbose)
     if(!is.null(dates)) {
       if((!inherits(dates,"Date"))&&(!inherits(dates,"character"))) stop("'dates' must be a 'character' or 'Date'")
       sgm = .readmeteorologygridpointsNetCDF(nc, dates = as.Date(dates), varmapping = varmapping, bbox = bbox, offset = offset, verbose = verbose)

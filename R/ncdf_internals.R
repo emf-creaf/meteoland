@@ -26,19 +26,19 @@
   } else {
     datavecfull = datavec
   }
-  # Assumes time dimension is the last
+  # Assumes time dimension is the first
   for(i in 1:ny) ncvar_put(nc, varid=var, vals=datavecfull[((i-1)*nx+1):(i*nx)], start=c(day, 1,ny-i+1), count=c(1,nx,1))
 }
-#writes a grid/pixels for a single variable 
+#writes a grid/pixels for a single variable (no temporal dimension)
 .putvardata<-function(nc, var, datavec) {
   nx = nc$dim$x$len
   ny = nc$dim$y$len
-  # Assumes time dimension is the last
   for(i in 1:ny) ncvar_put(nc, varid=var, vals=datavec[((i-1)*nx+1):(i*nx)], start=c(1,ny-i+1), count=c(nx,1))
 }
 #writes data for a single pixel
 .putvardatapixel<-function(ncin, ny, nt, varname, i, j, datavec) {
-  return(ncvar_put(ncin, varname, vals = datavec, start=c(i,ny-j+1,1), count=c(1,1,nt)))
+  # Assumes time dimension is the first
+  return(ncvar_put(ncin, varname, vals = datavec, start=c(1,i,ny-j+1), count=c(nt,1,1)))
 }
 #Opens/creates a NetCDF to add data
 .openaddNetCDF<-function(file, verbose = FALSE) {

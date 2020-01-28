@@ -11,9 +11,9 @@ Functions to write grid meteorological data to the file system.
 }
 \usage{
 writemeteorologygrid(object, file, dates, format = "netCDF", 
-                     add = FALSE, overwrite = FALSE, verbose = FALSE)
+                     chunksize = NA, add = FALSE, overwrite = FALSE, verbose = FALSE)
 writemeteorologypixels(object, file, dates, format = "netCDF", 
-                       add = FALSE, overwrite = FALSE, verbose = FALSE)
+                       chunksize = NA, add = FALSE, overwrite = FALSE, verbose = FALSE)
 writemeteorologygridpixel(file, index, data, verbose = FALSE)
 }
 \arguments{
@@ -21,6 +21,7 @@ writemeteorologygridpixel(file, index, data, verbose = FALSE)
   \item{file}{A string with the file name to be written.}
   \item{dates}{A \code{\link{Date}} vector object or a character string indicating the dates to be written.}
   \item{format}{Format of meteorological data. The only  accepted format is \code{"netCDF"}.}
+  \item{chunksize}{Specifies the size of data chunks to be read/written. By default, meteoland specifies chunks of a maximum size of 100 in each dimension. If set, this must be a vector of three integers corresponding to XYT.}
   \item{add}{Boolean flag to indicate that NetCDF exists and data should be added/replaced.}
   \item{overwrite}{Boolean flag to force overwriting an existing NetCDF.}
   \item{verbose}{A logical flag to output process information in the console.}

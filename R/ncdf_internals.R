@@ -305,13 +305,20 @@
 .writemeteorologypixelsNetCDF<-function(data, pixels, proj4string, nc, verbose = FALSE) {
   .writemeteorologygridNetCDF(data, pixels@grid, proj4string, nc, index=pixels@grid.index, verbose = verbose)
 }
+
 #Opens a NetCDF for reading data
-.openreadNetCDF<-function(file, verbose =FALSE) {
+.openreadgridNetCDF<-function(file, verbose =FALSE) {
+  if(!file.exists(file)) stop(paste0("File '", file, "' does not exist."))
+  if(verbose) cat(paste0("\nOpening '", file,"' to read data.\n"))
+  nc = nc_open(file)
+  return(nc)
+}
+
+.openreadpointsNetCDF<-function(file, verbose =FALSE) {
   if(!file.exists(file)) stop(paste0("File '", file, "' does not exist."))
   if(verbose) cat(paste0("\nOpening '", file,"' to read data.\n"))
   return(nc_open(file))
 }
-
 #Reads values of time dimension
 .readdatesNetCDF<-function(ncin) {
   tunits <- ncin$dim$time$units

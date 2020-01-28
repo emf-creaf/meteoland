@@ -24,7 +24,7 @@ extractgridindex<-function(grid, index) {
   if(inherits(grid,"SpatialGridMeteorology") || inherits(grid,"SpatialPixelsMeteorology")) {
     return(.extractSGMSPMindexdata(grid, index))
   } else {
-    ncin = .openreadNetCDF(grid, verbose=FALSE)
+    ncin = .openreadgridNetCDF(grid, verbose=FALSE)
     gt = .readgridtopologyNetCDF(ncin)
     gdates = .readdatesNetCDF(ncin)
     ny = gt@cells.dim[2]
@@ -50,7 +50,7 @@ extractgridpoints<-function(grid, points, verbose = FALSE) {
     gt =  getGridTopology(grid)
     proj4string = grid@proj4string
   } else {
-    ncin = .openreadNetCDF(grid, verbose=FALSE)
+    ncin = .openreadgridNetCDF(grid, verbose=FALSE)
     gdates = .readdatesNetCDF(ncin)
     gt = .readgridtopologyNetCDF(ncin)
     proj4string = .readCRSNetCDF(ncin)
@@ -67,6 +67,8 @@ extractgridpoints<-function(grid, points, verbose = FALSE) {
   points = points[sel]
   npoints = length(points)
   res = vector("list",npoints)
+  nt = length(dates)
+  ny = gt@cells.dim[2]
 
   cv = coordinatevalues(gt)
   ccind = coordinates(gt)[indices,, drop=FALSE]
@@ -79,7 +81,7 @@ extractgridpoints<-function(grid, points, verbose = FALSE) {
     } else {
       j = which(cv[[1]]==ccind[i,1])
       k = which(cv[[2]]==ccind[i,2])
-      res[[i]] = .readgriddatapixel(ncin, j,k)
+      res[[i]] = .readgriddatapixel(ncin, ny, nt, j,k)
     }
   }
   if(!inherits(grid,"SpatialGridMeteorology") && !inherits(grid,"SpatialPixelsMeteorology")) {

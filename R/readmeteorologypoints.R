@@ -64,7 +64,7 @@ readmeteorologypoints<-function(files, dates = NULL, stations = NULL, format = "
   nfiles = length(files)
   l = vector("list", nfiles)
   for(i in 1:nfiles) {
-    nc = .openreadNetCDF(files[i], verbose = verbose)
+    nc = .openreadpointsNetCDF(files[i], verbose = verbose)
     if(!is.null(dates)) {
       if((!inherits(dates,"Date"))&&(!inherits(dates,"character"))) stop("'dates' must be a 'character' or 'Date'")
       spm = .readmeteorologypointsNetCDF(nc, dates = as.Date(dates), stations = stations, varmapping = varmapping, verbose = verbose)

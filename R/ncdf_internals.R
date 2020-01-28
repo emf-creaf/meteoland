@@ -65,9 +65,6 @@
     }
     time <- ncdim_def("time", tunits, as.double(as.Date(dates)), longname = "time of measurement",unlim = TRUE)
     nt = length(dates)
-    if(is.na(chunksizes)) {
-      chunksizes = c(min(nx,100), min(ny,100), min(nt,100))
-    }
     varMeanTemp <- ncvar_def( "MeanTemperature", "Celsius", list(dimX,dimY,time), NA, chunksizes = chunksizes)
     varMinTemp <- ncvar_def( "MinTemperature", "Celsius", list(dimX,dimY,time), NA, chunksizes = chunksizes)
     varMaxTemp <- ncvar_def( "MaxTemperature", "Celsius", list(dimX,dimY,time), NA, chunksizes = chunksizes)

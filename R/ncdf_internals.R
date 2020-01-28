@@ -30,13 +30,13 @@
   for(i in 1:ny) ncvar_put(nc, varid=var, vals=datavecfull[((i-1)*nx+1):(i*nx)], start=c(day, 1,ny-i+1), count=c(1,nx,1))
 }
 #writes a grid/pixels for a single variable (no temporal dimension)
-.putvardata<-function(nc, var, datavec) {
+.putgridvardata<-function(nc, var, datavec) {
   nx = nc$dim$x$len
   ny = nc$dim$y$len
   for(i in 1:ny) ncvar_put(nc, varid=var, vals=datavec[((i-1)*nx+1):(i*nx)], start=c(1,ny-i+1), count=c(nx,1))
 }
 #writes data for a single pixel
-.putvardatapixel<-function(ncin, ny, nt, varname, i, j, datavec) {
+.putgridvardatapixel<-function(ncin, ny, nt, varname, i, j, datavec) {
   # Assumes time dimension is the first
   return(ncvar_put(ncin, varname, vals = datavec, start=c(1,i,ny-j+1), count=c(nt,1,1)))
 }
@@ -90,8 +90,8 @@
                                    varRad, varWindSpeed, varWindDirection, varPET), force_v4 = T)
         spt_lonlat = spTransform(SpatialPoints(coordinates(grid), CRS(proj4string)), CRS("+proj=longlat +datum=WGS84"))
         lonlat = coordinates(spt_lonlat)
-        .putvardata(nc, varLon, lonlat[,1])
-        .putvardata(nc, varLat, lonlat[,2])
+        .putgridvardata(nc, varLon, lonlat[,1])
+        .putgridvardata(nc, varLat, lonlat[,2])
       } else {
         nc <- nc_create(file, list(varMeanTemp,varMinTemp,varMaxTemp,varPrec,
                                    varMeanRH, varMinRH,varMaxRH,

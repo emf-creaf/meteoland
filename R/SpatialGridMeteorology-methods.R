@@ -116,3 +116,14 @@ as.SpGrdMet.stars = function(from) {
   stars::st_as_stars(as.SpGrdMet.STFDF(from))
 }
 setAs("SpatialGridMeteorology", "stars", as.SpGrdMet.stars)
+
+as.SpGrdMet.SpPtsMet = function(from) {
+  points = as(from, "SpatialPoints")
+  npoints = length(points)
+  data = vector("list",npoints)
+  for(i in 1:npoints) {
+    data[[i]] = .extractSGMSPMindexdata(from, i)
+  }
+  SpatialPointsMeteorology(points, data = data, dates = from@dates)
+}
+setAs("SpatialGridMeteorology", "SpatialPointsMeteorology", as.SpGrdMet.SpPtsMet)

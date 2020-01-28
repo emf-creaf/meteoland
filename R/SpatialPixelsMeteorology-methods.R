@@ -112,6 +112,19 @@ as.SpPxMet.STFDF = function(from) {
   spacetime::STFDF(sp, time, data)
 }
 setAs("SpatialPixelsMeteorology", "STFDF", as.SpPxMet.STFDF)
+
+as.SpPxMet.SpPtsMet = function(from) {
+  points = as(from, "SpatialPoints")
+  indices = from@grid.index
+  npoints = length(indices)
+  data = vector("list",npoints)
+  for(i in 1:npoints) {
+    data[[i]] = .extractSGMSPMindexdata(from, indices[i])
+  }
+  SpatialPointsMeteorology(points, data = data, dates = from@dates)
+}
+setAs("SpatialPixelsMeteorology", "SpatialPointsMeteorology", as.SpPxMet.SpPtsMet)
+
 as.SpPxMet.stars = function(from) {
   stars::st_as_stars(as.SpPxMet.STFDF(from))
 }

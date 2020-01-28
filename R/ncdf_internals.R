@@ -17,7 +17,7 @@
   return("unknown")
 }
 #writes a grid/pixels for a single variable and day
-.putvardataday<-function(nc, var, datavec, day, index=NULL) {
+.putgridvardataday<-function(nc, var, datavec, day, index=NULL) {
   nx = nc$dim$x$len
   ny = nc$dim$y$len
   if(!is.null(index)) {
@@ -26,12 +26,14 @@
   } else {
     datavecfull = datavec
   }
-  for(i in 1:ny) ncvar_put(nc, varid=var, vals=datavecfull[((i-1)*nx+1):(i*nx)], start=c(1,ny-i+1, day), count=c(nx,1,1))
+  # Assumes time dimension is the last
+  for(i in 1:ny) ncvar_put(nc, varid=var, vals=datavecfull[((i-1)*nx+1):(i*nx)], start=c(day, 1,ny-i+1), count=c(1,nx,1))
 }
 #writes a grid/pixels for a single variable 
 .putvardata<-function(nc, var, datavec) {
   nx = nc$dim$x$len
   ny = nc$dim$y$len
+  # Assumes time dimension is the last
   for(i in 1:ny) ncvar_put(nc, varid=var, vals=datavec[((i-1)*nx+1):(i*nx)], start=c(1,ny-i+1), count=c(nx,1))
 }
 #writes data for a single pixel
@@ -62,17 +64,17 @@
       dimY <- ncdim_def( "y", pr_units, sort(unique(coordinates(grid)[,2])), longname = "y coordinate of projection")
     }
     time <- ncdim_def("time", tunits, as.double(as.Date(dates)), longname = "time of measurement",unlim = TRUE)
-    varMeanTemp <- ncvar_def( "MeanTemperature", "Celsius", list(dimX,dimY, time), NA)
-    varMinTemp <- ncvar_def( "MinTemperature", "Celsius", list(dimX,dimY, time), NA)
-    varMaxTemp <- ncvar_def( "MaxTemperature", "Celsius", list(dimX,dimY, time), NA)
-    varPrec <- ncvar_def( "Precipitation", "l m-2", list(dimX,dimY, time), NA)
-    varMeanRH <- ncvar_def( "MeanRelativeHumidity", "%", list(dimX,dimY, time), NA)
-    varMinRH <- ncvar_def( "MinRelativeHumidity", "%", list(dimX,dimY, time), NA)
-    varMaxRH <- ncvar_def( "MaxRelativeHumidity", "%", list(dimX,dimY, time), NA)
-    varRad <- ncvar_def( "Radiation", "MJ m-2", list(dimX,dimY, time), NA)
-    varWindSpeed <- ncvar_def( "WindSpeed", "m s-1", list(dimX,dimY, time), NA)
-    varWindDirection <- ncvar_def( "WindDirection", "degrees_north", list(dimX,dimY, time), NA)
-    varPET <- ncvar_def( "PET", "l m-2", list(dimX,dimY, time), NA)
+    varMeanTemp <- ncvar_def( "MeanTemperature", "Celsius", list(time,dimX,dimY), NA)
+    varMinTemp <- ncvar_def( "MinTemperature", "Celsius", list(time,dimX,dimY), NA)
+    varMaxTemp <- ncvar_def( "MaxTemperature", "Celsius", list(time,dimX,dimY), NA)
+    varPrec <- ncvar_def( "Precipitation", "l m-2", list(time,dimX,dimY), NA)
+    varMeanRH <- ncvar_def( "MeanRelativeHumidity", "%", list(time,dimX,dimY), NA)
+    varMinRH <- ncvar_def( "MinRelativeHumidity", "%", list(time,dimX,dimY), NA)
+    varMaxRH <- ncvar_def( "MaxRelativeHumidity", "%", list(time,dimX,dimY), NA)
+    varRad <- ncvar_def( "Radiation", "MJ m-2", list(time,dimX,dimY), NA)
+    varWindSpeed <- ncvar_def( "WindSpeed", "m s-1", list(time,dimX,dimY), NA)
+    varWindDirection <- ncvar_def( "WindDirection", "degrees_north", list(time,dimX,dimY), NA)
+    varPET <- ncvar_def( "PET", "l m-2", list(time,dimX,dimY), NA)
     if(.isLongLat(proj4string)) {
       nc <- nc_create(file, list(varMeanTemp,varMinTemp,varMaxTemp,varPrec,
                                  varMeanRH, varMinRH,varMaxRH,
@@ -284,17 +286,17 @@
       day = which(dates_file==dates[j])
       if(verbose) cat(paste0("Writing data for day '", as.character(dates[j]), "' at time position [",day, "].\n"))
       df = data[[as.character(dates[j])]]
-      if("MeanTemperature" %in% names(df)) .putvardataday(nc,varMeanTemp, df$MeanTemperature,day, index)
-      if("MinTemperature" %in% names(df)) .putvardataday(nc,varMinTemp, df$MinTemperature,day, index)
-      if("MaxTemperature" %in% names(df)) .putvardataday( nc, varMaxTemp, df$MaxTemperature,day, index)
-      if("Precipitation" %in% names(df)) .putvardataday( nc, varPrec, df$Precipitation,day, index)
-      if("MeanRelativeHumidity" %in% names(df)) .putvardataday( nc, varMeanRH, df$MeanRelativeHumidity,day, index)
-      if("MinRelativeHumidity" %in% names(df)) .putvardataday( nc, varMinRH, df$MinRelativeHumidity,day, index)
-      if("MaxRelativeHumidity" %in% names(df)) .putvardataday( nc, varMaxRH, df$MaxRelativeHumidity,day, index)
-      if("Radiation" %in% names(df)) .putvardataday( nc, varRad, df$Radiation,day, index)
-      if("WindSpeed" %in% names(df)) .putvardataday( nc, varWindSpeed, df$WindSpeed,day, index)
-      if("WindDirection" %in% names(df)) .putvardataday( nc, varWindDirection, df$WindDirection,day, index)
-      if("PET" %in% names(df)) .putvardataday( nc, varPET, df$PET,day, index)
+      if("MeanTemperature" %in% names(df)) .putgridvardataday(nc,varMeanTemp, df$MeanTemperature,day, index)
+      if("MinTemperature" %in% names(df)) .putgridvardataday(nc,varMinTemp, df$MinTemperature,day, index)
+      if("MaxTemperature" %in% names(df)) .putgridvardataday( nc, varMaxTemp, df$MaxTemperature,day, index)
+      if("Precipitation" %in% names(df)) .putgridvardataday( nc, varPrec, df$Precipitation,day, index)
+      if("MeanRelativeHumidity" %in% names(df)) .putgridvardataday( nc, varMeanRH, df$MeanRelativeHumidity,day, index)
+      if("MinRelativeHumidity" %in% names(df)) .putgridvardataday( nc, varMinRH, df$MinRelativeHumidity,day, index)
+      if("MaxRelativeHumidity" %in% names(df)) .putgridvardataday( nc, varMaxRH, df$MaxRelativeHumidity,day, index)
+      if("Radiation" %in% names(df)) .putgridvardataday( nc, varRad, df$Radiation,day, index)
+      if("WindSpeed" %in% names(df)) .putgridvardataday( nc, varWindSpeed, df$WindSpeed,day, index)
+      if("WindDirection" %in% names(df)) .putgridvardataday( nc, varWindDirection, df$WindDirection,day, index)
+      if("PET" %in% names(df)) .putgridvardataday( nc, varPET, df$PET,day, index)
       nc_sync(nc) # Flushes writing
     }
   }
@@ -319,42 +321,44 @@
 }
 
 #Reads grid/pixels for a single variable and day
-.readvardataday<-function(ncin, nx, ny, varname, day, selection = NULL) {
+.readgridvardataday<-function(ncin, nx, ny, varname, day, selection = NULL) {
+  timefirst = (ncin$var[[varname]]$dim[[1]]$name=="time")
   v <- rep(NA, nx*ny)
   #Reads rows in decreasing order
-  for(i in 1:ny) {
-    v[((i-1)*nx+1):(i*nx)] = ncvar_get(ncin, varname,start=c(1,ny-i+1,day), count=c(nx,1,1))
+  if(timefirst) { # Time is first dimension
+    for(i in 1:ny) {
+      v[((i-1)*nx+1):(i*nx)] = ncvar_get(ncin, varname,start=c(day,1,ny-i+1), count=c(1,nx,1))
+    }
+  } else {
+    for(i in 1:ny) { # Time is last dimension
+      v[((i-1)*nx+1):(i*nx)] = ncvar_get(ncin, varname,start=c(1,ny-i+1,day), count=c(nx,1,1))
+    }
   }
   if(!is.null(selection)) v = v[selection]
   return(v)
 }
 #Reads data for a single pixel and period 
-.readvardatapixel<-function(ncin, ny, nt, varname, i, j) {
-  return(ncvar_get(ncin, varname,start=c(i,ny-j+1,1), count=c(1,1,nt)))
+.readgridvardatapixel<-function(ncin, ny, nt, varname, i, j) {
+  timefirst = (ncin$var[[varname]]$dim[[1]]$name=="time")
+  if(timefirst) {
+    v = ncvar_get(ncin, varname,start=c(1,i,ny-j+1), count=c(nt,1,1))
+  } else {
+    v = ncvar_get(ncin, varname,start=c(i,ny-j+1,1), count=c(1,1,nt))
+  }
+  return(v)
 }
-.readdatapixel<-function(ncin, ny, nt, i, j) {
-  varMeanTemp = ncin$var$MeanTemperature
-  varMinTemp = ncin$var$MinTemperature
-  varMaxTemp = ncin$var$MaxTemperature
-  varPrec = ncin$var$Precipitation
-  varMeanRH = ncin$var$MeanRelativeHumidity
-  varMinRH = ncin$var$MinRelativeHumidity
-  varMaxRH = ncin$var$MaxRelativeHumidity
-  varRad = ncin$var$Radiation
-  varWindSpeed = ncin$var$WindSpeed
-  varWindDirection = ncin$var$WindDirection
-  varPET = ncin$var$PET
-  df = data.frame(MeanTemperature = .readvardatapixel(ncin, ny, nt, varMeanTemp, i,j),
-                  MinTemperature = .readvardatapixel(ncin,ny, nt, varMinTemp, i,j),
-                  MaxTemperature = .readvardatapixel(ncin,ny, nt, varMaxTemp, i,j),
-                  Precipitation = .readvardatapixel(ncin,ny, nt, varPrec, i,j),
-                  MeanRelativeHumidity = .readvardatapixel(ncin,ny, nt, varMeanRH, i,j),
-                  MinRelativeHumidity = .readvardatapixel(ncin,ny, nt, varMinRH, i,j),
-                  MaxRelativeHumidity = .readvardatapixel(ncin,ny, nt, varMaxRH, i,j),
-                  Radiation = .readvardatapixel(ncin,ny, nt, varRad, i,j),
-                  WindSpeed = .readvardatapixel(ncin,ny, nt, varWindSpeed, i,j),
-                  WindDirection = .readvardatapixel(ncin,ny, nt, varWindDirection, i,j),
-                  PET = .readvardatapixel(ncin,ny, nt, varPET, i,j),
+.readgriddatapixel<-function(ncin, ny, nt, i, j) {
+  df = data.frame(MeanTemperature = .readgridvardatapixel(ncin, ny, nt, "MeanTemperature", i,j),
+                  MinTemperature = .readgridvardatapixel(ncin,ny, nt, "MinTemperature", i,j),
+                  MaxTemperature = .readgridvardatapixel(ncin,ny, nt, "MaxTemperature", i,j),
+                  Precipitation = .readgridvardatapixel(ncin,ny, nt, "Precipitation", i,j),
+                  MeanRelativeHumidity = .readgridvardatapixel(ncin,ny, nt, "MeanRelativeHumidity", i,j),
+                  MinRelativeHumidity = .readgridvardatapixel(ncin,ny, nt, "MinRelativeHumidity", i,j),
+                  MaxRelativeHumidity = .readgridvardatapixel(ncin,ny, nt, "MaxRelativeHumidity", i,j),
+                  Radiation = .readgridvardatapixel(ncin,ny, nt, "Radiation", i,j),
+                  WindSpeed = .readgridvardatapixel(ncin,ny, nt, "WindSpeed", i,j),
+                  WindDirection = .readgridvardatapixel(ncin,ny, nt, "WindDirection", i,j),
+                  PET = .readgridvardatapixel(ncin,ny, nt, "PET", i,j),
                   row.names = as.character(.readdatesNetCDF(ncin)))
   return(df)
 }
@@ -501,7 +505,7 @@
     df = data.frame(row.names = 1:sum(sel))
     for(var in names(varmapping)) {
       if(varmapping[[var]] %in% names(ncin$var)) {
-        df[[var]] = .readvardataday(ncin, nx, ny, varmapping[[var]], day, sel)
+        df[[var]] = .readgridvardataday(ncin, nx, ny, varmapping[[var]], day, sel)
       }
     }
     if(ncol(df)>0) {
@@ -661,11 +665,16 @@
           cat(paste0("\nMapping variable ", varmapping[[var]], " to ", var,"...\n"))
           pb = txtProgressBar(0, npts, style=3)
         }
+        timefirst = (ncin$var[[varmapping[[var]]]]$dim[[1]]$name=="time")
         values = ncvar_get(ncin, varmapping[[var]]) # read whole variable
         for(i in 1:nrow(xy)) {
           if(verbose) setTxtProgressBar(pb,i)
           df = data[[i]]
-          df[[var]] = values[xy[i,1],xy[i,2],]
+          if(timefirst) {
+            df[[var]] = values[,xy[i,1],xy[i,2]]
+          } else  {
+            df[[var]] = values[xy[i,1],xy[i,2],]
+          }
           data[[i]] = df
         }  
       }

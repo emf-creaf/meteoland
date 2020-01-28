@@ -38,13 +38,18 @@
     cat(paste("  Summarizing ", var, " in ", npoints," grid pixels...\n", sep=""))
     dfvec = vector("list",npoints)
     cnt = 1
+    timefirst = (ncin$var[[var]]$dim[[1]]$name=="time")
     val_array = ncvar_get(ncin, ncin$var[[var]])
     pb = txtProgressBar(0, npoints, 0, style = 3)
     sel = rep(TRUE, npoints)
     for(j in 1:ny) {
       for(i in 1:nx) {
         setTxtProgressBar(pb, cnt)
-        vals = val_array[i, ny-j+1,]
+        if(timefirst) {
+          vals = val_array[,i, ny-j+1]
+        } else {
+          vals = val_array[i, ny-j+1,]
+        }
         names(vals) = as.character(gdates)
         if(sum(!is.na(vals))==0) sel[cnt] = FALSE
         dfvec[[cnt]] = .summaryvarpoint(vals, fun = fun, freq=freq, dates = dates, months = months,...)

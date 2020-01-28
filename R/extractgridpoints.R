@@ -33,7 +33,7 @@ extractgridindex<-function(grid, index) {
     cci = coordinates(gt)[index,]
     i = which(cv[[1]]==cci[1])
     j = which(cv[[2]]==cci[2])
-    df = .readdatapixel(ncin, ny, nt, i,j)
+    df = .readgriddatapixel(ncin, ny, nt, i,j)
     .closeNetCDF(grid, ncin, verbose=FALSE)
     return(df)
   }
@@ -79,7 +79,7 @@ extractgridpoints<-function(grid, points, verbose = FALSE) {
     } else {
       j = which(cv[[1]]==ccind[i,1])
       k = which(cv[[2]]==ccind[i,2])
-      res[[i]] = .readdatapixel(ncin, j,k)
+      res[[i]] = .readgriddatapixel(ncin, j,k)
     }
   }
   if(!inherits(grid,"SpatialGridMeteorology") && !inherits(grid,"SpatialPixelsMeteorology")) {

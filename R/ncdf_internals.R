@@ -48,7 +48,7 @@
   return(nc)
 }
 #Opens/creates a NetCDF for writing grid data
-.openwritegridNetCDF<-function(grid, proj4string, dates, file, add=FALSE, overwrite = FALSE, verbose = FALSE) {
+.openwritegridNetCDF<-function(grid, proj4string, dates, file, chunksizes = NA, add=FALSE, overwrite = FALSE, verbose = FALSE) {
   if(!add) {
     if(file.exists(file) & !overwrite) stop(paste0("File '",file,"' already exist. Use 'overwrite = TRUE' to force overwriting or 'add = TRUE' to add/replace content."))
     if(verbose) cat(paste0("\nCreating '", file,"'.\n"))
@@ -64,17 +64,21 @@
       dimY <- ncdim_def( "y", pr_units, sort(unique(coordinates(grid)[,2])), longname = "y coordinate of projection")
     }
     time <- ncdim_def("time", tunits, as.double(as.Date(dates)), longname = "time of measurement",unlim = TRUE)
-    varMeanTemp <- ncvar_def( "MeanTemperature", "Celsius", list(dimX,dimY,time), NA)
-    varMinTemp <- ncvar_def( "MinTemperature", "Celsius", list(dimX,dimY,time), NA)
-    varMaxTemp <- ncvar_def( "MaxTemperature", "Celsius", list(dimX,dimY,time), NA)
-    varPrec <- ncvar_def( "Precipitation", "l m-2", list(dimX,dimY,time), NA)
-    varMeanRH <- ncvar_def( "MeanRelativeHumidity", "%", list(dimX,dimY,time), NA)
-    varMinRH <- ncvar_def( "MinRelativeHumidity", "%", list(dimX,dimY,time), NA)
-    varMaxRH <- ncvar_def( "MaxRelativeHumidity", "%", list(dimX,dimY,time), NA)
-    varRad <- ncvar_def( "Radiation", "MJ m-2", list(dimX,dimY,time), NA)
-    varWindSpeed <- ncvar_def( "WindSpeed", "m s-1", list(dimX,dimY,time), NA)
-    varWindDirection <- ncvar_def( "WindDirection", "degrees_north", list(dimX,dimY,time), NA)
-    varPET <- ncvar_def( "PET", "l m-2", list(dimX,dimY,time), NA)
+    nt = length(dates)
+    if(is.na(chunksizes)) {
+      chunksizes = c(min(nx,100), min(ny,100), min(nt,100))
+    }
+    varMeanTemp <- ncvar_def( "MeanTemperature", "Celsius", list(dimX,dimY,time), NA, chunksizes = chunksizes)
+    varMinTemp <- ncvar_def( "MinTemperature", "Celsius", list(dimX,dimY,time), NA, chunksizes = chunksizes)
+    varMaxTemp <- ncvar_def( "MaxTemperature", "Celsius", list(dimX,dimY,time), NA, chunksizes = chunksizes)
+    varPrec <- ncvar_def( "Precipitation", "l m-2", list(dimX,dimY,time), NA, chunksizes = chunksizes)
+    varMeanRH <- ncvar_def( "MeanRelativeHumidity", "%", list(dimX,dimY,time), NA, chunksizes = chunksizes)
+    varMinRH <- ncvar_def( "MinRelativeHumidity", "%", list(dimX,dimY,time), NA, chunksizes = chunksizes)
+    varMaxRH <- ncvar_def( "MaxRelativeHumidity", "%", list(dimX,dimY,time), NA, chunksizes = chunksizes)
+    varRad <- ncvar_def( "Radiation", "MJ m-2", list(dimX,dimY,time), NA, chunksizes = chunksizes)
+    varWindSpeed <- ncvar_def( "WindSpeed", "m s-1", list(dimX,dimY,time), NA, chunksizes = chunksizes)
+    varWindDirection <- ncvar_def( "WindDirection", "degrees_north", list(dimX,dimY,time), NA, chunksizes = chunksizes)
+    varPET <- ncvar_def( "PET", "l m-2", list(dimX,dimY,time), NA, chunksizes = chunksizes)
     if(.isLongLat(proj4string)) {
       nc <- nc_create(file, list(varMeanTemp,varMinTemp,varMaxTemp,varPrec,
                                  varMeanRH, varMinRH,varMaxRH,

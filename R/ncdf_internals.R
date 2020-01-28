@@ -259,17 +259,6 @@
   dates_file = .readdatesNetCDF(nc)
   if(nx != grid@cells.dim[1]) stop("Number of x-axis values does not match X dimension in nc file")
   if(ny != grid@cells.dim[2]) stop("Number of y-axis values does not match Y dimension in nc file")
-  varMeanTemp = nc$var$MeanTemperature
-  varMinTemp = nc$var$MinTemperature
-  varMaxTemp = nc$var$MaxTemperature
-  varPrec = nc$var$Precipitation
-  varMeanRH = nc$var$MeanRelativeHumidity
-  varMinRH = nc$var$MinRelativeHumidity
-  varMaxRH = nc$var$MaxRelativeHumidity
-  varRad = nc$var$Radiation
-  varWindSpeed = nc$var$WindSpeed
-  varWindDirection = nc$var$WindDirection
-  varPET = nc$var$PET
   dates_file = .readdatesNetCDF(nc)
   
   w = which(!(dates %in% dates_file))
@@ -284,23 +273,22 @@
       dates_file = .readdatesNetCDF(nc)
     }
   }
-  
   for(j in 1:length(dates)) {
     if(as.character(dates[j]) %in% names(data)) {
       day = which(dates_file==dates[j])
       if(verbose) cat(paste0("Writing data for day '", as.character(dates[j]), "' at time position [",day, "].\n"))
       df = data[[as.character(dates[j])]]
-      if("MeanTemperature" %in% names(df)) .putgridvardataday(nc,varMeanTemp, df$MeanTemperature,day, index)
-      if("MinTemperature" %in% names(df)) .putgridvardataday(nc,varMinTemp, df$MinTemperature,day, index)
-      if("MaxTemperature" %in% names(df)) .putgridvardataday( nc, varMaxTemp, df$MaxTemperature,day, index)
-      if("Precipitation" %in% names(df)) .putgridvardataday( nc, varPrec, df$Precipitation,day, index)
-      if("MeanRelativeHumidity" %in% names(df)) .putgridvardataday( nc, varMeanRH, df$MeanRelativeHumidity,day, index)
-      if("MinRelativeHumidity" %in% names(df)) .putgridvardataday( nc, varMinRH, df$MinRelativeHumidity,day, index)
-      if("MaxRelativeHumidity" %in% names(df)) .putgridvardataday( nc, varMaxRH, df$MaxRelativeHumidity,day, index)
-      if("Radiation" %in% names(df)) .putgridvardataday( nc, varRad, df$Radiation,day, index)
-      if("WindSpeed" %in% names(df)) .putgridvardataday( nc, varWindSpeed, df$WindSpeed,day, index)
-      if("WindDirection" %in% names(df)) .putgridvardataday( nc, varWindDirection, df$WindDirection,day, index)
-      if("PET" %in% names(df)) .putgridvardataday( nc, varPET, df$PET,day, index)
+      if("MeanTemperature" %in% names(df)) .putgridvardataday(nc,"MeanTemperature", df$MeanTemperature,day, index)
+      if("MinTemperature" %in% names(df)) .putgridvardataday(nc,"MinTemperature", df$MinTemperature,day, index)
+      if("MaxTemperature" %in% names(df)) .putgridvardataday( nc, "MaxTemperature", df$MaxTemperature,day, index)
+      if("Precipitation" %in% names(df)) .putgridvardataday( nc, "Precipitation", df$Precipitation,day, index)
+      if("MeanRelativeHumidity" %in% names(df)) .putgridvardataday( nc, "MeanRelativeHumidity", df$MeanRelativeHumidity,day, index)
+      if("MinRelativeHumidity" %in% names(df)) .putgridvardataday( nc, "MinRelativeHumidity", df$MinRelativeHumidity,day, index)
+      if("MaxRelativeHumidity" %in% names(df)) .putgridvardataday( nc, "MaxRelativeHumidity", df$MaxRelativeHumidity,day, index)
+      if("Radiation" %in% names(df)) .putgridvardataday( nc, "Radiation", df$Radiation,day, index)
+      if("WindSpeed" %in% names(df)) .putgridvardataday( nc, "WindSpeed", df$WindSpeed,day, index)
+      if("WindDirection" %in% names(df)) .putgridvardataday( nc, "WindDirection", df$WindDirection,day, index)
+      if("PET" %in% names(df)) .putgridvardataday( nc, "PET", df$PET,day, index)
       nc_sync(nc) # Flushes writing
     }
   }

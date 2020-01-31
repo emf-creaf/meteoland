@@ -67,7 +67,7 @@ extractgridpoints<-function(grid, points, verbose = FALSE) {
   points = points[sel]
   npoints = length(points)
   res = vector("list",npoints)
-  nt = length(dates)
+  nt = length(gdates)
   ny = gt@cells.dim[2]
 
   cv = coordinatevalues(gt)

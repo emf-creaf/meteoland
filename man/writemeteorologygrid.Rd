@@ -18,7 +18,7 @@ writeemptymeteorologygrid(file, grid, proj4string, dates,
                      byPixel = FALSE, chunksizes = NA, overwrite = FALSE, 
                      verbose = FALSE)
 writemeteorologypixels(object, file, dates = NULL, format = "netCDF", 
-                       chunksizes = NA, add = FALSE, overwrite = FALSE, 
+                       byPixel = FALSE, chunksizes = NA, add = FALSE, overwrite = FALSE, 
                        verbose = FALSE)
 writemeteorologygridpixel(file, index, data, verbose = FALSE)
 }
@@ -30,6 +30,8 @@ writemeteorologygridpixel(file, index, data, verbose = FALSE)
   \item{byPixel}{Boolean flag to specify whether file will be written/read by pixels. This forces a different (suposedly) more efficient chunking based on time series data instead of daily grids.}
   \item{chunksizes}{Specifies the size of data chunks to be read/written. If set, this must be a vector of three integers corresponding to XYT.}
   \item{add}{Boolean flag to indicate that NetCDF exists and data should be added/replaced.}
+  \item{grid}{An object of class \code{\link{GridTopology-class}}}
+  \item{proj4string}{Object of class \code{\linkS4class{CRS}}.}
   \item{overwrite}{Boolean flag to force overwriting an existing NetCDF.}
   \item{verbose}{A logical flag to output process information in the console.}
   \item{index}{Integer indicating the grid index position to be written.}

@@ -27,6 +27,14 @@ writemeteorologypixels<-function(object, file, dates = NULL, format = "netCDF",
                                 byPixel = byPixel, nc=nc)
   .closeNetCDF(file,nc, verbose = verbose)
 }
+writeemptymeteorologygrid<-function(file, grid, proj4string, dates, byPixel = FALSE, chunksizes = NA, overwrite = FALSE, verbose = FALSE) {
+  if((!inherits(dates,"Date"))&&(!inherits(dates,"character"))) stop("'dates' must be a 'character' or 'Date'")
+  nc = .openwritegridNetCDF(grid, proj4string = proj4string, dates = dates,
+                            file=file, byPixel = byPixel, chunksizes = chunksizes, 
+                            add= add, overwrite = overwrite, verbose = verbose)
+  .closeNetCDF(file,nc, verbose = verbose)
+}
+
 # Replaces the content of a grid pixel in an existing netCDF
 writemeteorologygridpixel<-function(file, index, data, verbose = FALSE) {
   nc = .openaddNetCDF(file=file, verbose=verbose)

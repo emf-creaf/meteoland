@@ -9,6 +9,7 @@
 - Grids/pixels with no dates allowed
 - Time (unlimited) is written as last dimension in grids, but can be read as first or last dimension
 - New functions as() to transform grids/pixels meteorology into point meteorology
+- New function writeemptymeteorologygrid()
 
 # Version 0.8.9
 - New functions to download data from 'meteogalicia' (MG)

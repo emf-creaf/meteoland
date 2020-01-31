@@ -31,7 +31,7 @@ writeemptymeteorologygrid<-function(file, grid, proj4string, dates, byPixel = FA
   if((!inherits(dates,"Date"))&&(!inherits(dates,"character"))) stop("'dates' must be a 'character' or 'Date'")
   nc = .openwritegridNetCDF(grid, proj4string = proj4string, dates = dates,
                             file=file, byPixel = byPixel, chunksizes = chunksizes, 
-                            add= add, overwrite = overwrite, verbose = verbose)
+                            add= FALSE, overwrite = overwrite, verbose = verbose)
   .closeNetCDF(file,nc, verbose = verbose)
 }
 

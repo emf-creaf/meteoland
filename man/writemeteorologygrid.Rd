@@ -1,6 +1,7 @@
 \encoding{UTF-8}
 \name{writemeteorologygrid}
 \alias{writemeteorologygrid}
+\alias{writeemptymeteorologygrid}
 \alias{writemeteorologygridpixel}
 \alias{writemeteorologypixels}
 \title{
@@ -11,11 +12,14 @@ Functions to write grid meteorological data to the file system.
 }
 \usage{
 writemeteorologygrid(object, file, dates = NULL, format = "netCDF", 
-                     byPixel = FALSE, chunksizes = NA, add = FALSE, overwrite = FALSE, verbose = FALSE)
+                     byPixel = FALSE, chunksizes = NA, add = FALSE, overwrite = FALSE, 
+                     verbose = FALSE)
 writeemptymeteorologygrid(file, grid, proj4string, dates, 
-                     byPixel = FALSE, chunksizes = NA, overwrite = FALSE, verbose = FALSE)
+                     byPixel = FALSE, chunksizes = NA, overwrite = FALSE, 
+                     verbose = FALSE)
 writemeteorologypixels(object, file, dates = NULL, format = "netCDF", 
-                       chunksizes = NA, add = FALSE, overwrite = FALSE, verbose = FALSE)
+                       chunksizes = NA, add = FALSE, overwrite = FALSE, 
+                       verbose = FALSE)
 writemeteorologygridpixel(file, index, data, verbose = FALSE)
 }
 \arguments{

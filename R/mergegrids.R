@@ -96,6 +96,7 @@ mergepoints<-function(..., verbose = TRUE) {
         newPts = newPts+1
         #Add coords
         cc = rbind(cc, cc_i)
+        rownames(cc)[newPts] = rownames(mg_j@coords)[i]
         #New data frame
         m = matrix(NA, nrow = nt, ncol = length(vars))
         df = as.data.frame(m, row.names=1:nt)

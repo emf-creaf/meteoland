@@ -41,11 +41,11 @@ extractvars<-function(object, vars, verbose = FALSE) {
   }
   if(inherits(object,"SpatialPointsMeteorology")) {
     dates = object@dates
+    npoints = length(object@data)
     if(!is.null(names(object@data))) ids = names(object@data)
     else ids = 1:npoints
     ptsout = as(object,"SpatialPoints")
     
-    npoints = length(ids)
     ndates = length(dates)
     dateschar =as.character(dates)
     res = vector("list", length(vars))

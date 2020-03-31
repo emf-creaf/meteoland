@@ -1,4 +1,4 @@
-destination: "D:/Rservices/vegmod_web/static/meteolanddocs"
+destination: "/home/miquel/Rservices/vegmod_web/static/meteolanddocs"
 
 home:
   links:

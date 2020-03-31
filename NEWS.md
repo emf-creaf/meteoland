@@ -2,6 +2,9 @@
  NEWS for R Package "meteoland"
 -------------------------------
 
+# Version 0.9.2
+- Clean version
+
 # Version 0.9.0
 - New functions 'extractdates' and 'extractvars' replacing and generalizing 'extractpointdates'.
 - Function 'summarypoints' can summarize all variables at once.

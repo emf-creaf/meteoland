@@ -1,6 +1,7 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
-^meteoland_tests\.R$ 
+^meteoland_tests\.R$
+vignettes/examples/*
 data-raw/*
 ^README\.Rmd$
 ^README\.md$

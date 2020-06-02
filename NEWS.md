@@ -2,6 +2,10 @@
  NEWS for R Package "meteoland"
 -------------------------------
 
+
+# Version 0.9.3
+- New functions 'readNetCDFpoints' and 'readNetCDFdates'.
+
 # Version 0.9.2
 - Clean version
 

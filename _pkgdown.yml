@@ -4,9 +4,6 @@ home:
   links:
   - text: Package website
     href: https://vegmod.ctfc.cat/software/meteoland
-  - text: Package shiny application
-    href: http://vegmod.ctfc.cat/meteolandweb
-    
 
 articles:
 - title: Get started
@@ -14,4 +11,52 @@ articles:
   - starts_with("UserGuide")
 - title: Examples
   contents:
-  - starts_with("InterpolationSenegal")
+  - starts_with("examples/InterpolationSenegal")
+  
+reference:
+- title: Daily weather classes
+  desc:  Daily weather spatial objects
+  contents:
+  - starts_with("Spatial")
+  - starts_with("examplegridtopography")
+  - starts_with("spplot")
+- title: Summary
+  desc: Temporal aggregation functions
+  contents:
+  - summarygrid
+  - summarypoint
+  - summaryinterpolationdata
+  - summarypoints
+  - summarypixels
+- title: Procedural classes
+  desc:  Objects containing data for interpolation and bias correction
+  contents:
+  - defaultInterpolationParams
+  - defaultCorrectionParams
+  - defaultGenerationParams
+  - starts_with("Meteorology")
+  - starts_with("subsample")
+  - starts_with("exampleinterpolation")
+  - starts_with("examplecorrection")
+- title: Interpolation
+  desc: Interpolation functions
+  contents:
+  - starts_with("interpolation")
+- title: Bias-correction
+  desc: Bias-correction functions
+  contents:
+  - starts_with("correction")
+- title: Solar radiation
+  desc: Solar radiation utility functions
+  contents:
+  - starts_with("radiation")
+- title: I/O
+  desc: Input/output functions
+  contents:
+  - starts_with("read")
+  - starts_with("write")
+  - NetCDFutils
+- title: Weather data download
+  desc: Functions to access daily weather data from national/regional APIs
+  contents:
+  - starts_with("download")

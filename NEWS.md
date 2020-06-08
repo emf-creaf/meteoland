@@ -4,7 +4,7 @@
 
 
 # Version 0.9.3
-- New functions 'readNetCDFpoints' and 'readNetCDFdates'.
+- New functions 'readNetCDFpoints','readNetCDFproj4string', 'readNetCDFgridtopology' and 'readNetCDFdates'.
 - Bug correction byPixels in interpolationpixels/interpolationgrid
 
 # Version 0.9.2

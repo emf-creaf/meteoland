@@ -1,5 +1,5 @@
 ---
-title: "User's guide"
+title: "User guide to meteoland"
 author: "Miquel De Cáceres, Victor Granda"
 date: "`r Sys.Date()`"
 output: 

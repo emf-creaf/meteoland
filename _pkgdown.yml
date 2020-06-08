@@ -15,19 +15,23 @@ articles:
   
 reference:
 - title: Daily weather classes
-  desc:  Daily weather spatial objects
+  desc: Daily weather spatial objects
   contents:
   - starts_with("Spatial")
   - starts_with("examplegridtopography")
   - starts_with("spplot")
+  - extractdates
+  - mergegrids
+  - meteoplot
 - title: Summary
-  desc: Temporal aggregation functions
+  desc: Spatial and temporal aggregation functions
   contents:
   - summarygrid
   - summarypoint
   - summaryinterpolationdata
   - summarypoints
   - summarypixels
+  - averagearea
 - title: Procedural classes
   desc:  Objects containing data for interpolation and bias correction
   contents:
@@ -46,6 +50,10 @@ reference:
   desc: Bias-correction functions
   contents:
   - starts_with("correction")
+- title: Weather generation
+  desc: Weather generation functions
+  contents:
+  - starts_with("weathergeneration")
 - title: Solar radiation
   desc: Solar radiation utility functions
   contents:
@@ -56,7 +64,17 @@ reference:
   - starts_with("read")
   - starts_with("write")
   - NetCDFutils
+  - extractNetCDF
 - title: Weather data download
   desc: Functions to access daily weather data from national/regional APIs
   contents:
   - starts_with("download")
+  - reshapeworldmet
+- title: Utility functions
+  desc: Meteorological and biophysical utility functions
+  contents:
+  - starts_with("utils")
+  - penman
+  - humidity
+  - precipitation
+  - meteocomplete

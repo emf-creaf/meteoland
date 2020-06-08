@@ -173,7 +173,7 @@ interpolationgrid<-function(object, grid, dates = NULL,
     if(export) {
       dl = list(m@data)
       names(dl) = as.character(dates[i])
-      .writemeteorologygridNetCDF(dl,m@grid, proj4string(m), nc, verbose = verbose)
+      .writemeteorologygridNetCDF(dl,m@grid, proj4string(m), nc, byPixel = F, verbose = verbose)
     } else {
       l[[i]] = m@data
       if(verbose) cat("done.\n")

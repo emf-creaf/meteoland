@@ -173,7 +173,7 @@ interpolationpixels<-function(object, pixels, dates = NULL,
     if(export) {
       dl = list(m@data)
       names(dl) = as.character(dates[i])
-      .writemeteorologypixelsNetCDF(dl,m, proj4string(m), nc, verbose = verbose)
+      .writemeteorologypixelsNetCDF(dl,m, proj4string(m), nc, byPixel = F, verbose = verbose)
     } else {
       l[[i]] = m@data
       if(verbose) cat(" done.\n")

@@ -5,6 +5,7 @@
 
 # Version 0.9.3
 - New functions 'readNetCDFpoints' and 'readNetCDFdates'.
+- Bug correction byPixels in interpolationpixels/interpolationgrid
 
 # Version 0.9.2
 - Clean version

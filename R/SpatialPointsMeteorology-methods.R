@@ -113,8 +113,9 @@ as.SpPtsMet.STFDF = function(from) {
     }
   }
   time = as.POSIXct(as.Date(from@dates))
+  endTime = as.POSIXct(as.Date(from@dates)+1)
   sp = as(from, "SpatialPoints")
-  spacetime::STFDF(sp, time, data)
+  spacetime::STFDF(sp, time, data, endTime = endTime)
 }
 setAs("SpatialPointsMeteorology", "STFDF", as.SpPtsMet.STFDF)
 as.SpPtsMet.stars = function(from) {

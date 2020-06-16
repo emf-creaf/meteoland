@@ -108,8 +108,9 @@ as.SpGrdMet.STFDF = function(from) {
     }
   }
   time = as.POSIXct(as.Date(from@dates))
+  endTime = as.POSIXct(as.Date(from@dates)+1)
   sp = as(from, "SpatialGrid")
-  spacetime::STFDF(sp, time, data)
+  spacetime::STFDF(sp, time, data, endTime = endTime)
 }
 setAs("SpatialGridMeteorology", "STFDF", as.SpGrdMet.STFDF)
 as.SpGrdMet.stars = function(from) {

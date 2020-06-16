@@ -2,6 +2,8 @@
  NEWS for R Package "meteoland"
 -------------------------------
 
+# Version 0.9.4
+- Bug correction in functions as(,"STFDF") for dates of length one.
 
 # Version 0.9.3
 - New functions 'readNetCDFpoints','readNetCDFproj4string', 'readNetCDFgridtopology' and 'readNetCDFdates'.

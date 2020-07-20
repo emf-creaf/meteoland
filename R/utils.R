@@ -66,7 +66,7 @@ humidity_relative2specific<-function(Tc, HR){
   if (urls$estado==401) {
     stop("Invalid API key. (API keys are valid for 3 months.)")
   } else if (urls$estado==404) { #"No hay datos que satisfagan esos criterios"
-    return(NULL)
+    stop("Error retrieving data.")
   } else if (urls$estado==429) {
     cat("\n  The number of downloads per minute on the AEMET server is limited. Please wait.")
     for(t in 1:10){(Sys.sleep(6));cat(".");if(t == 10)cat("\n")}

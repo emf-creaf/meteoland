@@ -2,6 +2,8 @@
  NEWS for R Package "meteoland"
 -------------------------------
 
+# Version 0.9.4
+- Modification of error handling in .get_data_aemet
 
 # Version 0.9.3
 - New functions 'readNetCDFpoints' and 'readNetCDFdates'.

@@ -108,8 +108,9 @@ as.SpPxMet.STFDF = function(from) {
     }
   }
   time = as.POSIXct(as.Date(from@dates))
+  endTime = as.POSIXct(as.Date(from@dates)+1)
   sp = as(from, "SpatialPixels")
-  spacetime::STFDF(sp, time, data)
+  spacetime::STFDF(sp, time, data, endTime = endTime)
 }
 setAs("SpatialPixelsMeteorology", "STFDF", as.SpPxMet.STFDF)
 

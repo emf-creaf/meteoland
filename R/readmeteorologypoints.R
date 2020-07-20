@@ -78,16 +78,3 @@ readmeteorologypoints<-function(files, dates = NULL, stations = NULL, format = "
   if(verbose) cat("\nMerging point data...\n")
   return(mergepoints(l, verbose = verbose))
 }
-readNetCDFpoints<-function(file) {
-  ncin = .openreadpointsNetCDF(file)
-  crs <- .readCRSNetCDF(ncin)
-  cc <- .readpointcoordinatesNetCDF(ncin, crs)
-  .closeNetCDF(file,ncin)
-  return(SpatialPoints(cc, crs))
-}
-readNetCDFdates<-function(file) {
-  ncin = .openreadpointsNetCDF(file)
-  dates <- .readdatesNetCDF(ncin)
-  .closeNetCDF(file,ncin)
-  return(dates)
-}

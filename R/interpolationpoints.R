@@ -146,7 +146,7 @@ interpolationpoints<-function(object, points, dates = NULL,
   if(!inherits(object,"MeteorologyInterpolationData")) stop("'object' has to be of class 'MeteorologyInterpolationData'.")
   if(!inherits(points,"SpatialPointsTopography")) stop("'points' has to be of class 'SpatialPointsTopography'.")
   intpoints = as(points, "SpatialPoints")
-  if(proj4string(intpoints)!=proj4string(object)) {
+  if(!identicalCRS(intpoints,object)) {
     warning("CRS projection of 'points' adapted to that of 'object'.")
     intpoints = spTransform(intpoints, object@proj4string)
   }

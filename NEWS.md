@@ -3,12 +3,13 @@
 -------------------------------
 
 # Version 0.9.4
-- Modification of error handling in .get_data_aemet
+- Update of CRS in package data.
+- Modification of error handling in .get_data_aemet.
 - Bug correction in functions as(,"STFDF") for dates of length one.
 
 # Version 0.9.3
 - New functions 'readNetCDFpoints','readNetCDFproj4string', 'readNetCDFgridtopology' and 'readNetCDFdates'.
-- Bug correction byPixels in interpolationpixels/interpolationgrid
+- Bug correction byPixels in interpolationpixels/interpolationgrid.
 
 # Version 0.9.2
 - Clean version

@@ -1,11 +1,10 @@
 library(meteoland)
-setwd("~/Documents/Recerca/Datasets/Clima/")
 
 #Target dates
 dates = seq(as.Date("2000-01-01"), as.Date("2003-12-31"), by="day")
 
 #Load SMC data
-load("SMC/SMC_processed/rdata/SMC_MEDACC.rdata")
+load("D:/Datasets/Climate/Sources/SMC/Diaries_MEDACC/SMC_MEDACC.rdata")
 codes_SMC = stdata$CODI
 coords_SMC = cbind(stdata$X_UTM, stdata$Y_UTM)
 
@@ -14,16 +13,16 @@ tmax_SMC = tmax[as.character(dates),]
 rh_SMC = rh[as.character(dates),]
 p_SMC = p[as.character(dates),]
 sr_SMC = sr[as.character(dates),]
-topo_SMC = read.table("SMC/SMC_processed/txt/SMC_topo30m.txt",sep="\t",header=TRUE, row.names=1)
+topo_SMC = read.table("D:/Datasets/Climate/Sources/SMC/Diaries_MEDACC/SMC_topo30m.txt",sep="\t",header=TRUE, row.names=1)
 ws_SMC = tmax_SMC
 ws_SMC[] = NA
 wd_SMC = tmax_SMC
 wd_SMC[] = NA
 
 #Load AEMET data
-load("AEMET/AEMET_processed/rdata/AEMET_MEDACC.rdata")
+load("D:/Datasets/Climate/Sources/AEMET/AEMET_processed/rdata/AEMET_MEDACC.rdata")
 row.names(stdata) = stdata$INDICATIVO
-topo_AEMET = read.table("AEMET/AEMET_processed/txt/AEMET_topo30m.txt",sep="\t",header=TRUE, row.names=1)
+topo_AEMET = read.table("D:/Datasets/Climate/Sources/AEMET/AEMET_processed/txt/AEMET_topo30m.txt",sep="\t",header=TRUE, row.names=1)
 stdata = stdata[row.names(topo_AEMET),]
 coords_AEMET = cbind(stdata$UTM31_X, stdata$UTM31_Y)
 
@@ -56,7 +55,7 @@ MaxTemperature[(!is.na(MaxTemperature)) & (MaxTemperature > 50)] =NA
 #Select points near the example grid
 data("examplegridtopography")
 bbox = examplegridtopography@bbox
-points = SpatialPoints(rbind(coords_SMC, coords_AEMET),CRS("+proj=utm +zone=31 +ellps=WGS84 +datum=WGS84 +units=m"))
+points = SpatialPoints(rbind(coords_SMC, coords_AEMET),examplegridtopography@proj4string)
 cc = coordinates(points)
 buffer = 20000 #20 km
 sel = (cc[,1]>bbox[1,1]-buffer) & (cc[,1]<bbox[1,2]+buffer) & (cc[,2]>bbox[2,1]-buffer) & (cc[,2]<bbox[2,2]+buffer)
@@ -100,5 +99,5 @@ exampleinterpolationdata@params$St_Precipitation=5
 exampleinterpolationdata@params$pop_crit = 0.50
 exampleinterpolationdata@params$f_max = 0.95
 
-# save(exampleinterpolationdata, file="~/Documents/Rpackages/meteoland/meteoland/data/exampleinterpolationdata.rda")
+usethis::use_data(exampleinterpolationdata, overwrite = TRUE)
 #!REBUILD

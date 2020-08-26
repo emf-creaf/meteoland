@@ -1,7 +1,7 @@
 library(meteoland)
 
 
-setwd("//Serverbio/informed/CaseStudies/Solsones")
+setwd("G:/INFORMED_backup/CaseStudies/Solsones")
 
 #Read table containining RCM historical predictions
 RCMHisMP = read.table("EUR-11/CCLM4-8-17/historical/MP_Solsones.txt", sep="\t", header=TRUE)
@@ -19,6 +19,5 @@ hist = readmeteorologypointfiles(sp[sel],paste(RCMHisMP$dir[sel],RCMHisMP$filena
 rcp4.5 = readmeteorologypointfiles(sp[sel],paste(RCM45MP$dir[sel],RCM45MP$filename[sel],sep="/"), dates = datesfuture)
 examplecorrectiondata = MeteorologyUncorrectedData(sp[sel], hist@data, rcp4.5@data, dates=rcp4.5@dates)
 
-save(examplecorrectiondata,file="D:/Rpackages/meteoland/meteoland/data/examplecorrectiondata.rda", compress="xz")
-rm(list=ls())
+usethis::use_data(examplecorrectiondata, overwrite = T)
 #REBUILD!

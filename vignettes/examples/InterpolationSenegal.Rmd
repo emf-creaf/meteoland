@@ -26,10 +26,20 @@ sg_st = getMeta(country=countries, plot = FALSE)
 sg_st
 ```
 Let's assume that we want to interpolate weather for year 2018. We can download hourly weather station data for the selected stations and year 2018 using function `importNOAA()`:
-```{r}
-hour2018<-importNOAA(code = sg_st$code, year=2018, precip= TRUE)
+```{r, echo = FALSE}
+hour2018 = NULL
+for(i in 1:length(sg_st$code)) {
+  cat(paste0(sg_st$code[i]," "))
+  tryCatch({
+    hi<-importNOAA(code = sg_st$code[i], year=2018, quiet=TRUE)
+    if(is.null(hour2018))  {hour2018 = hi}
+    else {hour2018 = rbind(hour2018,hi)}
+    cat(" [success].")
+  }, error = function(e) {cat("[failed].")})
+}
+cat("\n")
 ```
-Six stations had missing data for year 2018 and were excluded from the output. Using function `reshapeworldmet()` from meteoland, we can reshape the hourly data of the remaining stations into daily data in form of an object `SpatialPointsMeteorology`:
+Some stations had missing data for year 2018 and were excluded from the output. Using function `reshapeworldmet()` from meteoland, we can reshape the hourly data of the remaining stations into daily data in form of an object `SpatialPointsMeteorology`:
 ```{r}
 spt_sen<-reshapeworldmet(hour2018, output = "SpatialPointsMeteorology", verbose=FALSE)
 spt_sen

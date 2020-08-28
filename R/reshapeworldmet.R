@@ -20,10 +20,10 @@ reshapeworldmet<-function(hourly_data, output="SpatialPointsMeteorology",
   for(i in 1:nstations) {
     if(verbose) setTxtProgressBar(pb, i)
     data_df = s[[i]]
-    varnames <-c("code", "lon","lat", "station", "elev", "date", "air_temp", "atmos_pres", "RH",  "precip_6", "wd", "ws")
+    varnames <-c("code", "longitude","latitude", "station", "elev", "date", "air_temp", "atmos_pres", "RH",  "precip_6", "wd", "ws")
     varnames <- varnames[varnames %in% names(data_df)]
     data_df <- data_df[,varnames]
-    numvar <- c("lon","lat","elev","air_temp", "precip_6", "RH", "wd", "ws")
+    numvar <- c("longitude","latitude","elev","air_temp", "precip_6", "RH", "wd", "ws")
     numvar <- numvar[numvar %in% names(data_df)]
     data_df[,numvar] <- sapply(data_df[,numvar],as.numeric)
     

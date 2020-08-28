@@ -2,6 +2,9 @@
  NEWS for R Package "meteoland"
 -------------------------------
 
+# Version 0.9.5
+- Update of reshapeworldmet to adapt to changes in package worldmet v.0.9.0
+
 # Version 0.9.4
 - Update of CRS in package data.
 - Modification of error handling in .get_data_aemet.

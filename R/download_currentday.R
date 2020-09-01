@@ -184,6 +184,12 @@ downloadSMCcurrentday <- function(api, daily_meteoland=TRUE, variable_code=NULL,
                           return(dv)
                         })
     options(warn=0)
+    IDmissing = data_agg$ID[!(data_agg$ID %in% row.names(SMCstation_sp@data))]
+    if(length(IDmissing)>0) {
+      if(verbose) warning(paste0(length(IDmissing), " stations not found in station list and observation will be removed"))
+      data_agg = data_agg[!(data_agg$ID %in% IDmissing), ]
+      dv_agg = dv_agg[!(dv_agg$ID %in% IDmissing),]
+    }
     data_df <- data.frame(ID = data_agg$ID, name = SMCstation_sp@data[data_agg$ID,"name"], 
                           long = SMCstation_sp@coords[data_agg$ID,"long"],
                           lat = SMCstation_sp@coords[data_agg$ID,"lat"], 

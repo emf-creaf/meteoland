@@ -4,6 +4,7 @@
 
 # Version 0.9.5
 - Update of reshapeworldmet to adapt to changes in package worldmet v.0.9.0
+- Update of function downloadSMCcurrentday
 
 # Version 0.9.4
 - Update of CRS in package data.

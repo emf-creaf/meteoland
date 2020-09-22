@@ -2,6 +2,9 @@
  NEWS for R Package "meteoland"
 -------------------------------
 
+# Version 0.9.6
+- Allow missing Precipitation when building MeteorologyInterpolationData
+
 # Version 0.9.5
 - Update of reshapeworldmet to adapt to changes in package worldmet v.0.9.0
 - Update of function downloadSMCcurrentday

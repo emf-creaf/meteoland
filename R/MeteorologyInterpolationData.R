@@ -34,10 +34,14 @@ MeteorologyInterpolationData<-function(points, elevation = NULL, slope = NULL, a
     dates = as.Date(colnames(MinTemperature))
     ndays = length(dates)
     if(!inherits(MaxTemperature,"matrix")) stop("'MaxTemperature' has to be a numeric matrix.")
-    if(!inherits(Precipitation,"matrix")) stop("'Precipitation' has to be a numeric matrix.")
     if(nrow(MinTemperature)!=nstations) stop("Number of rows in 'MinTemperature' have to be equal to the number of points.")
     if(nrow(MaxTemperature)!=nstations) stop("Number of rows in 'MaxTemperature' have to be equal to the number of points.")
-    if(nrow(Precipitation)!=nstations) stop("Number of rows in 'Precipitation' have to be equal to the number of points.")
+    if(!is.null(Precipitation)) {
+      if(!inherits(Precipitation,"matrix")) stop("'Precipitation' has to be a numeric matrix.")
+      if(nrow(Precipitation)!=nstations) stop("Number of rows in 'Precipitation' have to be equal to the number of points.")
+    } else {
+      Precipitation = matrix(NA, nrow = nstations, ncol=ndays)
+    }
     if(!is.null(RelativeHumidity)) {
       if(!inherits(RelativeHumidity,"matrix")) stop("'RelativeHumidity' has to be a numeric matrix.")
       if(nrow(RelativeHumidity)!=nstations) stop("Number of rows in 'RelativeHumidity' have to be equal to the number of points.")

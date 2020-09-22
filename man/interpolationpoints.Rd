@@ -48,7 +48,7 @@ If \code{export = FALSE}, function \code{interpolationpixels} returns an object 
 If \code{export = FALSE}, function \code{interpolationgrid} returns an object of \code{\link{SpatialGridMeteorology-class}}, or an object of \code{\link{SpatialGridDataFrame-class}} if a single date is interpolated. If \code{export = TRUE}, the function writes the results in files and a \code{data.frame} with columns 'dir' and 'filename' is returned.
 }
 \details{
-If CRS projection is different between \code{object} and \code{points}/\code{pixels}/\code{grid}, the function transforms the coordinates of \code{points}/\code{pixels}/\code{grid} to adapt them to the CRS of \code{object}.
+CRS projection needs to be defined for both \code{object} and \code{points}/\code{pixels}/\code{grid}. If CRS projection is different between \code{object} and \code{points}/\code{pixels}/\code{grid}, the function transforms the coordinates of \code{points}/\code{pixels}/\code{grid} to adapt them to the CRS of \code{object}.
 }
 \references{
 Thornton, P.E., Running, S.W., White, M. A., 1997. Generating surfaces of daily meteorological variables over large regions of complex terrain. J. Hydrol. 190, 214–251. doi:10.1016/S0022-1694(96)03128-9.

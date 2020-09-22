@@ -4,6 +4,7 @@
 
 # Version 0.9.6
 - Allow missing Precipitation when building MeteorologyInterpolationData
+- New functions for conversion between relative humidity and dew temperature 
 
 # Version 0.9.5
 - Update of reshapeworldmet to adapt to changes in package worldmet v.0.9.0

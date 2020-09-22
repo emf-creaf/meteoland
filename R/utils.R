@@ -1,3 +1,21 @@
+
+humidity_relative2dewtemperature<-function(Tc, HR) {
+  if(is.data.frame(Tc)) Tc = as.matrix(Tc)
+  if(is.data.frame(HR)) HR = as.matrix(HR)
+  if(is.matrix(Tc) && is.matrix(HR)) {
+    Td = .dewpointTemperatureFromRH(Tc,HR)
+    dimnames(Td) = dimnames(Tc)
+  } else {
+    Td = as.vector(.dewpointTemperatureFromRH(as.matrix(Tc),as.matrix(HR)))
+  }
+  return(Td)
+}
+humidity_dewtemperature2relative<-function(Tc, Td, allowSaturated = FALSE) {
+  HR= as.vector(.relativeHumidityFromDewpointTemp(as.numeric(Tc),as.numeric(Td)))
+  if(!allowSaturated) HR[HR>100]=100 # On ne passe pas audessus de 100
+  return(HR)
+}
+
 #Functions to switch from relative humidity to specific humidity
 humidity_specific2relative<-function(Tc, HS, allowSaturated = FALSE){
 

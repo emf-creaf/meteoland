@@ -2,6 +2,10 @@
  NEWS for R Package "meteoland"
 -------------------------------
 
+# Version 0.9.7
+- Bug correction in 'mergegrids'
+- Bug correction in '.putgridvardataday'
+
 # Version 0.9.6
 - Allow missing Precipitation when building MeteorologyInterpolationData
 - New functions for conversion between relative humidity and dew temperature 

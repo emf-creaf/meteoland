@@ -18,8 +18,12 @@
 }
 #writes a grid/pixels for a single variable and day
 .putgridvardataday<-function(nc, var, datavec, day, index=NULL) {
-  nx = nc$dim$x$len
-  ny = nc$dim$y$len
+  if("x" %in% names(nc$dim)) nx = nc$dim$x$len
+  else nx = nc$dim$lon$len
+  
+  if("y" %in% names(nc$dim)) ny = nc$dim$y$len
+  else ny = nc$dim$lat$len
+  
   if(!is.null(index)) {
     datavecfull = rep(NA, ny*nx)
     datavecfull[index] = datavec

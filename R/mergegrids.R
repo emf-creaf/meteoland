@@ -17,8 +17,8 @@ mergegrids<-function(..., verbose = TRUE) {
     if(sum(gt_i@cells.dim==gt_1@cells.dim)<2) stop("Grids have to be congruent.")
     if(!identicalCRS(mg_1,mg_i)) stop("CRSs have to be identical.")
     if(pixels) {
-      gi_1 = gt_1@grid.index
-      gi_i = gt_i@grid.index
+      gi_1 = mg_1@grid.index
+      gi_i = mg_i@grid.index
       if(sum(gi_1==gi_i)<length(gi_1)) stop("Grid indices need to be the same.")
     }
     dates = c(dates, mg_i@dates)
@@ -38,7 +38,7 @@ mergegrids<-function(..., verbose = TRUE) {
     for(j in 1:ng) {
       mg_j = l[[j]]
       if(as.character(dates[j]) %in% as.character(mg_j@dates)) {
-        df_j = mg_j@data[[as.character(dates[j])]]
+        df_j = mg_j@data[[as.character(dates[i])]]
         df[names(df_j)] = df_j
       }
     }

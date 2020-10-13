@@ -393,18 +393,18 @@
   return(v)
 }
 .readgriddatapixel<-function(ncin, ny, nt, i, j) {
-  df = data.frame(MeanTemperature = .readgridvardatapixel(ncin, ny, nt, "MeanTemperature", i,j),
-                  MinTemperature = .readgridvardatapixel(ncin,ny, nt, "MinTemperature", i,j),
-                  MaxTemperature = .readgridvardatapixel(ncin,ny, nt, "MaxTemperature", i,j),
-                  Precipitation = .readgridvardatapixel(ncin,ny, nt, "Precipitation", i,j),
-                  MeanRelativeHumidity = .readgridvardatapixel(ncin,ny, nt, "MeanRelativeHumidity", i,j),
-                  MinRelativeHumidity = .readgridvardatapixel(ncin,ny, nt, "MinRelativeHumidity", i,j),
-                  MaxRelativeHumidity = .readgridvardatapixel(ncin,ny, nt, "MaxRelativeHumidity", i,j),
-                  Radiation = .readgridvardatapixel(ncin,ny, nt, "Radiation", i,j),
-                  WindSpeed = .readgridvardatapixel(ncin,ny, nt, "WindSpeed", i,j),
-                  WindDirection = .readgridvardatapixel(ncin,ny, nt, "WindDirection", i,j),
-                  PET = .readgridvardatapixel(ncin,ny, nt, "PET", i,j),
-                  row.names = as.character(.readdatesNetCDF(ncin)))
+  df = data.frame(row.names = as.character(.readdatesNetCDF(ncin)))
+  if("MeanTemperature" %in% names(ncin$var)) df$MeanTemperature = .readgridvardatapixel(ncin, ny, nt, "MeanTemperature", i,j)
+  if("MinTemperature" %in% names(ncin$var)) df$MinTemperature = .readgridvardatapixel(ncin,ny, nt, "MinTemperature", i,j)
+  if("MaxTemperature" %in% names(ncin$var)) df$MaxTemperature = .readgridvardatapixel(ncin,ny, nt, "MaxTemperature", i,j)
+  if("Precipitation" %in% names(ncin$var)) df$Precipitation = .readgridvardatapixel(ncin,ny, nt, "Precipitation", i,j)
+  if("MeanRelativeHumidity" %in% names(ncin$var)) df$MeanRelativeHumidity = .readgridvardatapixel(ncin,ny, nt, "MeanRelativeHumidity", i,j)
+  if("MinRelativeHumidity" %in% names(ncin$var)) df$MinRelativeHumidity = .readgridvardatapixel(ncin,ny, nt, "MinRelativeHumidity", i,j)
+  if("MaxRelativeHumidity" %in% names(ncin$var)) df$MaxRelativeHumidity = .readgridvardatapixel(ncin,ny, nt, "MaxRelativeHumidity", i,j)
+  if("Radiation" %in% names(ncin$var)) df$Radiation = .readgridvardatapixel(ncin,ny, nt, "Radiation", i,j)
+  if("WindSpeed" %in% names(ncin$var)) df$WindSpeed = .readgridvardatapixel(ncin,ny, nt, "WindSpeed", i,j)
+  if("WindDirection" %in% names(ncin$var)) df$WindDirection = .readgridvardatapixel(ncin,ny, nt, "WindDirection", i,j)
+  if("PET" %in% names(ncin$var)) df$PET = .readgridvardatapixel(ncin,ny, nt, "PET", i,j)
   return(df)
 }
 

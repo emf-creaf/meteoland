@@ -5,7 +5,7 @@
 # Version 0.9.7
 - Bug correction in 'mergegrids'
 - Bug correction in '.putgridvardataday'
-- Flexible variable definition for writemeteorologygrid
+- Flexible variable definition for 'writemeteorologygrid' and 'writemeteorologypoints'
 
 # Version 0.9.6
 - Allow missing Precipitation when building MeteorologyInterpolationData

@@ -189,7 +189,8 @@ interpolationpoints<-function(object, points, dates = NULL,
     if(is.null(exportFile)) stop("File 'exportFile' cannot be null when exporting to netCDF!")
     ncfile = exportFile
     if(is.null(dates)) dates = object@dates
-    nc <-.openwritepointNetCDF(coordinates(points), proj4string(points), dates = dates, file = ncfile, overwrite = TRUE, verbose = verbose)
+    nc <-.openwritepointNetCDF(coordinates(points), proj4string(points), dates = dates,  vars = NULL,
+                               file = ncfile, overwrite = TRUE, verbose = verbose)
   }
   else {
     dfvec = vector("list",npoints)

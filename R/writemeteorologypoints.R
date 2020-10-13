@@ -56,7 +56,9 @@ writemeteorologypoints<-function(object, file, format = "netCDF", add = FALSE,
                                  overwrite = FALSE, verbose = FALSE) {
   if(!inherits(object,"SpatialPointsMeteorology")) stop("'object' has to be of class 'SpatialGridMeteorology'.")
   if(!add) {
-    nc = .openwritepointNetCDF(object@coords, proj4string = proj4string(object), dates = object@dates,
+    vars = NULL
+    if(length(object@data)>0) vars = names(object@data[[1]])
+    nc = .openwritepointNetCDF(object@coords, proj4string = proj4string(object), dates = object@dates, vars = vars,
                                file=file, overwrite = overwrite, verbose = verbose)
     .writemeteorologypointsNetCDF(data = object@data, nc=nc, verbose = verbose)
   } else {

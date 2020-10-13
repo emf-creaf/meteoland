@@ -380,11 +380,15 @@
 }
 #Reads data for a single pixel and period 
 .readgridvardatapixel<-function(ncin, ny, nt, varname, i, j) {
-  timefirst = (ncin$var[[varname]]$dim[[1]]$name=="time")
-  if(timefirst) {
-    v = ncvar_get(ncin, varname,start=c(1,i,ny-j+1), count=c(nt,1,1))
+  if(varname %in% names(ncin$var)) {
+    timefirst = (ncin$var[[varname]]$dim[[1]]$name=="time")
+    if(timefirst) {
+      v = ncvar_get(ncin, varname,start=c(1,i,ny-j+1), count=c(nt,1,1))
+    } else {
+      v = ncvar_get(ncin, varname,start=c(i,ny-j+1,1), count=c(1,1,nt))
+    }
   } else {
-    v = ncvar_get(ncin, varname,start=c(i,ny-j+1,1), count=c(1,1,nt))
+    v = rep(NA, nt)
   }
   return(v)
 }

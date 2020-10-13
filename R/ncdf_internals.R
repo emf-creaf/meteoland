@@ -211,27 +211,16 @@
   varWindDirection = nc$var$WindDirection
   varPET = nc$var$PET
   if("MeanTemperature" %in% names(df)) ncvar_put(nc, varid=varMeanTemp, vals=df$MeanTemperature, start=c(i,1), count=c(1,nt))
-  else ncvar_put(nc, varid=varMeanTemp, vals=rep(NA, nt), start=c(i,1), count=c(1,nt))
   if("MinTemperature" %in% names(df)) ncvar_put(nc, varid=varMinTemp, vals=df$MinTemperature, start=c(i,1), count=c(1,nt))
-  else ncvar_put(nc, varid=varMinTemp, vals=rep(NA, nt), start=c(i,1), count=c(1,nt))
   if("MaxTemperature" %in% names(df)) ncvar_put(nc, varid=varMaxTemp, vals=df$MaxTemperature, start=c(i,1), count=c(1,nt))
-  else ncvar_put(nc, varid=varMaxTemp, vals=rep(NA, nt), start=c(i,1), count=c(1,nt))
   if("Precipitation" %in% names(df)) ncvar_put(nc, varid=varPrec, vals=df$Precipitation, start=c(i,1), count=c(1,nt))
-  else ncvar_put(nc, varid=varPrec, vals=rep(NA, nt), start=c(i,1), count=c(1,nt))
   if("MeanRelativeHumidity" %in% names(df)) ncvar_put(nc, varid=varMeanRH, vals=df$MeanRelativeHumidity, start=c(i,1), count=c(1,nt))
-  else ncvar_put(nc, varid=varMeanRH, vals=rep(NA, nt), start=c(i,1), count=c(1,nt))
   if("MinRelativeHumidity" %in% names(df)) ncvar_put(nc, varid=varMinRH, vals=df$MinRelativeHumidity, start=c(i,1), count=c(1,nt))
-  else ncvar_put(nc, varid=varMinRH, vals=rep(NA, nt), start=c(i,1), count=c(1,nt))
   if("MaxRelativeHumidity" %in% names(df)) ncvar_put(nc, varid=varMaxRH, vals=df$MaxRelativeHumidity, start=c(i,1), count=c(1,nt))
-  else ncvar_put(nc, varid=varMaxRH, vals=rep(NA, nt), start=c(i,1), count=c(1,nt))
   if("Radiation" %in% names(df)) ncvar_put(nc, varid=varRad, vals=df$Radiation, start=c(i,1), count=c(1,nt))
-  else ncvar_put(nc, varid=varRad, vals=rep(NA, nt), start=c(i,1), count=c(1,nt))
   if("WindSpeed" %in% names(df)) ncvar_put(nc, varid=varWindSpeed, vals=df$WindSpeed, start=c(i,1), count=c(1,nt))
-  else ncvar_put(nc, varid=varWindSpeed, vals=rep(NA, nt), start=c(i,1), count=c(1,nt))
   if("WindDirection" %in% names(df)) ncvar_put(nc, varid=varWindDirection, vals=df$WindDirection, start=c(i,1), count=c(1,nt))
-  else ncvar_put(nc, varid=varWindDirection, vals=rep(NA, nt), start=c(i,1), count=c(1,nt))
   if("PET" %in% names(df)) ncvar_put(nc, varid=varPET, vals=df$PET, start=c(i,1), count=c(1,nt))
-  else ncvar_put(nc, varid=varPET, vals=rep(NA, nt), start=c(i,1), count=c(1,nt))
 }
 #Writes full NetCDF points
 .writemeteorologypointsNetCDF<-function(data, nc, verbose = FALSE) {

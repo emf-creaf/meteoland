@@ -79,10 +79,11 @@
   return(nc)
 }
 #Opens/creates a NetCDF for writing grid data
-.openwritegridNetCDF<-function(grid, proj4string, dates, file, 
+.openwritegridNetCDF<-function(grid, proj4string, dates, vars, file, 
                                byPixel = FALSE, chunksizes = NA, 
                                add=FALSE, overwrite = FALSE, verbose = FALSE) {
   if(!add) {
+    if(is.null(vars)) vars = .defaultVars()
     if(file.exists(file) & !overwrite) stop(paste0("File '",file,"' already exist. Use 'overwrite = TRUE' to force overwriting or 'add = TRUE' to add/replace content."))
     if(verbose) cat(paste0("\nCreating '", file,"'.\n"))
     nx = grid@cells.dim[1]
@@ -101,38 +102,33 @@
     if(byPixel) {
       chunksizes = c(1,1,length(dates))
     }
-    varMeanTemp <- ncvar_def( "MeanTemperature", "Celsius", list(dimX,dimY,time), NA, chunksizes = chunksizes)
-    varMinTemp <- ncvar_def( "MinTemperature", "Celsius", list(dimX,dimY,time), NA, chunksizes = chunksizes)
-    varMaxTemp <- ncvar_def( "MaxTemperature", "Celsius", list(dimX,dimY,time), NA, chunksizes = chunksizes)
-    varPrec <- ncvar_def( "Precipitation", "l m-2", list(dimX,dimY,time), NA, chunksizes = chunksizes)
-    varMeanRH <- ncvar_def( "MeanRelativeHumidity", "%", list(dimX,dimY,time), NA, chunksizes = chunksizes)
-    varMinRH <- ncvar_def( "MinRelativeHumidity", "%", list(dimX,dimY,time), NA, chunksizes = chunksizes)
-    varMaxRH <- ncvar_def( "MaxRelativeHumidity", "%", list(dimX,dimY,time), NA, chunksizes = chunksizes)
-    varRad <- ncvar_def( "Radiation", "MJ m-2", list(dimX,dimY,time), NA, chunksizes = chunksizes)
-    varWindSpeed <- ncvar_def( "WindSpeed", "m s-1", list(dimX,dimY,time), NA, chunksizes = chunksizes)
-    varWindDirection <- ncvar_def( "WindDirection", "degrees_north", list(dimX,dimY,time), NA, chunksizes = chunksizes)
-    varPET <- ncvar_def( "PET", "l m-2", list(dimX,dimY,time), NA, chunksizes = chunksizes)
+    varlist = vector("list")
+    if("MeanTemperature" %in% vars) varlist[["varMeanTemp"]] = ncvar_def( "MeanTemperature", "Celsius", list(dimX,dimY,time), NULL, chunksizes = chunksizes)
+    if("MinTemperature" %in% vars) varlist[["varMinTemp"]] = ncvar_def( "MinTemperature", "Celsius", list(dimX,dimY,time), NULL, chunksizes = chunksizes)
+    if("MaxTemperature" %in% vars) varlist[["varMaxTemp"]] = ncvar_def( "MaxTemperature", "Celsius", list(dimX,dimY,time), NULL, chunksizes = chunksizes)
+    if("Precipitation" %in% vars) varlist[["varPrec"]] = ncvar_def( "Precipitation", "l m-2", list(dimX,dimY,time), NULL, chunksizes = chunksizes)
+    if("MeanRelativeHumidity" %in% vars) varlist[["varMeanRH"]] = ncvar_def( "MeanRelativeHumidity", "%", list(dimX,dimY,time), NULL, chunksizes = chunksizes)
+    if("MinRelativeHumidity" %in% vars) varlist[["varMinRH"]] =  ncvar_def( "MinRelativeHumidity", "%", list(dimX,dimY,time), NULL, chunksizes = chunksizes)
+    if("MaxRelativeHumidity" %in% vars) varlist[["varMaxRH"]] =  ncvar_def( "MaxRelativeHumidity", "%", list(dimX,dimY,time), NULL, chunksizes = chunksizes)
+    if("Radiation" %in% vars) varlist[["varRad"]] =  ncvar_def( "Radiation", "MJ m-2", list(dimX,dimY,time), NULL, chunksizes = chunksizes)
+    if("WindSpeed" %in% vars) varlist[["varWindSpeed"]] =  ncvar_def( "WindSpeed", "m s-1", list(dimX,dimY,time), NULL, chunksizes = chunksizes)
+    if("WindDirection" %in% vars) varlist[["varWindDirection"]] =  ncvar_def( "WindDirection", "degrees_north", list(dimX,dimY,time), NULL, chunksizes = chunksizes)
+    if("PET" %in% vars) varlist[["varPET"]] =  ncvar_def( "PET", "l m-2", list(dimX,dimY,time), NULL, chunksizes = chunksizes)
     if(.isLongLat(proj4string)) {
-      nc <- nc_create(file, list(varMeanTemp,varMinTemp,varMaxTemp,varPrec,
-                                 varMeanRH, varMinRH,varMaxRH,
-                                 varRad, varWindSpeed, varWindDirection, varPET), force_v4 = T)
+      nc <- nc_create(file, varlist, force_v4 = T)
     } else {
       # Fill data for lon/lat variables
       if(!is.na(proj4string)) {
         #Define additional lon/lat variables
         varLon <- ncvar_def( "lon", "degrees_east", list(dimX,dimY), missval = NULL, longname = "longitude")
         varLat <- ncvar_def( "lat", "degrees_north", list(dimX,dimY), missval =NULL, longname = "latitude")
-        nc <- nc_create(file, list(varLon, varLat, varMeanTemp,varMinTemp,varMaxTemp,varPrec,
-                                   varMeanRH, varMinRH,varMaxRH,
-                                   varRad, varWindSpeed, varWindDirection, varPET), force_v4 = T)
+        nc <- nc_create(file, varlist, force_v4 = T)
         spt_lonlat = spTransform(SpatialPoints(coordinates(grid), CRS(proj4string)), CRS("+proj=longlat +datum=WGS84"))
         lonlat = coordinates(spt_lonlat)
         .putgridvardata(nc, varLon, lonlat[,1])
         .putgridvardata(nc, varLat, lonlat[,2])
       } else {
-        nc <- nc_create(file, list(varMeanTemp,varMinTemp,varMaxTemp,varPrec,
-                                   varMeanRH, varMinRH,varMaxRH,
-                                   varRad, varWindSpeed, varWindDirection, varPET), force_v4 = T)
+        nc <- nc_create(file, varlist, force_v4 = T)
       }
       
       # Indicate axes
@@ -156,17 +152,17 @@
   np = nrow(coords)
   station <- ncdim_def("station", "", vals = 1:np, unlim = TRUE)
   stationName <-ncvar_def("station_name", "", list(station), missval = NULL, longname = "station name")
-  varMeanTemp <- ncvar_def( "MeanTemperature", "Celsius", list(station, time), NA)
-  varMinTemp <- ncvar_def( "MinTemperature", "Celsius", list(station, time), NA)
-  varMaxTemp <- ncvar_def( "MaxTemperature", "Celsius", list(station, time), NA)
-  varPrec <- ncvar_def( "Precipitation", "l m-2", list(station, time), NA)
-  varMeanRH <- ncvar_def( "MeanRelativeHumidity", "%", list(station, time), NA)
-  varMinRH <- ncvar_def( "MinRelativeHumidity", "%", list(station, time), NA)
-  varMaxRH <- ncvar_def( "MaxRelativeHumidity", "%", list(station, time), NA)
-  varRad <- ncvar_def( "Radiation", "MJ m-2", list(station, time), NA)
-  varWindSpeed <- ncvar_def( "WindSpeed", "m s-1", list(station, time), NA)
-  varWindDirection <- ncvar_def( "WindDirection", "degrees_north", list(station, time), NA)
-  varPET <- ncvar_def( "PET", "l m-2", list(station, time), NA)
+  varMeanTemp <- ncvar_def( "MeanTemperature", "Celsius", list(station, time), NULL)
+  varMinTemp <- ncvar_def( "MinTemperature", "Celsius", list(station, time), NULL)
+  varMaxTemp <- ncvar_def( "MaxTemperature", "Celsius", list(station, time), NULL)
+  varPrec <- ncvar_def( "Precipitation", "l m-2", list(station, time), NULL)
+  varMeanRH <- ncvar_def( "MeanRelativeHumidity", "%", list(station, time), NULL)
+  varMinRH <- ncvar_def( "MinRelativeHumidity", "%", list(station, time), NULL)
+  varMaxRH <- ncvar_def( "MaxRelativeHumidity", "%", list(station, time), NULL)
+  varRad <- ncvar_def( "Radiation", "MJ m-2", list(station, time), NULL)
+  varWindSpeed <- ncvar_def( "WindSpeed", "m s-1", list(station, time), NULL)
+  varWindDirection <- ncvar_def( "WindDirection", "degrees_north", list(station, time), NULL)
+  varPET <- ncvar_def( "PET", "l m-2", list(station, time), NULL)
   if(.isLongLat(proj4string)) {
     varX <- ncvar_def( "lon", "degrees_east", list(station), missval = NULL)
     varY <- ncvar_def( "lat", "degrees_north", list(station), missval = NULL)
@@ -215,16 +211,27 @@
   varWindDirection = nc$var$WindDirection
   varPET = nc$var$PET
   if("MeanTemperature" %in% names(df)) ncvar_put(nc, varid=varMeanTemp, vals=df$MeanTemperature, start=c(i,1), count=c(1,nt))
+  else ncvar_put(nc, varid=varMeanTemp, vals=rep(NA, nt), start=c(i,1), count=c(1,nt))
   if("MinTemperature" %in% names(df)) ncvar_put(nc, varid=varMinTemp, vals=df$MinTemperature, start=c(i,1), count=c(1,nt))
+  else ncvar_put(nc, varid=varMinTemp, vals=rep(NA, nt), start=c(i,1), count=c(1,nt))
   if("MaxTemperature" %in% names(df)) ncvar_put(nc, varid=varMaxTemp, vals=df$MaxTemperature, start=c(i,1), count=c(1,nt))
+  else ncvar_put(nc, varid=varMaxTemp, vals=rep(NA, nt), start=c(i,1), count=c(1,nt))
   if("Precipitation" %in% names(df)) ncvar_put(nc, varid=varPrec, vals=df$Precipitation, start=c(i,1), count=c(1,nt))
+  else ncvar_put(nc, varid=varPrec, vals=rep(NA, nt), start=c(i,1), count=c(1,nt))
   if("MeanRelativeHumidity" %in% names(df)) ncvar_put(nc, varid=varMeanRH, vals=df$MeanRelativeHumidity, start=c(i,1), count=c(1,nt))
+  else ncvar_put(nc, varid=varMeanRH, vals=rep(NA, nt), start=c(i,1), count=c(1,nt))
   if("MinRelativeHumidity" %in% names(df)) ncvar_put(nc, varid=varMinRH, vals=df$MinRelativeHumidity, start=c(i,1), count=c(1,nt))
+  else ncvar_put(nc, varid=varMinRH, vals=rep(NA, nt), start=c(i,1), count=c(1,nt))
   if("MaxRelativeHumidity" %in% names(df)) ncvar_put(nc, varid=varMaxRH, vals=df$MaxRelativeHumidity, start=c(i,1), count=c(1,nt))
+  else ncvar_put(nc, varid=varMaxRH, vals=rep(NA, nt), start=c(i,1), count=c(1,nt))
   if("Radiation" %in% names(df)) ncvar_put(nc, varid=varRad, vals=df$Radiation, start=c(i,1), count=c(1,nt))
+  else ncvar_put(nc, varid=varRad, vals=rep(NA, nt), start=c(i,1), count=c(1,nt))
   if("WindSpeed" %in% names(df)) ncvar_put(nc, varid=varWindSpeed, vals=df$WindSpeed, start=c(i,1), count=c(1,nt))
+  else ncvar_put(nc, varid=varWindSpeed, vals=rep(NA, nt), start=c(i,1), count=c(1,nt))
   if("WindDirection" %in% names(df)) ncvar_put(nc, varid=varWindDirection, vals=df$WindDirection, start=c(i,1), count=c(1,nt))
+  else ncvar_put(nc, varid=varWindDirection, vals=rep(NA, nt), start=c(i,1), count=c(1,nt))
   if("PET" %in% names(df)) ncvar_put(nc, varid=varPET, vals=df$PET, start=c(i,1), count=c(1,nt))
+  else ncvar_put(nc, varid=varPET, vals=rep(NA, nt), start=c(i,1), count=c(1,nt))
 }
 #Writes full NetCDF points
 .writemeteorologypointsNetCDF<-function(data, nc, verbose = FALSE) {
@@ -469,6 +476,21 @@
                  WindSpeed = "WindSpeed",
                  WindDirection = "WindDirection",
                  PET = "PET")
+  return(varmapping)
+}
+.defaultVars<-function() {
+  var = c("MeanTemperature",
+          "MinTemperature",
+          "MaxTemperature",
+          "Precipitation",
+          "MeanRelativeHumidity",
+          "MinRelativeHumidity",
+          "MaxRelativeHumidity",
+          "Radiation",
+          "WindSpeed",
+          "WindDirection",
+          "PET")
+  return(var)
 }
 .unitConversion<-function(df, ncin, varmapping) {
   if("Precipitation" %in% names(varmapping)) {

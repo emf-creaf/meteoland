@@ -2,6 +2,7 @@ SpatialPointsMeteorology<-function(points, data, dates, dataByDate = FALSE) {
   if(!inherits(points, "SpatialPoints")) stop("'points' has to be of class 'SpatialPoints'")
   if(!inherits(dates, "Date")) stop("'dates' has to be of class 'Date'")
   if(!is.list(data)) stop("'data' has to be a list of data frames")
+  if(is.null(rownames(points@coords))) rownames(points@coords) = 1:nrow(points@coords)
   ndata = length(data)
   for(i in 1:ndata) {
     if(!inherits(data[[i]], "data.frame")) stop("'data' has to be a list of data frames")

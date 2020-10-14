@@ -14,8 +14,8 @@ MeteorologyUncorrectedData(points, reference_data, projection_data, dates,
 %- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{points}{An object of class \code{\link{SpatialPoints}}.}
-  \item{reference_data}{Reference (historic) meteorological data used to calibrate correction factors when compared with observations. A vector of data frames (one per point) or a single data frame containing the meta data (columns \code{dir} and \code{filename}) of meteorological files that will be read from the disk. }
-  \item{projection_data}{Projected meteorological data to be corrected. A vector of data frames (one per point) or a single data frame containing the meta data (columns \code{dir} and \code{filename}) of meteorological files that will be read from the disk. }
+  \item{reference_data}{Reference (historic) meteorological data used to calibrate correction factors when compared with observations. A vector of data frames (one per point) or a single data frame containing the meta data (columns \code{dir} and \code{filename}) of meteorological files that will be read from the disk. Alternatively, a NetCDF file name where points should be read.}
+  \item{projection_data}{Projected meteorological data to be corrected. A vector of data frames (one per point) or a single data frame containing the meta data (columns \code{dir} and \code{filename}) of meteorological files that will be read from the disk. Alternatively, a NetCDF file name where points should be read.}
   \item{dates}{Object of class \code{"Date"} describing the time period for which meteorological correction is possible (corresponding to \code{projection_data}).}
   \item{params}{A \code{"list"} containing correction parameters. }
 }

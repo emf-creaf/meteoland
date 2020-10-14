@@ -16,8 +16,8 @@ Objects can be created by calls of the form \code{new("MeteorologyUncorrectedDat
     \item{\code{bbox}:}{Object of class \code{"matrix"} with the boundary box that sets meteorological estimation boundaries.}
     \item{\code{proj4string}:}{Object of class \code{"CRS"} with the projection string of station spatial coordinates.}
     \item{\code{coords}:}{Object of class \code{"matrix"} containing the coordinates of weather stations (each row is a point).}
-    \item{\code{reference_data}:}{Reference (historic) meteorological data used to calibrate correction factors when compared with observations. A vector of data frames (one per point) or a single data frame containing the meta data (columns \code{dir} and \code{filename}) of meteorological files that will be read from the disk. }
-    \item{\code{projection_data}:}{Projection meteorological data to be corrected. A vector of data frames (one per point) or a single data frame containing the meta data (columns \code{dir} and \code{filename}) of meteorological files that will be read from the disk. }
+    \item{\code{reference_data}:}{Reference (historic) meteorological data used to calibrate correction factors when compared with observations. A vector of data frames (one per point) or a single data frame containing the meta data (columns \code{dir} and \code{filename}) of meteorological files that will be read from the disk. Alternatively, a NetCDF file name where points should be read. }
+    \item{\code{projection_data}:}{Projection meteorological data to be corrected. A vector of data frames (one per point) or a single data frame containing the meta data (columns \code{dir} and \code{filename}) of meteorological files that will be read from the disk. Alternatively, a NetCDF file name where points should be read.}
     \item{\code{params}:}{A \code{"list"} containing correction parameters. }
   }
 }

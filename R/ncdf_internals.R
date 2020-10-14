@@ -193,7 +193,9 @@
     ncvar_put(nc, varid=varLon, vals=lonlat[,1], start=c(1), count=c(np))
     ncvar_put(nc, varid=varLat, vals=lonlat[,2], start=c(1), count=c(np))
   }
-  ncvar_put(nc, varid=stationName, vals=rownames(coords), start=c(1), count=c(np))
+  rn = rownames(coords)
+  if(is.null(rn)) rn = 1:nrow(coords)
+  ncvar_put(nc, varid=stationName, vals=rn, start=c(1), count=c(np))
   
   # Indicate axes
   ncatt_put(nc, stationName, "cf_role", "timeseries_id")

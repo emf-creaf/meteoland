@@ -12,6 +12,12 @@ correction_series<-function(obs, mod, proj = NULL, method = "unbias", isPrec=TRU
 }
 # Bias-correction of all variables for a single point
 correctionpoint<-function(obs, mod, proj, dates = NULL, params = defaultCorrectionParams(), verbose=TRUE){
+  
+  #Calculate mean temperature if absent
+  if(!("MeanTemperature" %in% names(obs))) {
+    obs$MeanTemperature = 0.606*obs$MaxTemperature+0.394*obs$MinTemperature
+  }
+  
   #Call statistical correction routine
   mbias = .monthbiasonepoint(obs,mod, 
                              params$varmethods, 
@@ -120,6 +126,8 @@ correctionpoints<-function(object, points, topodata = NULL, dates = NULL, export
     #predicted climatic data frames
     if(inherits(object@reference_data,"list")) {
       rcmhist = object@reference_data[[ipred]]
+    } else if(inherits(object@reference_data,"character")) {
+      rcmhist = readmeteorologypoints(object@reference_data, stations = ipred)@data[[1]]
     } else {
       if(("dir" %in% names(object@reference_data))&&("filename" %in% names(object@reference_data))) {
         f = paste(object@reference_data$dir[ipred], object@reference_data$filename[ipred],sep="/")
@@ -137,6 +145,8 @@ correctionpoints<-function(object, points, topodata = NULL, dates = NULL, export
     }
     if(inherits(object@projection_data,"list")) {
       rcmfut = object@projection_data[[ipred]]
+    } else if(inherits(object@projection_data,"character")) {
+      rcmfut = readmeteorologypoints(object@projection_data, stations = ipred)@data[[1]]
     } else {
       if(("dir" %in% names(object@projection_data))&&("filename" %in% names(object@projection_data))) {
         f = paste(object@projection_data$dir[ipred], object@projection_data$filename[ipred],sep="/")

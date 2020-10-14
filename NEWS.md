@@ -6,6 +6,7 @@
 - Bug correction in 'mergegrids'
 - Bug correction in '.putgridvardataday'
 - Flexible variable definition for 'writemeteorologygrid' and 'writemeteorologypoints'
+- MeteorologyUncorrectedData accepts filenames as input to avoid loading large files in memory when calling 'correctionpoints'
 
 # Version 0.9.6
 - Allow missing Precipitation when building MeteorologyInterpolationData

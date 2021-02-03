@@ -122,7 +122,9 @@
         #Define additional lon/lat variables
         varLon <- ncvar_def( "lon", "degrees_east", list(dimX,dimY), missval = NULL, longname = "longitude")
         varLat <- ncvar_def( "lat", "degrees_north", list(dimX,dimY), missval =NULL, longname = "latitude")
-        nc <- nc_create(file, varlist, force_v4 = T)
+        varlist2 = list("varX" = varLon, "varY" = varLat)
+        for(i in 1:length(varlist)) varlist2[[names(varlist)[i]]] = varlist[[i]]
+        nc <- nc_create(file, varlist2, force_v4 = T)
         spt_lonlat = spTransform(SpatialPoints(coordinates(grid), CRS(proj4string)), CRS("+proj=longlat +datum=WGS84"))
         lonlat = coordinates(spt_lonlat)
         .putgridvardata(nc, varLon, lonlat[,1])

@@ -2,6 +2,10 @@
  NEWS for R Package "meteoland"
 -------------------------------
 
+# Version 0.9.8
+- Bug correction in '.openwritegridNetCDF'
+
+
 # Version 0.9.7
 - Bug correction in 'mergegrids'
 - Bug correction in '.putgridvardataday'

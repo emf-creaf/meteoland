@@ -108,3 +108,67 @@ downloadMGstationlist <- function() {
   row.names(data_sp) <- data_sp@data$ID
   return(data_sp)
 }
+
+#### Meteoclimatic
+downloadMETEOCLIMATICstationlist <- function(station_id = 'ESCAT', spatial = TRUE) {
+  # Stations coords extraction ----------------------------------------------------------------------------
+  # We need to access the rss feed of meteoclimatic that contains all active stations. The meteoclimatic
+  # API allows for selecting provinces or autonomous communities, with the corresponding code. We can use
+  # this to obtain all catalonian stations with the "ESCAT" code. In case of station_id > 1 we need to iterate
+  # and store the results in a final dataframe
+  coords_xml_source <- paste0("http://meteoclimatic.com/feed/rss/",station_id)
+  meteoclimatic_stations <- data.frame()
+  
+  for (station in coords_xml_source) {
+    coords_xml_body <- xml2::read_xml(station)
+    station_info <- data.frame(
+      # station_id is special, we need obtain it from the link, so we need to remove all the link previous to the code
+      station_id = substr(xml2::xml_text(xml2::xml_find_all(coords_xml_body, '//item/link')), start = 37, stop = 100),
+      # name, lat and long are elements in each node/item, so we extract them
+      name = xml2::xml_text(xml2::xml_find_all(coords_xml_body, '//item/title')),
+      lat = xml2::xml_double(xml2::xml_find_all(coords_xml_body, '//item/geo:Point/geo:lat')),
+      long = xml2::xml_double(xml2::xml_find_all(coords_xml_body, '//item/geo:Point/geo:long'))
+    )
+    meteoclimatic_stations <- rbind(meteoclimatic_stations, station_info)
+  }
+  
+  # We need to check if the code is correct (there has to be at least one station)
+  if (nrow(meteoclimatic_stations) < 1) {
+    stop(paste0('No stations found for area code "', station_id, '"'))
+  }
+  
+  # It seems, as the original code (https://github.com/lemuscanovas/meteoclimaticR/blob/master/R/downloadMeteoclimaticDaily.R)
+  # indicates, that some stations have the points coordinates wrong:
+  # 
+  #       mutate(lat2 = ifelse(lat < 10, lon, lat ),
+  #              lon2 = ifelse(lon >10, lat,lon)) %>%
+  #         select(-c(lat:lon)) %>%
+  #         rename(lat = lat2,
+  #                lon = lon2) %>%
+  #         mutate(lon = ifelse(lon >2 & lat<38,-lon,lon),
+  #                lon = ifelse(lon >1 & lat>43,-lon,lon),
+  #                lon = ifelse(lon >4 & lat > 40.5,-lon,lon))
+  #                
+  # So we need to fix this also
+  meteoclimatic_stations$lat_original <- meteoclimatic_stations$lat
+  meteoclimatic_stations$long_original <- meteoclimatic_stations$long
+  # lat long changed
+  meteoclimatic_stations[meteoclimatic_stations$lat_original < 10, ]$lat <- 
+    meteoclimatic_stations[meteoclimatic_stations$lat_original < 10, ]$long_original
+  meteoclimatic_stations[meteoclimatic_stations$lat_original < 10, ]$long <- 
+    meteoclimatic_stations[meteoclimatic_stations$lat_original < 10, ]$lat_original
+  meteoclimatic_stations$lat_original <- NULL
+  meteoclimatic_stations$long_original <- NULL
+  rownames(meteoclimatic_stations) <- meteoclimatic_stations$station_id
+  
+  message("Coordinates for the stations only have been corrected for Catalonia (station_id = 'ESCAT').")
+  
+  # sp object ---------------------------------------------------------------------------------------------
+  if (isTRUE(spatial)) {
+    sp::coordinates(meteoclimatic_stations) <- ~long+lat
+    sp::proj4string(meteoclimatic_stations) <- sp::CRS("+proj=longlat")
+  }
+  
+  return(meteoclimatic_stations)
+  
+}

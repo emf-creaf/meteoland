@@ -130,3 +130,11 @@ humidity_relative2specific<-function(Tc, HR){
     return(ans)
   }
 }
+
+.safe_xml_find <- function(node, data, extra_path, transform_function) {
+  res <- transform_function(xml2::xml_find_first(data, paste0(node, extra_path)))
+  if (length(res) < 1) {
+    res <- NA
+  }
+  return(res)
+}

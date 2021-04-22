@@ -1,5 +1,6 @@
 import(sp)
 import(httr)
+import(xml2)
 import(spdep)
 import(ncdf4)
 import(rgdal)
@@ -13,6 +14,7 @@ export(averagearea,
        downloadMGstationlist, downloadMGcurrentday, downloadMGhistorical,
        downloadSMCstationlist, downloadSMCvarmetadata,downloadSMCcurrentday, downloadSMChistorical,
        downloadAEMETcurrentday,downloadAEMEThistorical, downloadAEMEThistoricalstationlist,
+       downloadMETEOCLIMATICcurrentday, downloadMETEOCLIMATICstationlist,
        extractgridindex,
        extractgridpoints, extractNetCDF,
        extractdates, extractvars,

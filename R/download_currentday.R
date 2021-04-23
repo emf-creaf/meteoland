@@ -296,3 +296,47 @@ downloadMGcurrentday <- function(station_id=NULL, daily = TRUE, verbose = TRUE) 
   if(verbose)cat("\nHourly results are returned\n")
   return(df_all)
 }
+
+#### Meteoclimatic
+downloadMETEOCLIMATICcurrentday <- function(station_id = "ESCAT") {
+  
+  # Stations coords extraction ----------------------------------------------------------------------------
+  # We use the stationlist function for meteoclimatic, but no spatial format
+  meteoclimatic_stations <- downloadMETEOCLIMATICstationlist(station_id, spatial = FALSE)
+  
+  # Station meteo data extraction -------------------------------------------------------------------------
+  # In this case, we need to access the data feed, instead of the stations feed. But the process is really
+  # similar to the ine in downloadMETEOCLIMATICstationlist.
+  data_xml_source <- paste0("http://meteoclimatic.com/feed/xml/", station_id)
+  meteoclimatic_data <- data.frame()
+  
+  for (station in data_xml_source) {
+    data_xml_body <- xml2::read_xml(station)
+    # But, here extracting the data is not as easy as before. Variables (tmin, tmax, precipitation...) can
+    # be missing in some stations, and extracting the info with xml_find_all does not includes NAs. So, we are
+    # gonna need to be a little creative with this one (check .safe_xml_find helper)
+    nodes <- xml2::xml_path(xml2::xml_find_all(data_xml_body, '//meteodata/stations/station'))
+    station_data <- data.frame(
+      station_id = sapply(nodes, .safe_xml_find, data = data_xml_body, extra_path = '/id', transform_function = xml2::xml_text),
+      MaxTemperature = sapply(nodes, .safe_xml_find, data = data_xml_body, extra_path = '/stationdata/temperature/max', transform_function = xml2::xml_double),
+      MinTemperature = sapply(nodes, .safe_xml_find, data = data_xml_body, extra_path = '/stationdata/temperature/min', transform_function = xml2::xml_double),
+      MaxRelativeHumidity = sapply(nodes, .safe_xml_find, data = data_xml_body, extra_path = '/stationdata/humidity/max', transform_function = xml2::xml_double),
+      MinRelativeHumidity = sapply(nodes, .safe_xml_find, data = data_xml_body, extra_path = '/stationdata/humidity/min', transform_function = xml2::xml_double),
+      Precipitation = sapply(nodes, .safe_xml_find, data = data_xml_body, extra_path = '/stationdata/rain/total', transform_function = xml2::xml_double)
+    )
+    meteoclimatic_data <- rbind(meteoclimatic_data, station_data)
+  }
+  
+  # Final data --------------------------------------------------------------------------------------------
+  # After obtaining the data, we need to join the stations info and create the spatial object to return
+  all_data <- merge(meteoclimatic_stations, meteoclimatic_data, by = 'station_id')
+  # And now the spatial object. To be consistent with other meteoland functions, the data must have only the
+  # climatic variables with station station_id as rownames and coords must be in WGS84 latlong
+  rownames(all_data) <- all_data$station_id
+  all_data$station_id <- NULL
+  all_data$name <- NULL
+  sp::coordinates(all_data) <- ~long+lat
+  sp::proj4string(all_data) <- sp::CRS("+proj=longlat")
+  
+  return(all_data)
+}

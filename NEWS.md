@@ -2,9 +2,12 @@
  NEWS for R Package "meteoland"
 -------------------------------
 
+# Version 0.9.9
+- New functions 'downloadMETEOCLIMATICcurrentday' and 'downloadMETEOCLIMATICstationlist' by MalditoBarbudo, inspired by lemuscanovas
+- Bug correction in 'downloadAEMEThistorical'
+
 # Version 0.9.8
 - Bug correction in '.openwritegridNetCDF'
-
 
 # Version 0.9.7
 - Bug correction in 'mergegrids'

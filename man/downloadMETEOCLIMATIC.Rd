@@ -13,7 +13,6 @@ Download data from the Spanish Automatic Stations Network (non-professional)
 downloadMETEOCLIMATICstationlist(station_id = "ESCAT", spatial = TRUE)
 downloadMETEOCLIMATICcurrentday(station_id = "ESCAT")
 }
-%- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{station_id}{A string vector containing station ids (the list of stations for which current day climatic data is available is given by \code{downloadMETEOCLIMATICstationlist}).}
   \item{spatial}{Returned object format. If \code{TRUE} (default), a \code{\link{SpatialPointsDataFrame-class}} object is returned. If \code{FALSE}, a data.frame is returned instead.}
@@ -27,7 +26,7 @@ Function \code{downloadMETEOCLIMATICstationlist} returns a \code{\link{SpatialPo
 Function \code{downloadMETEOCLIMATICcurrentday} downloads recent weather (for the current day) from all currently available stations and returns a \code{\link{SpatialPointsDataFrame-class}} object with observations. 
 }
 \note{
-Only acummulated precipitation, maximum and minimum temperature and relative humidity are returned.
+Only acummulated precipitation, maximum and minimum temperature and relative humidity are returned. The current implementation was inspired by function meteoclimaticR by Marc Lemus \enc{Cánovas}{Canovas}.
 }
 \references{
 Meteoclimatic should be acknowledged as author of information when using this data.

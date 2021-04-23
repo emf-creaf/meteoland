@@ -22,7 +22,7 @@ downloadMETEOCLIMATICcurrentday(station_id = "ESCAT")
 Meteoclimatic is a non-professional automatic stations network, maintained by volunteers that share the data from their climatic stations. Data offered by these stations has not passed any quality control.
 }
 \value{
-Function \code{downloadMETEOCLIMATICstationlist} returns a \code{\link{SpatialPointsDataFrame-class}} object containing the list of Meteoclimatic weather stations for which data is available based on the station_id codes provided. 
+Function \code{downloadMETEOCLIMATICstationlist} returns a \code{\link{SpatialPointsDataFrame-class}} object containing the list of Meteoclimatic weather stations for which data is available based on the station_id codes provided, or a data.frame with the same information if \code{spatial = FALSE}.
 
 Function \code{downloadMETEOCLIMATICcurrentday} downloads recent weather (for the current day) from all currently available stations and returns a \code{\link{SpatialPointsDataFrame-class}} object with observations. 
 }

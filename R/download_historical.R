@@ -145,9 +145,22 @@ downloadAEMEThistorical <- function(api, dates, station_id, export = FALSE, expo
       if(!is.null(df1)) {
         for(var in varnames) if(!(var %in% names(df1))) df1[var] = NA
         df1 = df1[varnames]
-        if(is.null(data_df)) data_df = df1
-        else data_df = rbind(data_df, df1)
+      } else {
+        df1 = data.frame(
+          character(0), numeric(0), numeric(0), numeric(0), numeric(0), numeric(0), numeric(0), numeric(0), numeric(0)
+        )
+        names(df1) <- varnames
       }
+      
+      data_df <- rbind(data_df, df1)
+      
+      
+      # if(!is.null(df1)) {
+      #   for(var in varnames) if(!(var %in% names(df1))) df1[var] = NA
+      #   df1 = df1[varnames]
+      #   if(is.null(data_df)) data_df = df1
+      #   else data_df = rbind(data_df, df1)
+      # }
       if(verbose) setTxtProgressBar(pb,i)
     }
   }

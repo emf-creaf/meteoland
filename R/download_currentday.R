@@ -328,11 +328,8 @@ downloadMETEOCLIMATICcurrentday <- function(station_id = "ESCAT") {
   }
   
   # Final data --------------------------------------------------------------------------------------------
-  # After obtaining the data, we need to join the stations info, get only complete cases* and create the
-  # spatial object to return
-  # * Why the complete cases? Because Precipitation is mandatory.
+  # After obtaining the data, we need to join the stations info and create the spatial object to return
   all_data <- merge(meteoclimatic_stations, meteoclimatic_data, by = 'station_id')
-  all_data <- all_data[complete.cases(all_data), ]
   # And now the spatial object. To be consistent with other meteoland functions, the data must have only the
   # climatic variables with station station_id as rownames and coords must be in WGS84 latlong
   rownames(all_data) <- all_data$station_id

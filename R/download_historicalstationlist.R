@@ -137,31 +137,8 @@ downloadMETEOCLIMATICstationlist <- function(station_id = 'ESCAT', spatial = TRU
     stop(paste0('No stations found for area code "', station_id, '"'))
   }
   
-  # It seems, as the original code (https://github.com/lemuscanovas/meteoclimaticR/blob/master/R/downloadMeteoclimaticDaily.R)
-  # indicates, that some stations have the points coordinates wrong:
-  # 
-  #       mutate(lat2 = ifelse(lat < 10, lon, lat ),
-  #              lon2 = ifelse(lon >10, lat,lon)) %>%
-  #         select(-c(lat:lon)) %>%
-  #         rename(lat = lat2,
-  #                lon = lon2) %>%
-  #         mutate(lon = ifelse(lon >2 & lat<38,-lon,lon),
-  #                lon = ifelse(lon >1 & lat>43,-lon,lon),
-  #                lon = ifelse(lon >4 & lat > 40.5,-lon,lon))
-  #                
-  # So we need to fix this also
-  meteoclimatic_stations$lat_original <- meteoclimatic_stations$lat
-  meteoclimatic_stations$long_original <- meteoclimatic_stations$long
-  # lat long changed
-  meteoclimatic_stations[meteoclimatic_stations$lat_original < 10, ]$lat <- 
-    meteoclimatic_stations[meteoclimatic_stations$lat_original < 10, ]$long_original
-  meteoclimatic_stations[meteoclimatic_stations$lat_original < 10, ]$long <- 
-    meteoclimatic_stations[meteoclimatic_stations$lat_original < 10, ]$lat_original
-  meteoclimatic_stations$lat_original <- NULL
-  meteoclimatic_stations$long_original <- NULL
-  rownames(meteoclimatic_stations) <- meteoclimatic_stations$station_id
-  
-  message("Coordinates for the stations only have been corrected for Catalonia (station_id = 'ESCAT').")
+  # Also, warn the user about the possibility the coordinates could be wrong
+  message("Meteclimatic is a non-professional network, coordinates of stations should be revised")
   
   # sp object ---------------------------------------------------------------------------------------------
   if (isTRUE(spatial)) {

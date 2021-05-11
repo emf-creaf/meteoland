@@ -1,7 +1,7 @@
 ---
 title: "Daily weather interpolation over Senegal"
 author: "Miquel De Cáceres"
-date: "6 de gener de 2020"
+date: "`r Sys.Date()`"
 output: html_document
 ---
 
@@ -19,29 +19,43 @@ We start by loading package **worldmet**, which provides access to over 30.000 w
 library(worldmet)
 ```
 In order to download weather data, we must first obtain the codes of the weather stations available for our study area. This can be done using function `getMeta()` from worldmet, which we use to know available weather stations for Senegal and neighbouring countries:
-```{r}
+```{r, eval = FALSE}
 #Country codes for Senegal / Gambia/ Guinea/ Mali/ Mauritania /Guinea bissau
 countries <- c("SG", "GA", "GV", "ML", "MR", "PU")
 sg_st = getMeta(country=countries, plot = FALSE) 
+```
+
+```{r, eval = TRUE, echo=FALSE}
+# saveRDS(sg_st, file="sg_st.rds")
+sg_st = readRDS("sg_st.rds")
+```
+Here are the stations downloaded:
+```{r}
 sg_st
 ```
-Let's assume that we want to interpolate weather for year 2018. We can download hourly weather station data for the selected stations and year 2018 using function `importNOAA()`:
-```{r, echo = FALSE}
-hour2018 = NULL
+
+Let's assume that we want to interpolate weather for year 2020. We can download hourly weather station data for the selected stations and year 2020 using function `importNOAA()`:
+```{r, eval = FALSE, echo = FALSE}
+hourData = NULL
 for(i in 1:length(sg_st$code)) {
   cat(paste0(sg_st$code[i]," "))
   tryCatch({
-    hi<-importNOAA(code = sg_st$code[i], year=2018, quiet=TRUE)
-    if(is.null(hour2018))  {hour2018 = hi}
-    else {hour2018 = rbind(hour2018,hi)}
+    hi<-importNOAA(code = sg_st$code[i], year=2020, quiet=TRUE)
+    if(is.null(hourData))  {hourData = hi}
+    else {hourData = rbind(hourData,hi)}
     cat(" [success].")
   }, error = function(e) {cat("[failed].")})
 }
 cat("\n")
 ```
-Some stations had missing data for year 2018 and were excluded from the output. Using function `reshapeworldmet()` from meteoland, we can reshape the hourly data of the remaining stations into daily data in form of an object `SpatialPointsMeteorology`:
+```{r, eval = TRUE, echo=FALSE}
+# saveRDS(hourData, file="hourData.rds")
+hourData = readRDS("hourData.rds")
+```
+
+Some stations had missing data for year 2020 and were excluded from the output. Using function `reshapeworldmet()` from meteoland, we can reshape the hourly data of the remaining stations into daily data in form of an object `SpatialPointsMeteorology`:
 ```{r}
-spt_sen<-reshapeworldmet(hour2018, output = "SpatialPointsMeteorology", verbose=FALSE)
+spt_sen<-reshapeworldmet(hourData, output = "SpatialPointsMeteorology", verbose=FALSE)
 spt_sen
 ```
 
@@ -53,7 +67,7 @@ meteoplot(spt_sen, 5, "MeanTemperature", ylab ="Mean temperature (ºC)")
 While `SpatialPointsMeteorology` is the class that meteoland uses for point weather series, a special object of class `MeteorologyInterpolationData` needs to be created for interpolation, containing not only station weather but also station elevation and interpolation parameters. This can be obtained using the same function `reshapeworldmet()`:
 
 ```{r}
-spt_mid<-reshapeworldmet(hour2018, output = "MeteorologyInterpolationData", 
+spt_mid<-reshapeworldmet(hourData, output = "MeteorologyInterpolationData", 
                          proj4string = CRS("+init=epsg:32628"),
                          verbose=FALSE)
 ```
@@ -107,9 +121,9 @@ spplot(spxt, "aspect")
 
 ## Performing interpolation
 
-We are now ready to perform the interpolation of weather over the study area. Since our spatial target are grid pixels, we need to call function `interpolationpixels` with: (a) our object `MeteorologyInterpolationData`; (b) our target topography (i.e. in this case `SpatialPixelsTopography`); and (c) a vector of dates (here two distinct days) among the period with available data (year 2018):
+We are now ready to perform the interpolation of weather over the study area. Since our spatial target are grid pixels, we need to call function `interpolationpixels` with: (a) our object `MeteorologyInterpolationData`; (b) our target topography (i.e. in this case `SpatialPixelsTopography`); and (c) a vector of dates (here two distinct days) among the period with available data (year 2020):
 ```{r}
-mid <- interpolationpixels(spt_mid, spxt, dates=as.Date(c("2018-03-15", "2018-07-30")))
+mid <- interpolationpixels(spt_mid, spxt, dates=as.Date(c("2020-03-15", "2020-07-30")))
 ```
 A warning is launched because some grid points (hopefully not many) are outside the boundary box of the station data. At this point the resulting data can be exported via netCDF, displayed using function `spplot` or transformed into other spatio-temporal spatial structures. Here we will first transform the output to package `stars`:
 
@@ -130,7 +144,7 @@ And radiation in MJ/day:
 ```{r, fig=TRUE}
 plot(mid_stars["Radiation"])
 ```
-Note that in the case of date "2018-07-30", there was a prediction of rain in some areas, which decreases the estimated daily radiation.
+Note that in the case of date "2020-07-30", there was a prediction of rain in some areas, which decreases the estimated daily radiation.
 
 ## Exporting the result
 Finally, we can export the interpolation result back on a netCDF, for its use in other software:

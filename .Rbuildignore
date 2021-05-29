@@ -3,6 +3,7 @@
 ^meteoland_tests\.R$
 vignettes/examples/*
 data-raw/*
+^docs/*$
 ^README\.Rmd$
 ^README\.md$
 _pkgdown.yml

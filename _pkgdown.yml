@@ -1,9 +1,9 @@
-destination: "/home/miquel/Rservices/static/meteolanddocs"
+destination: "docs/"
 
 home:
   links:
-  - text: Package website
-    href: https://vegmod.ctfc.cat/software/meteoland
+  - text: Reference book
+    href: https://emf-creaf.github.io/meteolandbook/index.html
 
 articles:
 - title: Get started

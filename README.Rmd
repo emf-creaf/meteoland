@@ -29,10 +29,11 @@ devtools::install_github("emf-creaf/meteoland")
 Alternatively, users can have help to run package functions directly as package vignettes, by forcing their inclusion in installation: 
 ```{r installation vignettes, eval = FALSE}
 devtools::install_github("emf-creaf/meteoland", 
-                         build_opts = c("--no-resave-data", "--no-manual"))
+                         build_opts = c("--no-resave-data", "--no-manual"),
+                         build_vignettes = TRUE)
 ```
 
-Detailed documentation on `meteoland` can be found at (https://vegmod.github.io/software/meteoland).
+Detailed documentation on `meteoland` calculation routines can be found at (https://emf-creaf.github.io/meteolandbook/index.html).
 
 ## References
 

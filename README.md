@@ -32,11 +32,12 @@ package vignettes, by forcing their inclusion in installation:
 
 ``` r
 devtools::install_github("emf-creaf/meteoland", 
-                         build_opts = c("--no-resave-data", "--no-manual"))
+                         build_opts = c("--no-resave-data", "--no-manual"),
+                         build_vignettes = TRUE)
 ```
 
-Detailed documentation on `meteoland` can be found at
-(<https://vegmod.github.io/software/meteoland>).
+Detailed documentation on `meteoland` calculation routines can be found
+at (<https://emf-creaf.github.io/meteolandbook/index.html>).
 
 ## References
 

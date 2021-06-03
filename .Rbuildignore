@@ -7,3 +7,4 @@ data-raw/*
 ^README\.Rmd$
 ^README\.md$
 _pkgdown.yml
+^\.github$

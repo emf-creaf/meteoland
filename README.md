@@ -1,6 +1,10 @@
 meteoland - Landscape meteorology tools
 ================
 
+<!-- badges: start -->
+[![R-CMD-check](https://github.com/emf-creaf/meteoland/workflows/R-CMD-check/badge.svg)](https://github.com/emf-creaf/meteoland/actions)
+<!-- badges: end -->
+
 ## Introduction
 
 With the aim to assist research of climatic impacts on forests, the R

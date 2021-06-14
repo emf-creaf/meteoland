@@ -119,13 +119,15 @@
     </div>
 
     <pre class="usage"><span class='fu'>interpolation_dewtemperature</span><span class='op'>(</span><span class='va'>Xp</span>, <span class='va'>Yp</span>, <span class='va'>Zp</span>, <span class='va'>X</span>, <span class='va'>Y</span>, <span class='va'>Z</span>, <span class='cn'>T</span>, 
-                             iniRp <span class='op'>=</span> <span class='fl'>140000</span>, alpha <span class='op'>=</span> <span class='fl'>3.0</span>, N <span class='op'>=</span> <span class='fl'>30</span>, iterations <span class='op'>=</span> <span class='fl'>3</span><span class='op'>)</span>
+                             iniRp <span class='op'>=</span> <span class='fl'>140000</span>, alpha <span class='op'>=</span> <span class='fl'>3.0</span>, N <span class='op'>=</span> <span class='fl'>30</span>, 
+                             iterations <span class='op'>=</span> <span class='fl'>3</span>, debug <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span>
 <span class='fu'>interpolation_temperature</span><span class='op'>(</span><span class='va'>Xp</span>, <span class='va'>Yp</span>, <span class='va'>Zp</span>, <span class='va'>X</span>, <span class='va'>Y</span>, <span class='va'>Z</span>, <span class='cn'>T</span>, 
-                          iniRp <span class='op'>=</span> <span class='fl'>140000</span>, alpha <span class='op'>=</span> <span class='fl'>3.0</span>, N <span class='op'>=</span> <span class='fl'>30</span>, iterations <span class='op'>=</span> <span class='fl'>3</span><span class='op'>)</span>
+                          iniRp <span class='op'>=</span> <span class='fl'>140000</span>, alpha <span class='op'>=</span> <span class='fl'>3.0</span>, N <span class='op'>=</span> <span class='fl'>30</span>, 
+                          iterations <span class='op'>=</span> <span class='fl'>3</span>, debug <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span>
 <span class='fu'>interpolation_precipitation</span><span class='op'>(</span><span class='va'>Xp</span>, <span class='va'>Yp</span>, <span class='va'>Zp</span>, <span class='va'>X</span>, <span class='va'>Y</span>, <span class='va'>Z</span>, <span class='va'>P</span>, <span class='va'>Psmooth</span>,
                             iniRp <span class='op'>=</span> <span class='fl'>140000</span>, alpha_event <span class='op'>=</span> <span class='fl'>6.25</span>, alpha_amount <span class='op'>=</span> <span class='fl'>6.25</span>,
                             N_event <span class='op'>=</span> <span class='fl'>20</span>, N_amount <span class='op'>=</span> <span class='fl'>20</span>, iterations <span class='op'>=</span> <span class='fl'>3</span>, popcrit <span class='op'>=</span> <span class='fl'>0.5</span>, 
-                            fmax <span class='op'>=</span> <span class='fl'>0.95</span><span class='op'>)</span>
+                            fmax <span class='op'>=</span> <span class='fl'>0.95</span>, debug <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span>
 <span class='fu'>interpolation_wind</span><span class='op'>(</span><span class='va'>Xp</span>, <span class='va'>Yp</span>, <span class='va'>WS</span>, <span class='va'>WD</span>, <span class='va'>X</span>, <span class='va'>Y</span>,
                    iniRp <span class='op'>=</span> <span class='fl'>140000</span>, alpha <span class='op'>=</span> <span class='fl'>2.0</span>, N <span class='op'>=</span> <span class='fl'>1</span>, iterations <span class='op'>=</span> <span class='fl'>3</span>,
                    directionsAvailable <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span></pre>
@@ -166,6 +168,10 @@
       <td><p>Number of station density iterations.</p></td>
     </tr>
     <tr>
+      <th>debug</th>
+      <td><p>Boolean flag to show extra console output.</p></td>
+    </tr>
+    <tr>
       <th>alpha, alpha_amount, alpha_event</th>
       <td><p>Gaussian shape parameter.</p></td>
     </tr>
@@ -196,7 +202,7 @@
 <p>De Caceres M, Martin-StPaul N, Turco M, Cabon A, Granda V (2018) Estimating daily meteorological data and downscaling climate models over landscapes. Environmental Modelling and Software 108: 186-196.</p>
     <h2 class="hasAnchor" id="author"><a class="anchor" href="#author"></a>Author</h2>
 
-    <p>Miquel De Cáceres Ainsa, Centre Tecnologic Forestal de Catalunya</p>
+    <p>Miquel De Cáceres Ainsa, CREAF</p>
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
     <div class='dont-index'><p><code><a href='defaultInterpolationParams.html'>defaultInterpolationParams</a></code></p></div>

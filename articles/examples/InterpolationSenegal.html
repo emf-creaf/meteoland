@@ -69,7 +69,7 @@
       <h1 data-toc-skip>Daily weather interpolation over Senegal</h1>
                         <h4 class="author">Miquel De Cáceres</h4>
             
-            <h4 class="date">2021-06-07</h4>
+            <h4 class="date">2021-06-14</h4>
       
       
       <div class="hidden name"><code>InterpolationSenegal.Rmd</code></div>
@@ -255,21 +255,24 @@
 <p>Now we use plot functions defined for stars objects to display mean daily temperature interpolation estimates:</p>
 <div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">mid_stars</span><span class="op">[</span><span class="st">"MeanTemperature"</span><span class="op">]</span><span class="op">)</span></code></pre></div>
+<pre><code>## downsample set to c(0,0,1)</code></pre>
 <p><img src="InterpolationSenegal_files/figure-html/unnamed-chunk-20-1.png" width="700"></p>
 <p>As well as those for relative humidity:</p>
-<div class="sourceCode" id="cb35"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb36"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">mid_stars</span><span class="op">[</span><span class="st">"MeanRelativeHumidity"</span><span class="op">]</span><span class="op">)</span></code></pre></div>
+<pre><code>## downsample set to c(0,0,1)</code></pre>
 <p><img src="InterpolationSenegal_files/figure-html/unnamed-chunk-21-1.png" width="700"></p>
 <p>And radiation in MJ/day:</p>
-<div class="sourceCode" id="cb36"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb38"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">mid_stars</span><span class="op">[</span><span class="st">"Radiation"</span><span class="op">]</span><span class="op">)</span></code></pre></div>
+<pre><code>## downsample set to c(0,0,1)</code></pre>
 <p><img src="InterpolationSenegal_files/figure-html/unnamed-chunk-22-1.png" width="700"> Note that in the case of date “2020-07-30”, there was a prediction of rain in some areas, which decreases the estimated daily radiation.</p>
 </div>
 <div id="exporting-the-result" class="section level2">
 <h2 class="hasAnchor">
 <a href="#exporting-the-result" class="anchor"></a>Exporting the result</h2>
 <p>Finally, we can export the interpolation result back on a netCDF, for its use in other software:</p>
-<div class="sourceCode" id="cb37"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb40"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../../reference/writemeteorologygrid.html">writemeteorologypixels</a></span><span class="op">(</span><span class="va">mid</span>, <span class="st">"foo.nc"</span>, overwrite <span class="op">=</span> <span class="cn">T</span>, verbose<span class="op">=</span><span class="cn">T</span><span class="op">)</span></code></pre></div>
 <pre><code>## 
 ## Creating 'foo.nc'.</code></pre>
@@ -277,7 +280,7 @@
 <pre><code>## 
 ## Closing 'foo.nc'.</code></pre>
 <p>For example, this can be read from package raster:</p>
-<div class="sourceCode" id="cb41"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb44"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">a</span> <span class="op">=</span> <span class="fu">raster</span><span class="op">(</span><span class="st">"foo.nc"</span>, var <span class="op">=</span> <span class="st">"MeanRelativeHumidity"</span>, band <span class="op">=</span> <span class="fl">2</span><span class="op">)</span>
 <span class="va">a</span></code></pre></div>
 <pre><code>## class      : RasterLayer 
@@ -291,7 +294,7 @@
 ## z-value    : 2020-07-30 
 ## zvar       : MeanRelativeHumidity</code></pre>
 <p>Note that the CRS is not read correctly. We can, however, plot the data.</p>
-<div class="sourceCode" id="cb43"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb46"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">a</span><span class="op">)</span></code></pre></div>
 <p><img src="InterpolationSenegal_files/figure-html/unnamed-chunk-25-1.png" width="700"></p>
 </div>

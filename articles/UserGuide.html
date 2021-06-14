@@ -69,7 +69,7 @@
       <h1 data-toc-skip>User guide to meteoland</h1>
                         <h4 class="author">Miquel De Cáceres, Victor Granda</h4>
             
-            <h4 class="date">2021-06-07</h4>
+            <h4 class="date">2021-06-14</h4>
       
       
       <div class="hidden name"><code>UserGuide.Rmd</code></div>
@@ -103,7 +103,7 @@
 <p>Alternatively, you can install the development version located at GitHub using the <strong>devtools</strong> package:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">devtools</span><span class="op">)</span>
-<span class="fu">install_github</span><span class="op">(</span><span class="st">"vegmod/meteoland"</span>, 
+<span class="fu">install_github</span><span class="op">(</span><span class="st">"emf-creaf/meteoland"</span>, 
                build_opts <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"--no-resave-data"</span>, <span class="st">"--no-manual"</span><span class="op">)</span>,
                build_vignettes <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
 <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://emf-creaf.github.io/meteoland/index.html">meteoland</a></span><span class="op">)</span></code></pre></div>
@@ -217,7 +217,7 @@
 <span class="co">#&gt; [13] "N_PrecipitationAmount"     "N_Wind"                   </span>
 <span class="co">#&gt; [15] "St_Precipitation"          "St_TemperatureRange"      </span>
 <span class="co">#&gt; [17] "pop_crit"                  "f_max"                    </span>
-<span class="co">#&gt; [19] "wind_height"</span></code></pre></div>
+<span class="co">#&gt; [19] "wind_height"               "debug"</span></code></pre></div>
 </div>
 <div id="interpolation-basics-and-parameters" class="section level2">
 <h2 class="hasAnchor">
@@ -228,7 +228,7 @@ W(r) = e^{-\alpha \cdot (r/R_p)^2} - e^{-\alpha}
 <p>Here <span class="math inline">\(r\)</span> is the radial distance from <span class="math inline">\(p\)</span>, <span class="math inline">\(R_p\)</span> is the truncation distance and <span class="math inline">\(\alpha\)</span> is the <strong>shape</strong> parameter. The spatial convolution of this filter with a set of weather station locations results, for each target point, in a vector of weights associated with observations. The following figure illustrates the Gaussian filter for <span class="math inline">\(R_p = 500\)</span> and either <span class="math inline">\(\alpha = 3.0\)</span> (continuous line) or <span class="math inline">\(\alpha = 6.25\)</span> (dashed line):</p>
 <p><img src="UserGuide_files/figure-html/unnamed-chunk-11-1.png" width="576"></p>
 <p><span class="math inline">\(R_p\)</span> is automatically adjusted so that it has lower values in data-rich regions and is increased in data-poor regions. The method, however, requires the user to specify <span class="math inline">\(N\)</span>, the average number of observations to be included for each target point. <span class="math inline">\(R_p\)</span> is then varied as a smooth function of the local density in such a way that this average is achieved over the spatial domain. It is important that the initial value of <span class="math inline">\(R_p\)</span></p>
-<p>In meteoland estimation of <span class="math inline">\(R_p\)</span> is done once for each target point, variable and day. Interpolation of temperature includes a correction for the effects of elevation. More specifically, a weighted least-squares regression is used to assess the relationship between temperature differences and elevation differences in weather station data and this relationship is applied to elevation differences between weather stations and the target point. Interpolation of relative humidity is done after transforming it to dew-point temperature. No correction for elevation is performed during interpolation, but elevation effects arise when back-transforming dew-point temperature to relative humidity. Interpolation of daily precipitation is complicated by the need to predict both precipitation occurrence and, conditioned on this, precipitation amount. Thornton et al. (1997) defined a binomial predictor of spatial precipitation occurrence as a function of the weighted occurrence at surrounding weather stations. Conditional on precipitation occurrence, the interpolation routine predicts precipitation amount, where weighted least-squares regression is also used to account for elevation effects. Interpolation of wind is performed in three different ways depending on the information available. If only wind speed data is available, the spatial interpolation with Gaussian weights is used on wind scalars as described above. If weather station data includes wind direction, a polar average is cal- culated using Gaussian weights. Finally, if static wind fields are also available the interpolation routine first finds, for each weather station the wind field that best matches the observed vector. Then, the wind vectors extracted from the selected wind fields are averaged as before. Further details of how interpolation is done can be found <a href="https://vegmod.ctfc.cat/software/meteoland/">vegmod website</a>.</p>
+<p>In meteoland estimation of <span class="math inline">\(R_p\)</span> is done once for each target point, variable and day. Interpolation of temperature includes a correction for the effects of elevation. More specifically, a weighted least-squares regression is used to assess the relationship between temperature differences and elevation differences in weather station data and this relationship is applied to elevation differences between weather stations and the target point. Interpolation of relative humidity is done after transforming it to dew-point temperature. No correction for elevation is performed during interpolation, but elevation effects arise when back-transforming dew-point temperature to relative humidity. Interpolation of daily precipitation is complicated by the need to predict both precipitation occurrence and, conditioned on this, precipitation amount. Thornton et al. (1997) defined a binomial predictor of spatial precipitation occurrence as a function of the weighted occurrence at surrounding weather stations. Conditional on precipitation occurrence, the interpolation routine predicts precipitation amount, where weighted least-squares regression is also used to account for elevation effects. Interpolation of wind is performed in three different ways depending on the information available. If only wind speed data is available, the spatial interpolation with Gaussian weights is used on wind scalars as described above. If weather station data includes wind direction, a polar average is cal- culated using Gaussian weights. Finally, if static wind fields are also available the interpolation routine first finds, for each weather station the wind field that best matches the observed vector. Then, the wind vectors extracted from the selected wind fields are averaged as before. Further details of how interpolation is done can be found at <a href="https://emf-creaf.github.io/meteolandbook/">meteoland’s book</a>.</p>
 <p>Interpolation parameters <span class="math inline">\(\alpha\)</span> and <span class="math inline">\(N\)</span> can be different for each variable to be interpolated. The following table lists all the interpolation parameters (see also function <code>defaultInterpolationParameters()</code>)</p>
 <table class="table">
 <colgroup>
@@ -336,6 +336,11 @@ W(r) = e^{-\alpha \cdot (r/R_p)^2} - e^{-\alpha}
 <td><code>wind_height</code></td>
 <td>10</td>
 <td>Wind measurement height (in m)</td>
+</tr>
+<tr class="even">
+<td><code>debug</code></td>
+<td>FALSE</td>
+<td>Boolean flag to indicate extra console output</td>
 </tr>
 </tbody>
 </table>

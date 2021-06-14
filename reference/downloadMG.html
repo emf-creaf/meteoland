@@ -40,7 +40,7 @@
 
 
 <meta property="og:title" content="Download data from MeteoGalicia — MeteoGalicia download" />
-<meta property="og:description" content="Download data from the Galician Meterology Agency (MeteoGalicia)" />
+<meta property="og:description" content="DEPRECATED. Download data from the Galician Meterology Agency (MeteoGalicia)" />
 
 
 
@@ -115,7 +115,7 @@
     </div>
 
     <div class="ref-description">
-    <p>Download data from the Galician Meterology Agency (MeteoGalicia)</p>
+    <p>DEPRECATED. Download data from the Galician Meterology Agency (MeteoGalicia)</p>
     </div>
 
     <pre class="usage"><span class='fu'>downloadMGstationlist</span><span class='op'>(</span><span class='op'>)</span>
@@ -152,12 +152,15 @@
     <p>Function <code>downloadMGstationlist</code> returns a <code>SpatialPointsDataFrame-class</code> object containing the list of MeteoGalicia weather stations currently operative. 
 Function <code>downloadMGhistorical</code> downloads data for the specified MG weather stations (or all) and dates and returns a <code><a href='SpatialPointsMeteorology-class.html'>SpatialPointsMeteorology-class</a></code> object with the downloaded meteorology for each station (point).</p>
 <p>Function <code>downloadMGcurrentday</code> downloads recent weather data (the last 24h) from all currently available stations and returns data frame if <code>daily = FALSE</code> or a <code>SpatialPointsDataFrame-class</code> object with observations aggregated at the daily scale otherwise.</p>
+    <h2 class="hasAnchor" id="note"><a class="anchor" href="#note"></a>Note</h2>
+
+    <p>Recommended package: meteospain (available at GitHub).</p>
     <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
 
     <p>MeteoGalicia (from the Conselleria de Medio Ambiente, Territorio e Vivenda of Xunta de Galicia) should be acknowledged as source of information when using this data.</p>
     <h2 class="hasAnchor" id="author"><a class="anchor" href="#author"></a>Author</h2>
 
-    <p>Miquel De Cáceres Ainsa, CTFC</p>
+    <p>Miquel De Cáceres Ainsa, CREAF</p>
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
     <div class='dont-index'><p><code><a href='SpatialPointsMeteorology-class.html'>SpatialPointsMeteorology-class</a></code></p></div>

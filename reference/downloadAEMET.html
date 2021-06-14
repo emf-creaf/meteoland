@@ -40,7 +40,7 @@
 
 
 <meta property="og:title" content="Download data from AEMET — AEMET download" />
-<meta property="og:description" content="Download data from the Spanish National Meterology Agency (AEMET)" />
+<meta property="og:description" content="DEPRECATED. Download data from the Spanish National Meterology Agency (AEMET)" />
 
 
 
@@ -115,7 +115,7 @@
     </div>
 
     <div class="ref-description">
-    <p>Download data from the Spanish National Meterology Agency (AEMET)</p>
+    <p>DEPRECATED. Download data from the Spanish National Meterology Agency (AEMET)</p>
     </div>
 
     <pre class="usage"><span class='fu'>downloadAEMEThistoricalstationlist</span><span class='op'>(</span><span class='va'>api</span><span class='op'>)</span>
@@ -175,14 +175,15 @@
 <p>Function <code>downloadAEMETcurrentday</code> downloads recent weather (the last 24h) from all currently available stations and returns data frame if <code>daily = FALSE</code> or a <code>SpatialPointsDataFrame-class</code> object with observations aggregated at the daily scale if else.</p>
     <h2 class="hasAnchor" id="note"><a class="anchor" href="#note"></a>Note</h2>
 
-    <p>The list of stations available in <code>downloadAEMETcurrentday</code> (current observations) is different from the list given by <code>downloadAEMEThistoricalstationlist</code> and available in <code>downloadAEMEThistorical</code> (stations with historical climate series).</p>
+    <p>Recommended package: meteospain (available at GitHub).</p>
+<p>The list of stations available in <code>downloadAEMETcurrentday</code> (current observations) is different from the list given by <code>downloadAEMEThistoricalstationlist</code> and available in <code>downloadAEMEThistorical</code> (stations with historical climate series).</p>
     <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
 
     <p>AEMET should be acknowledged as author of information when using this data.</p>
     <h2 class="hasAnchor" id="author"><a class="anchor" href="#author"></a>Author</h2>
 
     <p>Antoine Cabon, CTFC</p>
-<p>Miquel De Cáceres Ainsa, CTFC</p>
+<p>Miquel De Cáceres Ainsa, CREAF</p>
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
     <div class='dont-index'><p><code><a href='SpatialPointsMeteorology-class.html'>SpatialPointsMeteorology-class</a></code></p></div>

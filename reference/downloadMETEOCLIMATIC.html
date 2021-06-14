@@ -40,7 +40,7 @@
 
 
 <meta property="og:title" content="Download data from Meteoclimatic network — Meteoclimatic download" />
-<meta property="og:description" content="Download data from the Spanish Automatic Stations Network (non-professional)" />
+<meta property="og:description" content="DEPRECATED. Download data from the Spanish Automatic Stations Network (non-professional)" />
 
 
 
@@ -115,7 +115,7 @@
     </div>
 
     <div class="ref-description">
-    <p>Download data from the Spanish Automatic Stations Network (non-professional)</p>
+    <p>DEPRECATED. Download data from the Spanish Automatic Stations Network (non-professional)</p>
     </div>
 
     <pre class="usage"><span class='fu'>downloadMETEOCLIMATICstationlist</span><span class='op'>(</span>station_id <span class='op'>=</span> <span class='st'>"ESCAT"</span>, spatial <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>
@@ -143,14 +143,15 @@
 <p>Function <code>downloadMETEOCLIMATICcurrentday</code> downloads recent weather (for the current day) from all currently available stations and returns a <code>SpatialPointsDataFrame-class</code> object with observations.</p>
     <h2 class="hasAnchor" id="note"><a class="anchor" href="#note"></a>Note</h2>
 
-    <p>Only acummulated precipitation, maximum and minimum temperature and relative humidity are returned. The current implementation was inspired by function meteoclimaticR by Marc Lemus Cánovas.</p>
+    <p>Recommended package: meteospain (available at GitHub).</p>
+<p>Only acummulated precipitation, maximum and minimum temperature and relative humidity are returned. The current implementation was inspired by function meteoclimaticR by Marc Lemus Cánovas.</p>
     <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
 
     <p>Meteoclimatic should be acknowledged as author of information when using this data.</p>
     <h2 class="hasAnchor" id="author"><a class="anchor" href="#author"></a>Author</h2>
 
     <p>Víctor Granda, EMF-CREAF</p>
-<p>Miquel De Cáceres Ainsa, CTFC</p>
+<p>Miquel De Cáceres Ainsa, EMF-CREAF</p>
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
     <div class='dont-index'><p><code><a href='SpatialPointsMeteorology-class.html'>SpatialPointsMeteorology-class</a></code></p></div>

@@ -39,10 +39,8 @@ Class \code{"\linkS4class{Spatial}"}, by class "SpatialPixelsDataFrame", distanc
 }
 
 \author{
-Miquel De \enc{Cáceres}{Caceres} Ainsa, Biodiversity and Landscape Ecology Laboratory, Centre Tecnologic Forestal de Catalunya
+Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF
 }
-
-%% ~Make other sections like Warning with \section{Warning }{....} ~
 
 \seealso{
 \code{\link{SpatialPixelsTopography}}, \code{\link{SpatialPixelsDataFrame-class}}

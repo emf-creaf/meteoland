@@ -51,6 +51,6 @@ McMahon, T.A., Peel, M.C., Lowe, L., Srikanthan, R., McVicar, T.R. 2013. Estimat
 Potential evapotranspiration (in mm of water).
 }
 \author{
-Miquel De \enc{Cáceres}{Caceres} Ainsa, Biodiversity and Landscape Ecology Laboratory, Centre Tecnologic Forestal de Catalunya
+Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF
 }
 \seealso{\code{\link{interpolationpoints}}}

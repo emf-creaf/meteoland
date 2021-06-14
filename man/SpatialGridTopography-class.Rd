@@ -33,7 +33,7 @@ Class \code{"\linkS4class{Spatial}"}, by class "SpatialGridDataFrame", distance 
 }
 
 \author{
-Miquel De \enc{Cáceres}{Caceres} Ainsa, CTFC
+Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF
 }
 
 %% ~Make other sections like Warning with \section{Warning }{....} ~

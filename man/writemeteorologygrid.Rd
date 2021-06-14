@@ -41,7 +41,7 @@ writemeteorologygridpixel(file, index, data, verbose = FALSE)
 Functions \code{writemeteorologygrid} and \code{writemeteorologypixels} writes grided meteorological data (i.e. class \code{\link{SpatialGridMeteorology-class}} or class \code{\link{SpatialPixelsMeteorology-class}}, respectively) into a netCDF, with the possibility to overwrite existing data. Function \code{writemeteorologygridpixel} is meant to add/replace data in a netCDF corresponding to a specific pixel identified by its grid index. Function \code{writemeteorologygrid} creates an empty netCDF with the specified grid dimensions, coordinate reference system and dates.
 }
 \author{
-Miquel De \enc{Cáceres}{Caceres} Ainsa, CTFC
+Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF
 }
 
 \seealso{

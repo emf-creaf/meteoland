@@ -34,7 +34,7 @@ A list with the following items (default values in brackets):
 De Caceres M, Martin-StPaul N, Turco M, Cabon A, Granda V (2018) Estimating daily meteorological data and downscaling climate models over landscapes. Environmental Modelling and Software 108: 186-196.
 }
 \author{
-Miquel De \enc{Cáceres}{Caceres} Ainsa, CTFC
+Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF
 }
 \seealso{\code{\link{MeteorologyInterpolationData}}, \code{\link{MeteorologyUncorrectedData}}}
 

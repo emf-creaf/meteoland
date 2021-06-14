@@ -34,7 +34,7 @@ Class \code{"\linkS4class{Spatial}"}, by class "SpatialPoints", distance 2.
 	 }
 }
 \author{
-Miquel De \enc{Cáceres}{Caceres} Ainsa, CTFC
+Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF
 }
 
 \seealso{

@@ -35,7 +35,7 @@ An object of class \code{\link{Date}} to define the period to be plotted. If \co
 Daily precipitation is plotted using bars (i.e. \code{type = "h"} when calling \code{\link{plot}}). Otherwise the function draws lines (i.e. \code{type = "l"} when calling \code{\link{plot}}). If \code{object} is of class \code{\link{SpatialPointsDataFrame-class}} then the function reads the meteorological data to be plotted from the disk.
 }
 \author{
-Miquel De \enc{Cáceres}{Caceres} Ainsa, Biodiversity and Landscape Ecology Laboratory, Centre Tecnologic Forestal de Catalunya
+Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF
 }
 \seealso{
 \code{\link{summarypoints}}

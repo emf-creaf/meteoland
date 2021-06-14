@@ -38,6 +38,6 @@ Function \code{extractpoints} is deprecated, because its functionality can be ac
 }
 }
 \author{
-Miquel De \enc{Cáceres}{Caceres} Ainsa, CTFC
+Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF
 }
 

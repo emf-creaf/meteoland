@@ -23,7 +23,7 @@ An object of class as the input \code{SpatialPointsMeteorology-class} with weath
 Assumes that all points/pixels represent the same area.
 }
 \author{
-Miquel De \enc{Cáceres}{Caceres} Ainsa,  CTFC
+Miquel De \enc{Cáceres}{Caceres} Ainsa,  CREAF
 }
 \seealso{\code{\link{weathergeneration}}}
 \examples{

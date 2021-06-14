@@ -43,7 +43,7 @@ readmeteorologygridpoints(files, format = "netCDF", varmapping = NULL,
 }
 
 \author{
-Miquel De \enc{Cáceres}{Caceres} Ainsa, CTFC
+Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF
 }
 
 \seealso{

@@ -26,7 +26,7 @@ See correction details in vignettes or in \code{\link{correctionpoints}}.
 An object of class \code{\linkS4class{MeteorologyUncorrectedData}.}
 }
 \author{
-Miquel De \enc{Cáceres}{Caceres} Ainsa, Biodiversity and Landscape Ecology Laboratory, Centre Tecnologic Forestal de Catalunya
+Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF
 }
 
 \seealso{

@@ -23,7 +23,7 @@ precipitation_rainfallErosivity(x, long, scale = "month", average = TRUE)
 Function \code{precipitation_concentration()}  returns a value between 0 (equal distribution of rainfall) and 1 (one day concentrates all rainfall). Function \code{precipitation_rainfallErosivity()} returns a vector of twelve values (one for each month) (in MJ·mm·ha-1·h-1·month-1) or one value (in in MJ·mm·ha-1·h-1·yr-1) depending on the scale.
 }
 \author{
-Miquel De \enc{Cáceres}{Caceres} Ainsa, CTFC.
+Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF.
 }
 \details{
 MedREM model is: Rm = b0·P·sqrt(d)·(alpha + b1*longitude), where P is cumulated precipitation and d is maximum daily precipitation. Parameters used for the MedREM model are b0 = 0.117, b1 = -0.015, alpha = 2. Note that there is a mistake in Guerra et al. (2016) regarding parameters b1 and a.

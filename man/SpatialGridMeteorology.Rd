@@ -20,7 +20,7 @@ SpatialGridMeteorology(grid, proj4string=CRS(as.character(NA)), data, dates)
 }
 \value{An object of class \code{\link{SpatialGridMeteorology-class}}}
 \author{
-Miquel De \enc{Cáceres}{Caceres} Ainsa, Centre Tecnologic Forestal de Catalunya
+Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF
 }
 
 \seealso{

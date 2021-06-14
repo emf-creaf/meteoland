@@ -41,7 +41,7 @@ Humidity in climate model files is given as specific humidity. This is converted
 If \code{export = FALSE}, the function returns an object of class \code{\link{SpatialPointsMeteorology-class}} with the meteorological series for each cell (represented by a spatial point). Otherwise the function returns an object of class \code{\link{SpatialPointsDataFrame-class}} containing the meta data of the files written in the disk.
 }
 \author{
-Miquel De \enc{Cáceres}{Caceres} Ainsa, Centre Tecnologic Forestal de Catalunya
+Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF
 
 Nicolas Martin, INRA-Avignon
 }

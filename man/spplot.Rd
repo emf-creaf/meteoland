@@ -23,7 +23,7 @@ Function \code{spplot} for \code{\link{SpatialGridTopography-class}} and \code{\
   \item{date}{A string or an integer for the date to be plotted.}
 }
 \author{
-Miquel De \enc{Cáceres}{Caceres} Ainsa, Biodiversity and Landscape Ecology Laboratory, Centre Tecnologic Forestal de Catalunya
+Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF
 }
 \seealso{
 \code{\link{meteoplot}}

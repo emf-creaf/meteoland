@@ -45,7 +45,7 @@ Class \code{"\linkS4class{Spatial}"}, by class "MeteorologyProcedureData", dista
 }
 
 \author{
-Miquel De \enc{Cáceres}{Caceres} Ainsa, Centre Tecnologic Forestal de Catalunya
+Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF
 }
 \seealso{
 \code{\link{MeteorologyInterpolationData}}, \code{\link{MeteorologyProcedureData-class}}, \code{\link{subsample}}

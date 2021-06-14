@@ -7,7 +7,7 @@
 Download data from Meteoclimatic network
 }
 \description{
-Download data from the Spanish Automatic Stations Network (non-professional)
+DEPRECATED. Download data from the Spanish Automatic Stations Network (non-professional)
 }
 \usage{
 downloadMETEOCLIMATICstationlist(station_id = "ESCAT", spatial = TRUE)
@@ -26,6 +26,8 @@ Function \code{downloadMETEOCLIMATICstationlist} returns a \code{\link{SpatialPo
 Function \code{downloadMETEOCLIMATICcurrentday} downloads recent weather (for the current day) from all currently available stations and returns a \code{\link{SpatialPointsDataFrame-class}} object with observations. 
 }
 \note{
+Recommended package: meteospain (available at GitHub).
+
 Only acummulated precipitation, maximum and minimum temperature and relative humidity are returned. The current implementation was inspired by function meteoclimaticR by Marc Lemus \enc{Cánovas}{Canovas}.
 }
 \references{
@@ -34,7 +36,7 @@ Meteoclimatic should be acknowledged as author of information when using this da
 \author{
 Víctor Granda, EMF-CREAF
 
-Miquel De \enc{Cáceres}{Caceres} Ainsa, CTFC
+Miquel De \enc{Cáceres}{Caceres} Ainsa, EMF-CREAF
 }
 
 \seealso{

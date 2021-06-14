@@ -14,13 +14,15 @@ Low-level functions to interpolate meteorology (one day) on a set of points.
 }
 \usage{
 interpolation_dewtemperature(Xp, Yp, Zp, X, Y, Z, T, 
-                             iniRp = 140000, alpha = 3.0, N = 30, iterations = 3)
+                             iniRp = 140000, alpha = 3.0, N = 30, 
+                             iterations = 3, debug = FALSE)
 interpolation_temperature(Xp, Yp, Zp, X, Y, Z, T, 
-                          iniRp = 140000, alpha = 3.0, N = 30, iterations = 3)
+                          iniRp = 140000, alpha = 3.0, N = 30, 
+                          iterations = 3, debug = FALSE)
 interpolation_precipitation(Xp, Yp, Zp, X, Y, Z, P, Psmooth,
                             iniRp = 140000, alpha_event = 6.25, alpha_amount = 6.25,
                             N_event = 20, N_amount = 20, iterations = 3, popcrit = 0.5, 
-                            fmax = 0.95)
+                            fmax = 0.95, debug = FALSE)
 interpolation_wind(Xp, Yp, WS, WD, X, Y,
                    iniRp = 140000, alpha = 2.0, N = 1, iterations = 3,
                    directionsAvailable = TRUE)
@@ -35,6 +37,7 @@ interpolation_wind(Xp, Yp, WS, WD, X, Y,
   \item{WS, WD}{Wind speed (in m/s) and wind direction (in degrees from north clock-wise) at the reference locations.}
   \item{iniRp}{Initial truncation radius.}
   \item{iterations}{Number of station density iterations.}
+  \item{debug}{Boolean flag to show extra console output.}
   \item{alpha, alpha_amount, alpha_event}{Gaussian shape parameter.}
   \item{N, N_event, N_amount}{Average number of stations with non-zero weights.}
   \item{popcrit}{Critical precipitation occurrence parameter.}
@@ -51,7 +54,7 @@ Thornton, P.E., Running, S.W., White, M. A., 1997. Generating surfaces of daily 
 De Caceres M, Martin-StPaul N, Turco M, Cabon A, Granda V (2018) Estimating daily meteorological data and downscaling climate models over landscapes. Environmental Modelling and Software 108: 186-196.
 }
 \author{
-Miquel De \enc{Cáceres}{Caceres} Ainsa, Centre Tecnologic Forestal de Catalunya
+Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF
 }
 \seealso{\code{\link{defaultInterpolationParams}}}
 \examples{

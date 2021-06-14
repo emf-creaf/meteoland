@@ -65,7 +65,7 @@ De Caceres M, Martin-StPaul N, Turco M, Cabon A, Granda V (2018) Estimating dail
 \enc{Déqué}{Deque} M (2007) Frequency of precipitation and temperature extremes over France in an anthropogenic scenario: Model results and statistical correction according to observed values. Glob Planet Change 57:16–26. doi: 10.1016/j.gloplacha.2006.11.030
 }
 \author{
-Miquel De \enc{Cáceres}{Caceres} Ainsa, CTFC
+Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF
 
 Nicolas Martin, INRA-Avignon
 }

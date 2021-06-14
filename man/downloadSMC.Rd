@@ -9,7 +9,7 @@
 Download data from SMC
 }
 \description{
-Download data from the Catalan automatic weather station network (XEMA from Servei \enc{Meteorològic}{Meteorologic} de Catalunya) 
+DEPRECATED. Download data from the Catalan automatic weather station network (XEMA from Servei \enc{Meteorològic}{Meteorologic} de Catalunya) 
 }
 \usage{
 downloadSMCvarmetadata(api, type = "current")
@@ -47,13 +47,16 @@ Function \code{downloadSMCcurrentday} downloads recent weather (the last 24h or 
 
 Function \code{downloadSMChistorical} downloads historical daily weather corresponding to a given time period from a set (or all currently available) stations. Results are returned (or exported) after formatting data as a \code{\link{SpatialPointsMeteorology-class}} if \code{variable_code = NULL}, or as a data frame otherwise.
 }
+\note{
+Recommended package: meteospain (available at GitHub).
+}
 \references{
 Servei \enc{Meteorològic}{Meteorologic} de Catalunya (SMC) should be acknowledged as author of information when accessing weather data with these functions.
 }
 \author{
 Antoine Cabon, CTFC
 
-Miquel De \enc{Cáceres}{Caceres} Ainsa, CTFC
+Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF
 }
 
 \seealso{

@@ -27,7 +27,7 @@ SpatialPixelsTopography(points, elevation, slope, aspect,
 Function \code{SpatialPixelsTopography} returns an object '\code{\link{SpatialPixelsTopography-class}}'.
 }
 \author{
-Miquel De \enc{Cáceres}{Caceres} Ainsa, Biodiversity and Landscape Ecology Laboratory, Centre Tecnologic Forestal de Catalunya
+Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF
 }
 \seealso{
 \code{\link{SpatialPixelsTopography-class}}

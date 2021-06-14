@@ -25,7 +25,7 @@ If either \code{slope = NULL} or \code{aspect = NULL} then when estimating weath
 Function \code{SpatialPointsTopography} returns an object '\code{\link{SpatialPointsTopography-class}}'.
 }
 \author{
-Miquel De \enc{Cáceres}{Caceres} Ainsa, Biodiversity and Landscape Ecology Laboratory, Centre Tecnologic Forestal de Catalunya
+Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF
 }
 \seealso{
 \code{\link{SpatialPointsTopography-class}}

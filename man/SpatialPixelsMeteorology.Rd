@@ -26,7 +26,7 @@ SpatialPixelsMeteorology(points, data, dates,
 }
 \value{An object of class \code{\link{SpatialPixelsMeteorology-class}}}
 \author{
-Miquel De \enc{Cáceres}{Caceres} Ainsa, Centre Tecnologic Forestal de Catalunya
+Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF
 }
 
 \seealso{

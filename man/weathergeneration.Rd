@@ -34,7 +34,7 @@ Apipattanavis, S., G. Podesta, B. Rajagopalan, and R. W. Katz (2007), A semipara
 Steinschneider S., and Brown C. (2013) A semiparametric multivariate, multisite weather generator with low-frequency variability for use in climate risk assessments. Water Resour. Res., 49, 7205-7220, doi:10.1002/wrcr.20528.
 }
 \author{
-Miquel De \enc{Cáceres}{Caceres} Ainsa,  CTFC
+Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF
 }
 \seealso{\code{\link{defaultGenerationParams}}}
 

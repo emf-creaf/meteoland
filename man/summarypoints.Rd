@@ -54,7 +54,7 @@ If \code{var="ALL"} then function \code{summarypoints} produces a summary of all
 }
 }
 \author{
-Miquel De \enc{Cáceres}{Caceres} Ainsa, CTFC
+Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF
 
 Antoine Cabon, CTFC
 }

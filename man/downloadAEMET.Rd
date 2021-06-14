@@ -8,7 +8,7 @@
 Download data from AEMET
 }
 \description{
-Download data from the Spanish National Meterology Agency (AEMET)
+DEPRECATED. Download data from the Spanish National Meterology Agency (AEMET)
 }
 \usage{
 downloadAEMEThistoricalstationlist(api)
@@ -40,6 +40,8 @@ Function \code{downloadAEMEThistorical} downloads data for the specified AEMET s
 Function \code{downloadAEMETcurrentday} downloads recent weather (the last 24h) from all currently available stations and returns data frame if \code{daily = FALSE} or a \code{\link{SpatialPointsDataFrame-class}} object with observations aggregated at the daily scale if else. 
 }
 \note{
+Recommended package: meteospain (available at GitHub).
+
 The list of stations available in \code{downloadAEMETcurrentday} (current observations) is different from the list given by \code{downloadAEMEThistoricalstationlist} and available in \code{downloadAEMEThistorical} (stations with historical climate series).
 }
 \references{
@@ -48,7 +50,7 @@ AEMET should be acknowledged as author of information when using this data.
 \author{
 Antoine Cabon, CTFC
 
-Miquel De \enc{Cáceres}{Caceres} Ainsa, CTFC
+Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF
 }
 
 \seealso{

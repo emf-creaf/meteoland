@@ -33,7 +33,7 @@ writemeteorologypoints(object, file, format = "netCDF",
 Function \code{writemeteorologypoints} takes an object of \code{\link{SpatialPointsMeteorology-class}} and writes all its content in a single file (i.e. a netCDF). The same function can be used to replace data from an existing file or to add new points to the netCDF. This is done by using \code{add=TRUE}, and profits from the fact that some netCDF dimensions (in this case the number of points) can be defined as unlimited. If data is added to an existing netCDF, the coordinate reference system and the dates of \code{object} must be the same as those in the netCDF. 
 }
 \author{
-Miquel De \enc{Cáceres}{Caceres} Ainsa, CTFC
+Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF
 
 Nicolas Martin, INRA-Avignon
 }

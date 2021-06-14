@@ -50,7 +50,7 @@ and grass. Proceedings of the Royal Society of London. Series A.
 Mathematical and Physical Sciences, 193, 120-145.
 }
 \author{
-Miquel De \enc{Cáceres}{Caceres} Ainsa, CTFC
+Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF
 }
 
 \seealso{

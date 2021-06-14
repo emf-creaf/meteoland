@@ -33,7 +33,7 @@ Function \code{readmeteorologypoint} reads data series of a single location from
 Function \code{readmeteorologypoints} is used to read multiple point data from a netCDF. In this case, a mapping can be supplied to map variable names in the netCDF to variables used in meteoland. 
 }
 \author{
-Miquel De \enc{Cáceres}{Caceres} Ainsa, CTFC
+Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF
 
 Nicolas Martin, INRA-Avignon
 }

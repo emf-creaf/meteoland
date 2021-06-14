@@ -38,7 +38,7 @@ Class \code{"\linkS4class{Spatial}"}, by class "SpatialPixels", distance 3.
 	 }
 }
 \author{
-Miquel De \enc{Cáceres}{Caceres} Ainsa, CTFC
+Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF
 }
 
 %% ~Make other sections like Warning with \section{Warning }{....} ~

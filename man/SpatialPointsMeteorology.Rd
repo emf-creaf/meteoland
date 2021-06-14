@@ -23,7 +23,7 @@ SpatialPointsMeteorology(points, data, dates, dataByDate = FALSE)
 }
 \value{An object of class \code{\link{SpatialPointsMeteorology-class}}}
 \author{
-Miquel De \enc{Cáceres}{Caceres} Ainsa, Centre Tecnologic Forestal de Catalunya
+Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF
 }
 
 \seealso{

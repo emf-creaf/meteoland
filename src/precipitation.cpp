@@ -3,8 +3,9 @@
 using namespace Rcpp;
 
 double interpolatePrecipitationPoint(double xp, double yp, double zp, NumericVector X, NumericVector Y, NumericVector Z, NumericVector P, NumericVector zDif, NumericVector pRat,
-                                     double iniRp = 140000, double alpha_event = 6.25, double alpha_amount = 6.25, int N_event = 20,int N_amount = 20, int iterations = 3, double popcrit = 0.5, double fmax = 0.95,
-                                     bool debug = true){
+                                     double iniRp = 140000, double alpha_event = 6.25, double alpha_amount = 6.25, int N_event = 20,int N_amount = 20, int iterations = 3,
+                                     double popcrit = 0.5, double fmax = 0.95,
+                                     bool debug = false){
   int nstations = X.size();
   int nDif = pRat.size();
   NumericVector r(nstations);
@@ -85,7 +86,7 @@ double interpolatePrecipitationEventPoint(double xp, double yp, double zp, Numer
 NumericVector interpolatePrecipitationPoints(NumericVector Xp, NumericVector Yp, NumericVector Zp, NumericVector X, NumericVector Y, NumericVector Z, NumericVector P, NumericVector Psmooth,
                                              double iniRp = 140000, double alpha_event = 6.25, double alpha_amount = 6.25,
                                              int N_event = 20, int N_amount = 20,int iterations = 3, double popcrit = 0.5, double fmax = 0.95,
-                                             bool debug = true){
+                                             bool debug = false){
   int npoints = Xp.size();
   int nstations = X.size();
   NumericVector Pp(npoints);

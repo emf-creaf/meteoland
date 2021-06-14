@@ -29,7 +29,7 @@
     .Call(`_meteoland_aspect`, data, nrows, ncols, cellWidth, cellHeight)
 }
 
-interpolation_precipitation <- function(Xp, Yp, Zp, X, Y, Z, P, Psmooth, iniRp = 140000, alpha_event = 6.25, alpha_amount = 6.25, N_event = 20L, N_amount = 20L, iterations = 3L, popcrit = 0.5, fmax = 0.95, debug = TRUE) {
+interpolation_precipitation <- function(Xp, Yp, Zp, X, Y, Z, P, Psmooth, iniRp = 140000, alpha_event = 6.25, alpha_amount = 6.25, N_event = 20L, N_amount = 20L, iterations = 3L, popcrit = 0.5, fmax = 0.95, debug = FALSE) {
     .Call(`_meteoland_interpolatePrecipitationPoints`, Xp, Yp, Zp, X, Y, Z, P, Psmooth, iniRp, alpha_event, alpha_amount, N_event, N_amount, iterations, popcrit, fmax, debug)
 }
 

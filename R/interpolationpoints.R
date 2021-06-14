@@ -7,6 +7,7 @@
     dates = object@dates
   }
   mPar = object@params
+  if(!("debug" %in% names(mPar))) mPar$debug = FALSE
   tmin = .interpolateTemperatureSeriesPoints(Xp= x, Yp =y, Zp = elevation,
                                              X = object@coords[,1],
                                              Y = object@coords[,2],
@@ -15,7 +16,8 @@
                                              iniRp = mPar$initial_Rp,
                                              alpha = mPar$alpha_MinTemperature,
                                              N = mPar$N_MinTemperature,
-                                             iterations = mPar$iterations)
+                                             iterations = mPar$iterations,
+                                             debug = mPar$debug)
   tmax = .interpolateTemperatureSeriesPoints(Xp= x, Yp =y, Zp = elevation,
                                              X = object@coords[,1],
                                              Y = object@coords[,2],
@@ -24,7 +26,8 @@
                                              iniRp = mPar$initial_Rp,
                                              alpha = mPar$alpha_MaxTemperature,
                                              N = mPar$N_MaxTemperature,
-                                             iterations = mPar$iterations)
+                                             iterations = mPar$iterations,
+                                             debug = mPar$debug)
   tmean = 0.606*tmax+0.394*tmin
   prec = .interpolatePrecipitationSeriesPoints(Xp= x, Yp =y, Zp = elevation,
                                                X = object@coords[,1],
@@ -39,7 +42,8 @@
                                                N_amount = mPar$N_PrecipitationAmount,
                                                iterations = mPar$iterations,
                                                popcrit = mPar$pop_crit,
-                                               fmax = mPar$f_max)
+                                               fmax = mPar$f_max,
+                                               debug = mPar$debug)
   DOY = as.numeric(format(dates,"%j"))
   J = radiation_dateStringToJulianDays(as.character(dates))
   if(is.null(object@RelativeHumidity)) { #Estimate VP assuming that dew-point temperature is equal to Tmin
@@ -52,14 +56,15 @@
                                          0.394*object@MinTemperature[,dayIndices, drop=FALSE],
                                        object@RelativeHumidity[,dayIndices, drop=FALSE])
     tdew = .interpolateTdewSeriesPoints(Xp= x, Yp =y, Zp = elevation,
-                                               X = object@coords[,1],
-                                               Y = object@coords[,2],
-                                               Z = object@elevation,
-                                               T = TdewM,
-                                               iniRp = mPar$initial_Rp,
-                                               alpha = mPar$alpha_DewTemperature,
-                                               N = mPar$N_DewTemperature,
-                                               iterations = mPar$iterations)
+                                        X = object@coords[,1],
+                                        Y = object@coords[,2],
+                                        Z = object@elevation,
+                                        T = TdewM,
+                                        iniRp = mPar$initial_Rp,
+                                        alpha = mPar$alpha_DewTemperature,
+                                        N = mPar$N_DewTemperature,
+                                        iterations = mPar$iterations,
+                                        debug = mPar$debug)
     rhmean = .relativeHumidityFromDewpointTemp(tmean, tdew)
     VP = .temp2SVP(tdew) #kPa
     rhmax = pmin(100,.relativeHumidityFromDewpointTemp(tmin,tdew))
@@ -75,7 +80,8 @@
                                                       iniRp = mPar$initial_Rp,
                                                       alpha = mPar$alpha_MinTemperature,
                                                       N = mPar$N_MinTemperature,
-                                                      iterations = mPar$iterations)
+                                                      iterations = mPar$iterations,
+                                                      debug = mPar$debug)
   latrad = latitude * (pi/180)
   slorad = slope * (pi/180)
   asprad = aspect* (pi/180)

@@ -2,6 +2,9 @@
  NEWS for R Package "meteoland"
 -------------------------------
 
+# Version 1.0.0
+- 'debug' option in interpolation params to force additional output
+
 # Version 0.9.9
 - New functions 'downloadMETEOCLIMATICcurrentday' and 'downloadMETEOCLIMATICstationlist' by MalditoBarbudo, inspired by lemuscanovas
 - Bug correction in 'downloadAEMEThistorical'

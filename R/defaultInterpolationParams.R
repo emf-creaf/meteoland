@@ -19,6 +19,7 @@ defaultInterpolationParams<-function() {
     St_TemperatureRange = 15, #Integer with the number of days for smoothing of temperature range
     pop_crit = 0.50, #Critical value for probability of precipitation
     f_max = 0.60, #Parameter for corrections of precipitation with elevation (f_max<1)
-    wind_height = 10 #Wind height (in m)
+    wind_height = 10, #Wind height (in m)
+    debug = FALSE
     ))
 }

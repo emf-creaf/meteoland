@@ -3,7 +3,8 @@
 using namespace Rcpp;
 
 double interpolatePrecipitationPoint(double xp, double yp, double zp, NumericVector X, NumericVector Y, NumericVector Z, NumericVector P, NumericVector zDif, NumericVector pRat,
-                                     double iniRp = 140000, double alpha_event = 6.25, double alpha_amount = 6.25, int N_event = 20,int N_amount = 20, int iterations = 3, double popcrit = 0.5, double fmax = 0.95){
+                                     double iniRp = 140000, double alpha_event = 6.25, double alpha_amount = 6.25, int N_event = 20,int N_amount = 20, int iterations = 3, double popcrit = 0.5, double fmax = 0.95,
+                                     bool debug = true){
   int nstations = X.size();
   int nDif = pRat.size();
   NumericVector r(nstations);
@@ -83,7 +84,8 @@ double interpolatePrecipitationEventPoint(double xp, double yp, double zp, Numer
 // [[Rcpp::export("interpolation_precipitation")]]
 NumericVector interpolatePrecipitationPoints(NumericVector Xp, NumericVector Yp, NumericVector Zp, NumericVector X, NumericVector Y, NumericVector Z, NumericVector P, NumericVector Psmooth,
                                              double iniRp = 140000, double alpha_event = 6.25, double alpha_amount = 6.25,
-                                             int N_event = 20, int N_amount = 20,int iterations = 3, double popcrit = 0.5, double fmax = 0.95){
+                                             int N_event = 20, int N_amount = 20,int iterations = 3, double popcrit = 0.5, double fmax = 0.95,
+                                             bool debug = true){
   int npoints = Xp.size();
   int nstations = X.size();
   NumericVector Pp(npoints);
@@ -99,7 +101,8 @@ NumericVector interpolatePrecipitationPoints(NumericVector Xp, NumericVector Yp,
   }
   for(int i=0;i<npoints;i++) {
     Pp[i] = interpolatePrecipitationPoint(Xp[i], Yp[i], Zp[i], X,Y,Z,P, zDif, pRat,
-                                          iniRp, alpha_event, alpha_amount, N_event, N_amount, iterations, popcrit, fmax);
+                                          iniRp, alpha_event, alpha_amount, N_event, N_amount, iterations, popcrit, fmax,
+                                          debug);
   }
   return(Pp);
 }
@@ -119,7 +122,8 @@ NumericVector interpolatePrecipitationEventPoints(NumericVector Xp, NumericVecto
 // [[Rcpp::export(".interpolatePrecipitationSeriesPoints")]]
 NumericMatrix interpolatePrecipitationSeriesPoints(NumericVector Xp, NumericVector Yp, NumericVector Zp, NumericVector X, NumericVector Y, NumericVector Z, NumericMatrix P, NumericMatrix Psmooth,
                                                    double iniRp = 140000, double alpha_event = 6.25, double alpha_amount = 6.25, int N_event = 20, int N_amount = 20,
-                                                   int iterations = 3, double popcrit = 0.5, double fmax = 0.95){
+                                                   int iterations = 3, double popcrit = 0.5, double fmax = 0.95,
+                                                   bool debug = false){
   int npoints = Xp.size();
   int nstations = X.size();
   int nDays = P.ncol();
@@ -128,10 +132,10 @@ NumericMatrix interpolatePrecipitationSeriesPoints(NumericVector Xp, NumericVect
   for(int d = 0;d<nDays;d++) {
     int nmis = 0;
     for(int i=0;i<nstations;i++) {
-      missing[i] = NumericVector::is_na(P(i,d));
+      missing[i] = (NumericVector::is_na(P(i,d)) | NumericVector::is_na(X[i])| NumericVector::is_na(Y[i])| NumericVector::is_na(Z[i]));
       if(missing[i]) nmis++;
     }
-    // Rcout<<"Day: "<<d<<" non miss "<< nstations-nmis<<"\n";
+    if(debug) Rcout << "Day "<< d << " nexcluded = " << nmis;
     NumericVector Pday(nstations-nmis);
     NumericVector Psmoothday(nstations-nmis);
     NumericVector Xday(nstations-nmis);
@@ -149,7 +153,7 @@ NumericMatrix interpolatePrecipitationSeriesPoints(NumericVector Xp, NumericVect
       }
     }
     NumericVector Ppday = interpolatePrecipitationPoints(Xp, Yp,Zp, Xday, Yday, Zday, Pday,Psmoothday, iniRp, alpha_event, alpha_amount,
-                                                         N_event, N_amount, iterations, popcrit, fmax);
+                                                         N_event, N_amount, iterations, popcrit, fmax, debug);
     for(int p=0;p<npoints;p++) {
       Pp(p,d) = Ppday[p];
     }

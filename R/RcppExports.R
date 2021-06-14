@@ -29,12 +29,12 @@
     .Call(`_meteoland_aspect`, data, nrows, ncols, cellWidth, cellHeight)
 }
 
-interpolation_precipitation <- function(Xp, Yp, Zp, X, Y, Z, P, Psmooth, iniRp = 140000, alpha_event = 6.25, alpha_amount = 6.25, N_event = 20L, N_amount = 20L, iterations = 3L, popcrit = 0.5, fmax = 0.95) {
-    .Call(`_meteoland_interpolatePrecipitationPoints`, Xp, Yp, Zp, X, Y, Z, P, Psmooth, iniRp, alpha_event, alpha_amount, N_event, N_amount, iterations, popcrit, fmax)
+interpolation_precipitation <- function(Xp, Yp, Zp, X, Y, Z, P, Psmooth, iniRp = 140000, alpha_event = 6.25, alpha_amount = 6.25, N_event = 20L, N_amount = 20L, iterations = 3L, popcrit = 0.5, fmax = 0.95, debug = TRUE) {
+    .Call(`_meteoland_interpolatePrecipitationPoints`, Xp, Yp, Zp, X, Y, Z, P, Psmooth, iniRp, alpha_event, alpha_amount, N_event, N_amount, iterations, popcrit, fmax, debug)
 }
 
-.interpolatePrecipitationSeriesPoints <- function(Xp, Yp, Zp, X, Y, Z, P, Psmooth, iniRp = 140000, alpha_event = 6.25, alpha_amount = 6.25, N_event = 20L, N_amount = 20L, iterations = 3L, popcrit = 0.5, fmax = 0.95) {
-    .Call(`_meteoland_interpolatePrecipitationSeriesPoints`, Xp, Yp, Zp, X, Y, Z, P, Psmooth, iniRp, alpha_event, alpha_amount, N_event, N_amount, iterations, popcrit, fmax)
+.interpolatePrecipitationSeriesPoints <- function(Xp, Yp, Zp, X, Y, Z, P, Psmooth, iniRp = 140000, alpha_event = 6.25, alpha_amount = 6.25, N_event = 20L, N_amount = 20L, iterations = 3L, popcrit = 0.5, fmax = 0.95, debug = FALSE) {
+    .Call(`_meteoland_interpolatePrecipitationSeriesPoints`, Xp, Yp, Zp, X, Y, Z, P, Psmooth, iniRp, alpha_event, alpha_amount, N_event, N_amount, iterations, popcrit, fmax, debug)
 }
 
 .interpolatePrecipitationEventSeriesPoints <- function(Xp, Yp, Zp, X, Y, Z, Pevent, iniRp = 140000, alpha = 6.25, N = 20L, iterations = 3L, popcrit = 0.5) {
@@ -145,20 +145,20 @@ radiation_netRadiation <- function(solarConstant, latrad, elevation, slorad, asp
     .Call(`_meteoland_relativeHumidityFromDewpointTemp`, T, TD)
 }
 
-interpolation_dewtemperature <- function(Xp, Yp, Zp, X, Y, Z, T, iniRp = 140000, alpha = 3.0, N = 30L, iterations = 3L) {
-    .Call(`_meteoland_interpolateTdewPoints`, Xp, Yp, Zp, X, Y, Z, T, iniRp, alpha, N, iterations)
+interpolation_dewtemperature <- function(Xp, Yp, Zp, X, Y, Z, T, iniRp = 140000, alpha = 3.0, N = 30L, iterations = 3L, debug = FALSE) {
+    .Call(`_meteoland_interpolateTdewPoints`, Xp, Yp, Zp, X, Y, Z, T, iniRp, alpha, N, iterations, debug)
 }
 
-.interpolateTdewSeriesPoints <- function(Xp, Yp, Zp, X, Y, Z, T, iniRp = 140000, alpha = 3.0, N = 30L, iterations = 3L) {
-    .Call(`_meteoland_interpolateTdewSeriesPoints`, Xp, Yp, Zp, X, Y, Z, T, iniRp, alpha, N, iterations)
+.interpolateTdewSeriesPoints <- function(Xp, Yp, Zp, X, Y, Z, T, iniRp = 140000, alpha = 3.0, N = 30L, iterations = 3L, debug = FALSE) {
+    .Call(`_meteoland_interpolateTdewSeriesPoints`, Xp, Yp, Zp, X, Y, Z, T, iniRp, alpha, N, iterations, debug)
 }
 
-interpolation_temperature <- function(Xp, Yp, Zp, X, Y, Z, T, iniRp = 140000, alpha = 3.0, N = 30L, iterations = 3L) {
-    .Call(`_meteoland_interpolateTemperaturePoints`, Xp, Yp, Zp, X, Y, Z, T, iniRp, alpha, N, iterations)
+interpolation_temperature <- function(Xp, Yp, Zp, X, Y, Z, T, iniRp = 140000, alpha = 3.0, N = 30L, iterations = 3L, debug = FALSE) {
+    .Call(`_meteoland_interpolateTemperaturePoints`, Xp, Yp, Zp, X, Y, Z, T, iniRp, alpha, N, iterations, debug)
 }
 
-.interpolateTemperatureSeriesPoints <- function(Xp, Yp, Zp, X, Y, Z, T, iniRp = 140000, alpha = 3.0, N = 30L, iterations = 3L) {
-    .Call(`_meteoland_interpolateTemperatureSeriesPoints`, Xp, Yp, Zp, X, Y, Z, T, iniRp, alpha, N, iterations)
+.interpolateTemperatureSeriesPoints <- function(Xp, Yp, Zp, X, Y, Z, T, iniRp = 140000, alpha = 3.0, N = 30L, iterations = 3L, debug = FALSE) {
+    .Call(`_meteoland_interpolateTemperatureSeriesPoints`, Xp, Yp, Zp, X, Y, Z, T, iniRp, alpha, N, iterations, debug)
 }
 
 utils_saturationVP <- function(temperature) {

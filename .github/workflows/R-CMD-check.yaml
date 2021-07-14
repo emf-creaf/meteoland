@@ -72,7 +72,7 @@ jobs:
       - name: Install package dependencies other
         if: runner.os != 'macOS-latest'
         run: |
-          remotes::install_deps(dependencies = TRUE, type = "both")
+          remotes::install_deps(dependencies = TRUE)
           remotes::install_cran("rcmdcheck")
         shell: Rscript {0}
         

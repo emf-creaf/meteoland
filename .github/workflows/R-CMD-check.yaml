@@ -61,13 +61,21 @@ jobs:
             eval sudo $cmd
           done < <(Rscript -e 'writeLines(remotes::system_requirements("ubuntu", "20.04"))')
 
-      - name: Install dependencies
+      - name: Install package dependencies macOS-latest
+        if: runner.os == 'macOS-latest'
         run: |
           options(install.packages.check.source = "no")
           remotes::install_deps(dependencies = TRUE, type = "binary")
           remotes::install_cran("rcmdcheck")
         shell: Rscript {0}
-
+          
+      - name: Install package dependencies other
+        if: runner.os != 'macOS-latest'
+        run: |
+          remotes::install_deps(dependencies = TRUE, type = "both")
+          remotes::install_cran("rcmdcheck")
+        shell: Rscript {0}
+        
       - name: Check
         env:
           _R_CHECK_CRAN_INCOMING_REMOTE_: false

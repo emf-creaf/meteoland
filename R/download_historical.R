@@ -331,7 +331,7 @@ downloadSMChistorical <- function(api, dates, station_id=NULL, variable_code=NUL
     }
     names(data_list) <- ID
     rownames(coords) <- ID
-    data_sp <- SpatialPoints(coords = coords, proj4string = CRS("+proj=longlat"))
+    data_sp <- SpatialPoints(coords = coords, proj4string = CRS(SRS_string = "EPSG:4326"))
     
     npoints <- length(data_sp)
     data_spm <- SpatialPointsMeteorology(points = data_sp,
@@ -447,7 +447,7 @@ downloadMGhistorical <- function(date_from, date_to, station_id = NULL, verbose=
     data_vec[[i]] = df_i
   }
   
-  return(SpatialPointsMeteorology(SpatialPoints(cc, CRS("+init=epsg:25829")),
+  return(SpatialPointsMeteorology(SpatialPoints(cc, CRS(SRS_string = "EPSG:25829")),
                                   dates = dates,
                                   data = data_vec))
 }

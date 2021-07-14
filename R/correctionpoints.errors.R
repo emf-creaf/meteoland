@@ -140,7 +140,7 @@ correctionpoints.errors<-function(object, points, topodata = NULL,
     warning("At least one target point is outside the boundary box of 'object'.\n", call. = FALSE, immediate.=TRUE)
   } else if(verbose) cat(paste("All points inside boundary box.\n", sep=""))
   
-  longlat = spTransform(points,CRS("+proj=longlat"))
+  longlat = spTransform(points, CRS(SRS_string = "EPSG:4326"))
   latitude = longlat@coords[,2]
   
   #Project long/lat coordinates of predicted climatic objects into the projection of points

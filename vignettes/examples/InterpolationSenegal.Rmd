@@ -68,7 +68,7 @@ While `SpatialPointsMeteorology` is the class that meteoland uses for point weat
 
 ```{r}
 spt_mid<-reshapeworldmet(hourData, output = "MeteorologyInterpolationData", 
-                         proj4string = CRS("+init=epsg:32628"),
+                         proj4string = CRS(SRS_string ="EPSG:32628"),
                          verbose=FALSE)
 ```
 
@@ -90,7 +90,7 @@ plot(spt_sen, add=TRUE)
 
 In order to estimate slope and aspect it is important that the spatial reference system is in coordinates that have meters as units. We can reproject our raster to 28N UTM using function `projectRaster()` from package **raster**:
 ```{r}
-elev_utm = projectRaster(elev_raster, crs = CRS("+init=epsg:32628"))
+elev_utm = projectRaster(elev_raster, crs = CRS(SRS_string ="EPSG:32628"))
 elev_utm
 ```
 Package meteoland allows deriving slope and aspect from elevation (i.e. DEM) data when builidng objects of class `SpatialGridTopography`. To this aim, we need first to cast our `RasterLayer` object into a `SpatialGridDataFrame` and then call function `SpatialGridTopography()`:

@@ -4,7 +4,7 @@ library(meteoland)
 dates = seq(as.Date("2000-01-01"), as.Date("2003-12-31"), by="day")
 
 #Load SMC data
-load("D:/Datasets/Climate/Sources/SMC/Diaries_MEDACC/SMC_MEDACC.rdata")
+load("/media/miquel/Climate/Climate/Sources/SMC/Diaries_MEDACC/SMC_MEDACC.rdata")
 codes_SMC = stdata$CODI
 coords_SMC = cbind(stdata$X_UTM, stdata$Y_UTM)
 
@@ -13,16 +13,16 @@ tmax_SMC = tmax[as.character(dates),]
 rh_SMC = rh[as.character(dates),]
 p_SMC = p[as.character(dates),]
 sr_SMC = sr[as.character(dates),]
-topo_SMC = read.table("D:/Datasets/Climate/Sources/SMC/Diaries_MEDACC/SMC_topo30m.txt",sep="\t",header=TRUE, row.names=1)
+topo_SMC = read.table("/media/miquel/Climate/Climate/Sources/SMC/Diaries_MEDACC/SMC_topo30m.txt",sep="\t",header=TRUE, row.names=1)
 ws_SMC = tmax_SMC
 ws_SMC[] = NA
 wd_SMC = tmax_SMC
 wd_SMC[] = NA
 
 #Load AEMET data
-load("D:/Datasets/Climate/Sources/AEMET/AEMET_processed/rdata/AEMET_MEDACC.rdata")
+load("/media/miquel/Climate/Climate/Sources/AEMET/AEMET_processed/rdata/AEMET_MEDACC.rdata")
 row.names(stdata) = stdata$INDICATIVO
-topo_AEMET = read.table("D:/Datasets/Climate/Sources/AEMET/AEMET_processed/txt/AEMET_topo30m.txt",sep="\t",header=TRUE, row.names=1)
+topo_AEMET = read.table("/media/miquel/Climate/Climate/Sources/AEMET/AEMET_processed/txt/AEMET_topo30m.txt",sep="\t",header=TRUE, row.names=1)
 stdata = stdata[row.names(topo_AEMET),]
 coords_AEMET = cbind(stdata$UTM31_X, stdata$UTM31_Y)
 

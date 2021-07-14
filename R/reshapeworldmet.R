@@ -99,7 +99,7 @@ reshapeworldmet<-function(hourly_data, output="SpatialPointsMeteorology",
   }
   
   sp <- SpatialPoints(coords = coords,
-                      proj4string = CRS("+proj=longlat"))
+                      proj4string = CRS(SRS_string = "EPSG:4326"))
   if(!is.null(proj4string)) {
     if(inherits(proj4string,"character")) proj4string = CRS(proj4string)
     sp = spTransform(sp, proj4string)

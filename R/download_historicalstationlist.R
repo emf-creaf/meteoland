@@ -64,7 +64,7 @@ downloadAEMEThistoricalstationlist <- function(api){
   
   # create sp object
   data_sp <- SpatialPointsDataFrame(data = data_df[,c("province", "elevation", "ID", "name", "zip")], 
-                                    coords = data_df[,c("long", "lat")], proj4string = CRS("+proj=longlat"))
+                                    coords = data_df[,c("long", "lat")], proj4string = CRS(SRS_string = "EPSG:4326"))
   row.names(data_sp) <- data_sp@data$ID
   return(data_sp)
 }
@@ -84,7 +84,7 @@ downloadSMCstationlist <- function(api, date = NULL){
   
   # create sp object
   data_sp <- SpatialPointsDataFrame(data = data_df[,c("ID", "name", "municipality", "zip", "county", "province", "elevation")], 
-                                    coords = data_df[,c("long", "lat")], proj4string = CRS("+proj=longlat"))
+                                    coords = data_df[,c("long", "lat")], proj4string = CRS(SRS_string = "EPSG:4326"))
   row.names(data_sp) <- data_sp@data$ID
   return(data_sp)
 }
@@ -143,7 +143,7 @@ downloadMETEOCLIMATICstationlist <- function(station_id = 'ESCAT', spatial = TRU
   # sp object ---------------------------------------------------------------------------------------------
   if (isTRUE(spatial)) {
     sp::coordinates(meteoclimatic_stations) <- ~long+lat
-    sp::proj4string(meteoclimatic_stations) <- sp::CRS("+proj=longlat")
+    sp::proj4string(meteoclimatic_stations) <- sp::CRS(SRS_string = "EPSG:4326")
   }
   
   return(meteoclimatic_stations)

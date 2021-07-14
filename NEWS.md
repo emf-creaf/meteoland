@@ -5,6 +5,7 @@
 # Version 1.0.0
 - 'debug' option in interpolation params to force additional output
 - Download functions DEPRECATED. User is advised to use package 'meteospain'
+- CRS specification changed to SRS_string
 
 # Version 0.9.9
 - New functions 'downloadMETEOCLIMATICcurrentday' and 'downloadMETEOCLIMATICstationlist' by MalditoBarbudo, inspired by lemuscanovas

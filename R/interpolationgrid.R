@@ -162,7 +162,7 @@ interpolationgrid<-function(object, grid, dates = NULL,
   }
   insidebox = (gbbox[1,1]>=bbox[1,1]) && (gbbox[1,2]<=bbox[1,2]) && (gbbox[2,1]>=bbox[2,1]) && (gbbox[2,2]<=bbox[2,2])
   if(!insidebox) warning("Boundary box of target grid is not within boundary box of interpolation data object.")
-  longlat = spTransform(as(grid,"SpatialPoints"),CRS("+proj=longlat"))
+  longlat = spTransform(as(grid,"SpatialPoints"),CRS(SRS_string = "EPSG:4326"))
   latitude = longlat@coords[,2]
   ndates = length(dates)
   #Is export?

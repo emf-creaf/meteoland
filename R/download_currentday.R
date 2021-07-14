@@ -93,7 +93,7 @@ downloadAEMETcurrentday <- function(api, daily = TRUE, verbose=TRUE){
     
     data_sp <- SpatialPointsDataFrame(coords = data_df[,c("long", "lat")],
                                       data = data_df[,which(!colnames(data_df) %in% c("long", "lat", "name", "ID"))],
-                                      proj4string = CRS("+proj=longlat"))
+                                      proj4string = CRS(SRS_string = "EPSG:4326"))
     row.names(data_sp) <- data_df$ID
     return(data_sp)
   }else{
@@ -214,7 +214,7 @@ downloadSMCcurrentday <- function(api, daily_meteoland=TRUE, variable_code=NULL,
     
     data_sp <- SpatialPointsDataFrame(coords = data_df[,c("long", "lat")],
                                       data = data_df[,which(!colnames(data_df) %in% c("long", "lat", "name", "ID"))],
-                                      proj4string = CRS("+proj=longlat"))
+                                      proj4string = CRS(SRS_string = "EPSG:4326"))
     row.names(data_sp) <- data_df$ID
     return(data_sp)
   }else{
@@ -336,7 +336,7 @@ downloadMETEOCLIMATICcurrentday <- function(station_id = "ESCAT") {
   all_data$station_id <- NULL
   all_data$name <- NULL
   sp::coordinates(all_data) <- ~long+lat
-  sp::proj4string(all_data) <- sp::CRS("+proj=longlat")
+  sp::proj4string(all_data) <- sp::CRS(SRS_string = "EPSG:4326")
   
   return(all_data)
 }

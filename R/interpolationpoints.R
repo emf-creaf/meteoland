@@ -171,7 +171,7 @@ interpolationpoints<-function(object, points, dates = NULL,
   elevation = points@data$elevation
   slope = points@data$slope
   aspect = points@data$aspect
-  longlat = spTransform(points,CRS("+proj=longlat"))
+  longlat = spTransform(points,CRS(SRS_string = "EPSG:4326"))
   latitude = longlat@coords[,2]
   bbox = object@bbox
   

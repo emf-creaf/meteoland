@@ -109,7 +109,7 @@ extractNetCDF<-function(ncdf_files, bbox = NULL, offset = 0, cells = NULL, expor
       }
     }
   }
-  points = SpatialPoints(cc, proj4string = CRS("+proj=longlat +datum=WGS84"))
+  points = SpatialPoints(cc, proj4string = CRS(SRS_string = "EPSG:4326"))
   spdf = SpatialPointsDataFrame(points, dfout)
 
   cnt = 1

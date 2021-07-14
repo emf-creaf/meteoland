@@ -98,7 +98,7 @@ Package **meteoland** stores weather series for reference locations and interpol
 First we need to create an object of class `SpatialPoints` (see package **sp**) with the spatial coordinates of our weather stations and the coordinate system (here UTM 31N):
 ```{r}
 sp = SpatialPoints(st_data[,c("X_UTM", "Y_UTM")],
-                   proj4string = CRS("+proj=utm +zone=31 +ellps=WGS84 +datum=WGS84 +units=m +towgs84=0,0,0"))
+                   proj4string = CRS(SRS_string = "EPSG::32631"))
 head(sp)
 ```
 We can now build an object `MeteorologyInterpolationData` using:
@@ -306,7 +306,7 @@ Analogously with the grid, we need to transform this data into an object `Spatia
 ```{r}
 spt = SpatialPointsTopography(as.matrix(points_df[,c("X_UTM", "Y_UTM")]),
                               elevation = points_df$elevation,
-                              proj4string = CRS("+proj=utm +zone=31 +ellps=WGS84 +datum=WGS84 +units=m +towgs84=0,0,0"))
+                              proj4string = CRS(SRS_string = "EPSG::32631"))
 spt
 ```
 
@@ -373,7 +373,7 @@ proj_dates = seq(as.Date("2023-01-01"), as.Date("2023-12-31"), by="day")
 
 Statistical correction needs an object of class `MeteorologyUncorrectedData`, analogous to the `MeteorologyInterpolationData` of the previous section. To build this object we need first to express coordinates in an object `SpatialPoints`:
 ```{r}
-sp = SpatialPoints(pt_coords, CRS("+proj=longlat +datum=WGS84 +ellps=WGS84 +towgs84=0,0,0"))
+sp = SpatialPoints(pt_coords, CRS(SRS_string = "EPSG::4326"))
 sp
 ```
 

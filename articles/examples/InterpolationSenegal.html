@@ -63,13 +63,13 @@
 
       
 
-      </header><script src="InterpolationSenegal_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
+      </header><script src="InterpolationSenegal_files/header-attrs-2.9/header-attrs.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Daily weather interpolation over Senegal</h1>
                         <h4 class="author">Miquel De Cáceres</h4>
             
-            <h4 class="date">2021-06-14</h4>
+            <h4 class="date">2021-07-14</h4>
       
       
       <div class="hidden name"><code>InterpolationSenegal.Rmd</code></div>
@@ -155,7 +155,7 @@
 <p>While <code>SpatialPointsMeteorology</code> is the class that meteoland uses for point weather series, a special object of class <code>MeteorologyInterpolationData</code> needs to be created for interpolation, containing not only station weather but also station elevation and interpolation parameters. This can be obtained using the same function <code><a href="../../reference/reshapeworldmet.html">reshapeworldmet()</a></code>:</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">spt_mid</span><span class="op">&lt;-</span><span class="fu"><a href="../../reference/reshapeworldmet.html">reshapeworldmet</a></span><span class="op">(</span><span class="va">hourData</span>, output <span class="op">=</span> <span class="st">"MeteorologyInterpolationData"</span>, 
-                         proj4string <span class="op">=</span> <span class="fu">CRS</span><span class="op">(</span><span class="st">"+init=epsg:32628"</span><span class="op">)</span>,
+                         proj4string <span class="op">=</span> <span class="fu">CRS</span><span class="op">(</span>SRS_string <span class="op">=</span><span class="st">"EPSG:32628"</span><span class="op">)</span>,
                          verbose<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span></code></pre></div>
 <p>Note that we specified a coordinate reference system (CRS) to UTM28N (via EPSG initialization). This is because interpolation should be preferably conducted on a projected with easting and northing in meters.</p>
 </div>
@@ -181,7 +181,7 @@
 <p><img src="InterpolationSenegal_files/figure-html/unnamed-chunk-11-1.png" width="700"></p>
 <p>In order to estimate slope and aspect it is important that the spatial reference system is in coordinates that have meters as units. We can reproject our raster to 28N UTM using function <code>projectRaster()</code> from package <strong>raster</strong>:</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">elev_utm</span> <span class="op">=</span> <span class="fu">projectRaster</span><span class="op">(</span><span class="va">elev_raster</span>, crs <span class="op">=</span> <span class="fu">CRS</span><span class="op">(</span><span class="st">"+init=epsg:32628"</span><span class="op">)</span><span class="op">)</span>
+<code class="sourceCode R"><span class="va">elev_utm</span> <span class="op">=</span> <span class="fu">projectRaster</span><span class="op">(</span><span class="va">elev_raster</span>, crs <span class="op">=</span> <span class="fu">CRS</span><span class="op">(</span>SRS_string <span class="op">=</span><span class="st">"EPSG:32628"</span><span class="op">)</span><span class="op">)</span>
 <span class="va">elev_utm</span></code></pre></div>
 <pre><code>## class      : RasterLayer 
 ## dimensions : 566, 774, 438084  (nrow, ncol, ncell)

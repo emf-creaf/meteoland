@@ -63,13 +63,13 @@
 
       
 
-      </header><script src="UserGuide_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
+      </header><script src="UserGuide_files/header-attrs-2.9/header-attrs.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>User guide to meteoland</h1>
                         <h4 class="author">Miquel De Cáceres, Victor Granda</h4>
             
-            <h4 class="date">2021-06-14</h4>
+            <h4 class="date">2021-07-14</h4>
       
       
       <div class="hidden name"><code>UserGuide.Rmd</code></div>
@@ -102,8 +102,8 @@
 <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://emf-creaf.github.io/meteoland/index.html">meteoland</a></span><span class="op">)</span></code></pre></div>
 <p>Alternatively, you can install the development version located at GitHub using the <strong>devtools</strong> package:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">devtools</span><span class="op">)</span>
-<span class="fu">install_github</span><span class="op">(</span><span class="st">"emf-creaf/meteoland"</span>, 
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://devtools.r-lib.org/">devtools</a></span><span class="op">)</span>
+<span class="fu"><a href="https://devtools.r-lib.org//reference/remote-reexports.html">install_github</a></span><span class="op">(</span><span class="st">"emf-creaf/meteoland"</span>, 
                build_opts <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"--no-resave-data"</span>, <span class="st">"--no-manual"</span><span class="op">)</span>,
                build_vignettes <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
 <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://emf-creaf.github.io/meteoland/index.html">meteoland</a></span><span class="op">)</span></code></pre></div>
@@ -158,7 +158,7 @@
 <p>First we need to create an object of class <code>SpatialPoints</code> (see package <strong>sp</strong>) with the spatial coordinates of our weather stations and the coordinate system (here UTM 31N):</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">sp</span> <span class="op">=</span> <span class="fu">SpatialPoints</span><span class="op">(</span><span class="va">st_data</span><span class="op">[</span>,<span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"X_UTM"</span>, <span class="st">"Y_UTM"</span><span class="op">)</span><span class="op">]</span>,
-                   proj4string <span class="op">=</span> <span class="fu">CRS</span><span class="op">(</span><span class="st">"+proj=utm +zone=31 +ellps=WGS84 +datum=WGS84 +units=m +towgs84=0,0,0"</span><span class="op">)</span><span class="op">)</span>
+                   proj4string <span class="op">=</span> <span class="fu">CRS</span><span class="op">(</span>SRS_string <span class="op">=</span> <span class="st">"EPSG:32631"</span><span class="op">)</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">sp</span><span class="op">)</span>
 <span class="co">#&gt; class       : SpatialPoints </span>
 <span class="co">#&gt; features    : 6 </span>
@@ -486,7 +486,7 @@ W(r) = e^{-\alpha \cdot (r/R_p)^2} - e^{-\alpha}
 <span class="co">#&gt; s2 4638950 4640950</span>
 <span class="co">#&gt; Is projected: TRUE </span>
 <span class="co">#&gt; proj4string :</span>
-<span class="co">#&gt; [+proj=utm +zone=31 +ellps=WGS84 +units=m +no_defs]</span>
+<span class="co">#&gt; [+proj=utm +zone=31 +datum=WGS84 +units=m +no_defs]</span>
 <span class="co">#&gt; Grid attributes:</span>
 <span class="co">#&gt;    cellcentre.offset cellsize cells.dim</span>
 <span class="co">#&gt; s1            360000      100        20</span>
@@ -511,7 +511,7 @@ W(r) = e^{-\alpha \cdot (r/R_p)^2} - e^{-\alpha}
 <span class="co">#&gt; s2           4639000      100        20</span>
 <span class="co">#&gt; Warning in proj4string(x): CRS object has comment, which is lost in output</span>
 <span class="co">#&gt; Coordinate Reference System (CRS) arguments: +proj=utm +zone=31</span>
-<span class="co">#&gt; +ellps=WGS84 +units=m +no_defs </span>
+<span class="co">#&gt; +datum=WGS84 +units=m +no_defs </span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; Topography summary:</span>
 <span class="co">#&gt;    elevation         slope             aspect        </span>
@@ -537,8 +537,6 @@ W(r) = e^{-\alpha \cdot (r/R_p)^2} - e^{-\alpha}
 <code class="sourceCode R"><span class="va">ml</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/interpolationpoints.html">interpolationgrid</a></span><span class="op">(</span><span class="va">interpolator</span>, <span class="va">sgt</span>, <span class="va">dates</span><span class="op">)</span>
 <span class="co">#&gt; Warning in proj4string(grid): CRS object has comment, which is lost in output</span>
 <span class="co">#&gt; Warning in proj4string(object): CRS object has comment, which is lost in output</span>
-<span class="co">#&gt; Warning in interpolationgrid(interpolator, sgt, dates): CRS projection in 'grid'</span>
-<span class="co">#&gt; adapted to that of 'object'.</span>
 <span class="co">#&gt; Interpolating day '2001-02-03' (1/2) - done.</span>
 <span class="co">#&gt; Interpolating day '2001-06-03' (2/2) - done.</span></code></pre></div>
 <p>This function works processing each date at a time. Since calculations can take some time, the console output shows the progress. The output of the function is an object of class <code>SpatialGridMeteorology</code>:</p>
@@ -552,7 +550,7 @@ W(r) = e^{-\alpha \cdot (r/R_p)^2} - e^{-\alpha}
 <span class="co">#&gt; s2           4639000      100        20</span>
 <span class="co">#&gt; Warning in proj4string(x): CRS object has comment, which is lost in output</span>
 <span class="co">#&gt; Coordinate Reference System (CRS) arguments: +proj=utm +zone=31</span>
-<span class="co">#&gt; +ellps=WGS84 +units=m +no_defs</span></code></pre></div>
+<span class="co">#&gt; +datum=WGS84 +units=m +no_defs</span></code></pre></div>
 <p>We can display interpolated grids in a map using function <code>spplot</code>:</p>
 <div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu">spplot</span><span class="op">(</span><span class="va">ml</span>, <span class="fl">2</span>, <span class="st">"MinTemperature"</span><span class="op">)</span>
@@ -594,7 +592,7 @@ W(r) = e^{-\alpha \cdot (r/R_p)^2} - e^{-\alpha}
 <span class="co">#&gt; s2 4638950 4640950</span>
 <span class="co">#&gt; Is projected: TRUE </span>
 <span class="co">#&gt; proj4string :</span>
-<span class="co">#&gt; [+proj=utm +zone=31 +ellps=WGS84 +units=m +no_defs]</span>
+<span class="co">#&gt; [+proj=utm +zone=31 +datum=WGS84 +units=m +no_defs]</span>
 <span class="co">#&gt; Grid attributes:</span>
 <span class="co">#&gt;    cellcentre.offset cellsize cells.dim</span>
 <span class="co">#&gt; s1            360000      100        20</span>
@@ -641,7 +639,7 @@ W(r) = e^{-\alpha \cdot (r/R_p)^2} - e^{-\alpha}
 <div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">spt</span> <span class="op">=</span> <span class="fu"><a href="../reference/SpatialPointsTopography.html">SpatialPointsTopography</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/matrix.html">as.matrix</a></span><span class="op">(</span><span class="va">points_df</span><span class="op">[</span>,<span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"X_UTM"</span>, <span class="st">"Y_UTM"</span><span class="op">)</span><span class="op">]</span><span class="op">)</span>,
                               elevation <span class="op">=</span> <span class="va">points_df</span><span class="op">$</span><span class="va">elevation</span>,
-                              proj4string <span class="op">=</span> <span class="fu">CRS</span><span class="op">(</span><span class="st">"+proj=utm +zone=31 +ellps=WGS84 +datum=WGS84 +units=m +towgs84=0,0,0"</span><span class="op">)</span><span class="op">)</span>
+                              proj4string <span class="op">=</span> <span class="fu">CRS</span><span class="op">(</span>SRS_string <span class="op">=</span> <span class="st">"EPSG:32631"</span><span class="op">)</span><span class="op">)</span>
 <span class="va">spt</span>
 <span class="co">#&gt; Object of class SpatialPointsTopography</span>
 <span class="co">#&gt;         coordinates elevation slope aspect</span>
@@ -710,7 +708,7 @@ W(r) = e^{-\alpha \cdot (r/R_p)^2} - e^{-\alpha}
 <span class="co">#&gt; variables   : 12</span>
 <span class="co">#&gt; names       : DOY,  MeanTemperature,   MinTemperature,   MaxTemperature,    Precipitation, MeanRelativeHumidity, MinRelativeHumidity, MaxRelativeHumidity,        Radiation, WindSpeed, WindDirection, PET </span>
 <span class="co">#&gt; min values  :   4, 8.78390001164907, 4.11764313108837, 11.7897135433592, 2.09405984093962,     81.0279519651087,    65.2038379982684,                 100, 2.32716150233968,        NA,            NA,   0 </span>
-<span class="co">#&gt; max values  :   4, 9.16098714429644,   4.160745188765, 12.4242756666988, 2.19374909000861,     83.1189540649279,    67.9874264275725,                 100, 2.34506151418882,        NA,            NA,   0</span></code></pre></div>
+<span class="co">#&gt; max values  :   4, 9.16098714429644,   4.160745188765, 12.4242756666988, 2.19374909000861,     83.1189540649279,    67.9874264275725,                 100, 2.34506151418881,        NA,            NA,   0</span></code></pre></div>
 </div>
 </div>
 <div id="statistical-correction-of-daily-weather" class="section level1">
@@ -773,7 +771,7 @@ W(r) = e^{-\alpha \cdot (r/R_p)^2} - e^{-\alpha}
 <a href="#building-the-uncorrected-data-object" class="anchor"></a>Building the uncorrected data object</h2>
 <p>Statistical correction needs an object of class <code>MeteorologyUncorrectedData</code>, analogous to the <code>MeteorologyInterpolationData</code> of the previous section. To build this object we need first to express coordinates in an object <code>SpatialPoints</code>:</p>
 <div class="sourceCode" id="cb35"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">sp</span> <span class="op">=</span> <span class="fu">SpatialPoints</span><span class="op">(</span><span class="va">pt_coords</span>, <span class="fu">CRS</span><span class="op">(</span><span class="st">"+proj=longlat +datum=WGS84 +ellps=WGS84 +towgs84=0,0,0"</span><span class="op">)</span><span class="op">)</span>
+<code class="sourceCode R"><span class="va">sp</span> <span class="op">=</span> <span class="fu">SpatialPoints</span><span class="op">(</span><span class="va">pt_coords</span>, <span class="fu">CRS</span><span class="op">(</span>SRS_string <span class="op">=</span> <span class="st">"EPSG:4326"</span><span class="op">)</span><span class="op">)</span>
 <span class="va">sp</span>
 <span class="co">#&gt; class       : SpatialPoints </span>
 <span class="co">#&gt; features    : 3 </span>

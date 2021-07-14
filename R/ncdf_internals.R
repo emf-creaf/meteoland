@@ -449,10 +449,10 @@
     if(proj4string!="NA") crs = CRS(proj4string)
   }
   if(("lon" %in% names(ncin$dim)) && ("lat" %in% names(ncin$dim))) {
-    crs = CRS("+proj=longlat")
+    crs = CRS(SRS_string = "EPSG:4326")
   }
   if(("rlon" %in% names(ncin$dim)) && ("rlat" %in% names(ncin$dim))) {
-    crs = CRS("+proj=longlat")
+    crs = CRS(SRS_string = "EPSG:4326")
   }
   return(crs)
 }

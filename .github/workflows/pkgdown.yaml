@@ -34,6 +34,7 @@ jobs:
 
       - name: Install dependencies
         run: |
+          options(install.packages.check.source = "no")
           remotes::install_deps(dependencies = TRUE)
           install.packages("pkgdown", type = "binary")
           install.packages("worldmet", type = "binary")

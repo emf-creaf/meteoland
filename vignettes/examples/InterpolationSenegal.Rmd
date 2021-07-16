@@ -2,12 +2,17 @@
 title: "Daily weather interpolation over Senegal"
 author: "Miquel De Cáceres"
 date: "`r Sys.Date()`"
-output: html_document
+output: 
+  rmarkdown::html_document:
+    toc: false
+params:
+  complete_rebuild: FALSE
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 library(meteoland)
+library(raster)
 ```
 
 In this document we show how to obtain and process the topographic and weather data needed by package **meteoland** to conduct weather interpolation over a given country. We'll use Senegal as case study.
@@ -19,15 +24,18 @@ We start by loading package **worldmet**, which provides access to over 30.000 w
 library(worldmet)
 ```
 In order to download weather data, we must first obtain the codes of the weather stations available for our study area. This can be done using function `getMeta()` from worldmet, which we use to know available weather stations for Senegal and neighbouring countries:
-```{r, eval = FALSE}
+```{r, eval = params$complete_rebuild}
 #Country codes for Senegal / Gambia/ Guinea/ Mali/ Mauritania /Guinea bissau
 countries <- c("SG", "GA", "GV", "ML", "MR", "PU")
 sg_st = getMeta(country=countries, plot = FALSE) 
 ```
 
 ```{r, eval = TRUE, echo=FALSE}
-# saveRDS(sg_st, file="sg_st.rds")
-sg_st = readRDS("sg_st.rds")
+if(params$complete_rebuild) {
+  saveRDS(sg_st, file="sg_st.rds")
+} else {
+  sg_st = readRDS("sg_st.rds")
+}
 ```
 Here are the stations downloaded:
 ```{r}
@@ -35,7 +43,7 @@ sg_st
 ```
 
 Let's assume that we want to interpolate weather for year 2020. We can download hourly weather station data for the selected stations and year 2020 using function `importNOAA()`:
-```{r, eval = FALSE, echo = FALSE}
+```{r, eval = params$complete_rebuild, echo = FALSE}
 hourData = NULL
 for(i in 1:length(sg_st$code)) {
   cat(paste0(sg_st$code[i]," "))
@@ -49,8 +57,11 @@ for(i in 1:length(sg_st$code)) {
 cat("\n")
 ```
 ```{r, eval = TRUE, echo=FALSE}
-# saveRDS(hourData, file="hourData.rds")
-hourData = readRDS("hourData.rds")
+if(params$complete_rebuild) {
+  saveRDS(hourData, file="hourData.rds")
+} else {
+  hourData = readRDS("hourData.rds")  
+}
 ```
 
 Some stations had missing data for year 2020 and were excluded from the output. Using function `reshapeworldmet()` from meteoland, we can reshape the hourly data of the remaining stations into daily data in form of an object `SpatialPointsMeteorology`:
@@ -78,7 +89,6 @@ Note that we specified a coordinate reference system (CRS) to UTM28N (via EPSG i
 
 To perform weather interpolation, we need the topography (elevation, slope, aspect) of the target area. We can use function `getData()` from package **raster** to download elevation data for Senegal:
 ```{r, echo=FALSE}
-library(raster)
 elev_raster <- getData('alt', country="SEN")
 elev_raster
 ```

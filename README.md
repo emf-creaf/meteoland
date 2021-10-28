@@ -45,6 +45,16 @@ devtools::install_github("emf-creaf/meteoland",
 Detailed documentation on `meteoland` calculation routines can be found
 at (<https://emf-creaf.github.io/meteolandbook/index.html>).
 
+## Companion packages
+
+During the development of `meteoland` some functions to download surface
+weather station data from Spanish networks were originally developed.
+After `meteoland` version 1.0.1, these functions are deprecated and,
+instead, the user is recommended to use package
+[**meteospain**](https://emf-creaf.github.io/meteospain/), available
+[**on
+CRAN**](https://cran.rstudio.com/web/packages/meteospain/index.html).
+
 ## References
 
 -   De Caceres M, Martin-StPaul N, Turco M, Cabon A, Granda V (2018)

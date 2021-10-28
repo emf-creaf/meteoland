@@ -51,9 +51,9 @@ During the development of `meteoland` some functions to download surface
 weather station data from Spanish networks were originally developed.
 After `meteoland` version 1.0.1, these functions are deprecated and,
 instead, the user is recommended to use package
-[**meteospain**](https://emf-creaf.github.io/meteospain/), available
-[**on
-CRAN**](https://cran.rstudio.com/web/packages/meteospain/index.html).
+[**meteospain**](https://emf-creaf.github.io/meteospain/), which can
+also be found at
+[CRAN](https://cran.rstudio.com/web/packages/meteospain/index.html).
 
 ## References
 

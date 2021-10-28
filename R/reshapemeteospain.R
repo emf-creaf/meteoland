@@ -33,14 +33,15 @@ reshapemeteospain<-function(weather_data, output="SpatialPointsMeteorology",
     if(verbose) setTxtProgressBar(pb, i)
     data_df = s[[i]]
     coords_df = s_coords[[i]]
-    varnames <-c("timestamp","date" , "station_id", "altitude", "temperature", "min_temperature", "max_temperature",  
-                 "relative_humidity","precipitation", "wind_direction", "wind_speed")
-    varnames <- varnames[varnames %in% names(data_df)]
+    weathervarnames <-c("temperature", "mean_temperature", "min_temperature", "max_temperature",  
+                        "relative_humidity","mean_relative_humidity","min_relative_humidity","max_relative_humidity", 
+                        "precipitation", "wind_direction", "mean_wind_direction","wind_speed","mean_wind_speed")
+    weathervarnames <- weathervarnames[weathervarnames %in% names(data_df)]
+    varnames <-c("timestamp","date" , "station_id", weathervarnames)
+    
     data_df <- data_df[,varnames]
 
-    weathervarnames <-c("temperature", "min_temperature", "max_temperature",  
-                        "relative_humidity","precipitation", "wind_direction", "wind_speed")
-    weathervarnames <- weathervarnames[weathervarnames %in% names(data_df)]
+
     df_dates = levels(as.factor(data_df$date))
     dates = sort(unique(c(dates,as.character(df_dates)))) # Adds new dates if necessary
                       
@@ -68,29 +69,30 @@ reshapemeteospain<-function(weather_data, output="SpatialPointsMeteorology",
     
     data_out <- data.frame(row.names = as.character(df_dates))
     
+    data_out$MeanTemperature = NA
+    data_out$MinTemperature = NA
+    data_out$MaxTemperature = NA
+    data_out$Precipitation = NA
+    data_out$MeanRelativeHumidity = NA
+    data_out$MinRelativeHumidity = NA
+    data_out$MaxRelativeHumidity = NA
+    data_out$WindSpeed = NA
+    data_out$WindDirection = NA
     if("temperature" %in% varnames) data_out$MeanTemperature = data_agg$temperature[,"mean"]
-    else data_out$MeanTemperature = NA
-    
+    if("mean_temperature" %in% varnames) data_out$MeanTemperature = data_agg$mean_temperature[,"mean"]
     if("min_temperature" %in% varnames) data_out$MinTemperature = data_agg$min_temperature[,"min"]
-    else data_out$MinTemperature = NA
-    
     if("max_temperature" %in% varnames) data_out$MaxTemperature = data_agg$max_temperature[,"max"]
-    else data_out$MaxTemperature = NA
-    
     if("precipitation" %in% varnames) data_out$Precipitation = data_agg$precipitation[,"sum"] 
-    else data_out$Precipitation = NA
-
     if("relative_humidity" %in% varnames) {
       data_out$MeanRelativeHumidity = data_agg$relative_humidity[,"mean"]
       data_out$MinRelativeHumidity = data_agg$relative_humidity[,"min"]
       data_out$MaxRelativeHumidity = data_agg$relative_humidity[,"max"]
-    } else {
-      data_out$MeanRelativeHumidity = NA
-      data_out$MinRelativeHumidity = NA
-      data_out$MaxRelativeHumidity = NA
     }
+    if("mean_relative_humidity" %in% varnames) data_out$MeanRelativeHumidity = data_agg$mean_relative_humidity[,"mean"]
+    if("min_relative_humidity" %in% varnames) data_out$MinRelativeHumidity = data_agg$min_relative_humidity[,"min"]
+    if("max_relative_humidity" %in% varnames) data_out$MaxRelativeHumidity = data_agg$max_relative_humidity[,"max"]
     if("wind_speed" %in% varnames) data_out$WindSpeed = data_agg$wind_speed[,"mean"]
-    else data_out$WindSpeed = NA
+    if("mean_wind_speed" %in% varnames) data_out$WindSpeed = data_agg$mean_wind_speed[,"mean"]
     if("wind_direction" %in% varnames) {
       # wind direction
       wd_agg <- aggregate(list(wind_direction = units::drop_units(data_df$wind_direction)),
@@ -103,8 +105,19 @@ reshapemeteospain<-function(weather_data, output="SpatialPointsMeteorology",
                             return(dv)
                           })
       data_out$WindDirection = wd_agg$wind_direction
-    } else {
-      data_out$WindDirection = NA
+    }
+    if("mean_wind_direction" %in% varnames) {
+      # wind direction
+      wd_agg <- aggregate(list(wind_direction = units::drop_units(data_df$mean_wind_direction)),
+                          list(date = as.Date(data_df$date)),
+                          function(dvvec){
+                            y = sum(cos(dvvec*pi/180), na.rm=TRUE)/length(dvvec)
+                            x = sum(sin(dvvec*pi/180), na.rm=TRUE)/length(dvvec)
+                            dv = (180/pi)*atan(y/x)
+                            dv[dv<0] <- dv[dv<0]+360
+                            return(dv)
+                          })
+      data_out$WindDirection = wd_agg$wind_direction
     }
     if(complete) data_out<-meteocomplete(data_out, 
                                          latitude = coords$lat[i],

@@ -67,6 +67,8 @@ importFrom(stats,
            lm, na.omit, quantile)
 importFrom(sf, 
            as_Spatial, st_coordinates)
+importFrom(units,
+           drop_units)
 
 S3method(summary, interpolation.cv)
 

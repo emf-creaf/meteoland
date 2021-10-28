@@ -1,13 +1,17 @@
-\name{reshapeworldmet}
+\name{reshapeweather}
+\alias{reshapemeteospain}
 \alias{reshapeweathercan}
 \alias{reshapeworldmet}
 \title{
-Reshapes data from 'worldmet' or 'weathercan'
+Reshapes weather data from 'meteospain', 'worldmet' or 'weathercan'
 }
 \description{
-Reshapes weather station data acquired using the 'worldmet' or 'weathercan' R packages into formats useful for meteoland
+Reshapes weather station data acquired using the 'meteospain', 'worldmet' or 'weathercan' R packages into formats useful for meteoland
 }
 \usage{
+reshapemeteospain(weather_data, output = "SpatialPointsMeteorology", 
+                  proj4string = NULL, complete = TRUE,
+                  verbose = TRUE)
 reshapeworldmet(hourly_data, output = "SpatialPointsMeteorology", 
                 proj4string = NULL, complete = TRUE,
                 verbose = TRUE)
@@ -15,6 +19,9 @@ reshapeweathercan(hourly_data, daily_data = NULL, output = "SpatialPointsMeteoro
                   proj4string = NULL, complete = TRUE, verbose = TRUE)
 }
 \arguments{
+  \item{weather_data}{
+     Hourly or daily weather data, in form of an sf (spatial) object, obtained using function 'get_meteo_from()' in package 'meteospain'.
+  }
   \item{hourly_data}{
      Hourly weather data. In the case of \code{reshapeworldmet}, a tibble or data frame returned by function 'importNOAA'. In the case of \code{reshapeweathercan}, a tibble or data frame returned by function 'weather_dl' with 'interval="hour"'.
   }

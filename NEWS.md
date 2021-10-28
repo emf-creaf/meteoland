@@ -2,6 +2,9 @@
  NEWS for R Package "meteoland"
 -------------------------------
 
+# Version 1.0.1
+- New function 'reshapemeteospain' to reshape weather data obtained using package 'meteospain'.
+
 # Version 1.0.0
 - 'debug' option in interpolation params to force additional output
 - Download functions DEPRECATED. User is advised to use package 'meteospain'

@@ -37,7 +37,7 @@ export(averagearea,
        readmeteorologygrid, readmeteorologypixels,
        readmeteorologypoint,readmeteorologypoints,readmeteorologypointfiles, 
        readWindNinjaWindFields,
-       reshapeweathercan, reshapeworldmet,
+       reshapemeteospain, reshapeweathercan, reshapeworldmet, 
        SpatialPointsTopography, SpatialGridTopography, SpatialPixelsTopography, 
        SpatialGridMeteorology, SpatialPointsMeteorology, SpatialPixelsMeteorology,
        subsample,summary.interpolation.cv, 
@@ -65,6 +65,8 @@ importFrom(stats,
            coef, cor, dist, 
            var, rlnorm, sd,
            lm, na.omit, quantile)
+importFrom(sf, 
+           as_Spatial, st_coordinates)
 
 S3method(summary, interpolation.cv)
 

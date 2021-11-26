@@ -168,45 +168,46 @@ Class <code>"Spatial"</code>, by class "MeteorologyProcedureData", distance 2</p
     <div class='dont-index'><p><code><a href='MeteorologyInterpolationData.html'>MeteorologyInterpolationData</a></code>, <code><a href='MeteorologyProcedureData-class.html'>MeteorologyProcedureData-class</a></code>, <code><a href='subsample.html'>subsample</a></code></p></div>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='co'>#Structure of the S4 object</span>
-<span class='fu'>showClass</span><span class='op'>(</span><span class='st'>"MeteorologyInterpolationData"</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; Class "MeteorologyInterpolationData" [package "meteoland"]
-#&gt; 
-#&gt; Slots:
-#&gt;                                                         
-#&gt; Name:                    coords                elevation
-#&gt; Class:                   matrix                  numeric
-#&gt;                                                         
-#&gt; Name:                     slope                   aspect
-#&gt; Class:                  numeric                  numeric
-#&gt;                                                         
-#&gt; Name:            MinTemperature           MaxTemperature
-#&gt; Class:                   matrix                   matrix
-#&gt;                                                         
-#&gt; Name:     SmoothedPrecipitation            Precipitation
-#&gt; Class:                   matrix                   matrix
-#&gt;                                                         
-#&gt; Name:  SmoothedTemperatureRange         RelativeHumidity
-#&gt; Class:                   matrix                   matrix
-#&gt;                                                         
-#&gt; Name:                 Radiation                WindSpeed
-#&gt; Class:                      ANY                      ANY
-#&gt;                                                         
-#&gt; Name:             WindDirection               WindFields
-#&gt; Class:                      ANY                      ANY
-#&gt;                                                         
-#&gt; Name:                   WFIndex                 WFFactor
-#&gt; Class:                      ANY                      ANY
-#&gt;                                                         
-#&gt; Name:                    params                    dates
-#&gt; Class:                     list                     Date
-#&gt;                                                         
-#&gt; Name:                      bbox              proj4string
-#&gt; Class:                   matrix                      CRS
-#&gt; 
-#&gt; Extends: 
-#&gt; Class "MeteorologyProcedureData", directly
-#&gt; Class "Spatial", by class "MeteorologyProcedureData", distance 2</div></pre>
+    <pre class="examples"><span class='r-in'><span class='co'>#Structure of the S4 object</span></span>
+<span class='r-in'><span class='fu'>showClass</span><span class='op'>(</span><span class='st'>"MeteorologyInterpolationData"</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Class "MeteorologyInterpolationData" [package "meteoland"]</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Slots:</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>                                                         </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Name:                    coords                elevation</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Class:                   matrix                  numeric</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>                                                         </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Name:                     slope                   aspect</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Class:                  numeric                  numeric</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>                                                         </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Name:            MinTemperature           MaxTemperature</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Class:                   matrix                   matrix</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>                                                         </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Name:     SmoothedPrecipitation            Precipitation</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Class:                   matrix                   matrix</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>                                                         </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Name:  SmoothedTemperatureRange         RelativeHumidity</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Class:                   matrix                   matrix</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>                                                         </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Name:                 Radiation                WindSpeed</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Class:                      ANY                      ANY</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>                                                         </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Name:             WindDirection               WindFields</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Class:                      ANY                      ANY</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>                                                         </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Name:                   WFIndex                 WFFactor</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Class:                      ANY                      ANY</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>                                                         </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Name:                    params                    dates</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Class:                     list                     Date</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>                                                         </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Name:                      bbox              proj4string</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Class:                   matrix                      CRS</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Extends: </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Class "MeteorologyProcedureData", directly</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Class "Spatial", by class "MeteorologyProcedureData", distance 2</span>
+</pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

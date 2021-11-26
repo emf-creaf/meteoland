@@ -206,47 +206,61 @@
     <div class='dont-index'><p><code><a href='penman.html'>penman</a></code>, <code><a href='SpatialPointsTopography-class.html'>SpatialPointsTopography-class</a></code>, <code><a href='SpatialGridTopography.html'>SpatialGridTopography</a></code>, <code><a href='SpatialPixelsTopography.html'>SpatialPixelsTopography</a></code>, <code><a href='MeteorologyInterpolationData.html'>MeteorologyInterpolationData</a></code></p></div>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='va'>examplegridtopography</span><span class='op'>)</span>
-<span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='va'>exampleinterpolationdata</span><span class='op'>)</span>
-
-<span class='co'>####### INTERPOLATION on particular POINTS </span>
-
-<span class='co'>#Creates spatial topography points from the grid</span>
-<span class='va'>p</span> <span class='op'>=</span> <span class='fl'>1</span><span class='op'>:</span><span class='fl'>2</span>
-<span class='va'>spt</span> <span class='op'>=</span> <span class='fu'>as</span><span class='op'>(</span><span class='va'>examplegridtopography</span>, <span class='st'>"SpatialPointsTopography"</span><span class='op'>)</span><span class='op'>[</span><span class='va'>p</span><span class='op'>]</span>
-
-<span class='co'>#Interpolation of two points for the whole time period (2000-2003)</span>
-<span class='va'>mp</span> <span class='op'>=</span> <span class='fu'>interpolationpoints</span><span class='op'>(</span><span class='va'>exampleinterpolationdata</span>, <span class='va'>spt</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; Processing point '1' (1/2) - done.
-#&gt; Processing point '2' (2/2) - done.</div><div class='input'>
-<span class='co'>#Plot interpolated meteorological series</span>
-<span class='fu'><a href='meteoplot.html'>meteoplot</a></span><span class='op'>(</span><span class='va'>mp</span>,<span class='fl'>1</span>, ylab<span class='op'>=</span><span class='st'>"Mean temperature"</span><span class='op'>)</span>
-</div><div class='img'><img src='interpolationpoints-1.png' alt='' width='700' height='433' /></div><div class='input'>
-<span class='co'>####### INTERPOLATION on PIXELS </span>
-<span class='co'># Creates spatial topography pixels as a subset of grid pixels</span>
-<span class='co'># and select pixels at maximum distance of 2km from center</span>
-<span class='va'>spt</span> <span class='op'>=</span> <span class='fu'>as</span><span class='op'>(</span><span class='va'>examplegridtopography</span>,<span class='st'>"SpatialPointsTopography"</span><span class='op'>)</span>
-<span class='va'>cc</span> <span class='op'>=</span> <span class='va'>spt</span><span class='op'>@</span><span class='va'>coords</span>
-<span class='va'>center</span> <span class='op'>=</span> <span class='fl'>5160</span>
-<span class='va'>d</span> <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/MathFun.html'>sqrt</a></span><span class='op'>(</span><span class='op'>(</span><span class='va'>cc</span><span class='op'>[</span>,<span class='fl'>1</span><span class='op'>]</span><span class='op'>-</span><span class='va'>cc</span><span class='op'>[</span><span class='va'>center</span>,<span class='fl'>1</span><span class='op'>]</span><span class='op'>)</span><span class='op'>^</span><span class='fl'>2</span><span class='op'>+</span><span class='op'>(</span><span class='va'>cc</span><span class='op'>[</span>,<span class='fl'>2</span><span class='op'>]</span><span class='op'>-</span><span class='va'>cc</span><span class='op'>[</span><span class='va'>center</span>,<span class='fl'>2</span><span class='op'>]</span><span class='op'>)</span><span class='op'>^</span><span class='fl'>2</span><span class='op'>)</span>
-<span class='va'>spxt</span> <span class='op'>=</span> <span class='fu'>as</span><span class='op'>(</span><span class='va'>spt</span><span class='op'>[</span><span class='fu'><a href='https://rdrr.io/r/base/which.html'>which</a></span><span class='op'>(</span><span class='va'>d</span><span class='op'>&lt;</span><span class='fl'>2000</span><span class='op'>)</span><span class='op'>]</span>, <span class='st'>"SpatialPixelsTopography"</span><span class='op'>)</span> 
-
-<span class='co'># Interpolation of meteorology over pixels for two days</span>
-<span class='va'>ml</span> <span class='op'>=</span> <span class='fu'>interpolationpixels</span><span class='op'>(</span><span class='va'>exampleinterpolationdata</span>, <span class='va'>spxt</span>,
-                       <span class='fu'><a href='https://rdrr.io/r/base/as.Date.html'>as.Date</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"2001-02-03"</span>, <span class='st'>"2001-06-03"</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='warning'>Warning: CRS object has comment, which is lost in output</span></div><div class='output co'>#&gt; <span class='warning'>Warning: CRS object has comment, which is lost in output</span></div><div class='output co'>#&gt; Interpolating day '2001-02-03' (1/2) -  done.
-#&gt; Interpolating day '2001-06-03' (2/2) -  done.</div><div class='input'>                       
-<span class='co'>#Plot PET corresponding to 2001-06-03</span>
-<span class='fu'>spplot</span><span class='op'>(</span><span class='va'>ml</span>,<span class='fl'>2</span>,<span class='st'>"PET"</span><span class='op'>)</span>
-</div><div class='img'><img src='interpolationpoints-2.png' alt='' width='700' height='433' /></div><div class='input'>
-<span class='co'>####### INTERPOLATION over a complete GRID </span>
-<span class='co'>#Interpolation of meteorology over a grid for two days</span>
-<span class='va'>ml</span> <span class='op'>=</span> <span class='fu'>interpolationgrid</span><span class='op'>(</span><span class='va'>exampleinterpolationdata</span>, <span class='va'>examplegridtopography</span>,
-                       <span class='fu'><a href='https://rdrr.io/r/base/as.Date.html'>as.Date</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"2001-02-03"</span>, <span class='st'>"2001-06-03"</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='warning'>Warning: CRS object has comment, which is lost in output</span></div><div class='output co'>#&gt; <span class='warning'>Warning: CRS object has comment, which is lost in output</span></div><div class='output co'>#&gt; Interpolating day '2001-02-03' (1/2) - done.
-#&gt; Interpolating day '2001-06-03' (2/2) - done.</div><div class='input'><span class='co'>#Plot PET corresponding to 2001-06-03</span>
-<span class='fu'>spplot</span><span class='op'>(</span><span class='va'>ml</span>,<span class='fl'>2</span>,<span class='st'>"PET"</span><span class='op'>)</span>
-</div><div class='img'><img src='interpolationpoints-3.png' alt='' width='700' height='433' /></div></pre>
+    <pre class="examples"><span class='r-in'><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='va'>examplegridtopography</span><span class='op'>)</span></span>
+<span class='r-in'><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='va'>exampleinterpolationdata</span><span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'>####### INTERPOLATION on particular POINTS </span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'>#Creates spatial topography points from the grid</span></span>
+<span class='r-in'><span class='va'>p</span> <span class='op'>=</span> <span class='fl'>1</span><span class='op'>:</span><span class='fl'>2</span></span>
+<span class='r-in'><span class='va'>spt</span> <span class='op'>=</span> <span class='fu'>as</span><span class='op'>(</span><span class='va'>examplegridtopography</span>, <span class='st'>"SpatialPointsTopography"</span><span class='op'>)</span><span class='op'>[</span><span class='va'>p</span><span class='op'>]</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'>#Interpolation of two points for the whole time period (2000-2003)</span></span>
+<span class='r-in'><span class='va'>mp</span> <span class='op'>=</span> <span class='fu'>interpolationpoints</span><span class='op'>(</span><span class='va'>exampleinterpolationdata</span>, <span class='va'>spt</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Processing point '1' (1/2) - done.</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Processing point '2' (2/2) - done.</span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'>#Plot interpolated meteorological series</span></span>
+<span class='r-in'><span class='fu'><a href='meteoplot.html'>meteoplot</a></span><span class='op'>(</span><span class='va'>mp</span>,<span class='fl'>1</span>, ylab<span class='op'>=</span><span class='st'>"Mean temperature"</span><span class='op'>)</span></span>
+<span class='r-plt img'><img src='interpolationpoints-1.png' alt='' width='700' height='433' /></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'>####### INTERPOLATION on PIXELS </span></span>
+<span class='r-in'><span class='co'># Creates spatial topography pixels as a subset of grid pixels</span></span>
+<span class='r-in'><span class='co'># and select pixels at maximum distance of 2km from center</span></span>
+<span class='r-in'><span class='va'>spt</span> <span class='op'>=</span> <span class='fu'>as</span><span class='op'>(</span><span class='va'>examplegridtopography</span>,<span class='st'>"SpatialPointsTopography"</span><span class='op'>)</span></span>
+<span class='r-in'><span class='va'>cc</span> <span class='op'>=</span> <span class='va'>spt</span><span class='op'>@</span><span class='va'>coords</span></span>
+<span class='r-in'><span class='va'>center</span> <span class='op'>=</span> <span class='fl'>5160</span></span>
+<span class='r-in'><span class='va'>d</span> <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/MathFun.html'>sqrt</a></span><span class='op'>(</span><span class='op'>(</span><span class='va'>cc</span><span class='op'>[</span>,<span class='fl'>1</span><span class='op'>]</span><span class='op'>-</span><span class='va'>cc</span><span class='op'>[</span><span class='va'>center</span>,<span class='fl'>1</span><span class='op'>]</span><span class='op'>)</span><span class='op'>^</span><span class='fl'>2</span><span class='op'>+</span><span class='op'>(</span><span class='va'>cc</span><span class='op'>[</span>,<span class='fl'>2</span><span class='op'>]</span><span class='op'>-</span><span class='va'>cc</span><span class='op'>[</span><span class='va'>center</span>,<span class='fl'>2</span><span class='op'>]</span><span class='op'>)</span><span class='op'>^</span><span class='fl'>2</span><span class='op'>)</span></span>
+<span class='r-in'><span class='va'>spxt</span> <span class='op'>=</span> <span class='fu'>as</span><span class='op'>(</span><span class='va'>spt</span><span class='op'>[</span><span class='fu'><a href='https://rdrr.io/r/base/which.html'>which</a></span><span class='op'>(</span><span class='va'>d</span><span class='op'>&lt;</span><span class='fl'>2000</span><span class='op'>)</span><span class='op'>]</span>, <span class='st'>"SpatialPixelsTopography"</span><span class='op'>)</span> </span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'># Interpolation of meteorology over pixels for two days</span></span>
+<span class='r-in'><span class='va'>ml</span> <span class='op'>=</span> <span class='fu'>interpolationpixels</span><span class='op'>(</span><span class='va'>exampleinterpolationdata</span>, <span class='va'>spxt</span>,</span>
+<span class='r-in'>                       <span class='fu'><a href='https://rdrr.io/r/base/as.Date.html'>as.Date</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"2001-02-03"</span>, <span class='st'>"2001-06-03"</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span></span>
+<span class='r-wrn co'><span class='r-pr'>#&gt;</span> <span class='warning'>Warning: </span>CRS object has comment, which is lost in output; in tests, see</span>
+<span class='r-wrn co'><span class='r-pr'>#&gt;</span> https://cran.r-project.org/web/packages/sp/vignettes/CRS_warnings.html</span>
+<span class='r-wrn co'><span class='r-pr'>#&gt;</span> <span class='warning'>Warning: </span>CRS object has comment, which is lost in output; in tests, see</span>
+<span class='r-wrn co'><span class='r-pr'>#&gt;</span> https://cran.r-project.org/web/packages/sp/vignettes/CRS_warnings.html</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Interpolating day '2001-02-03' (1/2) -  done.</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Interpolating day '2001-06-03' (2/2) -  done.</span>
+<span class='r-in'>                       </span>
+<span class='r-in'><span class='co'>#Plot PET corresponding to 2001-06-03</span></span>
+<span class='r-in'><span class='fu'>spplot</span><span class='op'>(</span><span class='va'>ml</span>,<span class='fl'>2</span>,<span class='st'>"PET"</span><span class='op'>)</span></span>
+<span class='r-plt img'><img src='interpolationpoints-2.png' alt='' width='700' height='433' /></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'>####### INTERPOLATION over a complete GRID </span></span>
+<span class='r-in'><span class='co'>#Interpolation of meteorology over a grid for two days</span></span>
+<span class='r-in'><span class='va'>ml</span> <span class='op'>=</span> <span class='fu'>interpolationgrid</span><span class='op'>(</span><span class='va'>exampleinterpolationdata</span>, <span class='va'>examplegridtopography</span>,</span>
+<span class='r-in'>                       <span class='fu'><a href='https://rdrr.io/r/base/as.Date.html'>as.Date</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"2001-02-03"</span>, <span class='st'>"2001-06-03"</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span></span>
+<span class='r-wrn co'><span class='r-pr'>#&gt;</span> <span class='warning'>Warning: </span>CRS object has comment, which is lost in output; in tests, see</span>
+<span class='r-wrn co'><span class='r-pr'>#&gt;</span> https://cran.r-project.org/web/packages/sp/vignettes/CRS_warnings.html</span>
+<span class='r-wrn co'><span class='r-pr'>#&gt;</span> <span class='warning'>Warning: </span>CRS object has comment, which is lost in output; in tests, see</span>
+<span class='r-wrn co'><span class='r-pr'>#&gt;</span> https://cran.r-project.org/web/packages/sp/vignettes/CRS_warnings.html</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Interpolating day '2001-02-03' (1/2) - done.</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Interpolating day '2001-06-03' (2/2) - done.</span>
+<span class='r-in'><span class='co'>#Plot PET corresponding to 2001-06-03</span></span>
+<span class='r-in'><span class='fu'>spplot</span><span class='op'>(</span><span class='va'>ml</span>,<span class='fl'>2</span>,<span class='st'>"PET"</span><span class='op'>)</span></span>
+<span class='r-plt img'><img src='interpolationpoints-3.png' alt='' width='700' height='433' /></span>
+</pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

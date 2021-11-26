@@ -118,7 +118,7 @@
     <p>DEPRECATED. Download data from the Spanish Automatic Stations Network (non-professional)</p>
     </div>
 
-    <pre class="usage"><span class='fu'>downloadMETEOCLIMATICstationlist</span><span class='op'>(</span>station_id <span class='op'>=</span> <span class='st'>"ESCAT"</span>, spatial <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>
+    <pre class="usage"><span class='fu'>downloadMETEOCLIMATICstationlist</span><span class='op'>(</span>station_id <span class='op'>=</span> <span class='st'>"ESCAT"</span><span class='op'>)</span>
 <span class='fu'>downloadMETEOCLIMATICcurrentday</span><span class='op'>(</span>station_id <span class='op'>=</span> <span class='st'>"ESCAT"</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -126,11 +126,7 @@
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>station_id</th>
-      <td><p>A string vector containing station ids (the list of stations for which current day climatic data is available is given by <code>downloadMETEOCLIMATICstationlist</code>).</p></td>
-    </tr>
-    <tr>
-      <th>spatial</th>
-      <td><p>Returned object format. If <code>TRUE</code> (default), a <code>SpatialPointsDataFrame-class</code> object is returned. If <code>FALSE</code>, a data.frame is returned instead.</p></td>
+      <td><p>A string vector containing station ids (the list of stations for which current day climatic data is available is given by <code>downloadMETEOCLIMATICstationlist</code>). By default, returns the list of stations in Catalonia.</p></td>
     </tr>
     </table>
 
@@ -139,11 +135,11 @@
     <p>Meteoclimatic is a non-professional automatic stations network, maintained by volunteers that share the data from their climatic stations. Data offered by these stations has not passed any quality control.</p>
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>Function <code>downloadMETEOCLIMATICstationlist</code> returns a <code>SpatialPointsDataFrame-class</code> object containing the list of Meteoclimatic weather stations for which data is available based on the station_id codes provided, or a data.frame with the same information if <code>spatial = FALSE</code>.</p>
+    <p>Function <code>downloadMETEOCLIMATICstationlist</code> returns a <code>SpatialPointsDataFrame-class</code> object containing the list of Meteoclimatic weather stations for which data is available based on the station_id codes provided.</p>
 <p>Function <code>downloadMETEOCLIMATICcurrentday</code> downloads recent weather (for the current day) from all currently available stations and returns a <code>SpatialPointsDataFrame-class</code> object with observations.</p>
     <h2 class="hasAnchor" id="note"><a class="anchor" href="#note"></a>Note</h2>
 
-    <p>Recommended package: meteospain (available at GitHub).</p>
+    <p>Recommended package: <code>meteospain</code>.</p>
 <p>Only acummulated precipitation, maximum and minimum temperature and relative humidity are returned. The current implementation was inspired by function meteoclimaticR by Marc Lemus Cánovas.</p>
     <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
 

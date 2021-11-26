@@ -154,7 +154,7 @@
     </tr>
     <tr>
       <th>months</th>
-      <td><p>A numeric vector to indicate the subset of months for which summary is desired (e.g. <code><a href='https://rdrr.io/r/base/c.html'>c(7,8)</a></code> for July and August). This parameter allows studing particular seasons, when combined with <code>freq</code>. For example <code>freq = "years"</code> and <code>months = 6:8</code> leads to summarizing summer months of each year.</p></td>
+      <td><p>A numeric vector to indicate the subset of months for which summary is desired (e.g. <code>c(7,8)</code> for July and August). This parameter allows studing particular seasons, when combined with <code>freq</code>. For example <code>freq = "years"</code> and <code>months = 6:8</code> leads to summarizing summer months of each year.</p></td>
     </tr>
     <tr>
       <th>...</th>
@@ -195,32 +195,35 @@
     <div class='dont-index'><p><code><a href='SpatialPointsMeteorology-class.html'>SpatialPointsMeteorology-class</a></code></p></div>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='va'>examplegridtopography</span><span class='op'>)</span>
-<span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='va'>exampleinterpolationdata</span><span class='op'>)</span>
-
-<span class='co'>#Creates spatial topography points from the grid</span>
-<span class='va'>p</span> <span class='op'>=</span> <span class='fl'>1</span><span class='op'>:</span><span class='fl'>2</span>
-<span class='va'>spt</span> <span class='op'>=</span> <span class='fu'>as</span><span class='op'>(</span><span class='va'>examplegridtopography</span>, <span class='st'>"SpatialPointsTopography"</span><span class='op'>)</span><span class='op'>[</span><span class='va'>p</span><span class='op'>]</span>
-
-<span class='co'>#Interpolation of two points for the whole time period (2000-2003)</span>
-<span class='va'>mp</span> <span class='op'>=</span> <span class='fu'><a href='interpolationpoints.html'>interpolationpoints</a></span><span class='op'>(</span><span class='va'>exampleinterpolationdata</span>, <span class='va'>spt</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; Processing point '1' (1/2) - done.
-#&gt; Processing point '2' (2/2) - done.</div><div class='input'>
-<span class='co'>#PET sums by months</span>
-<span class='va'>mp.sum</span> <span class='op'>=</span> <span class='fu'>summarypoints</span><span class='op'>(</span><span class='va'>mp</span>, var<span class='op'>=</span><span class='st'>"PET"</span>, freq<span class='op'>=</span><span class='st'>"months"</span>, fun<span class='op'>=</span><span class='va'>sum</span><span class='op'>)</span>
-</div><div class='output co'>#&gt;   Summarizing PET in 2 points...
-#&gt;   |                                                                              |                                                                      |   0%  |                                                                              |===================================                                   |  50%  |                                                                              |======================================================================| 100%
-#&gt;   Arranging output...
-#&gt;   |                                                                              |                                                                      |   0%  |                                                                              |===================================                                   |  50%  |                                                                              |======================================================================| 100%</div><div class='input'>
-<span class='va'>mp.sum</span>
-</div><div class='output co'>#&gt; class       : SpatialPointsDataFrame 
-#&gt; features    : 2 
-#&gt; extent      : 360000, 360100, 4640900, 4640900  (xmin, xmax, ymin, ymax)
-#&gt; crs         : +proj=utm +zone=31 +datum=WGS84 +units=m +no_defs 
-#&gt; variables   : 48
-#&gt; names       : 2000-01-01, 2000-02-01,       2000-03-01,       2000-04-01,       2000-05-01, 2000-06-01, 2000-07-01, 2000-08-01, 2000-09-01, 2000-10-01,       2000-11-01,       2000-12-01, 2001-01-01,       2001-02-01,       2001-03-01, ... 
-#&gt; min values  :         NA,         NA, 78.9162423918269, 100.669725972632, 146.590523744577,         NA,         NA,         NA,         NA,         NA, 27.5296952566443, 18.4519158441549,         NA, 37.5410031751692, 79.8200553264094, ... 
-#&gt; max values  :         NA,         NA, 81.4547739646298, 101.922397207274, 147.028249622689,         NA,         NA,         NA,         NA,         NA, 29.8513681893117, 20.6740404840618,         NA, 39.9994829528526, 82.1779613810003, ... </div></pre>
+    <pre class="examples"><span class='r-in'><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='va'>examplegridtopography</span><span class='op'>)</span></span>
+<span class='r-in'><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='va'>exampleinterpolationdata</span><span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'>#Creates spatial topography points from the grid</span></span>
+<span class='r-in'><span class='va'>p</span> <span class='op'>=</span> <span class='fl'>1</span><span class='op'>:</span><span class='fl'>2</span></span>
+<span class='r-in'><span class='va'>spt</span> <span class='op'>=</span> <span class='fu'>as</span><span class='op'>(</span><span class='va'>examplegridtopography</span>, <span class='st'>"SpatialPointsTopography"</span><span class='op'>)</span><span class='op'>[</span><span class='va'>p</span><span class='op'>]</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'>#Interpolation of two points for the whole time period (2000-2003)</span></span>
+<span class='r-in'><span class='va'>mp</span> <span class='op'>=</span> <span class='fu'><a href='interpolationpoints.html'>interpolationpoints</a></span><span class='op'>(</span><span class='va'>exampleinterpolationdata</span>, <span class='va'>spt</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Processing point '1' (1/2) - done.</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Processing point '2' (2/2) - done.</span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'>#PET sums by months</span></span>
+<span class='r-in'><span class='va'>mp.sum</span> <span class='op'>=</span> <span class='fu'>summarypoints</span><span class='op'>(</span><span class='va'>mp</span>, var<span class='op'>=</span><span class='st'>"PET"</span>, freq<span class='op'>=</span><span class='st'>"months"</span>, fun<span class='op'>=</span><span class='va'>sum</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>   Summarizing PET in 2 points...</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>   |                                                                              |                                                                      |   0%  |                                                                              |===================================                                   |  50%  |                                                                              |======================================================================| 100%</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>   Arranging output...</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>   |                                                                              |                                                                      |   0%  |                                                                              |===================================                                   |  50%  |                                                                              |======================================================================| 100%</span>
+<span class='r-in'></span>
+<span class='r-in'><span class='va'>mp.sum</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> class       : SpatialPointsDataFrame </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> features    : 2 </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> extent      : 360000, 360100, 4640900, 4640900  (xmin, xmax, ymin, ymax)</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> crs         : +proj=utm +zone=31 +datum=WGS84 +units=m +no_defs </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> variables   : 48</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> names       : 2000-01-01, 2000-02-01,       2000-03-01,       2000-04-01,       2000-05-01, 2000-06-01, 2000-07-01, 2000-08-01, 2000-09-01, 2000-10-01,       2000-11-01,       2000-12-01, 2001-01-01,       2001-02-01,       2001-03-01, ... </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> min values  :         NA,         NA, 78.9162423918269, 100.669725972632, 146.590523744577,         NA,         NA,         NA,         NA,         NA, 27.5296952566443, 18.4519158441549,         NA, 37.5410031751692, 79.8200553264094, ... </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> max values  :         NA,         NA, 81.4547739646298, 101.922397207274, 147.028249622689,         NA,         NA,         NA,         NA,         NA, 29.8513681893117, 20.6740404840618,         NA, 39.9994829528526, 82.1779613810003, ... </span>
+</pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

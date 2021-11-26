@@ -160,26 +160,28 @@
     <div class='dont-index'><p><code><a href='SpatialPointsTopography-class.html'>SpatialPointsTopography-class</a></code></p></div>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='va'>examplegridtopography</span><span class='op'>)</span>
-
-<span class='co'>#Creates spatial topography points from the grid</span>
-<span class='va'>p</span> <span class='op'>=</span> <span class='fl'>1</span><span class='op'>:</span><span class='fl'>2</span>
-<span class='va'>points</span> <span class='op'>=</span> <span class='fu'>as</span><span class='op'>(</span><span class='va'>examplegridtopography</span>,<span class='st'>"SpatialPoints"</span><span class='op'>)</span><span class='op'>[</span><span class='va'>p</span><span class='op'>]</span>
-<span class='va'>spt</span> <span class='op'>=</span> <span class='fu'>SpatialPointsTopography</span><span class='op'>(</span><span class='va'>points</span>, <span class='va'>examplegridtopography</span><span class='op'>$</span><span class='va'>elevation</span><span class='op'>[</span><span class='va'>p</span><span class='op'>]</span>,
-                              <span class='va'>examplegridtopography</span><span class='op'>$</span><span class='va'>slope</span><span class='op'>[</span><span class='va'>p</span><span class='op'>]</span>,
-                              <span class='va'>examplegridtopography</span><span class='op'>$</span><span class='va'>aspect</span><span class='op'>[</span><span class='va'>p</span><span class='op'>]</span><span class='op'>)</span>
-<span class='va'>spt</span>
-</div><div class='output co'>#&gt; Object of class SpatialPointsTopography
-#&gt;         coordinates elevation     slope   aspect
-#&gt; 1 (360000, 4640900)       548 0.7910155 275.1944
-#&gt; 2 (360100, 4640900)       554 3.1171090 238.1340</div><div class='input'>
-<span class='co'>#Alternatively, use coercing and subsetting</span>
-<span class='va'>spt</span> <span class='op'>=</span> <span class='fu'>as</span><span class='op'>(</span><span class='va'>examplegridtopography</span>, <span class='st'>"SpatialPointsTopography"</span><span class='op'>)</span><span class='op'>[</span><span class='va'>p</span><span class='op'>]</span>
-<span class='va'>spt</span>
-</div><div class='output co'>#&gt; Object of class SpatialPointsTopography
-#&gt;         coordinates elevation     slope   aspect
-#&gt; 1 (360000, 4640900)       548 0.7910155 275.1944
-#&gt; 2 (360100, 4640900)       554 3.1171090 238.1340</div></pre>
+    <pre class="examples"><span class='r-in'><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='va'>examplegridtopography</span><span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'>#Creates spatial topography points from the grid</span></span>
+<span class='r-in'><span class='va'>p</span> <span class='op'>=</span> <span class='fl'>1</span><span class='op'>:</span><span class='fl'>2</span></span>
+<span class='r-in'><span class='va'>points</span> <span class='op'>=</span> <span class='fu'>as</span><span class='op'>(</span><span class='va'>examplegridtopography</span>,<span class='st'>"SpatialPoints"</span><span class='op'>)</span><span class='op'>[</span><span class='va'>p</span><span class='op'>]</span></span>
+<span class='r-in'><span class='va'>spt</span> <span class='op'>=</span> <span class='fu'>SpatialPointsTopography</span><span class='op'>(</span><span class='va'>points</span>, <span class='va'>examplegridtopography</span><span class='op'>$</span><span class='va'>elevation</span><span class='op'>[</span><span class='va'>p</span><span class='op'>]</span>,</span>
+<span class='r-in'>                              <span class='va'>examplegridtopography</span><span class='op'>$</span><span class='va'>slope</span><span class='op'>[</span><span class='va'>p</span><span class='op'>]</span>,</span>
+<span class='r-in'>                              <span class='va'>examplegridtopography</span><span class='op'>$</span><span class='va'>aspect</span><span class='op'>[</span><span class='va'>p</span><span class='op'>]</span><span class='op'>)</span></span>
+<span class='r-in'><span class='va'>spt</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Object of class SpatialPointsTopography</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>         coordinates elevation     slope   aspect</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 1 (360000, 4640900)       548 0.7910155 275.1944</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 2 (360100, 4640900)       554 3.1171090 238.1340</span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'>#Alternatively, use coercing and subsetting</span></span>
+<span class='r-in'><span class='va'>spt</span> <span class='op'>=</span> <span class='fu'>as</span><span class='op'>(</span><span class='va'>examplegridtopography</span>, <span class='st'>"SpatialPointsTopography"</span><span class='op'>)</span><span class='op'>[</span><span class='va'>p</span><span class='op'>]</span></span>
+<span class='r-in'><span class='va'>spt</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Object of class SpatialPointsTopography</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>         coordinates elevation     slope   aspect</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 1 (360000, 4640900)       548 0.7910155 275.1944</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 2 (360100, 4640900)       554 3.1171090 238.1340</span>
+</pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

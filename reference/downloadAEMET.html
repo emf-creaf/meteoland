@@ -118,7 +118,7 @@
     <p>DEPRECATED. Download data from the Spanish National Meterology Agency (AEMET)</p>
     </div>
 
-    <pre class="usage"><span class='fu'>downloadAEMEThistoricalstationlist</span><span class='op'>(</span><span class='va'>api</span><span class='op'>)</span>
+    <pre class="usage"><span class='fu'>downloadAEMETstationlist</span><span class='op'>(</span><span class='va'>api</span><span class='op'>)</span>
 <span class='fu'>downloadAEMEThistorical</span><span class='op'>(</span><span class='va'>api</span>, <span class='va'>dates</span>, <span class='va'>station_id</span>, export <span class='op'>=</span> <span class='cn'>FALSE</span>, exportDir <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/getwd.html'>getwd</a></span><span class='op'>(</span><span class='op'>)</span>, 
                     exportFormat <span class='op'>=</span> <span class='st'>"meteoland/txt"</span>, metadataFile <span class='op'>=</span> <span class='st'>"MP.txt"</span>, 
                     verbose <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>
@@ -137,7 +137,7 @@
     </tr>
     <tr>
       <th>station_id</th>
-      <td><p>A string vector containing station ids (the list of stations for which historical climatic series are available is given by <code>downloadAEMEThistoricalstationlist</code>).</p></td>
+      <td><p>A string vector containing station ids (the list of stations for which historical climatic series are available is given by <code>downloadAEMETstationlist</code>).</p></td>
     </tr>
     <tr>
       <th>export</th>
@@ -170,13 +170,13 @@
     <p>API key needs to be acquired from AEMET (https://opendata.aemet.es/)</p>
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>Function <code>downloadAEMEThistoricalstationlist</code> returns a <code>SpatialPointsDataFrame-class</code> object containing the list of AEMET weather stations for which historical climatic series are available and can be retrieved using <code>downloadAEMEThistorical</code>.</p>
+    <p>Function <code>downloadAEMETstationlist</code> returns a <code>SpatialPointsDataFrame-class</code> object containing the list of AEMET weather stations for which historical climatic series are available and can be retrieved using <code>downloadAEMEThistorical</code>.</p>
 <p>Function <code>downloadAEMEThistorical</code> downloads data for the specified AEMET stations and dates. Data are availables for dates up to 4 days before current date. If <code>export = FALSE</code>, function <code>downloadAEMEThistorical</code> returns a <code><a href='SpatialPointsMeteorology-class.html'>SpatialPointsMeteorology-class</a></code> object with the downloaded meteorology for each station (point). Otherwise the function writes on the disk at the location specified by <code>exportDir</code> and solelely returns a <code>SpatialPointsDataFrame-class</code> object containing the files metadata.</p>
 <p>Function <code>downloadAEMETcurrentday</code> downloads recent weather (the last 24h) from all currently available stations and returns data frame if <code>daily = FALSE</code> or a <code>SpatialPointsDataFrame-class</code> object with observations aggregated at the daily scale if else.</p>
     <h2 class="hasAnchor" id="note"><a class="anchor" href="#note"></a>Note</h2>
 
-    <p>Recommended package: meteospain (available at GitHub).</p>
-<p>The list of stations available in <code>downloadAEMETcurrentday</code> (current observations) is different from the list given by <code>downloadAEMEThistoricalstationlist</code> and available in <code>downloadAEMEThistorical</code> (stations with historical climate series).</p>
+    <p>Recommended package: <code>meteospain</code>.</p>
+<p>The list of stations available in <code>downloadAEMETcurrentday</code> (current observations) may be different from the list given by <code>downloadAEMETstationlist</code> and available in <code>downloadAEMEThistorical</code> (stations with historical climate series).</p>
     <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
 
     <p>AEMET should be acknowledged as author of information when using this data.</p>

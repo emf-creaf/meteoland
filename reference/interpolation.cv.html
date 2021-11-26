@@ -237,118 +237,123 @@
     <div class='dont-index'><p><code><a href='MeteorologyInterpolationData.html'>MeteorologyInterpolationData</a></code></p></div>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='va'>exampleinterpolationdata</span><span class='op'>)</span>
-
-<span class='co'>#Calibration procedure</span>
-<span class='va'>precEv_cal</span> <span class='op'>=</span> <span class='fu'>interpolation.calibration</span><span class='op'>(</span><span class='va'>exampleinterpolationdata</span>, variable<span class='op'>=</span><span class='st'>"PrecEvent"</span>,
-                                       stations <span class='op'>=</span> <span class='fl'>1</span><span class='op'>:</span><span class='fl'>5</span>,
-                                       N_seq<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>5</span>,<span class='fl'>10</span>,<span class='fl'>15</span><span class='op'>)</span>, alpha_seq<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq</a></span><span class='op'>(</span><span class='fl'>0.25</span>,<span class='fl'>1.0</span>, by<span class='op'>=</span><span class='fl'>0.25</span><span class='op'>)</span>,
-                                       verbose <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; Total number of stations: 38
-#&gt; Number of stations with available data: 16
-#&gt; Number of stations used for MAE: 5
-#&gt; Number of parameter combinations to test: 12
-#&gt; 
-#&gt; Evaluation of parameter combinations...
-#&gt;    N: 5 alpha: 0.25 MAE = 0.0895447403786471
-#&gt;    N: 5 alpha: 0.5 MAE = 0.0889836492139592
-#&gt;    N: 5 alpha: 0.75 MAE = 0.0901869217409675
-#&gt;    N: 5 alpha: 1 MAE = 0.0911038160766583
-#&gt;    N: 10 alpha: 0.25 MAE = 0.0958862948272703
-#&gt;    N: 10 alpha: 0.5 MAE = 0.0968173564162686
-#&gt;    N: 10 alpha: 0.75 MAE = 0.0988071801268628
-#&gt;    N: 10 alpha: 1 MAE = 0.0982699429850222
-#&gt;    N: 15 alpha: 0.25 MAE = 0.0941500173316747
-#&gt;    N: 15 alpha: 0.5 MAE = 0.0945582680083739
-#&gt;    N: 15 alpha: 0.75 MAE = 0.0949859235219239
-#&gt;    N: 15 alpha: 1 MAE = 0.0951681828290314
-#&gt; 
-#&gt; Minimum MAE value: 0.0889836492139592 N: 5 alpha: 0.5</div><div class='input'>
-<span class='va'>precAm_cal</span> <span class='op'>=</span> <span class='fu'>interpolation.calibration</span><span class='op'>(</span><span class='va'>exampleinterpolationdata</span>, variable<span class='op'>=</span><span class='st'>"PrecAmount"</span>,
-                                       stations <span class='op'>=</span> <span class='fl'>1</span><span class='op'>:</span><span class='fl'>5</span>,
-                                       N_seq<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>5</span>,<span class='fl'>10</span>,<span class='fl'>15</span><span class='op'>)</span>, alpha_seq<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq</a></span><span class='op'>(</span><span class='fl'>0.25</span>,<span class='fl'>1.0</span>, by<span class='op'>=</span><span class='fl'>0.25</span><span class='op'>)</span>,
-                                       verbose <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; Total number of stations: 38
-#&gt; Number of stations with available data: 16
-#&gt; Number of stations used for MAE: 5
-#&gt; Number of parameter combinations to test: 12
-#&gt; 
-#&gt; Evaluation of parameter combinations...
-#&gt;    N: 5 alpha: 0.25 MAE = 0.273167151065456
-#&gt;    N: 5 alpha: 0.5 MAE = 0.272226669811487
-#&gt;    N: 5 alpha: 0.75 MAE = 0.271176037084119
-#&gt;    N: 5 alpha: 1 MAE = 0.270199795609907
-#&gt;    N: 10 alpha: 0.25 MAE = 0.258270974301504
-#&gt;    N: 10 alpha: 0.5 MAE = 0.257332263984421
-#&gt;    N: 10 alpha: 0.75 MAE = 0.256377607920915
-#&gt;    N: 10 alpha: 1 MAE = 0.255466858038992
-#&gt;    N: 15 alpha: 0.25 MAE = 0.260453126318062
-#&gt;    N: 15 alpha: 0.5 MAE = 0.259086237248335
-#&gt;    N: 15 alpha: 0.75 MAE = 0.258073663584152
-#&gt;    N: 15 alpha: 1 MAE = 0.25718075870868
-#&gt; 
-#&gt; Minimum MAE value: 0.255466858038992 N: 10 alpha: 1</div><div class='input'>
-<span class='co'>#Set 'alpha' and 'N' parameters to values found in calibration</span>
-<span class='va'>exampleinterpolationdata</span><span class='op'>@</span><span class='va'>params</span><span class='op'>$</span><span class='va'>N_PrecipitationEvent</span> <span class='op'>=</span> <span class='va'>precEv_cal</span><span class='op'>$</span><span class='va'>N</span>
-<span class='va'>exampleinterpolationdata</span><span class='op'>@</span><span class='va'>params</span><span class='op'>$</span><span class='va'>alpha_PrecipitationEvent</span> <span class='op'>=</span> <span class='va'>precEv_cal</span><span class='op'>$</span><span class='va'>alpha</span>
-
-<span class='va'>exampleinterpolationdata</span><span class='op'>@</span><span class='va'>params</span><span class='op'>$</span><span class='va'>N_PrecipitationAmount</span> <span class='op'>=</span> <span class='va'>precAm_cal</span><span class='op'>$</span><span class='va'>N</span>
-<span class='va'>exampleinterpolationdata</span><span class='op'>@</span><span class='va'>params</span><span class='op'>$</span><span class='va'>alpha_PrecipitationAmount</span> <span class='op'>=</span> <span class='va'>precAm_cal</span><span class='op'>$</span><span class='va'>alpha</span>
-
-<span class='co'>#Run cross validation</span>
-<span class='va'>cv</span> <span class='op'>=</span> <span class='fu'>interpolation.cv</span><span class='op'>(</span><span class='va'>exampleinterpolationdata</span>, stations <span class='op'>=</span> <span class='fl'>1</span><span class='op'>:</span><span class='fl'>5</span>, verbose <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; Station #1 C7
-#&gt; Station #2 C8
-#&gt; Station #3 CA
-#&gt; Station #4 VD
-#&gt; Station #5 VP</div><div class='input'>
-<span class='co'>#Print cross validation summaries</span>
-<span class='fu'><a href='https://rdrr.io/r/base/summary.html'>summary</a></span><span class='op'>(</span><span class='va'>cv</span><span class='op'>)</span>
-</div><div class='output co'>#&gt;                               n         r         MAE sd.station.MAE
-#&gt; MinTemperature             7272 0.9806085   1.1129706      0.2912159
-#&gt; MaxTemperature             7269 0.9863357   1.0803430      0.5960223
-#&gt; TemperatureRange           7269 0.8874818   1.5808809      0.3207088
-#&gt; RelativeHumidity              0        NA         NaN             NA
-#&gt; Radiation                     0        NA         NaN             NA
-#&gt; Station.rainfall              5 0.8099750 133.6822373     95.4727612
-#&gt; Station.rainfall.relative     5        NA   7.7362137      7.1312986
-#&gt; Station.precdays              5 0.3464714  97.2000000     90.1703943
-#&gt; Station.precdays.relative     5        NA  22.3023469     15.5173989
-#&gt; Date.rainfall               436 0.8559395   9.6635409             NA
-#&gt; Date.rainfall.relative      436        NA         Inf             NA
-#&gt; Date.precstations           436 0.5878517   0.9288991             NA
-#&gt; Date.precstations.relative  436        NA         Inf             NA
-#&gt;                            sd.dates.MAE         Bias sd.station.Bias
-#&gt; MinTemperature                0.4937948  -0.60089892       0.7419034
-#&gt; MaxTemperature                0.4984377   0.26685955       1.1027684
-#&gt; TemperatureRange              0.6772156   0.86756996       1.2263958
-#&gt; RelativeHumidity                     NA          NaN              NA
-#&gt; Radiation                            NA          NaN              NA
-#&gt; Station.rainfall                     NA  13.21044895     176.7359016
-#&gt; Station.rainfall.relative            NA   1.69029959      11.0496733
-#&gt; Station.precdays                     NA -97.20000000      90.1703943
-#&gt; Station.precdays.relative            NA -22.30234690      15.5173989
-#&gt; Date.rainfall                14.5522820   1.72718405              NA
-#&gt; Date.rainfall.relative              NaN          Inf              NA
-#&gt; Date.precstations             1.1333968  -0.06192661              NA
-#&gt; Date.precstations.relative          NaN          Inf              NA
-#&gt;                            sd.dates.Bias
-#&gt; MinTemperature                 0.7780421
-#&gt; MaxTemperature                 0.6326580
-#&gt; TemperatureRange               0.8921691
-#&gt; RelativeHumidity                      NA
-#&gt; Radiation                             NA
-#&gt; Station.rainfall                      NA
-#&gt; Station.rainfall.relative             NA
-#&gt; Station.precdays                      NA
-#&gt; Station.precdays.relative             NA
-#&gt; Date.rainfall                 17.3890077
-#&gt; Date.rainfall.relative               NaN
-#&gt; Date.precstations              1.4647804
-#&gt; Date.precstations.relative           NaN</div><div class='input'>
-<span class='co'>#Plot results</span>
-<span class='fu'><a href='https://rdrr.io/r/graphics/plot.default.html'>plot</a></span><span class='op'>(</span><span class='va'>cv</span><span class='op'>)</span>
-</div><div class='img'><img src='interpolation.cv-1.png' alt='' width='700' height='433' /></div></pre>
+    <pre class="examples"><span class='r-in'><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='va'>exampleinterpolationdata</span><span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'>#Calibration procedure</span></span>
+<span class='r-in'><span class='va'>precEv_cal</span> <span class='op'>=</span> <span class='fu'>interpolation.calibration</span><span class='op'>(</span><span class='va'>exampleinterpolationdata</span>, variable<span class='op'>=</span><span class='st'>"PrecEvent"</span>,</span>
+<span class='r-in'>                                       stations <span class='op'>=</span> <span class='fl'>1</span><span class='op'>:</span><span class='fl'>5</span>,</span>
+<span class='r-in'>                                       N_seq<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>5</span>,<span class='fl'>10</span>,<span class='fl'>15</span><span class='op'>)</span>, alpha_seq<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq</a></span><span class='op'>(</span><span class='fl'>0.25</span>,<span class='fl'>1.0</span>, by<span class='op'>=</span><span class='fl'>0.25</span><span class='op'>)</span>,</span>
+<span class='r-in'>                                       verbose <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Total number of stations: 38</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Number of stations with available data: 16</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Number of stations used for MAE: 5</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Number of parameter combinations to test: 12</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Evaluation of parameter combinations...</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>    N: 5 alpha: 0.25 MAE = 0.0895447403786471</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>    N: 5 alpha: 0.5 MAE = 0.0889836492139592</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>    N: 5 alpha: 0.75 MAE = 0.0901869217409675</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>    N: 5 alpha: 1 MAE = 0.0911038160766583</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>    N: 10 alpha: 0.25 MAE = 0.0958862948272703</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>    N: 10 alpha: 0.5 MAE = 0.0968173564162686</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>    N: 10 alpha: 0.75 MAE = 0.0988071801268628</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>    N: 10 alpha: 1 MAE = 0.0982699429850222</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>    N: 15 alpha: 0.25 MAE = 0.0941500173316747</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>    N: 15 alpha: 0.5 MAE = 0.0945582680083739</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>    N: 15 alpha: 0.75 MAE = 0.0949859235219239</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>    N: 15 alpha: 1 MAE = 0.0951681828290314</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Minimum MAE value: 0.0889836492139592 N: 5 alpha: 0.5</span>
+<span class='r-in'></span>
+<span class='r-in'><span class='va'>precAm_cal</span> <span class='op'>=</span> <span class='fu'>interpolation.calibration</span><span class='op'>(</span><span class='va'>exampleinterpolationdata</span>, variable<span class='op'>=</span><span class='st'>"PrecAmount"</span>,</span>
+<span class='r-in'>                                       stations <span class='op'>=</span> <span class='fl'>1</span><span class='op'>:</span><span class='fl'>5</span>,</span>
+<span class='r-in'>                                       N_seq<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>5</span>,<span class='fl'>10</span>,<span class='fl'>15</span><span class='op'>)</span>, alpha_seq<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq</a></span><span class='op'>(</span><span class='fl'>0.25</span>,<span class='fl'>1.0</span>, by<span class='op'>=</span><span class='fl'>0.25</span><span class='op'>)</span>,</span>
+<span class='r-in'>                                       verbose <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Total number of stations: 38</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Number of stations with available data: 16</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Number of stations used for MAE: 5</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Number of parameter combinations to test: 12</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Evaluation of parameter combinations...</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>    N: 5 alpha: 0.25 MAE = 0.273167151065456</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>    N: 5 alpha: 0.5 MAE = 0.272226669811487</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>    N: 5 alpha: 0.75 MAE = 0.271176037084119</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>    N: 5 alpha: 1 MAE = 0.270199795609907</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>    N: 10 alpha: 0.25 MAE = 0.258270974301504</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>    N: 10 alpha: 0.5 MAE = 0.257332263984421</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>    N: 10 alpha: 0.75 MAE = 0.256377607920915</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>    N: 10 alpha: 1 MAE = 0.255466858038992</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>    N: 15 alpha: 0.25 MAE = 0.260453126318062</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>    N: 15 alpha: 0.5 MAE = 0.259086237248335</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>    N: 15 alpha: 0.75 MAE = 0.258073663584152</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>    N: 15 alpha: 1 MAE = 0.25718075870868</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Minimum MAE value: 0.255466858038992 N: 10 alpha: 1</span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'>#Set 'alpha' and 'N' parameters to values found in calibration</span></span>
+<span class='r-in'><span class='va'>exampleinterpolationdata</span><span class='op'>@</span><span class='va'>params</span><span class='op'>$</span><span class='va'>N_PrecipitationEvent</span> <span class='op'>=</span> <span class='va'>precEv_cal</span><span class='op'>$</span><span class='va'>N</span></span>
+<span class='r-in'><span class='va'>exampleinterpolationdata</span><span class='op'>@</span><span class='va'>params</span><span class='op'>$</span><span class='va'>alpha_PrecipitationEvent</span> <span class='op'>=</span> <span class='va'>precEv_cal</span><span class='op'>$</span><span class='va'>alpha</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='va'>exampleinterpolationdata</span><span class='op'>@</span><span class='va'>params</span><span class='op'>$</span><span class='va'>N_PrecipitationAmount</span> <span class='op'>=</span> <span class='va'>precAm_cal</span><span class='op'>$</span><span class='va'>N</span></span>
+<span class='r-in'><span class='va'>exampleinterpolationdata</span><span class='op'>@</span><span class='va'>params</span><span class='op'>$</span><span class='va'>alpha_PrecipitationAmount</span> <span class='op'>=</span> <span class='va'>precAm_cal</span><span class='op'>$</span><span class='va'>alpha</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'>#Run cross validation</span></span>
+<span class='r-in'><span class='va'>cv</span> <span class='op'>=</span> <span class='fu'>interpolation.cv</span><span class='op'>(</span><span class='va'>exampleinterpolationdata</span>, stations <span class='op'>=</span> <span class='fl'>1</span><span class='op'>:</span><span class='fl'>5</span>, verbose <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Station #1 C7</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Station #2 C8</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Station #3 CA</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Station #4 VD</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Station #5 VP</span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'>#Print cross validation summaries</span></span>
+<span class='r-in'><span class='fu'><a href='https://rdrr.io/r/base/summary.html'>summary</a></span><span class='op'>(</span><span class='va'>cv</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>                               n         r         MAE sd.station.MAE</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> MinTemperature             7272 0.9806085   1.1129706      0.2912159</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> MaxTemperature             7269 0.9863357   1.0803430      0.5960223</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> TemperatureRange           7269 0.8874818   1.5808809      0.3207088</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> RelativeHumidity              0        NA         NaN             NA</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Radiation                     0        NA         NaN             NA</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Station.rainfall              5 0.8099750 133.6822373     95.4727612</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Station.rainfall.relative     5        NA   7.7362137      7.1312986</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Station.precdays              5 0.3464714  97.2000000     90.1703943</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Station.precdays.relative     5        NA  22.3023469     15.5173989</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Date.rainfall               436 0.8559395   9.6635409             NA</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Date.rainfall.relative      436        NA         Inf             NA</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Date.precstations           436 0.5878517   0.9288991             NA</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Date.precstations.relative  436        NA         Inf             NA</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>                            sd.dates.MAE         Bias sd.station.Bias</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> MinTemperature                0.4937948  -0.60089892       0.7419034</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> MaxTemperature                0.4984377   0.26685955       1.1027684</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> TemperatureRange              0.6772156   0.86756996       1.2263958</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> RelativeHumidity                     NA          NaN              NA</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Radiation                            NA          NaN              NA</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Station.rainfall                     NA  13.21044895     176.7359016</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Station.rainfall.relative            NA   1.69029959      11.0496733</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Station.precdays                     NA -97.20000000      90.1703943</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Station.precdays.relative            NA -22.30234690      15.5173989</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Date.rainfall                14.5522820   1.72718405              NA</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Date.rainfall.relative              NaN          Inf              NA</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Date.precstations             1.1333968  -0.06192661              NA</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Date.precstations.relative          NaN          Inf              NA</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>                            sd.dates.Bias</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> MinTemperature                 0.7780421</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> MaxTemperature                 0.6326580</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> TemperatureRange               0.8921691</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> RelativeHumidity                      NA</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Radiation                             NA</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Station.rainfall                      NA</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Station.rainfall.relative             NA</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Station.precdays                      NA</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Station.precdays.relative             NA</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Date.rainfall                 17.3890077</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Date.rainfall.relative               NaN</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Date.precstations              1.4647804</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Date.precstations.relative           NaN</span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'>#Plot results</span></span>
+<span class='r-in'><span class='fu'><a href='https://rdrr.io/r/graphics/plot.default.html'>plot</a></span><span class='op'>(</span><span class='va'>cv</span><span class='op'>)</span></span>
+<span class='r-plt img'><img src='interpolation.cv-1.png' alt='' width='700' height='433' /></span>
+</pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

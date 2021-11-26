@@ -32,7 +32,7 @@ Function \code{downloadMGhistorical} downloads data for the specified MG weather
 Function \code{downloadMGcurrentday} downloads recent weather data (the last 24h) from all currently available stations and returns data frame if \code{daily = FALSE} or a \code{\link{SpatialPointsDataFrame-class}} object with observations aggregated at the daily scale otherwise. 
 }
 \note{
-Recommended package: meteospain (available at GitHub).
+Recommended package: \code{meteospain}.
 }
 \references{
 MeteoGalicia (from the Conselleria de Medio Ambiente, Territorio e Vivenda of Xunta de Galicia) should be acknowledged as source of information when using this data.

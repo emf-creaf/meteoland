@@ -13,7 +13,7 @@ export(averagearea,
        defaultCorrectionParams, defaultGenerationParams, defaultInterpolationParams,
        downloadMGstationlist, downloadMGcurrentday, downloadMGhistorical,
        downloadSMCstationlist, downloadSMCvarmetadata,downloadSMCcurrentday, downloadSMChistorical,
-       downloadAEMETcurrentday,downloadAEMEThistorical, downloadAEMEThistoricalstationlist,
+       downloadAEMETcurrentday,downloadAEMEThistorical, downloadAEMETstationlist,
        downloadMETEOCLIMATICcurrentday, downloadMETEOCLIMATICstationlist,
        extractgridindex,
        extractgridpoints, extractNetCDF,
@@ -69,6 +69,9 @@ importFrom(sf,
            as_Spatial, st_coordinates)
 importFrom(units,
            drop_units)
+importFrom(meteospain, 
+           get_stations_info_from, get_meteo_from,
+           aemet_options, meteocat_options, meteogalicia_options, meteoclimatic_options)
 
 S3method(summary, interpolation.cv)
 

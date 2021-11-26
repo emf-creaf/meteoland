@@ -299,17 +299,20 @@ downloadMGcurrentday <- function(station_id=NULL, daily = TRUE, verbose = TRUE) 
 
 #### Meteoclimatic
 downloadMETEOCLIMATICcurrentday <- function(station_id = "ESCAT") {
-  
+
   # Stations coords extraction ----------------------------------------------------------------------------
   # We use the stationlist function for meteoclimatic, but no spatial format
-  meteoclimatic_stations <- downloadMETEOCLIMATICstationlist(station_id, spatial = FALSE)
-  
+  meteoclimatic_stations <- downloadMETEOCLIMATICstationlist(station_id)
+  meteoclimatic_stations <- as.data.frame(meteoclimatic_stations)
+  names(meteoclimatic_stations)[1] = "station_id"
+  names(meteoclimatic_stations)[3] = "long"
+  names(meteoclimatic_stations)[4] = "lat"
   # Station meteo data extraction -------------------------------------------------------------------------
   # In this case, we need to access the data feed, instead of the stations feed. But the process is really
   # similar to the ine in downloadMETEOCLIMATICstationlist.
   data_xml_source <- paste0("http://meteoclimatic.com/feed/xml/", station_id)
   meteoclimatic_data <- data.frame()
-  
+
   for (station in data_xml_source) {
     data_xml_body <- xml2::read_xml(station)
     # But, here extracting the data is not as easy as before. Variables (tmin, tmax, precipitation...) can
@@ -326,7 +329,7 @@ downloadMETEOCLIMATICcurrentday <- function(station_id = "ESCAT") {
     )
     meteoclimatic_data <- rbind(meteoclimatic_data, station_data)
   }
-  
+
   # Final data --------------------------------------------------------------------------------------------
   # After obtaining the data, we need to join the stations info and create the spatial object to return
   all_data <- merge(meteoclimatic_stations, meteoclimatic_data, by = 'station_id')
@@ -337,6 +340,6 @@ downloadMETEOCLIMATICcurrentday <- function(station_id = "ESCAT") {
   all_data$name <- NULL
   sp::coordinates(all_data) <- ~long+lat
   sp::proj4string(all_data) <- sp::CRS(SRS_string = "EPSG:4326")
-  
+
   return(all_data)
 }

@@ -61,7 +61,8 @@ NumericVector weightedRegression(NumericVector Y, NumericVector X, NumericVector
 NumericMatrix temporalSmoothing(NumericMatrix input, int numDays, bool prec) {
   int nrows = input.nrow();
   int ncols = input.ncol();
-  NumericVector filter(2*numDays+1), weights(2*numDays+1);
+  int vec_size = (2*numDays) + 1;
+  NumericVector filter(vec_size, 0.0), weights(vec_size,0.0);
   NumericMatrix output(nrows,ncols);
   for(int r = 0;r<nrows;r++) {  //Station loop
     for(int c = 0;c<ncols;c++) { //Day loop

@@ -118,9 +118,8 @@
     <p>DEPRECATED. Download data from the Catalan automatic weather station network (XEMA from Servei Meteorològic de Catalunya)</p>
     </div>
 
-    <pre class="usage"><span class='fu'>downloadSMCvarmetadata</span><span class='op'>(</span><span class='va'>api</span>, type <span class='op'>=</span> <span class='st'>"current"</span><span class='op'>)</span>
-<span class='fu'>downloadSMCstationlist</span><span class='op'>(</span><span class='va'>api</span>, date <span class='op'>=</span> <span class='cn'>NULL</span><span class='op'>)</span>
-<span class='fu'>downloadSMCcurrentday</span><span class='op'>(</span><span class='va'>api</span>, daily_meteoland <span class='op'>=</span> <span class='cn'>TRUE</span>, variable_code<span class='op'>=</span><span class='cn'>NULL</span>,
+    <pre class="usage"><span class='fu'>downloadSMCstationlist</span><span class='op'>(</span><span class='va'>api</span>, date <span class='op'>=</span> <span class='cn'>NULL</span><span class='op'>)</span>
+<span class='fu'>downloadSMCcurrentday</span><span class='op'>(</span><span class='va'>api</span>, daily <span class='op'>=</span> <span class='cn'>TRUE</span>,
                       station_id<span class='op'>=</span><span class='cn'>NULL</span>, date <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/Sys.time.html'>Sys.Date</a></span><span class='op'>(</span><span class='op'>)</span>, verbose<span class='op'>=</span><span class='cn'>TRUE</span><span class='op'>)</span>
 <span class='fu'>downloadSMChistorical</span><span class='op'>(</span><span class='va'>api</span>, <span class='va'>date</span>, station_id<span class='op'>=</span><span class='cn'>NULL</span>, export <span class='op'>=</span> <span class='cn'>FALSE</span>, 
                       exportDir <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/getwd.html'>getwd</a></span><span class='op'>(</span><span class='op'>)</span>, exportFormat <span class='op'>=</span> <span class='st'>"meteoland/txt"</span>,
@@ -134,16 +133,8 @@
       <td><p>String with the SMC API key (the procedure to apply for an api key is explained in https://apidocs.meteocat.gencat.cat/ ).</p></td>
     </tr>
     <tr>
-      <th>type</th>
-      <td><p>Either 'current' or 'historical' for current day variable metadata or historical variable metadata, respectively.</p></td>
-    </tr>
-    <tr>
-      <th>daily_meteoland</th>
-      <td><p>When <code>daily_meteoland = TRUE</code> all the usual variables in meteoland are downloaded and aggregated at the daily scale. When <code>daily_meteoland = FALSE</code>, the user can choose the desired variables using <code>variable_code</code>.</p></td>
-    </tr>
-    <tr>
-      <th>variable_code</th>
-      <td><p>A character vector with variable codes to be queried. If <code>NULL</code> in <code>downloadSMChistorical</code> all the usual variables for meteoland are downloaded. Otherwise, the results are returned as a dara frame.</p></td>
+      <th>daily</th>
+      <td><p>Boolean flag. Are data to be returned at a daily or hourly scale?</p></td>
     </tr>
     <tr>
       <th>date</th>
@@ -181,7 +172,6 @@
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
     <p>Function <code>downloadSMCstationlist</code> returns a <code>SpatialPointsDataFrame-class</code> object containing the list of SMC operational weather stations for the date given.</p>
-<p>Function <code>downloadSMCvarmetadata</code> returns a data frame with weather variables, their units and acronym to be used in queries (see parameter <code>variable_code</code>).</p>
 <p>Function <code>downloadSMCcurrentday</code> downloads recent weather (the last 24h or the weather for a given date) from all currently available stations and returns data frame if <code>daily_meteoland = FALSE</code> or a <code>SpatialPointsDataFrame-class</code> object with observations aggregated at the daily scale otherwise.</p>
 <p>Function <code>downloadSMChistorical</code> downloads historical daily weather corresponding to a given time period from a set (or all currently available) stations. Results are returned (or exported) after formatting data as a <code><a href='SpatialPointsMeteorology-class.html'>SpatialPointsMeteorology-class</a></code> if <code>variable_code = NULL</code>, or as a data frame otherwise.</p>
     <h2 class="hasAnchor" id="note"><a class="anchor" href="#note"></a>Note</h2>

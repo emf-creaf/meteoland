@@ -1,76 +1,27 @@
-# Function to download daily met data, format it and save it on the disk
-
-#### AEMET
-downloadAEMETcurrentday <- function(api, daily = TRUE, verbose=TRUE){
-  # # Utilitary functions
-  # nonUTF8 = "\u00D1\u00C0\u00C1\u00C8\u00C9\u00D2\u00D3\u00CC\u00CD\u00DC\u00CF"
-  # cname.func <- function(x){
-  #   regmatches(x,gregexpr('(?<=\\n\\s{2}\\")[[:print:]]+(?=\\"\\s\\:)', x, perl = T))[[1]]
-  # }
-  # value.func <- function(x){
-  #   value <- regmatches(x,gregexpr(paste0("(?<=\\:\\s)([[:print:]]|[",nonUTF8,"])*(?=\\n)"), x, perl = T))[[1]]
-  #   value <- gsub('\\",', "", value)
-  #   value <- gsub('\\"', "", value)
-  #   value <- gsub(',', "", value)
-  # }
-  # 
-  # 
-  # # set options
-  # h = new_handle()
-  # handle_setheaders(h, "Cache-Control" = "no-cache", api_key=api)
-  # handle_setopt(h, ssl_verifypeer=FALSE)
-  # handle_setopt(h, customrequest="GET")
-  # 
-  # url <- "https://opendata.aemet.es/opendata/api/observacion/convencional/todas"
-  # # get data url
-  # urldata_raw <- curl_fetch_memory(url, h)$content
-  # urldata_string <- value.func(rawToChar(urldata_raw))
-  # 
-  # if(urldata_string[2]=="401"){
-  #   stop("Invalid API key. (API keys are valid for 3 months.)")
-  # }
-  # 
-  # urldata <- urldata_string[3]
-  # 
-  # if(verbose)cat("Downloading hourly data from all available stations")
-  # data_raw <- curl_fetch_memory(urldata, h)$content
-  # 
-  # if(verbose)cat("\nFormating data")
-  # data_string <- rawToChar(data_raw)
-  # #Add local encoding information to data_string
-  # # Encoding(data_string) <-"latin1"
-  # enclocal <- l10n_info()
-  # if(enclocal[[2]]) Encoding(data_string) <-"UTF-8"
-  # else if(enclocal[[3]]) Encoding(data_string) <-"latin1"
-  # data_string <- strsplit(data_string,"}\\,\\s{1}\\{")[[1]]
-  # cname <- lapply(data_string,FUN = cname.func)
-  # value <- lapply(data_string,FUN = value.func)
-  # value <- mapply(FUN = function(x,y){names(x) <- y;return(x)}, x = value,y = cname)
-  # unique_cname <- cname[[which.max(sapply(cname,FUN = length))]]
-  # value <- mapply(FUN = function(x,y){x[y]}, x = value, y = list(unique_cname))
-  # 
-  # data_df <- data.frame(matrix(t(value), ncol = length(unique_cname), dimnames = list(NULL, unique_cname)),
-  #                       stringsAsFactors = F)
-  
-  if(verbose)cat("Downloading hourly data from all available stations")
-  apidest = "/api/observacion/convencional/todas"
-  data_df = .get_data_aemet(apidest, api)
+.reshapemeteospain_current<-function(data_ms, daily = TRUE, verbose = TRUE) {
+  spdf_data <-sf::as_Spatial(data_ms)
+  data_df <- spdf_data@data
+  # Isolate coordinates and elevation
+  coords_data <- as.data.frame(coordinates(spdf_data))
+  data_df$lon = coords_data$coords.x1
+  data_df$lat = coords_data$coords.x2
   
   if(verbose)cat("\nFormating data")
-  varnames <-c("idema", "lon","lat", "ubi", "alt", "fint", "ta", "tamin", "tamax",  "prec", "hr", "dv", "vv")
+  varnames <-c("station_id", "lon", "lat", "station_name", "altitude", "timestamp", "temperature", "min_temperature", "max_temperature",  "precipitation",
+               "relative_humidity", "wind_direction", "wind_speed")
   data_df <- data_df[,varnames]
-  numvar <- c("lon","lat","alt","ta", "tamin", "tamax",  "prec", "hr", "dv", "vv")
+  numvar <- c("lon", "lat","altitude","temperature", "min_temperature", "max_temperature",  "precipitation", "relative_humidity", "wind_direction", "wind_speed")
   data_df[,numvar] <- sapply(data_df[,numvar],as.numeric)
-  data_df$fint <- as.POSIXlt(sub("T", " ",data_df$fint), format = "%Y-%m-%d %H:%M:%S")
+  data_df$timestamp <- as.POSIXlt(sub("T", " ",data_df$timestamp), format = "%Y-%m-%d %H:%M:%S")
   
   if(daily){
     if(verbose)cat("\nAggregating hourly data to 24h-scale\n")
     options(warn=-1)
-    data_agg <- aggregate(data_df[,numvar],list(idema = data_df$idema, ubi = data_df$ubi), 
+    data_agg <- aggregate(data_df[,numvar],list(station_id = data_df$station_id, station_name = data_df$station_name), 
                           function(x){mean<-mean(x,na.rm=T);min<-min(x,na.rm=T);max<-max(x,na.rm=T);sum<-sum(x,na.rm=T)
                           return(c(mean=mean,min=min,max=max,sum=sum))})
     # wind direction
-    dv_agg <- aggregate(list(dv = data_df$dv),list(idema = data_df$idema, ubi = data_df$ubi),
+    dv_agg <- aggregate(list(dv = data_df$wind_direction),list(station_id = data_df$station_id, station_name = data_df$station_name),
                         function(dvvec){
                           y = sum(cos(dvvec*pi/180), na.rm=TRUE)/length(dvvec)
                           x = sum(sin(dvvec*pi/180), na.rm=TRUE)/length(dvvec)
@@ -79,17 +30,17 @@ downloadAEMETcurrentday <- function(api, daily = TRUE, verbose=TRUE){
                           return(dv)
                         })
     options(warn=0)
-    data_df <- data.frame(ID = as.character(data_agg$idema), name = data_agg$ubi, 
-                          long = data_agg$lon[,"mean"],lat = data_agg$lat[,"mean"], elevation = data_agg$alt[,"mean"],
-                          MeanTemperature = data_agg$ta[,"mean"], MinTemperature = data_agg$ta[,"min"], MaxTemperature = data_agg$ta[,"max"],
-                          Precipitation = data_agg$prec[,"sum"], WindSpeed = data_agg$vv[,"mean"], WindDirection = dv_agg$dv,
-                          MeanRelativeHumidity = data_agg$hr[,"mean"], MinRelativeHumidity = data_agg$hr[,"min"], MaxRelativeHumidity = data_agg$hr[,"max"])
-
+    data_df <- data.frame(ID = as.character(data_agg$station_id), name = data_agg$station_name, 
+                          long = data_agg$lon[,"mean"],lat = data_agg$lat[,"mean"], elevation = data_agg$altitude[,"mean"],
+                          MeanTemperature = data_agg$temperature[,"mean"], MinTemperature = data_agg$min_temperature[,"min"], MaxTemperature = data_agg$max_temperature[,"max"],
+                          Precipitation = data_agg$precipitation[,"sum"], WindSpeed = data_agg$wind_speed[,"mean"], WindDirection = dv_agg$dv,
+                          MeanRelativeHumidity = data_agg$relative_humidity[,"mean"], MinRelativeHumidity = data_agg$relative_humidity[,"min"], MaxRelativeHumidity = data_agg$relative_humidity[,"max"])
+    
     data_df <- as.data.frame(lapply(data_df,function(x){
       x. <- x
       if(is.numeric(x.))x.[is.nan(x.)|is.infinite(x.)] <- NA
       return(x.)
-      }))
+    }))
     
     data_sp <- SpatialPointsDataFrame(coords = data_df[,c("long", "lat")],
                                       data = data_df[,which(!colnames(data_df) %in% c("long", "lat", "name", "ID"))],
@@ -98,11 +49,22 @@ downloadAEMETcurrentday <- function(api, daily = TRUE, verbose=TRUE){
     return(data_sp)
   }else{
     if(verbose)cat("\nHourly results are returned\n")
-    colnames(data_df) <- c("ID", "long", "lat", "name", "elevation", "date", 
-                           "MeanTemperature", "MinTemperature", "MaxTemperature",
-                           "Precipitation", "MeanRelativeHumidity", "WindDirection", "WindSpeed")
-    return(data_df)
+    data_out <-data_df[,c("station_id", "lon", "lat", "station_name", "altitude", "timestamp",
+                          "temperature", "min_temperature", "max_temperature", 
+                          "precipitation", "relative_humidity", "wind_direction", "wind_speed")]
+    colnames(data_out) <- c("ID", "long", "lat", "name", "elevation", "timestamp", 
+                            "MeanTemperature", "MinTemperature", "MaxTemperature",
+                            "Precipitation", "MeanRelativeHumidity", "WindDirection", "WindSpeed")
+    return(data_out)
   }
+}
+
+#### AEMET
+downloadAEMETcurrentday <- function(api, daily = TRUE, verbose=TRUE){
+  if(verbose) cat("Downloading hourly data from all available stations")
+  api_options <- aemet_options(resolution = 'current_day', api_key = api)
+  data_ms <- get_meteo_from("aemet", api_options)
+  return(.reshapemeteospain_current(data_ms, daily = daily, verbose = verbose))
 }
 
 
@@ -223,123 +185,23 @@ downloadSMCcurrentday <- function(api, daily_meteoland=TRUE, variable_code=NULL,
   }
 }
 
-
+ 
 #### MeteoGalicia
 downloadMGcurrentday <- function(station_id=NULL, daily = TRUE, verbose = TRUE) {
-  url_base <- "http://servizos.meteogalicia.es/rss/observacion/ultimosHorariosEstacions.action?numHoras=24"
-  idpar <- c(MeanTemperature = "TA_AVG_1.5m", 
-             MinTemperature = "TA_MIN_1.5m", 
-             MaxTemperature = "TA_MAX_1.5m", 
-             MeanRelativeHumidity = "HR_AVG_1.5m", 
-             Precipitation = "PP_SUM_1.5m", 
-             WindSpeed = "VV_AVG_2m")
-  if(!is.null(station_id)) {
-    if(verbose) cat(paste0("Downloading hourly data from: ", paste(station_id,collapse = ","),"...\n"))
-    url <- paste0(url_base,"&idEst=",paste(station_id,collapse = ","),"&idParam=",paste(idpar,collapse=","))
-  } else {
-    if(verbose)cat("Downloading hourly data from all available stations...\n")
-    url <- paste0(url_base,"&idParam=",paste(idpar,collapse=","))
-  }
-  data_df <- jsonlite::fromJSON(txt=url)[[1]]
-  
-  if(verbose) cat(paste0("Arranging hourly data...\n"))
-  ids <- data_df[["idEstacion"]]
-  stationNames <- data_df[["estacion"]]
-  instantes <- data_df[["listaInstantes"]]
-  df_all = NULL
-  for(i in 1:length(instantes)) {
-    lec_i = instantes[[i]]$instanteLecturaUTC
-    med_i = instantes[[i]]$listaMedidas
-    df_i = data.frame(ID = rep(ids[i], length(lec_i)),
-                    Time = as.POSIXlt(sub("T", " ",lec_i), format = "%Y-%m-%d %H:%M:%S"))
-    for(var in names(idpar)) {
-      df_i[[var]] = NA
-      for(h in 1:length(med_i)) {
-        med_ih = med_i[[h]]
-        if(idpar[[var]] %in% med_ih$codigoParametro) df_i[h,var] <- mean(med_ih[med_ih$codigoParametro==idpar[[var]],"valor"], na.rm=T)
-      }
-    }
-    if(is.null(df_all)) df_all = df_i
-    else df_all = rbind(df_all, df_i)
-  }
-  if(daily) {
-    if(verbose)cat("Downloading station info...\n")
-    MGstation_sp = downloadMGstationlist()
-    if(verbose)cat("Aggregating to daily scale...\n")
-    MGstation_sp<- MGstation_sp[MGstation_sp$ID %in% unique(df_all$ID),]
-    data_agg <- aggregate(df_all[,names(idpar)],list(ID = df_all$ID), 
-                          function(x){
-                            if(sum(is.na(x))<length(x)) {
-                              mean<-mean(x,na.rm=T)
-                              min<-min(x,na.rm=T)
-                              max<-max(x,na.rm=T)
-                              sum<-sum(x,na.rm=T)
-                              return(c(mean=mean,min=min,max=max,sum=sum))
-                            } 
-                            return(c(mean=NA, min=NA, max=NA, sum=NA))})
-    rownms = as.character(data_agg$ID)
-    data_df <- data.frame(ID = data_agg$ID, name = MGstation_sp@data[rownms,"name"], 
-                          lon = MGstation_sp@data[rownms,"lon"],
-                          lat = MGstation_sp@data[rownms,"lat"], 
-                          elevation = MGstation_sp@data[rownms,"elevation"],
-                          MeanTemperature = data_agg[["MeanTemperature"]][ ,"mean"], 
-                          MinTemperature = data_agg[["MinTemperature"]][ ,"min"], 
-                          MaxTemperature = data_agg[["MaxTemperature"]][ ,"max"],
-                          Precipitation = data_agg[["Precipitation"]][ ,"sum"], 
-                          MeanRelativeHumidity = data_agg[["MeanRelativeHumidity"]][ ,"mean"], 
-                          MinRelativeHumidity = data_agg[["MeanRelativeHumidity"]][ ,"min"], 
-                          MaxRelativeHumidity = data_agg[["MeanRelativeHumidity"]][ ,"max"],
-                          WindSpeed = data_agg[["WindSpeed"]][ ,"mean"])
-    data_sp = SpatialPointsDataFrame(SpatialPoints(MGstation_sp@coords[rownms,], MGstation_sp@proj4string), data_df)
-    return(data_sp)
-  }
-  if(verbose)cat("\nHourly results are returned\n")
-  return(df_all)
+  if(verbose) cat("Downloading hourly data from all available stations")
+  api_options <- meteogalicia_options(resolution = 'current_day', stations = station_id)
+  data_ms <- get_meteo_from("meteogalicia", api_options)
+  return(.reshapemeteospain_current(data_ms, daily = daily, verbose = verbose))
 }
 
 #### Meteoclimatic
 downloadMETEOCLIMATICcurrentday <- function(station_id = "ESCAT") {
-
-  # Stations coords extraction ----------------------------------------------------------------------------
-  # We use the stationlist function for meteoclimatic, but no spatial format
-  meteoclimatic_stations <- downloadMETEOCLIMATICstationlist(station_id)
-  meteoclimatic_stations <- as.data.frame(meteoclimatic_stations)
-  names(meteoclimatic_stations)[1] = "station_id"
-  names(meteoclimatic_stations)[3] = "long"
-  names(meteoclimatic_stations)[4] = "lat"
-  # Station meteo data extraction -------------------------------------------------------------------------
-  # In this case, we need to access the data feed, instead of the stations feed. But the process is really
-  # similar to the ine in downloadMETEOCLIMATICstationlist.
-  data_xml_source <- paste0("http://meteoclimatic.com/feed/xml/", station_id)
-  meteoclimatic_data <- data.frame()
-
-  for (station in data_xml_source) {
-    data_xml_body <- xml2::read_xml(station)
-    # But, here extracting the data is not as easy as before. Variables (tmin, tmax, precipitation...) can
-    # be missing in some stations, and extracting the info with xml_find_all does not includes NAs. So, we are
-    # gonna need to be a little creative with this one (check .safe_xml_find helper)
-    nodes <- xml2::xml_path(xml2::xml_find_all(data_xml_body, '//meteodata/stations/station'))
-    station_data <- data.frame(
-      station_id = sapply(nodes, .safe_xml_find, data = data_xml_body, extra_path = '/id', transform_function = xml2::xml_text),
-      MaxTemperature = sapply(nodes, .safe_xml_find, data = data_xml_body, extra_path = '/stationdata/temperature/max', transform_function = xml2::xml_double),
-      MinTemperature = sapply(nodes, .safe_xml_find, data = data_xml_body, extra_path = '/stationdata/temperature/min', transform_function = xml2::xml_double),
-      MaxRelativeHumidity = sapply(nodes, .safe_xml_find, data = data_xml_body, extra_path = '/stationdata/humidity/max', transform_function = xml2::xml_double),
-      MinRelativeHumidity = sapply(nodes, .safe_xml_find, data = data_xml_body, extra_path = '/stationdata/humidity/min', transform_function = xml2::xml_double),
-      Precipitation = sapply(nodes, .safe_xml_find, data = data_xml_body, extra_path = '/stationdata/rain/total', transform_function = xml2::xml_double)
-    )
-    meteoclimatic_data <- rbind(meteoclimatic_data, station_data)
-  }
-
-  # Final data --------------------------------------------------------------------------------------------
-  # After obtaining the data, we need to join the stations info and create the spatial object to return
-  all_data <- merge(meteoclimatic_stations, meteoclimatic_data, by = 'station_id')
-  # And now the spatial object. To be consistent with other meteoland functions, the data must have only the
-  # climatic variables with station station_id as rownames and coords must be in WGS84 latlong
-  rownames(all_data) <- all_data$station_id
-  all_data$station_id <- NULL
-  all_data$name <- NULL
-  sp::coordinates(all_data) <- ~long+lat
-  sp::proj4string(all_data) <- sp::CRS(SRS_string = "EPSG:4326")
-
-  return(all_data)
+  api_options <- meteoclimatic_options(stations = station_id, resolution = "current_day")
+  data_ms <- get_meteo_from("meteoclimatic", api_options)
+  data_sp <- as(data_ms, "Spatial")
+  data_sp@data <- data_sp@data[,c("station_id", "station_name", "min_temperature", "max_temperature", "min_relative_humidity",
+                                  "max_relative_humidity", "precipitation")]
+  names(data_sp@data)<-c("ID", "name", "MinimumTemperature", "MaximumTemperature", "MinimumRelativeHumidity",
+                         "MaximumRelativeHumidity", "Precipitation")
+  return(data_sp)
 }

@@ -12,9 +12,9 @@ DEPRECATED. Download data from the Spanish National Meterology Agency (AEMET)
 }
 \usage{
 downloadAEMETstationlist(api)
-downloadAEMEThistorical(api, dates, station_id, export = FALSE, exportDir = getwd(), 
-                    exportFormat = "meteoland/txt", metadataFile = "MP.txt", 
-                    verbose = TRUE)
+downloadAEMEThistorical(api, dates, station_id = NULL, export = FALSE, 
+                    exportDir = getwd(), exportFormat = "meteoland/txt", 
+                    metadataFile = "MP.txt", verbose = TRUE)
 downloadAEMETcurrentday(api, daily = TRUE, verbose = TRUE)
 }
 \arguments{

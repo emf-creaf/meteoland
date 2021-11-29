@@ -1,5 +1,5 @@
 ### AEMET
-downloadAEMEThistorical <- function(api, dates, station_id, export = FALSE, exportDir = getwd(),
+downloadAEMEThistorical <- function(api, dates, station_id = NULL, export = FALSE, exportDir = getwd(),
                                 exportFormat = "meteoland/txt",
                                 metadataFile = "MP.txt", verbose=TRUE){
   opt <- meteospain::aemet_options("daily", 

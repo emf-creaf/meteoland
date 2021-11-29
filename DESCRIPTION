@@ -1,8 +1,8 @@
 Package: meteoland
 Type: Package
 Title: Landscape Meteorology Tools
-Version: 1.0.1
-Date: 2021-11-29
+Version: 1.0.2
+Date: 2021-11-30
 Authors@R: c(
 	person('Miquel', 'De Cáceres', role=c('aut','cre'),
 	email='miquelcaceres@gmail.com'),
@@ -14,7 +14,7 @@ License: GPL (>= 2)
 URL: https://emf-creaf.github.io/meteoland/index.html
 LazyData: TRUE
 Depends: R (>= 3.4.0), sp
-Imports: sf, spdep, rgdal, ncdf4, httr, jsonlite, methods,  meteospain, Rcpp (>= 0.12.12), units, xml2
+Imports: sf, spdep, rgdal, ncdf4, methods,  meteospain, Rcpp (>= 0.12.12), units
 Suggests: knitr, forecast, spacetime, stars, rmarkdown
 LinkingTo: Rcpp
 Encoding: UTF-8

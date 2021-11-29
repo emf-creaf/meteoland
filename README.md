@@ -47,13 +47,16 @@ at (<https://emf-creaf.github.io/meteolandbook/index.html>).
 
 ## Companion packages
 
-During the development of `meteoland` some functions to download surface
-weather station data from Spanish networks were originally developed.
-After `meteoland` version 1.0.1, these functions are deprecated and,
-instead, the user is recommended to use package
+During the development of `meteoland` some functions to download weather
+station data from several Spanish networks were originally developed.
+After `meteoland` version 1.0.1, the user is recommended to use package
 [**meteospain**](https://emf-creaf.github.io/meteospain/), which can
 also be found at
 [CRAN](https://cran.rstudio.com/web/packages/meteospain/index.html).
+Functions to download weather station data are still available in
+`meteoland` but they have been deprecated and make internal calls to
+functions in package
+[**meteospain**](https://emf-creaf.github.io/meteospain/).
 
 ## References
 

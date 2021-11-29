@@ -1,6 +1,4 @@
 import(sp)
-import(httr)
-import(xml2)
 import(spdep)
 import(ncdf4)
 import(rgdal)
@@ -55,7 +53,6 @@ exportClasses(SpatialPointsMeteorology,SpatialPointsTopography,
               SpatialPixelsMeteorology,SpatialPixelsTopography)
 exportMethods(subsample, spplot, "[", show)
 importFrom(Rcpp, evalCpp)
-importFrom(jsonlite,fromJSON)
 importFrom(grDevices, colorRampPalette, topo.colors)
 importFrom(graphics, abline, hist, lines, par)
 importFrom(utils, read.table, setTxtProgressBar,

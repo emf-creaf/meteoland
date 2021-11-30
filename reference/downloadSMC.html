@@ -176,7 +176,7 @@
 <p>Function <code>downloadSMChistorical</code> downloads historical daily weather corresponding to a given time period from a set (or all currently available) stations. Results are returned (or exported) after formatting data as a <code><a href='SpatialPointsMeteorology-class.html'>SpatialPointsMeteorology-class</a></code> if <code>variable_code = NULL</code>, or as a data frame otherwise.</p>
     <h2 class="hasAnchor" id="note"><a class="anchor" href="#note"></a>Note</h2>
 
-    <p>Recommended package: <code>meteospain</code>.</p>
+    <p>Since ver. 1.0.1, weather data download functions included in <code>meteoland</code> make internal calls to functions in package <code>meteospain</code>. For an enhanced flexibility, users are recommended to call functions in <code>meteospain</code> themselves, and then to use function <code><a href='reshapeweather.html'>reshapemeteospain</a></code> to generate data suitable for <code>meteoland</code>.</p>
     <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
 
     <p>Servei Meteorològic de Catalunya (SMC) should be acknowledged as author of information when accessing weather data with these functions.</p>

@@ -175,7 +175,7 @@
 <p>Function <code>downloadAEMETcurrentday</code> downloads recent weather (the last 24h) from all currently available stations and returns data frame if <code>daily = FALSE</code> or a <code>SpatialPointsDataFrame-class</code> object with observations aggregated at the daily scale if else.</p>
     <h2 class="hasAnchor" id="note"><a class="anchor" href="#note"></a>Note</h2>
 
-    <p>Recommended package: <code>meteospain</code>.</p>
+    <p>Since ver. 1.0.1, weather data download functions included in <code>meteoland</code> make internal calls to functions in package <code>meteospain</code>. For an enhanced flexibility, users are recommended to call functions in <code>meteospain</code> themselves, and then to use function <code><a href='reshapeweather.html'>reshapemeteospain</a></code> to generate data suitable for <code>meteoland</code>.</p>
 <p>The list of stations available in <code>downloadAEMETcurrentday</code> (current observations) may be different from the list given by <code>downloadAEMETstationlist</code> and available in <code>downloadAEMEThistorical</code> (stations with historical climate series).</p>
     <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
 

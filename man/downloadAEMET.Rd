@@ -39,7 +39,7 @@ Function \code{downloadAEMEThistorical} downloads data for the specified AEMET s
 Function \code{downloadAEMETcurrentday} downloads recent weather (the last 24h) from all currently available stations and returns data frame if \code{daily = FALSE} or a \code{\link{SpatialPointsDataFrame-class}} object with observations aggregated at the daily scale if else. 
 }
 \note{
-Recommended package: \code{meteospain}.
+Since ver. 1.0.1, weather data download functions included in \code{meteoland} make internal calls to functions in package \code{meteospain}. For an enhanced flexibility, users are recommended to call functions in \code{meteospain} themselves, and then to use function \code{\link{reshapemeteospain}} to generate data suitable for \code{meteoland}. 
 
 The list of stations available in \code{downloadAEMETcurrentday} (current observations) may be different from the list given by \code{downloadAEMETstationlist} and available in \code{downloadAEMEThistorical} (stations with historical climate series).
 }

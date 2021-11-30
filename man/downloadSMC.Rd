@@ -40,7 +40,7 @@ Function \code{downloadSMCcurrentday} downloads recent weather (the last 24h or 
 Function \code{downloadSMChistorical} downloads historical daily weather corresponding to a given time period from a set (or all currently available) stations. Results are returned (or exported) after formatting data as a \code{\link{SpatialPointsMeteorology-class}} if \code{variable_code = NULL}, or as a data frame otherwise.
 }
 \note{
-Recommended package: \code{meteospain}.
+Since ver. 1.0.1, weather data download functions included in \code{meteoland} make internal calls to functions in package \code{meteospain}. For an enhanced flexibility, users are recommended to call functions in \code{meteospain} themselves, and then to use function \code{\link{reshapemeteospain}} to generate data suitable for \code{meteoland}. 
 }
 \references{
 Servei \enc{Meteorològic}{Meteorologic} de Catalunya (SMC) should be acknowledged as author of information when accessing weather data with these functions.

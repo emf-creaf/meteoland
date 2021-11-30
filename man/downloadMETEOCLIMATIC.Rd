@@ -22,12 +22,10 @@ Meteoclimatic is a non-professional automatic stations network, maintained by vo
 \value{
 Function \code{downloadMETEOCLIMATICstationlist} returns a \code{\link{SpatialPointsDataFrame-class}} object containing the list of Meteoclimatic weather stations for which data is available based on the station_id codes provided.
 
-Function \code{downloadMETEOCLIMATICcurrentday} downloads recent weather (for the current day) from all currently available stations and returns a \code{\link{SpatialPointsDataFrame-class}} object with observations. 
+Function \code{downloadMETEOCLIMATICcurrentday} downloads recent weather (for the current day) from all currently available stations and returns a \code{\link{SpatialPointsDataFrame-class}} object with observations. Only acummulated precipitation, maximum and minimum temperature and relative humidity are returned. 
 }
 \note{
-Recommended package: \code{meteospain}.
-
-Only acummulated precipitation, maximum and minimum temperature and relative humidity are returned. The current implementation was inspired by function meteoclimaticR by Marc Lemus \enc{Cánovas}{Canovas}.
+Since ver. 1.0.1, weather data download functions included in \code{meteoland} make internal calls to functions in package \code{meteospain}. For an enhanced flexibility, users are recommended to call functions in \code{meteospain} themselves, and then to use function \code{\link{reshapemeteospain}} to generate data suitable for \code{meteoland}. 
 }
 \references{
 Meteoclimatic should be acknowledged as author of information when using this data.

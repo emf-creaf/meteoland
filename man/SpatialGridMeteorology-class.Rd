@@ -3,7 +3,7 @@
 \Rdversion{1.1}
 \docType{class}
 \alias{SpatialGridMeteorology-class}
-\alias{[,SpatialGridMeteorology,ANY,ANY-method}
+\alias{[,SpatialGridMeteorology-method}
 \alias{show,SpatialGridMeteorology-method}
 
 \title{Class \code{"SpatialGridMeteorology"}}

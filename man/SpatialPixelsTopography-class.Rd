@@ -3,7 +3,7 @@
 \Rdversion{1.1}
 \docType{class}
 \alias{SpatialPixelsTopography-class}
-\alias{[,SpatialPixelsTopography,ANY,ANY-method}
+\alias{[,SpatialPixelsTopography-method}
 \alias{show,SpatialPixelsTopography-method}
 
 \title{Class \code{"SpatialPixelsTopography"}}

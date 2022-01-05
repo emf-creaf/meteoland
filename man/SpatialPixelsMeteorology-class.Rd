@@ -3,7 +3,7 @@
 \Rdversion{1.1}
 \docType{class}
 \alias{SpatialPixelsMeteorology-class}
-\alias{[,SpatialPixelsMeteorology,ANY,ANY-method}
+\alias{[,SpatialPixelsMeteorology-method}
 \alias{show,SpatialPixelsMeteorology-method}
 
 \title{Class \code{"SpatialPixelsMeteorology"}}

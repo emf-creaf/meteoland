@@ -3,7 +3,7 @@
 \Rdversion{1.1}
 \docType{class}
 \alias{SpatialPointsTopography-class}
-\alias{[,SpatialPointsTopography,ANY,ANY,ANY-method}
+\alias{[,SpatialPointsTopography,ANY,ANY-method}
 \alias{show,SpatialPointsTopography-method}
 
 \title{Class \code{"SpatialPointsTopography"}}
@@ -28,7 +28,7 @@ Class \code{"\linkS4class{Spatial}"}, by class "SpatialPointsDataFrame", distanc
 }
 \section{Methods}{
   \describe{
-     \item{[}{\code{signature(x = "SpatialPointsTopography", i = "ANY", j = "ANY", drop = "ANY")}: subsets the spatial points and associated topography; only rows (points) can be subsetted.}
+     \item{[}{\code{signature(x = "SpatialPointsTopography", i = "ANY", j = "ANY", ..., drop = TRUE)}: subsets the spatial points and associated topography; only rows (points) can be subsetted.}
 	 }
 }
 \author{

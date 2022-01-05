@@ -3,7 +3,7 @@
 \Rdversion{1.1}
 \docType{class}
 \alias{SpatialGridMeteorology-class}
-\alias{[,SpatialGridMeteorology,ANY,ANY,ANY-method}
+\alias{[,SpatialGridMeteorology,ANY,ANY-method}
 \alias{show,SpatialGridMeteorology-method}
 
 \title{Class \code{"SpatialGridMeteorology"}}
@@ -27,7 +27,7 @@ Class \code{"\linkS4class{Spatial}"}, by class "SpatialGrid", distance 2.
 }
 \section{Methods}{
   \describe{
-     \item{[}{\code{signature(x = "SpatialGridMeteorology", i = "ANY", j = "ANY", drop = "ANY")}: subsets the grid and associated meteorology; only rows (x values) and columns (y values) can be subsetted.}
+     \item{[}{\code{signature(x = "SpatialGridMeteorology", i = "ANY", j = "ANY", ..., drop = FALSE)}: subsets the grid and associated meteorology; only rows (x values) and columns (y values) can be subsetted.}
      \item{coerce}{\code{signature(x = "SpatialGridMeteorology", to = "STFDF")}: coerces into a spacetime STFDF object.}
      \item{coerce}{\code{signature(x = "SpatialGridMeteorology", to = "stars")}: coerces into a stars object.}
   }
@@ -36,9 +36,6 @@ Class \code{"\linkS4class{Spatial}"}, by class "SpatialGrid", distance 2.
 \author{
 Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF
 }
-
-%% ~Make other sections like Warning with \section{Warning }{....} ~
-
 \seealso{
 \code{\link{SpatialGridTopography}}, \code{\link{SpatialGridDataFrame-class}}
 }

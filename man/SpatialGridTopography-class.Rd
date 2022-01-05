@@ -3,7 +3,7 @@
 \Rdversion{1.1}
 \docType{class}
 \alias{SpatialGridTopography-class}
-\alias{[,SpatialGridTopography,ANY,ANY,ANY-method}
+\alias{[,SpatialGridTopography,ANY,ANY-method}
 \alias{show,SpatialGridTopography-method}
 
 \title{Class \code{"SpatialGridTopography"}}
@@ -28,7 +28,7 @@ Class \code{"\linkS4class{Spatial}"}, by class "SpatialGridDataFrame", distance 
 }
 \section{Methods}{
   \describe{
-     \item{[}{\code{signature(x = "SpatialGridTopography", i = "ANY", j = "ANY", drop = "ANY")}: subsets the grid and associated topography; only rows (x values) and columns (y values) can be subsetted.}
+     \item{[}{\code{signature(x = "SpatialGridTopography", i = "ANY", j = "ANY", ..., drop = FALSE)}: subsets the grid and associated topography; only rows (x values) and columns (y values) can be subsetted.}
 	 }
 }
 

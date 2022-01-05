@@ -3,7 +3,7 @@
 \Rdversion{1.1}
 \docType{class}
 \alias{SpatialPointsMeteorology-class}
-\alias{[,SpatialPointsMeteorology,ANY,ANY,ANY-method}
+\alias{[,SpatialPointsMeteorology,ANY,ANY-method}
 \alias{show,SpatialPointsMeteorology-method}
 
 \title{Class \code{"SpatialPointsMeteorology"}}
@@ -28,7 +28,7 @@ Class \code{"\linkS4class{Spatial}"}, by class "SpatialPoints", distance 2.
 }
 \section{Methods}{
   \describe{
-    \item{[}{\code{signature(x = "SpatialPointsMeteorology", i = "ANY", j = "ANY", drop = "ANY")}: subsets the spatial points and the corresponding list of meteorological data; only rows (points) can be subsetted.}
+    \item{[}{\code{signature(x = "SpatialPointsMeteorology", i = "ANY", j = "ANY", ..., drop = TRUE)}: subsets the spatial points and the corresponding list of meteorological data; only rows (points) can be subsetted.}
     \item{coerce}{\code{signature(x = "SpatialPointsMeteorology", to = "STFDF")}: coerces into a spacetime STFDF object.}
     \item{coerce}{\code{signature(x = "SpatialPointsMeteorology", to = "stars")}: coerces into a stars object.}
 	 }

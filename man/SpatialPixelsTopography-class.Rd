@@ -3,7 +3,7 @@
 \Rdversion{1.1}
 \docType{class}
 \alias{SpatialPixelsTopography-class}
-\alias{[,SpatialPixelsTopography,ANY,ANY,ANY-method}
+\alias{[,SpatialPixelsTopography,ANY,ANY-method}
 \alias{show,SpatialPixelsTopography-method}
 
 \title{Class \code{"SpatialPixelsTopography"}}
@@ -33,7 +33,7 @@ Class \code{"\linkS4class{Spatial}"}, by class "SpatialPixelsDataFrame", distanc
 }
 \section{Methods}{
   \describe{
-     \item{[}{\code{signature(x = "SpatialGridTopography", i = "ANY", ..., drop = "ANY")}: subsets the pixels and associated topography; only one dimension can be subsetted. If \code{drop = TRUE} the boundary box is recalculated.}
+     \item{[}{\code{signature(x = "SpatialGridTopography", i = "ANY", j = "ANY", ..., drop = FALSE)}: subsets the pixels and associated topography; only one dimension can be subsetted. If \code{drop = TRUE} the boundary box is recalculated.}
     \item{spplot}{\code{signature(object = "SpatialPixelsTopography")}: allows plotting topography maps.}
 	 }
 }

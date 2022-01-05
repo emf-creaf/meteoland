@@ -19,6 +19,8 @@
 <![endif]-->
 </head>
 <body data-spy="scroll" data-target="#toc">
+    
+
     <div class="container template-home">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -31,18 +33,12 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">meteoland</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.0.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.0.2</span>
       </span>
     </div>
 
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
-<li>
-  <a href="index.html">
-    <span class="fas fa-home fa-lg"></span>
-     
-  </a>
-</li>
 <li>
   <a href="reference/index.html">Reference</a>
 </li>
@@ -65,14 +61,14 @@
 
       </header><div class="row">
   <div class="contents col-md-9">
-<div id="meteoland---landscape-meteorology-tools" class="section level1">
-<div class="page-header"><h1 class="hasAnchor">
-<a href="#meteoland---landscape-meteorology-tools" class="anchor"></a>meteoland - Landscape meteorology tools</h1></div>
+<div class="section level1">
+<div class="page-header"><h1 id="meteoland---landscape-meteorology-tools">meteoland - Landscape meteorology tools<a class="anchor" aria-label="anchor" href="#meteoland---landscape-meteorology-tools"></a>
+</h1></div>
 <!-- badges: start -->
 
-<div id="introduction" class="section level2">
-<h2 class="hasAnchor">
-<a href="#introduction" class="anchor"></a>Introduction</h2>
+<div class="section level2">
+<h2 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
+</h2>
 <p>With the aim to assist research of climatic impacts on forests, the R package <code>meteoland</code> provides utilities to estimate daily weather variables at any position over complex terrains:</p>
 <ul>
 <li>Spatial interpolation of daily weather records from meteorological stations.</li>
@@ -81,27 +77,27 @@
 </ul>
 <p>A more detailed introduction to the package functionality can be found in De Cáceres et al. (2018).</p>
 </div>
-<div id="package-installation-and-documentation" class="section level2">
-<h2 class="hasAnchor">
-<a href="#package-installation-and-documentation" class="anchor"></a>Package installation and documentation</h2>
-<p>Package <code>meteoland</code> can be found at <a href="https://cran.r-project.org/">CRAN</a>, but the version in this repository may not be the most recent one. Latest stable versions can be downloaded and installed from GitHub as follows (package <code>devtools</code> should be installed first):</p>
+<div class="section level2">
+<h2 id="package-installation-and-documentation">Package installation and documentation<a class="anchor" aria-label="anchor" href="#package-installation-and-documentation"></a>
+</h2>
+<p>Package <code>meteoland</code> can be found at <a href="https://cran.r-project.org/" class="external-link">CRAN</a>, but the version in this repository may not be the most recent one. Latest stable versions can be downloaded and installed from GitHub as follows (package <code>devtools</code> should be installed first):</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu">devtools</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"emf-creaf/meteoland"</span><span class="op">)</span></code></pre></div>
 <p>Alternatively, users can have help to run package functions directly as package vignettes, by forcing their inclusion in installation:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu">devtools</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"emf-creaf/meteoland"</span>, 
-                         build_opts <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"--no-resave-data"</span>, <span class="st">"--no-manual"</span><span class="op">)</span>,
+                         build_opts <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"--no-resave-data"</span>, <span class="st">"--no-manual"</span><span class="op">)</span>,
                          build_vignettes <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
-<p>Detailed documentation on <code>meteoland</code> calculation routines can be found at (<a href="https://emf-creaf.github.io/meteolandbook/index.html" class="uri">https://emf-creaf.github.io/meteolandbook/index.html</a>).</p>
+<p>Detailed documentation on <code>meteoland</code> calculation routines can be found at (<a href="https://emf-creaf.github.io/meteolandbook/index.html" class="external-link uri">https://emf-creaf.github.io/meteolandbook/index.html</a>).</p>
 </div>
-<div id="companion-packages" class="section level2">
-<h2 class="hasAnchor">
-<a href="#companion-packages" class="anchor"></a>Companion packages</h2>
-<p>During the development of <code>meteoland</code> some functions to download weather station data from several Spanish networks were originally developed. After <code>meteoland</code> version 1.0.1, the user is recommended to use package <a href="https://emf-creaf.github.io/meteospain/"><strong>meteospain</strong></a>, which can also be found at <a href="https://cran.rstudio.com/web/packages/meteospain/index.html">CRAN</a>. Functions to download weather station data are still available in <code>meteoland</code> but they have been deprecated and make internal calls to functions in package <a href="https://emf-creaf.github.io/meteospain/"><strong>meteospain</strong></a>.</p>
+<div class="section level2">
+<h2 id="companion-packages">Companion packages<a class="anchor" aria-label="anchor" href="#companion-packages"></a>
+</h2>
+<p>During the development of <code>meteoland</code> some functions to download weather station data from several Spanish networks were originally developed. After <code>meteoland</code> version 1.0.1, the user is recommended to use package <a href="https://emf-creaf.github.io/meteospain/" class="external-link"><strong>meteospain</strong></a>, which can also be found at <a href="https://cran.rstudio.com/web/packages/meteospain/index.html" class="external-link">CRAN</a>. Functions to download weather station data are still available in <code>meteoland</code> but they have been deprecated and make internal calls to functions in package <a href="https://emf-creaf.github.io/meteospain/" class="external-link"><strong>meteospain</strong></a>.</p>
 </div>
-<div id="references" class="section level2">
-<h2 class="hasAnchor">
-<a href="#references" class="anchor"></a>References</h2>
+<div class="section level2">
+<h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
+</h2>
 <ul>
 <li>De Caceres M, Martin-StPaul N, Turco M, Cabon A, Granda V (2018) Estimating daily meteorological data and downscaling climate models over landscapes. Environmental Modelling and Software 108: 186-196. (<a href="doi:10.1016/j.envsoft.2018.08.003" class="uri">doi:10.1016/j.envsoft.2018.08.003</a>).</li>
 </ul>
@@ -111,28 +107,30 @@
 
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <div class="links">
-<h2>Links</h2>
+<h2 data-toc-skip>Links</h2>
 <ul class="list-unstyled">
-<li>Download from CRAN at <br><a href="https://cloud.r-project.org/package=meteoland">https://​cloud.r-project.org/​package=meteoland</a>
-</li>
-<li>Reference book at <br><a href="https://emf-creaf.github.io/meteolandbook/index.html">https://​emf-creaf.github.io/​meteolandbook/​index.html</a>
-</li>
+<li><a href="https://cloud.r-project.org/package=meteoland" class="external-link">View on CRAN</a></li>
+<li><a href="https://emf-creaf.github.io/meteolandbook/index.html" class="external-link">Reference book</a></li>
 </ul>
 </div>
+
 <div class="license">
-<h2>License</h2>
+<h2 data-toc-skip>License</h2>
 <ul class="list-unstyled">
 <li>GPL (&gt;= 2)</li>
 </ul>
 </div>
+
+
 <div class="citation">
-<h2>Citation</h2>
+<h2 data-toc-skip>Citation</h2>
 <ul class="list-unstyled">
-<li><a href="authors.html">Citing meteoland</a></li>
+<li><a href="authors.html#citation">Citing meteoland</a></li>
 </ul>
 </div>
+
 <div class="developers">
-<h2>Developers</h2>
+<h2 data-toc-skip>Developers</h2>
 <ul class="list-unstyled">
 <li>Miquel De Cáceres <br><small class="roles"> Author, maintainer </small>  </li>
 <li>Nicolas Martin <br><small class="roles"> Author </small>  </li>
@@ -141,24 +139,27 @@
 </ul>
 </div>
 
-  <div class="dev-status">
-<h2>Dev status</h2>
+<div class="dev-status">
+<h2 data-toc-skip>Dev status</h2>
 <ul class="list-unstyled">
-<li><a href="https://cran.r-project.org/package=meteoland"><img src="http://www.r-pkg.org/badges/version/meteoland" alt="CRAN_Status_Badge"></a></li>
-<li><a href="https://cran.rstudio.com/web/packages/meteoland/index.html"><img src="https://cranlogs.r-pkg.org/badges/meteoland"></a></li>
-<li><a href="https://github.com/emf-creaf/meteoland/actions"><img src="https://github.com/emf-creaf/meteoland/workflows/R-CMD-check/badge.svg" alt="R-CMD-check"></a></li>
+<li><a href="https://cran.r-project.org/package=meteoland" class="external-link"><img src="http://www.r-pkg.org/badges/version/meteoland" alt="CRAN_Status_Badge"></a></li>
+<li><a href="https://cran.rstudio.com/web/packages/meteoland/index.html" class="external-link"><img src="https://cranlogs.r-pkg.org/badges/meteoland"></a></li>
+<li><a href="https://github.com/emf-creaf/meteoland/actions" class="external-link"><img src="https://github.com/emf-creaf/meteoland/workflows/R-CMD-check/badge.svg" alt="R-CMD-check"></a></li>
 </ul>
 </div>
-</div>
+
+  </div>
 </div>
 
 
       <footer><div class="copyright">
-  <p>Developed by Miquel De Cáceres, Nicolas Martin, Víctor Granda, Antoine Cabon.</p>
+  <p></p>
+<p>Developed by Miquel De Cáceres, Nicolas Martin, Víctor Granda, Antoine Cabon.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
+  <p></p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.1.</p>
 </div>
 
       </footer>
@@ -166,6 +167,8 @@
 
   
 
+
+  
 
   </body>
 </html>

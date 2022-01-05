@@ -3,7 +3,8 @@
 \Rdversion{1.1}
 \docType{class}
 \alias{SpatialGridTopography-class}
-\alias{[,SpatialGridTopography-method}
+\alias{[,SpatialGridTopography,ANY,ANY-method}
+\alias{[,SpatialGridTopography,ANY,ANY,ANY-method}
 \alias{show,SpatialGridTopography-method}
 
 \title{Class \code{"SpatialGridTopography"}}

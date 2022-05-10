@@ -33,7 +33,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">meteoland</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.0.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.0.3</span>
       </span>
     </div>
 
@@ -59,13 +59,13 @@
 
       
 
-      </header><div class="row">
+      </header><script src="UserGuide_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>User guide to meteoland</h1>
                         <h4 data-toc-skip class="author">Miquel De Cáceres, Victor Granda</h4>
             
-            <h4 data-toc-skip class="date">2022-01-05</h4>
+            <h4 data-toc-skip class="date">2022-05-10</h4>
       
       
       <div class="hidden name"><code>UserGuide.Rmd</code></div>
@@ -74,12 +74,12 @@
 
     
     
-<div class="section level1">
-<h1 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
-</h1>
 <div class="section level2">
-<h2 id="purpose">Purpose<a class="anchor" aria-label="anchor" href="#purpose"></a>
+<h2 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
 </h2>
+<div class="section level3">
+<h3 id="purpose">Purpose<a class="anchor" aria-label="anchor" href="#purpose"></a>
+</h3>
 <p>Reliable meteorological data are a basic requirement for hydrological and ecological studies at the landscape scale. Given the large spatial variation of meteorology over complex terrains, meteorological records from a single weather station are often not representative of entire landscapes. Studies made on multiple sites over a landscape require different meteorological series for each site; and other studies may require meteorological data series for all grid cells of a landscape, in a continuous way. In these cases, spatial correlation between the meteorology series of different sites or cells must be taken into account. For example, the sequence of days with rain of contiguous cells will normally be the same or very similar, even if precipitation amounts may differ. Finally, studies addressing the impacts of climate change on forests and landscapes require downscaling coarse-scale predictions of global or regional climate models to the landscape scale. When downscaling predictions for several locations in a landscape, spatial correlation of predictions is also important.</p>
 <p>With the aim to assist research of climatic impacts on forests, the R package <strong>meteoland</strong> provides utilities to estimate daily weather variables at any position over complex terrains:</p>
 <ol style="list-style-type: decimal">
@@ -89,9 +89,9 @@
 </ol>
 <p>Using <strong>meteoland</strong> package is easy, but some ideas and concepts must be addresed to make the experience easy for new users. This vignette is intended as a working example to explain all the steps needed to get comfortable with <strong>meteoland</strong> workflow. We assume that the reader is more or less familiar with S4 spatial classes of package <a href="https://cran.r-project.org/package=sp" class="external-link"><strong>sp</strong></a>. You will find detailed information regarding the package structure, its functions, and how calculations are done at the <a href="https://emf-creaf.github.io/meteolandbook/index.html" class="external-link">meteoland reference book</a>.</p>
 </div>
-<div class="section level2">
-<h2 id="installing-and-loading-the-package">Installing and loading the package<a class="anchor" aria-label="anchor" href="#installing-and-loading-the-package"></a>
-</h2>
+<div class="section level3">
+<h3 id="installing-and-loading-the-package">Installing and loading the package<a class="anchor" aria-label="anchor" href="#installing-and-loading-the-package"></a>
+</h3>
 <p>First of all, before starting to work with <strong>meteoland</strong>, we must install and load the library. Stable versions of the package can be found at CRAN (<a href="https://CRAN.R-project.org/package=meteoland" class="external-link uri">https://CRAN.R-project.org/package=meteoland</a>), and it can be installed and loaded as any other R package:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"meteoland"</span><span class="op">)</span>
@@ -99,19 +99,19 @@
 <p>Alternatively, you can install the development version located at GitHub using the <strong>devtools</strong> package:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://devtools.r-lib.org/" class="external-link">devtools</a></span><span class="op">)</span>
-<span class="fu"><a href="https://devtools.r-lib.org/reference/remote-reexports.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"emf-creaf/meteoland"</span>, 
+<span class="fu">install_github</span><span class="op">(</span><span class="st">"emf-creaf/meteoland"</span>, 
                build_opts <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"--no-resave-data"</span>, <span class="st">"--no-manual"</span><span class="op">)</span>,
                build_vignettes <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
 <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://emf-creaf.github.io/meteoland/index.html" class="external-link">meteoland</a></span><span class="op">)</span></code></pre></div>
 </div>
 </div>
-<div class="section level1">
-<h1 id="interpolation-of-daily-weather">Interpolation of daily weather<a class="anchor" aria-label="anchor" href="#interpolation-of-daily-weather"></a>
-</h1>
-<p>Spatial interpolation is required when meteorology for the area and period of interest cannot be obtained from local sensors. The nearest weather station may not have data for the period of interest or it may be located too far away to be representative of the target area.</p>
 <div class="section level2">
-<h2 id="preparing-weather-data-for-interpolation">Preparing weather data for interpolation<a class="anchor" aria-label="anchor" href="#preparing-weather-data-for-interpolation"></a>
+<h2 id="interpolation-of-daily-weather">Interpolation of daily weather<a class="anchor" aria-label="anchor" href="#interpolation-of-daily-weather"></a>
 </h2>
+<p>Spatial interpolation is required when meteorology for the area and period of interest cannot be obtained from local sensors. The nearest weather station may not have data for the period of interest or it may be located too far away to be representative of the target area.</p>
+<div class="section level3">
+<h3 id="preparing-weather-data-for-interpolation">Preparing weather data for interpolation<a class="anchor" aria-label="anchor" href="#preparing-weather-data-for-interpolation"></a>
+</h3>
 <p>Before starting using the package, you need to have access to the elevation (in m) and daily weather data series corresponding a set of locations (normally weather stations). Elevation is needed because interpolation routines perform corrections for differences in elevation between the reference locations and the target point. The initial format of your data will be different depending on the format used by your data provider (the package has also tools to access weather data). For our example, we will assume you have data from a set of 38 stations in your study area. On one hand, you should have a <code>data.frame</code> with the coordinates and elevation of each location:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">st_data</span><span class="op">)</span>
@@ -147,9 +147,9 @@
 <span class="co">#&gt; W5         NA         NA         NA         NA         NA         NA</span></code></pre></div>
 <p>Units should be in degrees Celsius for temperature and mm for precipitation.</p>
 </div>
-<div class="section level2">
-<h2 id="building-an-interpolation-data-object">Building an interpolation data object<a class="anchor" aria-label="anchor" href="#building-an-interpolation-data-object"></a>
-</h2>
+<div class="section level3">
+<h3 id="building-an-interpolation-data-object">Building an interpolation data object<a class="anchor" aria-label="anchor" href="#building-an-interpolation-data-object"></a>
+</h3>
 <p>Package <strong>meteoland</strong> stores weather series for reference locations and interpolation parameters in a single object of class <code>MeteorologyInterpolationData</code>. There are several ways of building such objects, but we will first illustrate how to do it from the data we just presented.</p>
 <p>First we need to create an object of class <code>SpatialPoints</code> (see package <strong>sp</strong>) with the spatial coordinates of our weather stations and the coordinate system (here UTM 31N):</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
@@ -215,9 +215,9 @@
 <span class="co">#&gt; [17] "pop_crit"                  "f_max"                    </span>
 <span class="co">#&gt; [19] "wind_height"               "debug"</span></code></pre></div>
 </div>
-<div class="section level2">
-<h2 id="interpolation-basics-and-parameters">Interpolation basics and parameters<a class="anchor" aria-label="anchor" href="#interpolation-basics-and-parameters"></a>
-</h2>
+<div class="section level3">
+<h3 id="interpolation-basics-and-parameters">Interpolation basics and parameters<a class="anchor" aria-label="anchor" href="#interpolation-basics-and-parameters"></a>
+</h3>
 <p>Package meteoland implements, with a few modifications, the daily weather interpolation and estimation algorithms that un- derpin the U.S. <a href="https://daymet.ornl.gov/" class="external-link">DAYMET</a> dataset (Thornton et al., 1997; Thornton and Running, 1999).This approach, similar to inverse distance weighting, interpolates weather variables using trun- cated Gaussian filters, which consist in defining spatial weights <span class="math inline">\(W(r)\)</span> at radial distance <span class="math inline">\(r\)</span> from a target point <span class="math inline">\(p\)</span> using: <span class="math display">\[\begin{equation}
 W(r) = e^{-\alpha \cdot (r/R_p)^2} - e^{-\alpha}
 \end{equation}\]</span> if <span class="math inline">\(r \leq R_p\)</span> and <span class="math inline">\(W(r) = 0\)</span> otherwise.</p>
@@ -347,9 +347,9 @@ W(r) = e^{-\alpha \cdot (r/R_p)^2} - e^{-\alpha}
 <span class="co">#&gt; [1] 25329.88</span></code></pre></div>
 <p>The value of <code>initial_Rp</code> must be set in relation to the units of the spatial coordinates of weather data. Our data was in meters, so the default radius is 140 km. In general, the initial radius should be large enough to include a reasonable number of stations (~20-40), but the kernel radius is adjusted for each interpolation target point.</p>
 </div>
-<div class="section level2">
-<h2 id="calibration-and-cross-validation-of-the-interpolation-data">Calibration and cross-validation of the interpolation data<a class="anchor" aria-label="anchor" href="#calibration-and-cross-validation-of-the-interpolation-data"></a>
-</h2>
+<div class="section level3">
+<h3 id="calibration-and-cross-validation-of-the-interpolation-data">Calibration and cross-validation of the interpolation data<a class="anchor" aria-label="anchor" href="#calibration-and-cross-validation-of-the-interpolation-data"></a>
+</h3>
 <p>Once we already have weather stations data in shape, we can start calibrating the model in order to obtain the optimal parameters for the meteorological variables we want to interpolate. Parameter calibration has to be done for each variable separately. For example for minimum temperature:</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">tmin_cal</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/interpolation.cv.html">interpolation.calibration</a></span><span class="op">(</span><span class="va">interpolator</span>, variable <span class="op">=</span> <span class="st">"Tmin"</span>,
@@ -469,9 +469,9 @@ W(r) = e^{-\alpha \cdot (r/R_p)^2} - e^{-\alpha}
 <span class="co">#&gt; Date.precstations              1.1524766</span>
 <span class="co">#&gt; Date.precstations.relative    28.9177675</span></code></pre></div>
 </div>
-<div class="section level2">
-<h2 id="interpolation-on-a-grid">Interpolation on a grid<a class="anchor" aria-label="anchor" href="#interpolation-on-a-grid"></a>
-</h2>
+<div class="section level3">
+<h3 id="interpolation-on-a-grid">Interpolation on a grid<a class="anchor" aria-label="anchor" href="#interpolation-on-a-grid"></a>
+</h3>
 <p>The target for weather interpolation in <strong>meteoland</strong> can be a set of points, pixels or a whole grid. Again, the initial format of data can be very different. Here we assume you have a small grid of 400 (20x20) cells of 1ha in size, with elevation data in form of class <code>SpatialGridDataFrame</code> (see method <code>read.asciigrid</code> in package <em>sp</em>):</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">elev</span><span class="op">)</span>
@@ -624,9 +624,9 @@ W(r) = e^{-\alpha \cdot (r/R_p)^2} - e^{-\alpha}
 <span class="co">#&gt;  NA's   :400   NA's   :400</span></code></pre></div>
 <p>Results can be retrieved in this way and saved using <code>write.asciigrid</code> for its use outside R. The package also provides function for reading/writing NetCDFs (see function <code>writemeteorologygrid</code>) from <code>SpatialGridMeteorology</code> objects. Finally, the package allows interpolating on subsets of grid pixels in the same way as for full grids. This is done using objects of class <code>SpatialPixelsTopography</code> and calling function <code>interpolationpixels</code>, which will produce objects of class <code>SpatialPixelsMeteorology</code>.</p>
 </div>
-<div class="section level2">
-<h2 id="interpolation-on-a-set-of-points">Interpolation on a set of points<a class="anchor" aria-label="anchor" href="#interpolation-on-a-set-of-points"></a>
-</h2>
+<div class="section level3">
+<h3 id="interpolation-on-a-set-of-points">Interpolation on a set of points<a class="anchor" aria-label="anchor" href="#interpolation-on-a-set-of-points"></a>
+</h3>
 <p>If you want to interpolate on a set of target locations, the starting point will normally be a <code>data.frame</code>. In our example this points come from the grid, but we have reshaped them so the starting format is familiar:</p>
 <div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">points_df</span>
@@ -709,17 +709,17 @@ W(r) = e^{-\alpha \cdot (r/R_p)^2} - e^{-\alpha}
 <span class="co">#&gt; variables   : 12</span>
 <span class="co">#&gt; names       : DOY,  MeanTemperature,   MinTemperature,   MaxTemperature,    Precipitation, MeanRelativeHumidity, MinRelativeHumidity, MaxRelativeHumidity,        Radiation, WindSpeed, WindDirection, PET </span>
 <span class="co">#&gt; min values  :   4, 8.78390001164907, 4.11764313108837, 11.7897135433592, 2.09405984093962,     81.0279519651087,    65.2038379982684,                 100, 2.32716150233968,        NA,            NA,   0 </span>
-<span class="co">#&gt; max values  :   4, 9.16098714429644,   4.160745188765, 12.4242756666988, 2.19374909000861,     83.1189540649279,    67.9874264275725,                 100, 2.34506151418881,        NA,            NA,   0</span></code></pre></div>
+<span class="co">#&gt; max values  :   4, 9.16098714429644,   4.160745188765, 12.4242756666988, 2.19374909000861,     83.1189540649279,    67.9874264275725,                 100, 2.34506151418882,        NA,            NA,   0</span></code></pre></div>
 </div>
 </div>
-<div class="section level1">
-<h1 id="statistical-correction-of-daily-weather">Statistical correction of daily weather<a class="anchor" aria-label="anchor" href="#statistical-correction-of-daily-weather"></a>
-</h1>
+<div class="section level2">
+<h2 id="statistical-correction-of-daily-weather">Statistical correction of daily weather<a class="anchor" aria-label="anchor" href="#statistical-correction-of-daily-weather"></a>
+</h2>
 <p>Correcting the biases of a meteorological data series containing biases using a more accurate meteorological series is necessary when the more accurate series does not cover the period of interest and the less accurate series does. The less accurate series may be at coarser scale, as with climate model predictions or climate reanalysis data. In this case one can speak of statistical correction and downscaling. However, one may also correct the predictions of climate models using reanalysis data estimated at the same spatial resolution.</p>
 <p>In the following example we will correct the predictions of Regional Climate Model (CCLM4-8-17; driving global model CNRM-CERFACS-CNRM-CM5) on the same area of the interpolation example. RCM data includes 3 model cells. Meteorological data covers an historical (reference) period (2000-2003) and a future (projection) period (year 2023), the latter simulated under rcp4.5 scenario.</p>
-<div class="section level2">
-<h2 id="preparing-weather-data-to-be-downscaledcorrected">Preparing weather data to be downscaled/corrected<a class="anchor" aria-label="anchor" href="#preparing-weather-data-to-be-downscaledcorrected"></a>
-</h2>
+<div class="section level3">
+<h3 id="preparing-weather-data-to-be-downscaledcorrected">Preparing weather data to be downscaled/corrected<a class="anchor" aria-label="anchor" href="#preparing-weather-data-to-be-downscaledcorrected"></a>
+</h3>
 <p>One needs several data items to perform downscaling and statistical correction. First, we need a matrix or data frame with the central coordinates of the RCM cells (here in longitude/latitude format):</p>
 <div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">pt_coords</span>
@@ -767,9 +767,9 @@ W(r) = e^{-\alpha \cdot (r/R_p)^2} - e^{-\alpha}
 <div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">proj_dates</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/as.Date.html" class="external-link">as.Date</a></span><span class="op">(</span><span class="st">"2023-01-01"</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/as.Date.html" class="external-link">as.Date</a></span><span class="op">(</span><span class="st">"2023-12-31"</span><span class="op">)</span>, by<span class="op">=</span><span class="st">"day"</span><span class="op">)</span></code></pre></div>
 </div>
-<div class="section level2">
-<h2 id="building-the-uncorrected-data-object">Building the uncorrected data object<a class="anchor" aria-label="anchor" href="#building-the-uncorrected-data-object"></a>
-</h2>
+<div class="section level3">
+<h3 id="building-the-uncorrected-data-object">Building the uncorrected data object<a class="anchor" aria-label="anchor" href="#building-the-uncorrected-data-object"></a>
+</h3>
 <p>Statistical correction needs an object of class <code>MeteorologyUncorrectedData</code>, analogous to the <code>MeteorologyInterpolationData</code> of the previous section. To build this object we need first to express coordinates in an object <code>SpatialPoints</code>:</p>
 <div class="sourceCode" id="cb35"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">sp</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/sp/man/SpatialPoints.html" class="external-link">SpatialPoints</a></span><span class="op">(</span><span class="va">pt_coords</span>, <span class="fu"><a href="https://rdrr.io/pkg/sp/man/CRS-class.html" class="external-link">CRS</a></span><span class="op">(</span>SRS_string <span class="op">=</span> <span class="st">"EPSG:4326"</span><span class="op">)</span><span class="op">)</span>
@@ -782,9 +782,9 @@ W(r) = e^{-\alpha \cdot (r/R_p)^2} - e^{-\alpha}
 <div class="sourceCode" id="cb36"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">uncorrected</span> <span class="op">=</span> <span class="fu"><a href="../reference/MeteorologyUncorrectedData.html">MeteorologyUncorrectedData</a></span><span class="op">(</span><span class="va">sp</span>, <span class="va">ref_data</span>, <span class="va">proj_data</span>, <span class="va">proj_dates</span><span class="op">)</span></code></pre></div>
 </div>
-<div class="section level2">
-<h2 id="target-point-weather-meteorology-taken-as-reference">Target point weather meteorology taken as reference<a class="anchor" aria-label="anchor" href="#target-point-weather-meteorology-taken-as-reference"></a>
-</h2>
+<div class="section level3">
+<h3 id="target-point-weather-meteorology-taken-as-reference">Target point weather meteorology taken as reference<a class="anchor" aria-label="anchor" href="#target-point-weather-meteorology-taken-as-reference"></a>
+</h3>
 <p>Downscaling/statistical correction is done on a set of target spatial points. meteoland will first find the RCM cell to which each point is nearest (using the central coordinates of RCM cells). Once this matching is done, statistical relations are build between the meteorology of RCM cells and that of target points for the reference period (here 2000-2003) which are used to correct RCM data for the projection period (year 2023). For this process to be done, we need the coordinates and weather series for the reference period. In our case, we will employ a copy the object of class <code>SpatialPointsMeteorology</code> that resulted from interpolation in the previous section:</p>
 <div class="sourceCode" id="cb37"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">historical</span>  <span class="op">=</span> <span class="va">mp</span>
@@ -803,9 +803,9 @@ W(r) = e^{-\alpha \cdot (r/R_p)^2} - e^{-\alpha}
 <span class="co">#&gt; +datum=WGS84 +units=m +no_defs</span></code></pre></div>
 <p>We named it <code>historical</code> to remind that we are using the historical period as reference and want to correct the RCM series for the projection period There are several ways to shape data into objects of class <code>SpatialPointsMeteorology</code>. For example, one can use function <code>readmeteorologypoints</code>.</p>
 </div>
-<div class="section level2">
-<h2 id="tuning-correction-parameters">Tuning correction parameters<a class="anchor" aria-label="anchor" href="#tuning-correction-parameters"></a>
-</h2>
+<div class="section level3">
+<h3 id="tuning-correction-parameters">Tuning correction parameters<a class="anchor" aria-label="anchor" href="#tuning-correction-parameters"></a>
+</h3>
 <p>Objects of class <code>MeteorologyUncorrectedData</code> have a slot with parameters:</p>
 <div class="sourceCode" id="cb38"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">uncorrected</span><span class="op">@</span><span class="va">params</span>
@@ -847,9 +847,9 @@ W(r) = e^{-\alpha \cdot (r/R_p)^2} - e^{-\alpha}
 <div class="sourceCode" id="cb39"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">uncorrected</span><span class="op">@</span><span class="va">params</span><span class="op">$</span><span class="va">varmethods</span><span class="op">$</span><span class="va">WindSpeed</span><span class="op">=</span><span class="st">"none"</span></code></pre></div>
 </div>
-<div class="section level2">
-<h2 id="conducting-statistical-correction">Conducting statistical correction<a class="anchor" aria-label="anchor" href="#conducting-statistical-correction"></a>
-</h2>
+<div class="section level3">
+<h3 id="conducting-statistical-correction">Conducting statistical correction<a class="anchor" aria-label="anchor" href="#conducting-statistical-correction"></a>
+</h3>
 <p>Once we have all the data objects that we need (the hard part), conducting statistical correction is straightforward:</p>
 <div class="sourceCode" id="cb40"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">projected</span> <span class="op">=</span> <span class="fu"><a href="../reference/correctionpoints.html">correctionpoints</a></span><span class="op">(</span><span class="va">uncorrected</span>, <span class="va">historical</span><span class="op">)</span>
@@ -891,13 +891,13 @@ W(r) = e^{-\alpha \cdot (r/R_p)^2} - e^{-\alpha}
 <p><img src="UserGuide_files/figure-html/unnamed-chunk-47-1.png" width="672"></p>
 </div>
 </div>
-<div class="section level1">
-<h1 id="stochastic-weather-generation">Stochastic weather generation<a class="anchor" aria-label="anchor" href="#stochastic-weather-generation"></a>
-</h1>
-<p>Recent versions of <strong>meteoland</strong> incorporate the possibility of generating stochastic weather series. Stochastic weather generators are algorithms that produce series of synthetic daily weather data. The parameters of the model are conditioned on existing meteorological records to ensure the characteristics of input weather series emerge in the daily stochastic process. The algorithm available in <strong>meteoland</strong> is intended to be used to generate daily series of the same length as the input. It can be understood as a resampling algorithm that tries to preserve some properties of the input series. The algorithm is semi-parametric and based on a first-order Markov chain for weather days (classified into dry/wet/extreme wet) along with k-nearest neighbour (KNN) resampling of input days and years. The approach implemented in <strong>meteoland</strong> can be applied to any spatial structure (points/pixels/grid) and it preserves the spatial correlation and multivariate covariance structure of weather series (because it works on area-averaged weather and the chosen resampled days are applied to all points/pixels).</p>
 <div class="section level2">
-<h2 id="weather-generation-function">Weather generation function<a class="anchor" aria-label="anchor" href="#weather-generation-function"></a>
+<h2 id="stochastic-weather-generation">Stochastic weather generation<a class="anchor" aria-label="anchor" href="#stochastic-weather-generation"></a>
 </h2>
+<p>Recent versions of <strong>meteoland</strong> incorporate the possibility of generating stochastic weather series. Stochastic weather generators are algorithms that produce series of synthetic daily weather data. The parameters of the model are conditioned on existing meteorological records to ensure the characteristics of input weather series emerge in the daily stochastic process. The algorithm available in <strong>meteoland</strong> is intended to be used to generate daily series of the same length as the input. It can be understood as a resampling algorithm that tries to preserve some properties of the input series. The algorithm is semi-parametric and based on a first-order Markov chain for weather days (classified into dry/wet/extreme wet) along with k-nearest neighbour (KNN) resampling of input days and years. The approach implemented in <strong>meteoland</strong> can be applied to any spatial structure (points/pixels/grid) and it preserves the spatial correlation and multivariate covariance structure of weather series (because it works on area-averaged weather and the chosen resampled days are applied to all points/pixels).</p>
+<div class="section level3">
+<h3 id="weather-generation-function">Weather generation function<a class="anchor" aria-label="anchor" href="#weather-generation-function"></a>
+</h3>
 <p>Function <code>weathergeneration</code> can be used to generate synthetic weather series for a range of inputs, including a (non-spatial) data frame (corresponding to weather series of a single location) as well as objects of classes <code>SpatialPointsDataFrame</code>, <code>SpatialPixelsDataFrame</code> or <code>SpatialGridDataFrame</code>. The following calls the function with a <code>SpatialPointsDataFrame</code> object, while hiding console output:</p>
 <div class="sourceCode" id="cb43"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">y</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/weathergeneration.html">weathergeneration</a></span><span class="op">(</span><span class="va">mp</span>, verbose<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span></code></pre></div>
@@ -918,9 +918,9 @@ W(r) = e^{-\alpha \cdot (r/R_p)^2} - e^{-\alpha}
 <span class="fu"><a href="https://rdrr.io/r/graphics/legend.html" class="external-link">legend</a></span><span class="op">(</span><span class="st">"bottomright"</span>, legend <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"original"</span>, <span class="st">"synthetic"</span><span class="op">)</span>, col<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"black"</span>, <span class="st">"red"</span><span class="op">)</span>, lty<span class="op">=</span><span class="fl">1</span>, bty<span class="op">=</span><span class="st">"n"</span><span class="op">)</span></code></pre></div>
 <p><img src="UserGuide_files/figure-html/unnamed-chunk-50-1.png" width="672"></p>
 </div>
-<div class="section level2">
-<h2 id="weather-generation-parameters">Weather generation parameters<a class="anchor" aria-label="anchor" href="#weather-generation-parameters"></a>
-</h2>
+<div class="section level3">
+<h3 id="weather-generation-parameters">Weather generation parameters<a class="anchor" aria-label="anchor" href="#weather-generation-parameters"></a>
+</h3>
 <p>One of the inputs of function <code>weathergeneration</code> is an list with algorithm parameters. The names of these parameters, and their default values, can be obtained from function <code>defaultGenerationParameters()</code>:</p>
 <div class="sourceCode" id="cb46"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/defaultGenerationParams.html">defaultGenerationParams</a></span><span class="op">(</span><span class="op">)</span>
@@ -980,7 +980,7 @@ W(r) = e^{-\alpha \cdot (r/R_p)^2} - e^{-\alpha}
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.1.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
 </div>
 
       </footer>

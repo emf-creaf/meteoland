@@ -1,8 +1,8 @@
-pandoc: 2.11.4
-pkgdown: 2.0.1
+pandoc: 2.7.3
+pkgdown: 2.0.3
 pkgdown_sha: ~
 articles:
   UserGuide: UserGuide.html
   InterpolationSenegal: examples/InterpolationSenegal.html
-last_built: 2022-01-05T16:11Z
+last_built: 2022-05-10T10:27Z
 

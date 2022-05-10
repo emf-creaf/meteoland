@@ -94,7 +94,7 @@ NumericMatrix vapourPressureFromRH(NumericMatrix T, NumericMatrix RH) {
   NumericMatrix VP(nr, nc);
   for(int i=0;i<nr;i++){
     for(int j=0;j<nc;j++) {
-      if(NumericVector::is_na(T(i,j)) | NumericVector::is_na(RH(i,j)) ) {
+      if(NumericVector::is_na(T(i,j)) || NumericVector::is_na(RH(i,j)) ) {
         VP(i,j) = NA_REAL;
       } else {
         VP(i,j) = vapourPressureFromRH(T(i,j), RH(i,j));
@@ -111,7 +111,7 @@ NumericMatrix dewpointTemperatureFromRH(NumericMatrix T, NumericMatrix RH) {
   NumericMatrix DT(nr, nc);
   for(int i=0;i<nr;i++){
     for(int j=0;j<nc;j++) {
-      if(NumericVector::is_na(T(i,j)) | NumericVector::is_na(RH(i,j)) ) {
+      if(NumericVector::is_na(T(i,j)) || NumericVector::is_na(RH(i,j)) ) {
         DT(i,j) = NA_REAL;
       } else {
         DT(i,j) = dewpointTemperatureFromRH(T(i,j), RH(i,j));
@@ -201,7 +201,7 @@ NumericMatrix interpolateTdewSeriesPoints(NumericVector Xp, NumericVector Yp, Nu
   for(int d = 0;d<nDays;d++) {
     int nmis = 0;
     for(int i=0;i<nstations;i++) {
-      missing[i] = (NumericVector::is_na(T(i,d)) | NumericVector::is_na(X[i])| NumericVector::is_na(Y[i]));
+      missing[i] = (NumericVector::is_na(T(i,d)) || NumericVector::is_na(X[i]) || NumericVector::is_na(Y[i]));
       if(missing[i]) nmis++;
     }
     if(debug) Rcout << "Day "<< d << " nexcluded = " << nmis;

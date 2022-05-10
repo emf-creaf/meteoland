@@ -75,7 +75,7 @@ NumericMatrix interpolateTemperatureSeriesPoints(NumericVector Xp, NumericVector
     // Rcout<<"Day: "<<d<<"\n";
     int nmis = 0;
     for(int i=0;i<nstations;i++) {
-      missing[i] = (NumericVector::is_na(T(i,d)) | NumericVector::is_na(X[i])| NumericVector::is_na(Y[i])| NumericVector::is_na(Z[i]));
+      missing[i] = (NumericVector::is_na(T(i,d)) || NumericVector::is_na(X[i]) || NumericVector::is_na(Y[i]) || NumericVector::is_na(Z[i]));
       if(missing[i]) nmis++;
     }
     if(debug) Rcout << "Day "<< d << " nexcluded = " << nmis;

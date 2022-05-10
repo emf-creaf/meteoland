@@ -67,7 +67,7 @@ List getWindFieldIndexAndFactor(NumericMatrix windSpeed, NumericMatrix windDirec
     for(int j=0;j<ncol; j++) {
       pws = windSpeed(i,j);
       pwd = windDirection(i,j);
-      if((!NumericVector::is_na(pws)) & (!NumericVector::is_na(pwd))) {
+      if((!NumericVector::is_na(pws)) && (!NumericVector::is_na(pwd))) {
         index(i,j) = getWindFieldIndex(pws,pwd,wsvec, wdvec);
         factor(i,j) = pws/wsvec[index(i,j)];
         // Rcout<<index(i,j)<<"\n";
@@ -214,7 +214,7 @@ List interpolateWindStationSeriesPoints(NumericVector Xp, NumericVector Yp, Nume
     for(int i=0;i<nstations;i++) {
       missing[i] = NumericVector::is_na(WS(i,d));
       if(missing[i]) nmis++;
-      if((!missing[i]) & (NumericVector::is_na(WD(i,d)))) nmisdir++;
+      if((!missing[i]) && (NumericVector::is_na(WD(i,d)))) nmisdir++;
     }
     if(nstations> nmis) {
       NumericVector Xday(nstations-nmis);

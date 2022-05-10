@@ -133,7 +133,7 @@ NumericMatrix interpolatePrecipitationSeriesPoints(NumericVector Xp, NumericVect
   for(int d = 0;d<nDays;d++) {
     int nmis = 0;
     for(int i=0;i<nstations;i++) {
-      missing[i] = (NumericVector::is_na(P(i,d)) | NumericVector::is_na(X[i])| NumericVector::is_na(Y[i])| NumericVector::is_na(Z[i]));
+      missing[i] = (NumericVector::is_na(P(i,d)) || NumericVector::is_na(X[i])| NumericVector::is_na(Y[i])| NumericVector::is_na(Z[i]));
       if(missing[i]) nmis++;
     }
     if(debug) Rcout << "Day "<< d << " nexcluded = " << nmis;

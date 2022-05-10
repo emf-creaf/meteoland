@@ -111,7 +111,7 @@ NumericVector aspect(NumericVector data, int nrows, int ncols, double cellWidth,
 				//get the rise_run
 				double dz_dx = ((c+2.0*f+i) - (a+2.0*d+g)) / (8.0*cellWidth);
 				double dz_dy = ((g+2.0*h+i) - (a+2.0*b+c)) / (8.0*cellHeight);
-				if ((std::abs(dz_dy)<small_num) & (std::abs(dz_dx)<small_num)) {
+				if ((std::abs(dz_dy)<small_num) && (std::abs(dz_dx)<small_num)) {
           out[row+nrows*col] = -1;  //do this if area is flat
 				} else { //if area is not flat
 					double aspect = 57.29578 * atan2 (dz_dy, -dz_dx); //calculate the aspect info

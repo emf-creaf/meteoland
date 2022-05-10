@@ -2,6 +2,9 @@
  NEWS for R Package "meteoland"
 -------------------------------
 
+# Version 1.0.3
+- Minor C code corrections (clang check)
+
 # Version 1.0.2
 - Remove non-necessary dependencies (xml2, httr, jsonlite)
 - Documentation bug

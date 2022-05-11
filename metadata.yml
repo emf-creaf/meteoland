@@ -1,0 +1,26 @@
+id: meteoland
+title: meteoland
+emf_type: softwork
+emf_public: true
+emf_automatized: true
+emf_reproducible: false
+emf_draft: false
+nodes: ''
+authors:
+- mcaceres
+- vgranda
+- acabon
+resource_link: softworks/meteoland
+thematic: data_processing
+tags:
+- meteo
+- R
+- data
+requirements:
+- 'R (>= 3.4.0)'
+description: Functions to estimate weather variables at any position of a landscape
+links:
+  url_docs: 'https://emf-creaf.github.io/meteoland/'
+  url_source: 'https://github.com/emf-creaf/meteoland'
+model_repository: ''
+data_repository: ''

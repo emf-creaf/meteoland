@@ -58,6 +58,9 @@ Functions to download weather station data are still available in
 functions in package
 [**meteospain**](https://emf-creaf.github.io/meteospain/).
 
+The two R packages are developed and maintained by the [*Ecosystem
+Modelling Facility*](https://emf.creaf.cat) at CREAF (Catalonia, Spain).
+
 ## References
 
 -   De Caceres M, Martin-StPaul N, Turco M, Cabon A, Granda V (2018)

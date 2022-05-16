@@ -1,11 +1,9 @@
 meteoland - Landscape meteorology tools
 ================
 
-<!-- badges: start -->
 [![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/meteoland)](https://cran.r-project.org/package=meteoland)
 [![](https://cranlogs.r-pkg.org/badges/meteoland)](https://cran.rstudio.com/web/packages/meteoland/index.html)
 [![R-CMD-check](https://github.com/emf-creaf/meteoland/workflows/R-CMD-check/badge.svg)](https://github.com/emf-creaf/meteoland/actions)
-<!-- badges: end -->
 
 ## Introduction
 

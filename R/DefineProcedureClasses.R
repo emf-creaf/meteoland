@@ -45,7 +45,7 @@ setMethod("subsample", signature("MeteorologyInterpolationData"), definition =
       
       # Process dates selection
       if(!is.null(dates)) {
-        if(class(dates)!="Date") stop("'dates' has to be of class 'Date'.")
+        if(!inherits(dates,"Date")) stop("'dates' has to be of class 'Date'.")
         seldates = as.character(object@dates) %in% as.character(dates)
         if(sum(seldates)==0) stop("Empty subset of dates!")
       } else {
@@ -122,7 +122,7 @@ setMethod("subsample", signature("MeteorologyUncorrectedData"), definition =
               }
               if(sum(stations)==0) stop("Empty subset of stations!")
               if(!is.null(dates)) {
-                if(class(dates)!="Date") stop("'dates' has to be of class 'Date'.")
+                if(!inherits(dates,"Date")) stop("'dates' has to be of class 'Date'.")
                 seldates = as.character(object@dates) %in% as.character(dates)
                 if(sum(seldates)==0) stop("Empty subset of dates!")
               } else {

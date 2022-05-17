@@ -157,7 +157,7 @@ interpolationpoints<-function(object, points, dates = NULL,
     intpoints = spTransform(intpoints, object@proj4string)
   }
   if(!is.null(dates)) {
-    if(class(dates)!="Date") stop("'dates' has to be of class 'Date'.")
+    if(!inherits(dates,"Date")) stop("'dates' has to be of class 'Date'.")
     if(sum(as.character(dates) %in% as.character(object@dates))<length(dates)) 
       stop("At least one of the dates is outside the time period for which interpolation is possible.")
   }

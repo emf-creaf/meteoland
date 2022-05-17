@@ -3,8 +3,8 @@ MeteorologyInterpolationData<-function(points, elevation = NULL, slope = NULL, a
                                        Radiation = NULL, WindSpeed = NULL, WindDirection = NULL, WindFields = NULL,
                                        params = defaultInterpolationParams()) {
   if((!inherits(points, "SpatialPoints")) && (!inherits(points, "SpatialPointsTopography")) && (!inherits(points, "SpatialPointsMeteorology"))) stop("'points' has to be of class 'SpatialPointsMeteorology', 'SpatialPointsTopography' or 'SpatialPoints'")
-  isPoints = (class(points)=="SpatialPoints")
-  isPointsTopo = (class(points)=="SpatialPointsTopography")
+  isPoints = inherits(points,"SpatialPoints")
+  isPointsTopo = inherits(points, "SpatialPointsTopography")
   coords = coordinates(points)
   nstations = nrow(coords)
   if(isPointsTopo) {

@@ -35,7 +35,7 @@ readmeteorologypoint<-function(file, dates = NULL, format="meteoland/txt", sep="
 readmeteorologypointfiles<-function(points, files=NULL, dates = NULL, format="meteoland/txt", sep="\t") {
   format = match.arg(format, c("meteoland/txt", "meteoland/rds", "castanea/txt", "castanea/rds"))
   if(!inherits(points,"SpatialPoints") && !inherits(points,"SpatialPointsDataFrame")) stop("'points' has to be of class 'SpatialPoints' or 'SpatialPointsDataFrame'.")
-  if((class(points)=="SpatialPoints") && is.null(files)) stop("Please, provide argument 'files'")
+  if((inherits(points,"SpatialPoints")) && is.null(files)) stop("Please, provide argument 'files'")
   if(!is.null(files)) if(!inherits(files,"character")) stop("'files' has to be a vector of strings.")
   if(!is.null(dates)) if(!inherits(dates,"Date")) stop("'dates' has to be of class 'Date'.")
   ff =rep(format,length(points))

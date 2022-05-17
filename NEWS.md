@@ -4,6 +4,7 @@
 
 # Version 1.0.3
 - Minor C code corrections (clang check)
+- Elimination of sysdata (SMCvarcodes not needed)
 
 # Version 1.0.2
 - Remove non-necessary dependencies (xml2, httr, jsonlite)

@@ -20,4 +20,4 @@ LinkingTo: Rcpp
 Encoding: UTF-8
 NeedsCompilation: yes
 VignetteBuilder: utils, knitr
-RoxygenNote: 6.1.1
+RoxygenNote: 7.1.2

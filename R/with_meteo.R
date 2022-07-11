@@ -9,6 +9,11 @@
 #     before calling this method.
 #
 # 1. implement ncdfgeom read method to read interpolators saved to file
+#     - write method has to be changed to create stationID as last attribute
+#     - create interpolator method must be changed to attribute arrays to be
+#       col named with station ID. this will get rid of the need to create
+#       an attribute in the stars with the stationID. write interpolator method
+#       must be changed accordingly.
 #
 # 1. interpolation process
 #     - .interpolation_points method DONE
@@ -163,15 +168,25 @@ create_meteo_interpolator <- function(meteo_with_topo, params = NULL, ...) {
 
   # helper
   .interpolator_arrays_creator <- function(variable, arranged_data, dims) {
-    if (! variable %in% names(arranged_data)) {
-      return(array(NA_integer_, dim = dims))
-    }
-    arranged_data |>
+    rearranged_data <- arranged_data |>
       # very important step, as we need all combinations to fill the arrays
       tidyr::complete(dates, stationID) |>
-      dplyr::arrange(stationID, dates) |>
-      dplyr::pull(!!variable) |>
-      array(dim = dims)
+      dplyr::arrange(stationID, dates)
+    col_names <- rearranged_data |>
+      dplyr::pull(stationID) |>
+      unique()
+
+    if (! variable %in% names(arranged_data)) {
+      array_data <- array(NA_real_, dim = dims)
+    } else {
+      array_data <- rearranged_data|>
+        dplyr::pull(!!variable) |>
+        array(dim = dims)
+    }
+
+    colnames(array_data) <- col_names
+
+    return(array_data)
   }
 
   stars_interpolator <-
@@ -185,8 +200,8 @@ create_meteo_interpolator <- function(meteo_with_topo, params = NULL, ...) {
       WindSpeed = "WindSpeed",
       elevation = "elevation",
       aspect = "aspect",
-      slope = "slope",
-      stationID = "stationID"
+      slope = "slope"
+      # stationID = "stationID"
     ) %>%
     purrr::map(
       .interpolator_arrays_creator,
@@ -205,6 +220,10 @@ create_meteo_interpolator <- function(meteo_with_topo, params = NULL, ...) {
       params$St_Precipitation,
       TRUE
     )
+  colnames(stars_interpolator[["SmoothedPrecipitation"]]) <-
+    colnames(stars_interpolator[["Precipitation"]])
+  attributes(stars_interpolator[["SmoothedPrecipitation"]]) <-
+    attributes(stars_interpolator[["Precipitation"]])
 
   stars_interpolator[["SmoothedTemperatureRange"]] <-
     .temporalSmoothing(
@@ -212,6 +231,10 @@ create_meteo_interpolator <- function(meteo_with_topo, params = NULL, ...) {
       params$St_TemperatureRange,
       FALSE
     )
+  colnames(stars_interpolator[["SmoothedTemperatureRange"]]) <-
+    colnames(stars_interpolator[["MinTemperature"]])
+  attributes(stars_interpolator[["SmoothedTemperatureRange"]]) <-
+    attributes(stars_interpolator[["MinTemperature"]])
 
   # update initial Rp in params
   usethis::ui_todo("Updating intial_Rp parameter with the actual stations mean distance...")
@@ -620,11 +643,11 @@ create_meteo_interpolator <- function(meteo_with_topo, params = NULL, ...) {
 
   ## prepared data
   prepared_data_list <- names(interpolator) |>
-    purrr::map(~ dplyr::as_tibble(interpolator[[.x]], .name_repair = "minimal")) |>
-    purrr::map(~ purrr::set_names(.x, interpolator[["stationID"]][1,])) |>
+    purrr::map(~ dplyr::as_tibble(interpolator[[.x]])) |>
+    # purrr::map(~ purrr::set_names(.x, interpolator[["stationID"]][1,])) |>
     purrr::set_names(names(interpolator))
   # remove stationID because we dont need it in the nc
-  prepared_data_list$stationID <- NULL
+  # prepared_data_list$stationID <- NULL
 
   # and now the units, is important
   prepared_data_units <- names(prepared_data_list) |>
@@ -653,7 +676,7 @@ create_meteo_interpolator <- function(meteo_with_topo, params = NULL, ...) {
     purrr::pwalk(
       ~ ncdfgeom::write_timeseries_dsg(
           nc_file = filename,
-          instance_names = interpolator[["stationID"]][1,],
+          instance_names = names(prepared_data_list[[1]]),
           lats = sf::st_coordinates(stars::st_get_dimension_values(interpolator, "station"))[,2],
           lons = sf::st_coordinates(stars::st_get_dimension_values(interpolator, "station"))[,1],
           times = stars::st_get_dimension_values(interpolator, 'date'),
@@ -689,6 +712,56 @@ create_meteo_interpolator <- function(meteo_with_topo, params = NULL, ...) {
   return(invisible(interpolator))
 }
 
+.read_interpolator <- function(filename) {
+
+  # get the data from the nc file
+  ts_data <- ncdfgeom::read_timeseries_dsg(filename)
+
+  # get the attributes
+  interpolation_attributes <- ncmeta::nc_meta(filename)$attribute |>
+    dplyr::filter(
+      variable == "NC_GLOBAL",
+      name %in% names(meteoland::defaultInterpolationParams())
+    ) |>
+    dplyr::pull(value)
+  # remember to convert debug value to logical
+  interpolation_attributes$debug <- as.logical(interpolation_attributes$debug)
+
+  # get the geometries
+  geom_crs <- ncmeta::nc_meta(filename)$attribute |>
+    dplyr::filter(variable == "NC_GLOBAL", name == 'crs') |>
+    dplyr::pull(value)
+  geom_data <- ncdfgeom::read_geometry(filename) |>
+    sf::st_transform(crs = as.numeric(gsub("^EPSG:", "", geom_crs)))
+
+  # get the dates
+  dates <- ts_data$time
+
+  # build the interpolator object
+  interpolator_dims <- stars::st_dimensions(
+    date = dates,
+    station = sf::st_geometry(geom_data)
+  )
+
+  .array_creation_helper <- function(dataframe, interpolator_dims) {
+    array_data <- dataframe |>
+      as.matrix() |>
+      array(dim = dim(interpolator_dims))
+
+    colnames(array_data) <- names(dataframe)
+    return(array_data)
+  }
+
+  stars_interpolator <-
+    ts_data$data_frames |>
+    purrr::map(.array_creation_helper, interpolator_dims = interpolator_dims) |>
+    stars::st_as_stars(dimensions = interpolator_dims)
+
+  attr(stars_interpolator, 'params') <- interpolation_attributes
+
+  return(stars_interpolator)
+
+}
 
 # library(meteospain)
 # library(sf)
@@ -887,32 +960,40 @@ create_meteo_interpolator <- function(meteo_with_topo, params = NULL, ...) {
 # pryr::mem_change({recursive_res <- meteoland:::.interpolation_point_recursive(interpolator, sf_test)})
 # pryr::mem_change({purrr_res <- meteoland:::.interpolation_point_purrr(interpolator, sf_test)})
 
-
-library(meteospain)
-library(sf)
-#### get meteo ####
-service_options <- aemet_options(
-  'daily', as.Date("2022-04-01"), as.Date("2022-04-30"),
-  api_key = keyring::key_get('aemet')
-)
-
-meteo_ok <- get_meteo_from('aemet', service_options) |>
-  dplyr::rename(
-    dates = timestamp, elevation = altitude, stationID = station_id,
-    MinTemperature = min_temperature, MaxTemperature = max_temperature,
-    Precipitation = precipitation, WindSpeed = mean_wind_speed
-  )
-
-topo_sf_ok <- meteo_ok |>
-  dplyr::select(
-    stationID, elevation
-  ) |>
-  dplyr::distinct() |>
-  dplyr::mutate(aspect = NA_integer_, slope = NA_integer_)
-
-meteo_ok <- dplyr::select(meteo_ok, -elevation)
-
-interpolator <- meteoland:::with_meteo(meteo_ok) |>
-  meteoland:::add_topo(topo_sf_ok) |>
-  meteoland:::create_meteo_interpolator() |>
-  meteoland:::.write_interpolator(filename = 'interpolator_test.nc', .overwrite = TRUE)
+#
+# library(meteospain)
+# library(sf)
+# #### get meteo ####
+# service_options <- aemet_options(
+#   'daily', as.Date("2022-04-01"), as.Date("2022-04-30"),
+#   api_key = keyring::key_get('aemet')
+# )
+#
+# meteo_ok <- get_meteo_from('aemet', service_options) |>
+#   dplyr::rename(
+#     dates = timestamp, elevation = altitude, stationID = station_id,
+#     MinTemperature = min_temperature, MaxTemperature = max_temperature,
+#     Precipitation = precipitation, WindSpeed = mean_wind_speed
+#   )
+#
+# topo_sf_ok <- meteo_ok |>
+#   dplyr::select(
+#     stationID, elevation
+#   ) |>
+#   dplyr::distinct() |>
+#   dplyr::mutate(aspect = NA_real_, slope = NA_real_)
+#
+# meteo_ok <- dplyr::select(meteo_ok, -elevation)
+#
+# interpolator <- meteoland:::with_meteo(meteo_ok) |>
+#   meteoland:::add_topo(topo_sf_ok) |>
+#   meteoland:::create_meteo_interpolator() |>
+#   meteoland:::.write_interpolator(filename = 'interpolator_test.nc', .overwrite = TRUE)
+#
+# stars_interpolator <- meteoland:::.read_interpolator(filename = 'interpolator_test.nc')
+#
+# all.equal(interpolator, stars_interpolator)
+# identical(interpolator, stars_interpolator)
+# identical(interpolator$aspect, stars_interpolator$aspect)
+# class(interpolator$aspect[,1])
+# class(stars_interpolator$aspect[,1])

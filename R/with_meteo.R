@@ -4,24 +4,36 @@
 ### 1. implement ncdfgeom write method to save the interpolator as nc with attributes DONE
 ###     - units DONE
 ###
+### 1. implement ncdfgeom read method to read interpolators saved to file
+###     - write method has to be changed to create stationID as last attribute DONE
+###     - create interpolator method must be changed to attribute arrays to be
+###       col named with station ID. this will get rid of the need to create
+###       an attribute in the stars with the stationID. write interpolator method
+###       must be changed accordingly. DONE
+###     - review process, as stars has a as_stars.ncdfgeom method, maybe is more
+###       efficient to use that. DONE: Not implemented, it seems that I need to
+###       review how i write the interpolator. For the moment it stays as it is
+### 1. helper to transform meteospain output to meteo input DONE
+###
+### 1. BUG!!!
+###     - In .interpolator_arrays_creator, when completing the cases, some needed
+###       variables, mostly elevation creates NA for the missing cases. This
+###       generates problems later on. Fix!!! DONE
 # 1. add crs conversion in the interpolation point method.
 #     - Implemented a check in .interpolation_point but a conversion must be done
 #     before calling this method.
 #
-# 1. implement ncdfgeom read method to read interpolators saved to file
-#     - write method has to be changed to create stationID as last attribute
-#     - create interpolator method must be changed to attribute arrays to be
-#       col named with station ID. this will get rid of the need to create
-#       an attribute in the stars with the stationID. write interpolator method
-#       must be changed accordingly.
-#
 # 1. interpolation process
 #     - .interpolation_points method DONE
-#     - messages (user informed user happy)
+#     - messages (user informed user happy) DONE
+#     - ensure!!! that the points or whatever the user has supplied as input
+#       has all the needed (elevation ie) DONE
+#     - ensure that lat long and alt are present in the interpolator creation,
+#       filter any station without those values DONE
 #     - interpolation dispatcher (different spatial formats as inputs)
 #       - crs conversion
-#
-# 1. helper to transform meteospain output to meteo input
+#     - interpolation general function
+#     - transform from raster(stars) to sf: .stars2sf
 
 
 
@@ -127,7 +139,17 @@ add_topo <- function(meteo, topo) {
   usethis::ui_done("topology object ok")
 
   usethis::ui_info("Adding topology to meteo (by station ID)...")
-  res <- dplyr::left_join(meteo, dplyr::as_tibble(topo), by = 'stationID')
+  res <- dplyr::left_join(
+    meteo,
+    topo |>
+      dplyr::as_tibble() |>
+      dplyr::select(
+        dplyr::any_of(c("stationID", "elevation", "aspect", "slope"))
+      ),
+    by = 'stationID'
+  ) |>
+    sf::st_as_sf()
+  # res <- dplyr::left_join(meteo, dplyr::as_tibble(topo), by = 'stationID')
   usethis::ui_done("topology added")
 
   return(res)
@@ -153,33 +175,69 @@ create_meteo_interpolator <- function(meteo_with_topo, params = NULL, ...) {
   }
 
   # data preparation
-  meteo_arranged <- meteo_with_topo |>
-    dplyr::arrange(stationID, dates)
 
+  # elevation filtering
+  if (any(is.na(meteo_with_topo[["elevation"]]))) {
+    usethis::ui_warning(
+      "Some meteo stations lack values for elevation, filtering those stations out"
+    )
+
+    meteo_with_topo <- meteo_with_topo |>
+      dplyr::filter(!is.na(elevation))
+
+    if (nrow(meteo_with_topo) < 1) {
+      usethis::ui_stop("No elevation values for any station, stopping creation of the interpolator")
+    }
+
+  }
+
+  # helper to avoid NAs in elevation when completing cases
+  .fill_elevation <- function(arranged_data) {
+    arranged_data |>
+      dplyr::group_by(stationID) |>
+      dplyr::mutate(
+        elevation = dplyr::if_else(
+          is.na(elevation),
+          unique(purrr::keep(elevation, ~!is.na(.x))),
+          elevation
+        )
+      ) |>
+      dplyr::ungroup() |>
+      sf::st_as_sf()
+  }
+
+  # data arranging
+  meteo_arranged <- meteo_with_topo |>
+    # very important step, as we need all combinations to fill the arrays
+    tidyr::complete(dates, stationID, explicit = FALSE) |>
+    dplyr::arrange(stationID, dates) |>
+    .fill_elevation()
+
+  # stations and dates
   stations <- meteo_arranged |>
+    dplyr::filter(
+      !sf::st_is_empty(!!dplyr::sym(attr(meteo_arranged, "sf_column")))
+    ) |>
     dplyr::select(stationID) |>
     dplyr::distinct() |>
     sf::st_geometry()
   dates <- unique(meteo_arranged$dates)
 
+  # dimensions
   interpolator_dims <- stars::st_dimensions(
     date = dates, station = stations
   )
 
   # helper
   .interpolator_arrays_creator <- function(variable, arranged_data, dims) {
-    rearranged_data <- arranged_data |>
-      # very important step, as we need all combinations to fill the arrays
-      tidyr::complete(dates, stationID) |>
-      dplyr::arrange(stationID, dates)
-    col_names <- rearranged_data |>
+    col_names <- arranged_data |>
       dplyr::pull(stationID) |>
       unique()
 
     if (! variable %in% names(arranged_data)) {
       array_data <- array(NA_real_, dim = dims)
     } else {
-      array_data <- rearranged_data|>
+      array_data <- arranged_data|>
         dplyr::pull(!!variable) |>
         array(dim = dims)
     }
@@ -250,371 +308,6 @@ create_meteo_interpolator <- function(meteo_with_topo, params = NULL, ...) {
   return(stars_interpolator)
 }
 
-
-## recursive version, not using it for the moment
-.interpolation_point_recursive <- function(interpolator, sf, dates = NULL) {
-  ## assertions
-  # crs assertion. CRS of sf must be changed in the parent env before calling
-  # .interpolation_point method, but we check here just in case
-  assertthat::assert_that(
-    identical(sf::st_crs(interpolator), sf::st_crs(sf)),
-    msg = "CRS of sf must be the same as the interpolator"
-  )
-
-  ## dates checks
-  if (is.null(dates)) {
-    dates <- stars::st_get_dimension_values(interpolator, 'date')
-  } else {
-    dates_ref <- stars::st_get_dimension_values(interpolator, 'date')
-    dates_inside <- dates[dates %in% dates_ref]
-
-    # No dates in range
-    if (length(dates_inside) < 1) {
-      usethis::ui_stop(
-        "Dates supplied are outside the interpolator date range. No possible interpolation."
-      )
-    }
-
-    # some dates in range, not all
-    if (length(dates_inside) < length(dates)) {
-      usethis::ui_warn(
-        "Some dates are outside the interpolator date range, only dates inside will be used"
-      )
-    }
-
-    # set correct dates
-    dates <- dates_inside
-  }
-
-  ## recursive call
-  if (nrow(sf) > 1) {
-    return(c(
-      .interpolation_point_recursive(interpolator, sf |> dplyr::slice(1), dates = dates),
-      .interpolation_point_recursive(interpolator, sf |> dplyr::slice(-1), dates = dates)
-    ))
-  }
-
-  ## checks point
-  interpolator_convex_hull <-
-    stars::st_get_dimension_values(interpolator, "station") |>
-    sf::st_union() |>
-    sf::st_convex_hull()
-  if (!sf::st_contains(interpolator_convex_hull, sf, sparse = FALSE)) {
-    usethis::ui_warn("Point outside the convex hull of interpolation object")
-  }
-
-  ## extraction and calculations
-  tmin <- .interpolateTemperatureSeriesPoints(
-    Xp = sf::st_coordinates(sf)[,1], Yp = sf::st_coordinates(sf)[,2],
-    Zp = sf$elevation,
-    X = sf::st_coordinates(stars::st_get_dimension_values(interpolator, "station"))[,1],
-    Y = sf::st_coordinates(stars::st_get_dimension_values(interpolator, "station"))[,2],
-    Z = interpolator$elevation[1,],
-    T = t(dplyr::filter(interpolator, date %in% dates)[["MinTemperature"]]),
-    iniRp = attr(interpolator, "params")$initial_Rp,
-    alpha = attr(interpolator, "params")$alpha_MinTemperature,
-    N = attr(interpolator, "params")$N_MinTemperature,
-    iterations = attr(interpolator, "params")$iterations,
-    debug = attr(interpolator, "params")$debug
-  )
-
-  tmax <- .interpolateTemperatureSeriesPoints(
-    Xp = sf::st_coordinates(sf)[,1], Yp = sf::st_coordinates(sf)[,2],
-    Zp = sf$elevation,
-    X = sf::st_coordinates(stars::st_get_dimension_values(interpolator, "station"))[,1],
-    Y = sf::st_coordinates(stars::st_get_dimension_values(interpolator, "station"))[,2],
-    Z = interpolator$elevation[1,],
-    T = t(dplyr::filter(interpolator, date %in% dates)[["MaxTemperature"]]),
-    iniRp = attr(interpolator, "params")$initial_Rp,
-    alpha = attr(interpolator, "params")$alpha_MaxTemperature,
-    N = attr(interpolator, "params")$N_MaxTemperature,
-    iterations = attr(interpolator, "params")$iterations,
-    debug = attr(interpolator, "params")$debug
-  )
-
-  tmean <- 0.606*tmax+0.394*tmin
-
-  prec <- .interpolatePrecipitationSeriesPoints(
-    Xp = sf::st_coordinates(sf)[,1], Yp = sf::st_coordinates(sf)[,2],
-    Zp = sf$elevation,
-    X = sf::st_coordinates(stars::st_get_dimension_values(interpolator, "station"))[,1],
-    Y = sf::st_coordinates(stars::st_get_dimension_values(interpolator, "station"))[,2],
-    Z = interpolator$elevation[1,],
-    P = t(dplyr::filter(interpolator, date %in% dates)[["Precipitation"]]),
-    Psmooth = dplyr::filter(interpolator, date %in% dates)[["SmoothedPrecipitation"]],
-    iniRp = attr(interpolator, "params")$initial_Rp,
-    alpha_event = attr(interpolator, "params")$alpha_PrecipitationEvent,
-    alpha_amount = attr(interpolator, "params")$alpha_PrecipitationAmount,
-    iterations = attr(interpolator, "params")$iterations,
-    popcrit = attr(interpolator, "params")$pop_crit,
-    fmax = attr(interpolator, "params")$f_max,
-    debug = attr(interpolator, "params")$debug
-  )
-
-  DOY <- as.numeric(format(dates, "%j"))
-  J <- radiation_dateStringToJulianDays(as.character(dates))
-
-  # relative humidity, depends on if we have it or not
-  # If we dont, estimate VP assuming that dew-point temperature is equal to Tmin
-  if (all(is.na(interpolator[["RelativeHumidity"]]))) {
-    rhmean <- .relativeHumidityFromMinMaxTemp(tmin, tmax)
-    VP <- .temp2SVP(tmin) #kPA
-    rhmax <- rep(100, length(rhmean))
-    rhmin <- pmax(0, .relativeHumidityFromDewpointTemp(tmax, tmin))
-  } else {
-    TdewM <- .dewpointTemperatureFromRH(
-      0.606 * t(dplyr::filter(interpolator, date %in% dates)[["MaxTemperature"]]) +
-        0.394 * t(dplyr::filter(interpolator, date %in% dates)[["MinTemperature"]]),
-      t(dplyr::filter(interpolator, date %in% dates)[["RelativeHumidity"]])
-    )
-
-    tdew <- .interpolateTdewSeriesPoints(
-      Xp = sf::st_coordinates(sf)[,1], Yp = sf::st_coordinates(sf)[,2],
-      Zp = sf$elevation,
-      X = sf::st_coordinates(stars::st_get_dimension_values(interpolator, "station"))[,1],
-      Y = sf::st_coordinates(stars::st_get_dimension_values(interpolator, "station"))[,2],
-      Z = interpolator$elevation[1,],
-      T = TdewM,
-      iniRp = attr(interpolator, "params")$initial_Rp,
-      alpha = attr(interpolator, "params")$alpha_DewTemperature,
-      N = attr(interpolator, "params")$N_DewTemperature,
-      iterations = attr(interpolator, "params")$iterations,
-      debug = attr(interpolator, "params")$debug
-    )
-
-    rhmean <- .relativeHumidityFromDewpointTemp(tmean, tdew)
-    VP <- .temp2SVP(tdew) #kPa
-    rhmax = pmin(100, .relativeHumidityFromDewpointTemp(tmin, tdew))
-    rhmin = pmax(0, .relativeHumidityFromDewpointTemp(tmax, tdew))
-  }
-
-  # radiation
-  diffTemp <- abs(tmax - tmin)
-  diffTempMonth <- .interpolateTemperatureSeriesPoints(
-    Xp = sf::st_coordinates(sf)[,1], Yp = sf::st_coordinates(sf)[,2],
-    Zp = sf$elevation,
-    X = sf::st_coordinates(stars::st_get_dimension_values(interpolator, "station"))[,1],
-    Y = sf::st_coordinates(stars::st_get_dimension_values(interpolator, "station"))[,2],
-    Z = interpolator$elevation[1,],
-    T = t(dplyr::filter(interpolator, date %in% dates)[["SmoothedTemperatureRange"]]),
-    iniRp = attr(interpolator, "params")$initial_Rp,
-    alpha = attr(interpolator, "params")$alpha_MinTemperature,
-    N = attr(interpolator, "params")$N_MinTemperature,
-    iterations = attr(interpolator, "params")$iterations,
-    debug = attr(interpolator, "params")$debug
-  )
-
-  latrad <- sf::st_coordinates(sf::st_transform(sf, 4326))[,2] * (pi/180)
-  slorad <- sf$slope * (pi/180)
-  asprad <- sf$aspect * (pi/180)
-  rad <- .radiationSeries(
-    latrad, sf$elevation, slorad, asprad, J, diffTemp, diffTempMonth, VP, prec
-  )
-
-  # Wind, (not sure if implement or not)
-  # PET, not sure if implement or not
-
-
-  ### TODO assign an id to each element, the sf geom or something!!!!
-
-  # return the res df
-  list(dplyr::tibble(
-    dates = dates,
-    DOY = DOY,
-    MeanTemperature = as.vector(tmean),
-    MinTemperature = as.vector(tmin),
-    MaxTemperature = as.vector(tmax),
-    Precipitation = as.vector(prec),
-    MeanRelativeHumidity = rhmean,
-    MinRelativeHumidity = rhmin,
-    MaxRelativeHumidity = rhmax,
-    Radiation = rad,
-    WindSpeed = NA,
-    WindDirection = NA,
-    PET = NA
-  ))
-
-}
-
-.interpolation_point_purrr <- function(interpolator, sf, dates = NULL) {
-  ## assertions
-
-
-  ## dates checks
-  if (is.null(dates)) {
-    dates <- stars::st_get_dimension_values(interpolator, 'date')
-  } else {
-    dates_ref <- stars::st_get_dimension_values(interpolator, 'date')
-    dates_inside <- dates[dates %in% dates_ref]
-
-    # No dates in range
-    if (length(dates_inside) < 1) {
-      usethis::ui_stop(
-        "Dates supplied are outside the interpolator date range. No possible interpolation."
-      )
-    }
-
-    # some dates in range, not all
-    if (length(dates_inside) < length(dates)) {
-      usethis::ui_warn(
-        "Some dates are outside the interpolator date range, only dates inside will be used"
-      )
-    }
-
-    # set correct dates
-    dates <- dates_inside
-  }
-
-  ## iterative call
-  if (nrow(sf) > 1) {
-    return(purrr::map(1:nrow(sf), ~ .interpolation_point_purrr(interpolator, sf[.x,], dates = dates)))
-  }
-
-  ## TODO, convert the coordinates of sf to the ones in the interpolator, store the
-  ## old and transform the result if it is spatial
-
-  ## checks point
-  interpolator_convex_hull <-
-    stars::st_get_dimension_values(interpolator, "station") |>
-    sf::st_union() |>
-    sf::st_convex_hull()
-  if (!sf::st_contains(interpolator_convex_hull, sf, sparse = FALSE)) {
-    usethis::ui_warn("Point outside the convex hull of interpolation object")
-  }
-
-  ## extraction and calculations
-  tmin <- .interpolateTemperatureSeriesPoints(
-    Xp = sf::st_coordinates(sf)[,1], Yp = sf::st_coordinates(sf)[,2],
-    Zp = sf$elevation,
-    X = sf::st_coordinates(stars::st_get_dimension_values(interpolator, "station"))[,1],
-    Y = sf::st_coordinates(stars::st_get_dimension_values(interpolator, "station"))[,2],
-    Z = interpolator$elevation[,1],
-    T = dplyr::filter(interpolator, date %in% dates)[["MinTemperature"]],
-    iniRp = attr(interpolator, "params")$initial_Rp,
-    alpha = attr(interpolator, "params")$alpha_MinTemperature,
-    N = attr(interpolator, "params")$N_MinTemperature,
-    iterations = attr(interpolator, "params")$iterations,
-    debug = attr(interpolator, "params")$debug
-  )
-
-  tmax <- .interpolateTemperatureSeriesPoints(
-    Xp = sf::st_coordinates(sf)[,1], Yp = sf::st_coordinates(sf)[,2],
-    Zp = sf$elevation,
-    X = sf::st_coordinates(stars::st_get_dimension_values(interpolator, "station"))[,1],
-    Y = sf::st_coordinates(stars::st_get_dimension_values(interpolator, "station"))[,2],
-    Z = interpolator$elevation[,1],
-    T = dplyr::filter(interpolator, date %in% dates)[["MaxTemperature"]],
-    iniRp = attr(interpolator, "params")$initial_Rp,
-    alpha = attr(interpolator, "params")$alpha_MaxTemperature,
-    N = attr(interpolator, "params")$N_MaxTemperature,
-    iterations = attr(interpolator, "params")$iterations,
-    debug = attr(interpolator, "params")$debug
-  )
-
-  tmean <- 0.606*tmax+0.394*tmin
-
-  prec <- .interpolatePrecipitationSeriesPoints(
-    Xp = sf::st_coordinates(sf)[,1], Yp = sf::st_coordinates(sf)[,2],
-    Zp = sf$elevation,
-    X = sf::st_coordinates(stars::st_get_dimension_values(interpolator, "station"))[,1],
-    Y = sf::st_coordinates(stars::st_get_dimension_values(interpolator, "station"))[,2],
-    Z = interpolator$elevation[,1],
-    P = dplyr::filter(interpolator, date %in% dates)[["Precipitation"]],
-    Psmooth = dplyr::filter(interpolator, date %in% dates)[["SmoothedPrecipitation"]],
-    iniRp = attr(interpolator, "params")$initial_Rp,
-    alpha_event = attr(interpolator, "params")$alpha_PrecipitationEvent,
-    alpha_amount = attr(interpolator, "params")$alpha_PrecipitationAmount,
-    iterations = attr(interpolator, "params")$iterations,
-    popcrit = attr(interpolator, "params")$pop_crit,
-    fmax = attr(interpolator, "params")$f_max,
-    debug = attr(interpolator, "params")$debug
-  )
-
-  DOY <- as.numeric(format(dates, "%j"))
-  J <- radiation_dateStringToJulianDays(as.character(dates))
-
-  # relative humidity, depends on if we have it or not
-  # If we dont, estimate VP assuming that dew-point temperature is equal to Tmin
-  if (all(is.na(interpolator[["RelativeHumidity"]]))) {
-    rhmean <- .relativeHumidityFromMinMaxTemp(tmin, tmax)
-    VP <- .temp2SVP(tmin) #kPA
-    rhmax <- rep(100, length(rhmean))
-    rhmin <- pmax(0, .relativeHumidityFromDewpointTemp(tmax, tmin))
-  } else {
-    TdewM <- .dewpointTemperatureFromRH(
-      0.606 * dplyr::filter(interpolator, date %in% dates)[["MaxTemperature"]] +
-        0.394 * dplyr::filter(interpolator, date %in% dates)[["MinTemperature"]],
-      dplyr::filter(interpolator, date %in% dates)[["RelativeHumidity"]]
-    )
-
-    tdew <- .interpolateTdewSeriesPoints(
-      Xp = sf::st_coordinates(sf)[,1], Yp = sf::st_coordinates(sf)[,2],
-      Zp = sf$elevation,
-      X = sf::st_coordinates(stars::st_get_dimension_values(interpolator, "station"))[,1],
-      Y = sf::st_coordinates(stars::st_get_dimension_values(interpolator, "station"))[,2],
-      Z = interpolator$elevation[,1],
-      T = TdewM,
-      iniRp = attr(interpolator, "params")$initial_Rp,
-      alpha = attr(interpolator, "params")$alpha_DewTemperature,
-      N = attr(interpolator, "params")$N_DewTemperature,
-      iterations = attr(interpolator, "params")$iterations,
-      debug = attr(interpolator, "params")$debug
-    )
-
-    rhmean <- .relativeHumidityFromDewpointTemp(tmean, tdew)
-    VP <- .temp2SVP(tdew) #kPa
-    rhmax = pmin(100, .relativeHumidityFromDewpointTemp(tmin, tdew))
-    rhmin = pmax(0, .relativeHumidityFromDewpointTemp(tmax, tdew))
-  }
-
-  # radiation
-  diffTemp <- abs(tmax - tmin)
-  diffTempMonth <- .interpolateTemperatureSeriesPoints(
-    Xp = sf::st_coordinates(sf)[,1], Yp = sf::st_coordinates(sf)[,2],
-    Zp = sf$elevation,
-    X = sf::st_coordinates(stars::st_get_dimension_values(interpolator, "station"))[,1],
-    Y = sf::st_coordinates(stars::st_get_dimension_values(interpolator, "station"))[,2],
-    Z = interpolator$elevation[,1],
-    T = dplyr::filter(interpolator, date %in% dates)[["SmoothedTemperatureRange"]],
-    iniRp = attr(interpolator, "params")$initial_Rp,
-    alpha = attr(interpolator, "params")$alpha_MinTemperature,
-    N = attr(interpolator, "params")$N_MinTemperature,
-    iterations = attr(interpolator, "params")$iterations,
-    debug = attr(interpolator, "params")$debug
-  )
-
-  latrad <- sf::st_coordinates(sf::st_transform(sf, 4326))[,2] * (pi/180)
-  slorad <- sf$slope * (pi/180)
-  asprad <- sf$aspect * (pi/180)
-  rad <- .radiationSeries(
-    latrad, sf$elevation, slorad, asprad, J, diffTemp, diffTempMonth, VP, prec
-  )
-
-  # Wind, (not sure if implement or not)
-  # PET, not sure if implement or not
-
-
-  ### TODO assign an id to each element, the sf geom or something!!!!
-
-  # return the res df
-  dplyr::tibble(
-    dates = dates,
-    DOY = DOY,
-    MeanTemperature = as.vector(tmean),
-    MinTemperature = as.vector(tmin),
-    MaxTemperature = as.vector(tmax),
-    Precipitation = as.vector(prec),
-    MeanRelativeHumidity = rhmean,
-    MinRelativeHumidity = rhmin,
-    MaxRelativeHumidity = rhmax,
-    Radiation = rad,
-    WindSpeed = NA,
-    WindDirection = NA,
-    PET = NA
-  )
-
-}
-
 # write the interpolator in the NetCDF-CF standard
 # http://cfconventions.org/cf-conventions/cf-conventions.html
 .write_interpolator <- function(interpolator, filename, .overwrite = FALSE) {
@@ -675,30 +368,30 @@ create_meteo_interpolator <- function(meteo_with_topo, params = NULL, ...) {
   list(prepared_data_list, names(prepared_data_list), prepared_data_units) |>
     purrr::pwalk(
       ~ ncdfgeom::write_timeseries_dsg(
-          nc_file = filename,
-          instance_names = names(prepared_data_list[[1]]),
-          lats = sf::st_coordinates(stars::st_get_dimension_values(interpolator, "station"))[,2],
-          lons = sf::st_coordinates(stars::st_get_dimension_values(interpolator, "station"))[,1],
-          times = stars::st_get_dimension_values(interpolator, 'date'),
-          data = as.data.frame(..1),
-          alts = as.numeric(prepared_data_list$elevation[1,]),
-          data_unit = ..3,
-          data_metadata = list(name = ..2, long_name = ..2),
-          time_units = "days since 1970-01-01 00:00:00",
-          coordvar_long_names = list(
-            instance = "station", time = "date",
-            lat = "latitude", lon = "longitude", alt = "elevation"
-          ),
-          attributes = c(
-            interpolator_attributes,
-            list(
-              title = "meteoland interpolator",
-              provider_name = "meteoland R package",
-              crs = as.character(sf::st_crs(interpolator))[1]
-            )
-          ),
-          add_to_existing = TRUE
-        )
+        nc_file = filename,
+        instance_names = names(prepared_data_list[[1]]),
+        lats = sf::st_coordinates(stars::st_get_dimension_values(interpolator, "station"))[,2],
+        lons = sf::st_coordinates(stars::st_get_dimension_values(interpolator, "station"))[,1],
+        times = stars::st_get_dimension_values(interpolator, 'date'),
+        data = as.data.frame(..1),
+        alts = as.numeric(prepared_data_list$elevation[1,]),
+        data_unit = ..3,
+        data_metadata = list(name = ..2, long_name = ..2),
+        time_units = "days since 1970-01-01 00:00:00",
+        coordvar_long_names = list(
+          instance = "station", time = "date",
+          lat = "latitude", lon = "longitude", alt = "elevation"
+        ),
+        attributes = c(
+          interpolator_attributes,
+          list(
+            title = "meteoland interpolator",
+            provider_name = "meteoland R package",
+            crs = as.character(sf::st_crs(interpolator))[1]
+          )
+        ),
+        add_to_existing = TRUE
+      )
     )
 
   usethis::ui_info("Adding spatial info to nc file")
@@ -712,7 +405,10 @@ create_meteo_interpolator <- function(meteo_with_topo, params = NULL, ...) {
   return(invisible(interpolator))
 }
 
+# read interpolators created with .write_interpolator
 .read_interpolator <- function(filename) {
+  # debug
+  # browser()
 
   # get the data from the nc file
   ts_data <- ncdfgeom::read_timeseries_dsg(filename)
@@ -763,9 +459,299 @@ create_meteo_interpolator <- function(meteo_with_topo, params = NULL, ...) {
 
 }
 
+
+## C vectorized version
+.interpolation_point <- function(sf, interpolator, dates = NULL) {
+  ## debug
+  # browser()
+
+  ## assertions
+  # crs assertion. CRS of sf must be changed in the parent env before calling
+  # .interpolation_point method, but we check here just in case
+  assertthat::assert_that(
+    identical(sf::st_crs(interpolator), sf::st_crs(sf)),
+    msg = "CRS of sf must be the same as the interpolator"
+  )
+
+  ## dates checks
+  if (is.null(dates)) {
+    dates <- stars::st_get_dimension_values(interpolator, 'date')
+  } else {
+    dates_ref <- stars::st_get_dimension_values(interpolator, 'date')
+    dates_inside <- dates[dates %in% dates_ref]
+
+    # No dates in range
+    if (length(dates_inside) < 1) {
+      usethis::ui_stop(
+        "Dates supplied are outside the interpolator date range. No possible interpolation."
+      )
+    }
+
+    # some dates in range, not all
+    if (length(dates_inside) < length(dates)) {
+      usethis::ui_warn(
+        "Some dates are outside the interpolator date range, only dates inside will be used"
+      )
+    }
+
+    # set correct dates
+    dates <- dates_inside
+  }
+
+  ## checks point
+  interpolator_convex_hull <-
+    stars::st_get_dimension_values(interpolator, "station") |>
+    sf::st_union() |>
+    sf::st_convex_hull()
+  if (any(!sf::st_contains(interpolator_convex_hull, sf, sparse = FALSE))) {
+    usethis::ui_warn("Some points are outside the convex hull of the interpolation object")
+  }
+
+  usethis::ui_info("Starting interpolation...")
+  ## extraction and calculations
+  # filtered interpolator, just once
+  filtered_interpolator <- interpolator |> dplyr::filter(date %in% dates)
+  tmin_interpolator <- t(filtered_interpolator[["MinTemperature"]])
+  tmax_interpolator <- t(filtered_interpolator[["MaxTemperature"]])
+
+  usethis::ui_todo("Interpolating temperature...")
+  tmin <- .interpolateTemperatureSeriesPoints(
+    Xp = sf::st_coordinates(sf)[,1], Yp = sf::st_coordinates(sf)[,2],
+    Zp = sf$elevation,
+    X = sf::st_coordinates(stars::st_get_dimension_values(interpolator, "station"))[,1],
+    Y = sf::st_coordinates(stars::st_get_dimension_values(interpolator, "station"))[,2],
+    Z = interpolator$elevation[1,],
+    T = tmin_interpolator,
+    iniRp = attr(interpolator, "params")$initial_Rp,
+    alpha = attr(interpolator, "params")$alpha_MinTemperature,
+    N = attr(interpolator, "params")$N_MinTemperature,
+    iterations = attr(interpolator, "params")$iterations,
+    debug = attr(interpolator, "params")$debug
+  )
+
+  tmax <- .interpolateTemperatureSeriesPoints(
+    Xp = sf::st_coordinates(sf)[,1], Yp = sf::st_coordinates(sf)[,2],
+    Zp = sf$elevation,
+    X = sf::st_coordinates(stars::st_get_dimension_values(interpolator, "station"))[,1],
+    Y = sf::st_coordinates(stars::st_get_dimension_values(interpolator, "station"))[,2],
+    Z = interpolator$elevation[1,],
+    T = tmax_interpolator,
+    iniRp = attr(interpolator, "params")$initial_Rp,
+    alpha = attr(interpolator, "params")$alpha_MaxTemperature,
+    N = attr(interpolator, "params")$N_MaxTemperature,
+    iterations = attr(interpolator, "params")$iterations,
+    debug = attr(interpolator, "params")$debug
+  )
+
+  tmean <- 0.606*tmax+0.394*tmin
+
+  usethis::ui_todo("Interpolating precipitation...")
+  prec <- .interpolatePrecipitationSeriesPoints(
+    Xp = sf::st_coordinates(sf)[,1], Yp = sf::st_coordinates(sf)[,2],
+    Zp = sf$elevation,
+    X = sf::st_coordinates(stars::st_get_dimension_values(interpolator, "station"))[,1],
+    Y = sf::st_coordinates(stars::st_get_dimension_values(interpolator, "station"))[,2],
+    Z = interpolator$elevation[1,],
+    P = t(filtered_interpolator[["Precipitation"]]),
+    Psmooth = t(filtered_interpolator[["SmoothedPrecipitation"]]),
+    iniRp = attr(interpolator, "params")$initial_Rp,
+    alpha_event = attr(interpolator, "params")$alpha_PrecipitationEvent,
+    alpha_amount = attr(interpolator, "params")$alpha_PrecipitationAmount,
+    iterations = attr(interpolator, "params")$iterations,
+    popcrit = attr(interpolator, "params")$pop_crit,
+    fmax = attr(interpolator, "params")$f_max,
+    debug = attr(interpolator, "params")$debug
+  )
+
+  DOY <- as.numeric(format(dates, "%j"))
+  J <- radiation_dateStringToJulianDays(as.character(dates))
+
+  .as_interpolator_res_array <- function(vector, ref_dim) {
+    return(array(vector, dim = ref_dim))
+  }
+
+  usethis::ui_todo("Interpolating relative humidity...")
+  # relative humidity, depends on if we have it or not
+  # If we dont, estimate VP assuming that dew-point temperature is equal to Tmin
+  if (all(is.na(filtered_interpolator[["RelativeHumidity"]]))) {
+    rhmean <- .relativeHumidityFromMinMaxTemp(tmin, tmax) |>
+      .as_interpolator_res_array(dim(tmin))
+    VP <- .temp2SVP(tmin) |> #kPA
+      .as_interpolator_res_array(dim(tmin))
+    rhmax <- rep(100, length(rhmean)) |>
+      .as_interpolator_res_array(dim(tmin))
+    rhmin <- pmax(0, .relativeHumidityFromDewpointTemp(tmax, tmin)) |>
+      .as_interpolator_res_array(dim(tmin))
+  } else {
+    TdewM <- .dewpointTemperatureFromRH(
+      0.606 * filtered_interpolator[["MaxTemperature"]] +
+        0.394 * filtered_interpolator[["MinTemperature"]],
+      filtered_interpolator[["RelativeHumidity"]]
+    )
+
+    tdew <- .interpolateTdewSeriesPoints(
+      Xp = sf::st_coordinates(sf)[,1], Yp = sf::st_coordinates(sf)[,2],
+      Zp = sf$elevation,
+      X = sf::st_coordinates(stars::st_get_dimension_values(interpolator, "station"))[,1],
+      Y = sf::st_coordinates(stars::st_get_dimension_values(interpolator, "station"))[,2],
+      Z = interpolator$elevation[1,],
+      T = t(TdewM),
+      iniRp = attr(interpolator, "params")$initial_Rp,
+      alpha = attr(interpolator, "params")$alpha_DewTemperature,
+      N = attr(interpolator, "params")$N_DewTemperature,
+      iterations = attr(interpolator, "params")$iterations,
+      debug = attr(interpolator, "params")$debug
+    )
+
+    rhmean <- .relativeHumidityFromDewpointTemp(tmean, tdew) |>
+      .as_interpolator_res_array(dim(tmin))
+    VP <- .temp2SVP(tdew) |>
+      .as_interpolator_res_array(dim(tmin)) #kPa
+    rhmax = pmin(100, .relativeHumidityFromDewpointTemp(tmin, tdew)) |>
+      .as_interpolator_res_array(dim(tmin))
+    rhmin = pmax(0, .relativeHumidityFromDewpointTemp(tmax, tdew)) |>
+      .as_interpolator_res_array(dim(tmin))
+  }
+
+  # radiation
+  usethis::ui_todo("Interpolating radiation...")
+  diffTemp <- abs(tmax - tmin)
+  diffTempMonth <- .interpolateTemperatureSeriesPoints(
+    Xp = sf::st_coordinates(sf)[,1], Yp = sf::st_coordinates(sf)[,2],
+    Zp = sf$elevation,
+    X = sf::st_coordinates(stars::st_get_dimension_values(interpolator, "station"))[,1],
+    Y = sf::st_coordinates(stars::st_get_dimension_values(interpolator, "station"))[,2],
+    Z = interpolator$elevation[1,],
+    T = t(filtered_interpolator[["SmoothedTemperatureRange"]]),
+    iniRp = attr(interpolator, "params")$initial_Rp,
+    alpha = attr(interpolator, "params")$alpha_MinTemperature,
+    N = attr(interpolator, "params")$N_MinTemperature,
+    iterations = attr(interpolator, "params")$iterations,
+    debug = attr(interpolator, "params")$debug
+  )
+
+  latrad <- sf::st_coordinates(sf::st_transform(sf, 4326))[,2] * (pi/180)
+  slorad <- sf$slope * (pi/180)
+  asprad <- sf$aspect * (pi/180)
+  rad <- array(dim = dim(tmin))
+  for (i in 1:length(latrad)) {
+    rad[i,] <- .radiationSeries(
+      latrad[i], sf$elevation[i], slorad[i], asprad[i],
+      J,
+      diffTemp[i,], diffTempMonth[i,],
+      VP[i,], prec[i,]
+    )
+  }
+
+  # Wind, (not sure if implement or not)
+  # PET, not sure if implement or not
+
+
+  ### TODO assign an id to each element, the sf geom or something!!!!
+
+  # return the res df
+  purrr::map(
+    1:length(latrad),
+    ~ dplyr::tibble(
+      dates = dates,
+      DOY = DOY,
+      MeanTemperature = as.vector(tmean[.x,]),
+      MinTemperature = as.vector(tmin[.x,]),
+      MaxTemperature = as.vector(tmax[.x,]),
+      Precipitation = as.vector(prec[.x,]),
+      MeanRelativeHumidity = rhmean[.x,],
+      MinRelativeHumidity = rhmin[.x,],
+      MaxRelativeHumidity = rhmax[.x,],
+      Radiation = rad[.x,],
+      WindSpeed = NA,
+      WindDirection = NA,
+      PET = NA
+    )
+  )
+
+  usethis::ui_done("Interpolation done...")
+}
+
+.meteospain2meteoland <- function(meteo) {
+
+  # Renaming mandatory variables
+  meteo_temp <- meteo |>
+    dplyr::select(
+      dates = timestamp, stationID = station_id,
+      elevation = altitude,
+      MinTemperature = min_temperature, MaxTemperature = max_temperature,
+      Precipitation = precipitation,
+      everything()
+    )
+
+  # Renaming optional
+  if ("relative_humidity" %in% names(meteo_temp)) {
+    meteo_temp <- meteo_temp |>
+      dplyr::rename(RelativeHumidity = relative_humidty)
+  }
+
+  if ("mean_wind_speed" %in% names(meteo_temp)) {
+    meteo_temp <- meteo_temp |>
+      dplyr::rename(WindSpeed = mean_wind_speed)
+  }
+
+  if ("wind_direction" %in% names(meteo_temp)) {
+    meteo_temp <- meteo_temp |>
+      dplyr::rename(WindDirection = wind_direction)
+  }
+
+  if ("radiation" %in% names(meteo_temp)) {
+    meteo_temp <- meteo_temp |>
+      dplyr::rename(Radiation = radiation)
+  }
+
+  meteo_temp |>
+    dplyr::select(dplyr::any_of(
+      c(
+        "dates", "stationID", "elevation", "MinTemperature", "MaxTemperature",
+        "Precipitation", "RelativeHumidity", "WindDirection", "WindSpeed",
+        "Radiation"
+      )
+    ))
+}
+
+.spatial_dispatcher <- function(spatial_data, interpolator, dates) {
+
+  # general assertions
+  asserthat::assert_that(has_topo_names(spatial_data))
+
+  # sf
+  if (inherits(spatial_data, "sf")) {
+    # assertions
+    assertthat::assert_that(
+      inherits(sf::st_geometry(spatial_data), "sfc_POINT"),
+      msg = paste0(
+        "Spatial data must inhertis from sfc_POINT, not ",
+        class(sf::st_geometry(spatial_data))[1]
+      )
+    )
+
+    # interpolation
+    return(spatial_data |> .interpolation_point(interpolator, dates))
+
+  }
+
+  # stars
+  if (inherits(spatial_data, 'stars')) {
+    return(
+      spatial_data |>
+        .stars2sf() |>
+        .interpolation_point(interpolator, dates)
+    )
+  }
+
+  usethis::ui_stop("No compatible spatial data found. Spatial data must be an sf or a stars object")
+}
+
+
 # library(meteospain)
 # library(sf)
-# #### get meteo ####
+# #### get meteo
 # service_options <- aemet_options(
 #   'daily', as.Date("2022-04-01"), as.Date("2022-04-30"),
 #   api_key = keyring::key_get('aemet')
@@ -960,10 +946,10 @@ create_meteo_interpolator <- function(meteo_with_topo, params = NULL, ...) {
 # pryr::mem_change({recursive_res <- meteoland:::.interpolation_point_recursive(interpolator, sf_test)})
 # pryr::mem_change({purrr_res <- meteoland:::.interpolation_point_purrr(interpolator, sf_test)})
 
-#
+# library(meteoland)
 # library(meteospain)
 # library(sf)
-# #### get meteo ####
+# #### get meteo
 # service_options <- aemet_options(
 #   'daily', as.Date("2022-04-01"), as.Date("2022-04-30"),
 #   api_key = keyring::key_get('aemet')
@@ -997,3 +983,63 @@ create_meteo_interpolator <- function(meteo_with_topo, params = NULL, ...) {
 # identical(interpolator$aspect, stars_interpolator$aspect)
 # class(interpolator$aspect[,1])
 # class(stars_interpolator$aspect[,1])
+#
+# points_test <- dplyr::sample_n(meteo_ok, 5) |>
+#   meteoland:::with_meteo() |>
+#   meteoland:::add_topo(topo_sf_ok)
+#
+# meteoland:::.interpolation_point(stars_interpolator, points_test)
+#
+# points_whole <- meteo_ok |>
+#   dplyr::arrange(dates, stationID) |>
+#   dplyr::slice(1:240) |>
+#   dplyr::distinct() |>
+#   meteoland:::with_meteo() |>
+#   meteoland:::add_topo(topo_sf_ok)
+# #
+# points_test <- dplyr::sample_n(points_whole, 15)
+# #
+# selected_dates <- stars::st_get_dimension_values(interpolator, "date")[5:10]
+# #
+# long_benchmark <- bench::mark(
+#   # long
+#   meteoland:::.interpolation_point_recursive(interpolator, points_whole),
+#   meteoland:::.interpolation_point(interpolator, points_whole),
+#   iterations = 3,
+#   check = FALSE
+# )
+# long_benchmark$time
+# middle_benchmark <- bench::mark(
+#   # middle
+#   meteoland:::.interpolation_point_recursive(interpolator, points_test),
+#   meteoland:::.interpolation_point(interpolator, points_test),
+#   iterations = 10,
+#   check = FALSE
+# )
+# middle_benchmark$time
+# middle_2_benchmark <- bench::mark(
+#   # middle_2
+#   meteoland:::.interpolation_point_recursive(interpolator, points_whole, dates = selected_dates),
+#   meteoland:::.interpolation_point(interpolator, points_whole, dates = selected_dates),
+#   iterations = 3,
+#   check = FALSE
+# )
+# middle_2_benchmark$time
+# short_benchmark <- bench::mark(
+#   # short
+#   meteoland:::.interpolation_point_recursive(interpolator, points_test, dates = selected_dates),
+#   meteoland:::.interpolation_point(interpolator, points_test, dates = selected_dates),
+#   iterations = 3,
+#   check = FALSE
+# )
+# short_benchmark$time
+#
+# recursive_res <- meteoland:::.interpolation_point_recursive(interpolator, points_test)
+# c_vec_res <- meteoland:::.interpolation_point(interpolator, points_test)
+#
+# equality <- character()
+# for (i in 1:length(recursive_res)) {
+#   equality <- c(equality,all.equal(recursive_res[[i]], c_vec_res[[i]]))
+# }
+# equality
+# all.equal(recursive_res, c_vec_res)

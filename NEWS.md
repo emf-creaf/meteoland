@@ -5,6 +5,7 @@
 # Version 1.0.3
 - Minor C code corrections (clang check)
 - Elimination of sysdata (SMCvarcodes not needed)
+- Bug correction in the construction of MeteorologyInterpolationData from SpatialPointsMeteorology
 
 # Version 1.0.2
 - Remove non-necessary dependencies (xml2, httr, jsonlite)

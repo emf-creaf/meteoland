@@ -50,33 +50,41 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">readmeteorologygrid</span><span class="op">(</span><span class="va">files</span>, format <span class="op">=</span> <span class="st">"netCDF"</span>, varmapping <span class="op">=</span> <span class="cn">NULL</span>,
-                    dates <span class="op">=</span> <span class="cn">NULL</span>, bbox <span class="op">=</span> <span class="cn">NULL</span>, offset <span class="op">=</span> <span class="fl">0</span>, verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
-<span class="fu">readmeteorologypixels</span><span class="op">(</span><span class="va">files</span>, format <span class="op">=</span> <span class="st">"netCDF"</span>, varmapping <span class="op">=</span> <span class="cn">NULL</span>,
-                      dates <span class="op">=</span> <span class="cn">NULL</span>, bbox <span class="op">=</span> <span class="cn">NULL</span>, offset <span class="op">=</span> <span class="fl">0</span>, verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
-<span class="fu">readmeteorologygridpoints</span><span class="op">(</span><span class="va">files</span>, format <span class="op">=</span> <span class="st">"netCDF"</span>, varmapping <span class="op">=</span> <span class="cn">NULL</span>,
-                      dates <span class="op">=</span> <span class="cn">NULL</span>, bbox <span class="op">=</span> <span class="cn">NULL</span>, offset <span class="op">=</span> <span class="fl">0</span>, 
-                      relativehumidity <span class="op">=</span> <span class="cn">FALSE</span>, verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">readmeteorologygrid</span><span class="op">(</span><span class="va">files</span>, format <span class="op">=</span> <span class="st">"netCDF"</span>, varmapping <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>                    dates <span class="op">=</span> <span class="cn">NULL</span>, bbox <span class="op">=</span> <span class="cn">NULL</span>, offset <span class="op">=</span> <span class="fl">0</span>, verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span><span class="fu">readmeteorologypixels</span><span class="op">(</span><span class="va">files</span>, format <span class="op">=</span> <span class="st">"netCDF"</span>, varmapping <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>                      dates <span class="op">=</span> <span class="cn">NULL</span>, bbox <span class="op">=</span> <span class="cn">NULL</span>, offset <span class="op">=</span> <span class="fl">0</span>, verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span><span class="fu">readmeteorologygridpoints</span><span class="op">(</span><span class="va">files</span>, format <span class="op">=</span> <span class="st">"netCDF"</span>, varmapping <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>                      dates <span class="op">=</span> <span class="cn">NULL</span>, bbox <span class="op">=</span> <span class="cn">NULL</span>, offset <span class="op">=</span> <span class="fl">0</span>, </span>
+<span>                      relativehumidity <span class="op">=</span> <span class="cn">FALSE</span>, verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>files</dt>
 <dd><p>Character vector with the file names to be read.</p></dd>
-<dt>format</dt>
+
+  <dt>format</dt>
 <dd><p>Format of meteorological data. Currently, the only accepted format is <code>"netCDF"</code>.</p></dd>
-<dt>varmapping</dt>
+
+  <dt>varmapping</dt>
 <dd><p>Named character vector specifying a mapping of variables in the NetCDF into variables used in meteoland (e.g. <code>c(MinTemperature = "tmn")</code> specifies a map of variable 'tmn' to MinTemperature).</p></dd>
-<dt>dates</dt>
+
+  <dt>dates</dt>
 <dd><p>A character or Date vector to specify subset of dates to be read.</p></dd>
-<dt>bbox</dt>
+
+  <dt>bbox</dt>
 <dd><p>Boundary box (2 x 2 matrix) specifying the minimum and maximum coordinates of a study area.</p></dd>
-<dt>offset</dt>
+
+  <dt>offset</dt>
 <dd><p>A buffer to include NetCDF cells that are at a certain distance around the boundary box.</p></dd>
-<dt>relativehumidity</dt>
+
+  <dt>relativehumidity</dt>
 <dd><p>A logical flag to indicate estimation of relative humidity from specific humidity if possible.</p></dd>
-<dt>verbose</dt>
+
+  <dt>verbose</dt>
 <dd><p>A logical flag to output process information in the console.</p></dd>
+
 </dl></div>
     <div id="details">
     <h2>Details</h2>
@@ -86,7 +94,9 @@
     </div>
     <div id="value">
     <h2>Value</h2>
-    <ul><li><p>Function <code>readmeteorologygrid</code> returns an object <code><a href="SpatialGridMeteorology-class.html">SpatialGridMeteorology-class</a></code>.</p></li>
+    
+
+<ul><li><p>Function <code>readmeteorologygrid</code> returns an object <code><a href="SpatialGridMeteorology-class.html">SpatialGridMeteorology-class</a></code>.</p></li>
 <li><p>Function <code>readmeteorologypixels</code> returns an object <code><a href="SpatialPixelsMeteorology-class.html">SpatialPixelsMeteorology-class</a></code>.</p></li>
 <li><p>Function <code>readmeteorologygridpoints</code> returns an object <code><a href="SpatialPointsMeteorology-class.html">SpatialPointsMeteorology-class</a></code>.</p></li>
 </ul></div>
@@ -111,7 +121,7 @@
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

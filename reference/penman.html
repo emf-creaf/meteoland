@@ -50,49 +50,66 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">penman</span><span class="op">(</span><span class="va">latrad</span>, <span class="va">elevation</span>, <span class="va">slorad</span>, <span class="va">asprad</span>, <span class="va">J</span>,
-            <span class="va">Tmin</span>, <span class="va">Tmax</span>, <span class="va">RHmin</span>, <span class="va">RHmax</span>, <span class="va">R_s</span>,  <span class="va">u</span>,
-            z<span class="op">=</span><span class="fl">2.0</span>, z0 <span class="op">=</span> <span class="fl">0.001</span>, alpha <span class="op">=</span> <span class="fl">0.08</span>, windfun<span class="op">=</span><span class="st">"1956"</span><span class="op">)</span>
-<span class="fu">penmanmonteith</span><span class="op">(</span><span class="va">rc</span>, <span class="va">elevation</span>, <span class="va">Tmin</span>, <span class="va">Tmax</span>, <span class="va">RHmin</span>, <span class="va">RHmax</span>,
-               <span class="va">Rn</span>, u <span class="op">=</span> <span class="cn">NA</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">penman</span><span class="op">(</span><span class="va">latrad</span>, <span class="va">elevation</span>, <span class="va">slorad</span>, <span class="va">asprad</span>, <span class="va">J</span>,</span>
+<span>            <span class="va">Tmin</span>, <span class="va">Tmax</span>, <span class="va">RHmin</span>, <span class="va">RHmax</span>, <span class="va">R_s</span>,  <span class="va">u</span>,</span>
+<span>            z<span class="op">=</span><span class="fl">2.0</span>, z0 <span class="op">=</span> <span class="fl">0.001</span>, alpha <span class="op">=</span> <span class="fl">0.08</span>, windfun<span class="op">=</span><span class="st">"1956"</span><span class="op">)</span></span>
+<span><span class="fu">penmanmonteith</span><span class="op">(</span><span class="va">rc</span>, <span class="va">elevation</span>, <span class="va">Tmin</span>, <span class="va">Tmax</span>, <span class="va">RHmin</span>, <span class="va">RHmax</span>,</span>
+<span>               <span class="va">Rn</span>, u <span class="op">=</span> <span class="cn">NA</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>latrad</dt>
 <dd><p>Latitude in radians.</p></dd>
-<dt>elevation</dt>
+
+  <dt>elevation</dt>
 <dd><p>Elevation (in m).</p></dd>
-<dt>slorad</dt>
+
+  <dt>slorad</dt>
 <dd><p>Slope (in radians).</p></dd>
-<dt>asprad</dt>
+
+  <dt>asprad</dt>
 <dd><p>Aspect (in radians from North).</p></dd>
-<dt>J</dt>
+
+  <dt>J</dt>
 <dd><p>Julian day, number of days since January 1, 4713 BCE at noon UTC.</p></dd>
-<dt>Tmax</dt>
+
+  <dt>Tmax</dt>
 <dd><p>Maximum temperature (degrees Celsius).</p></dd>
-<dt>Tmin</dt>
+
+  <dt>Tmin</dt>
 <dd><p>Minimum temperature (degrees Celsius).</p></dd>
-<dt>RHmin</dt>
+
+  <dt>RHmin</dt>
 <dd><p>Minimum relative humidity (percent).</p></dd>
-<dt>RHmax</dt>
+
+  <dt>RHmax</dt>
 <dd><p>Maximum relative humidity (percent).</p></dd>
-<dt>R_s</dt>
+
+  <dt>R_s</dt>
 <dd><p>Solar radiation (MJ/m2).</p></dd>
-<dt>u</dt>
+
+  <dt>u</dt>
 <dd><p>With wind speed (m/s).</p></dd>
-<dt>z</dt>
+
+  <dt>z</dt>
 <dd><p>Wind measuring height (m).</p></dd>
-<dt>z0</dt>
+
+  <dt>z0</dt>
 <dd><p>Roughness height (m).</p></dd>
-<dt>alpha</dt>
+
+  <dt>alpha</dt>
 <dd><p>Albedo.</p></dd>
-<dt>windfun</dt>
+
+  <dt>windfun</dt>
 <dd><p>Wind speed function version, either "1948" or "1956".</p></dd>
-<dt>rc</dt>
+
+  <dt>rc</dt>
 <dd><p>Canopy vapour flux (stomatal) resistance (s·m-1).</p></dd>
-<dt>Rn</dt>
+
+  <dt>Rn</dt>
 <dd><p>Daily net radiation (MJ·m-2·day-1).</p></dd>
+
 </dl></div>
     <div id="details">
     <h2>Details</h2>
@@ -106,7 +123,9 @@
     </div>
     <div id="value">
     <h2>Value</h2>
-    <p>Potential evapotranspiration (in mm of water).</p>
+    
+
+<p>Potential evapotranspiration (in mm of water).</p>
     </div>
     <div id="author">
     <h2>Author</h2>
@@ -129,7 +148,7 @@
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

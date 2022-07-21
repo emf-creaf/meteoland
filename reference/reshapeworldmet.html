@@ -50,36 +50,45 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">reshapemeteospain</span><span class="op">(</span><span class="va">weather_data</span>, output <span class="op">=</span> <span class="st">"SpatialPointsMeteorology"</span>, 
-                  proj4string <span class="op">=</span> <span class="cn">NULL</span>, complete <span class="op">=</span> <span class="cn">TRUE</span>,
-                  verbose <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
-<span class="fu">reshapeworldmet</span><span class="op">(</span><span class="va">hourly_data</span>, output <span class="op">=</span> <span class="st">"SpatialPointsMeteorology"</span>, 
-                proj4string <span class="op">=</span> <span class="cn">NULL</span>, complete <span class="op">=</span> <span class="cn">TRUE</span>,
-                verbose <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
-<span class="fu">reshapeweathercan</span><span class="op">(</span><span class="va">hourly_data</span>, daily_data <span class="op">=</span> <span class="cn">NULL</span>, output <span class="op">=</span> <span class="st">"SpatialPointsMeteorology"</span>,
-                  proj4string <span class="op">=</span> <span class="cn">NULL</span>, complete <span class="op">=</span> <span class="cn">TRUE</span>, verbose <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">reshapemeteospain</span><span class="op">(</span><span class="va">weather_data</span>, output <span class="op">=</span> <span class="st">"SpatialPointsMeteorology"</span>, </span>
+<span>                  proj4string <span class="op">=</span> <span class="cn">NULL</span>, complete <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>                  verbose <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="fu">reshapeworldmet</span><span class="op">(</span><span class="va">hourly_data</span>, output <span class="op">=</span> <span class="st">"SpatialPointsMeteorology"</span>, </span>
+<span>                proj4string <span class="op">=</span> <span class="cn">NULL</span>, complete <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>                verbose <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="fu">reshapeweathercan</span><span class="op">(</span><span class="va">hourly_data</span>, daily_data <span class="op">=</span> <span class="cn">NULL</span>, output <span class="op">=</span> <span class="st">"SpatialPointsMeteorology"</span>,</span>
+<span>                  proj4string <span class="op">=</span> <span class="cn">NULL</span>, complete <span class="op">=</span> <span class="cn">TRUE</span>, verbose <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>weather_data</dt>
 <dd><p>Hourly or daily weather data, in form of an sf (spatial) object, obtained using function 'get_meteo_from()' in package 'meteospain'.</p></dd>
-<dt>hourly_data</dt>
+
+  <dt>hourly_data</dt>
 <dd><p>Hourly weather data. In the case of <code>reshapeworldmet</code>, a tibble or data frame returned by function 'importNOAA'. In the case of <code>reshapeweathercan</code>, a tibble or data frame returned by function 'weather_dl' with 'interval="hour"'.</p></dd>
-<dt>daily_data</dt>
+
+  <dt>daily_data</dt>
 <dd><p>Daily weather data (only for <code>reshapeweathercan</code>), a tibble or data frame returned by function 'weather_dl' with 'interval="day"'.</p></dd>
-<dt>output</dt>
+
+  <dt>output</dt>
 <dd><p>Kind of output desired. Either '<code><a href="SpatialPointsTopography.html">SpatialPointsTopography</a></code>', '<code><a href="SpatialPointsMeteorology.html">SpatialPointsMeteorology</a></code>' or '<code><a href="MeteorologyInterpolationData.html">MeteorologyInterpolationData</a></code>'.</p></dd>
-<dt>proj4string</dt>
+
+  <dt>proj4string</dt>
 <dd><p>A string or CRS to change the coordinate reference system of the output. If NULL the spatial reference will be geographic coordinates (i.e. <code>CRS("+proj=longlat")</code>). When reshaping to <code>MeteorologyInterpolationData</code> it is recommended to use a reference system with meters in units, such as UTM.</p></dd>
-<dt>complete</dt>
+
+  <dt>complete</dt>
 <dd><p>A flag to indicate that missing variables should be completed using function <code><a href="meteocomplete.html">meteocomplete</a></code></p></dd>
-<dt>verbose</dt>
+
+  <dt>verbose</dt>
 <dd><p>A flag to show information of the reshape process in the console output.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>An object of the class indicated in <code>output</code>.</p>
+    
+
+<p>An object of the class indicated in <code>output</code>.</p>
     </div>
     <div id="details">
     <h2>Details</h2>
@@ -106,7 +115,7 @@
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

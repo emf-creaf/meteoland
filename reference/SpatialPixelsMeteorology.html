@@ -50,28 +50,35 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">SpatialPixelsMeteorology</span><span class="op">(</span><span class="va">points</span>, <span class="va">data</span>, <span class="va">dates</span>,
-                        tolerance <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="va">.Machine</span><span class="op">$</span><span class="va">double.eps</span><span class="op">)</span>, 
-                        proj4string <span class="op">=</span> <span class="fu">CRS</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character</a></span><span class="op">(</span><span class="cn">NA</span><span class="op">)</span><span class="op">)</span>, round <span class="op">=</span> <span class="cn">NULL</span>, 
-                        grid <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">SpatialPixelsMeteorology</span><span class="op">(</span><span class="va">points</span>, <span class="va">data</span>, <span class="va">dates</span>,</span>
+<span>                        tolerance <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="va">.Machine</span><span class="op">$</span><span class="va">double.eps</span><span class="op">)</span>, </span>
+<span>                        proj4string <span class="op">=</span> <span class="fu">CRS</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character</a></span><span class="op">(</span><span class="cn">NA</span><span class="op">)</span><span class="op">)</span>, round <span class="op">=</span> <span class="cn">NULL</span>, </span>
+<span>                        grid <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>points</dt>
 <dd><p>An object of class <code>SpatialPoints-class</code>.</p></dd>
-<dt>data</dt>
+
+  <dt>data</dt>
 <dd><p>A vector of data frames (one per date).</p></dd>
-<dt>dates</dt>
+
+  <dt>dates</dt>
 <dd><p>Object of class <code>"Date"</code> describing the time period of meteorological estimates.</p></dd>
-<dt>tolerance</dt>
+
+  <dt>tolerance</dt>
 <dd><p>Precision up to which extent points should be exactly on a grid.</p></dd>
-<dt>proj4string</dt>
+
+  <dt>proj4string</dt>
 <dd><p>Object of class <code>CRS</code> in the first form only used when points does not inherit from <code>Spatial</code>.</p></dd>
-<dt>round</dt>
+
+  <dt>round</dt>
 <dd><p>default <code>NULL</code>, otherwise a value passed to as the digits argument to <code><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></code> for setting cell size.</p></dd>
-<dt>grid</dt>
+
+  <dt>grid</dt>
 <dd><p>Grid topology using an object of class <code>GridTopology</code>; a value of <code>NULL</code> implies that this will be derived from the point coordinates.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
@@ -98,7 +105,7 @@
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

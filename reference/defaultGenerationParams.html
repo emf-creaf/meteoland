@@ -50,12 +50,14 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">defaultGenerationParams</span><span class="op">(</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">defaultGenerationParams</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="value">
     <h2>Value</h2>
-    <p>A list with the following items (default values in brackets):</p><ul><li><p><code>conditional [= "none"]</code>: A string to indicate whether multi-year weather should be conditioned or not. If <code>conditional = "arima"</code>, annual precipitation is conditioned on a stationary auto-regressive model. If <code>conditional = "window"</code>, a moving-window is used to subset the years used to parametrize the weather generation algorithm for each target year (see parameter <code>range_size_years</code>). In this last case, annual precipitation is conditioned to a log-normal variate with parameters fitted from the selected years.</p></li>
+    
+
+<p>A list with the following items (default values in brackets):</p><ul><li><p><code>conditional [= "none"]</code>: A string to indicate whether multi-year weather should be conditioned or not. If <code>conditional = "arima"</code>, annual precipitation is conditioned on a stationary auto-regressive model. If <code>conditional = "window"</code>, a moving-window is used to subset the years used to parametrize the weather generation algorithm for each target year (see parameter <code>range_size_years</code>). In this last case, annual precipitation is conditioned to a log-normal variate with parameters fitted from the selected years.</p></li>
 <li><p><code>dry_wet_threshold [= 0.3]</code>: Precipitation threshold (mm) for separating dry from wet days.</p></li>
 <li><p><code>wet_extreme_quantile_threshold  [= 0.8]</code>: Quantile for separating wet from extremely wet days.</p></li>
 <li><p><code>range_size_days [= 5]</code>: Minimum half range size to select the subset of dates with DOY similar to the currently simulated.</p></li>
@@ -91,7 +93,7 @@
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

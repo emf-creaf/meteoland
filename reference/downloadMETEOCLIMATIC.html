@@ -50,14 +50,15 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">downloadMETEOCLIMATICstationlist</span><span class="op">(</span>station_id <span class="op">=</span> <span class="st">"ESCAT"</span><span class="op">)</span>
-<span class="fu">downloadMETEOCLIMATICcurrentday</span><span class="op">(</span>station_id <span class="op">=</span> <span class="st">"ESCAT"</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">downloadMETEOCLIMATICstationlist</span><span class="op">(</span>station_id <span class="op">=</span> <span class="st">"ESCAT"</span><span class="op">)</span></span>
+<span><span class="fu">downloadMETEOCLIMATICcurrentday</span><span class="op">(</span>station_id <span class="op">=</span> <span class="st">"ESCAT"</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>station_id</dt>
 <dd><p>A string vector containing station ids (the list of stations for which current day climatic data is available is given by <code>downloadMETEOCLIMATICstationlist</code>). By default, returns the list of stations in Catalonia.</p></dd>
+
 </dl></div>
     <div id="details">
     <h2>Details</h2>
@@ -65,8 +66,12 @@
     </div>
     <div id="value">
     <h2>Value</h2>
-    <p>Function <code>downloadMETEOCLIMATICstationlist</code> returns a <code>SpatialPointsDataFrame-class</code> object containing the list of Meteoclimatic weather stations for which data is available based on the station_id codes provided.
-Function <code>downloadMETEOCLIMATICcurrentday</code> downloads recent weather (for the current day) from all currently available stations and returns a <code>SpatialPointsDataFrame-class</code> object with observations. Only acummulated precipitation, maximum and minimum temperature and relative humidity are returned.</p>
+    
+
+<p>Function <code>downloadMETEOCLIMATICstationlist</code> returns a <code>SpatialPointsDataFrame-class</code> object containing the list of Meteoclimatic weather stations for which data is available based on the station_id codes provided.</p>
+
+
+<p>Function <code>downloadMETEOCLIMATICcurrentday</code> downloads recent weather (for the current day) from all currently available stations and returns a <code>SpatialPointsDataFrame-class</code> object with observations. Only acummulated precipitation, maximum and minimum temperature and relative humidity are returned.</p>
     </div>
     <div id="note">
     <h2>Note</h2>
@@ -98,7 +103,7 @@ Function <code>downloadMETEOCLIMATICcurrentday</code> downloads recent weather (
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

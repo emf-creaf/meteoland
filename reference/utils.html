@@ -50,33 +50,40 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">utils_airDensity</span><span class="op">(</span><span class="va">temperature</span>, <span class="va">Patm</span><span class="op">)</span>
-<span class="fu">utils_atmosphericPressure</span><span class="op">(</span><span class="va">elevation</span><span class="op">)</span>
-<span class="fu">utils_averageDailyVP</span><span class="op">(</span><span class="va">Tmin</span>, <span class="va">Tmax</span>, <span class="va">RHmin</span>, <span class="va">RHmax</span><span class="op">)</span>
-<span class="fu">utils_averageDaylightTemperature</span><span class="op">(</span><span class="va">Tmin</span>, <span class="va">Tmax</span><span class="op">)</span>
-<span class="fu">utils_latentHeatVaporisation</span><span class="op">(</span><span class="va">temperature</span><span class="op">)</span>
-<span class="fu">utils_latentHeatVaporisationMol</span><span class="op">(</span><span class="va">temperature</span><span class="op">)</span>
-<span class="fu">utils_psychrometricConstant</span><span class="op">(</span><span class="va">temperature</span>, <span class="va">Patm</span><span class="op">)</span>
-<span class="fu">utils_saturationVP</span><span class="op">(</span><span class="va">temperature</span><span class="op">)</span>
-<span class="fu">utils_saturationVaporPressureCurveSlope</span><span class="op">(</span><span class="va">temperature</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">utils_airDensity</span><span class="op">(</span><span class="va">temperature</span>, <span class="va">Patm</span><span class="op">)</span></span>
+<span><span class="fu">utils_atmosphericPressure</span><span class="op">(</span><span class="va">elevation</span><span class="op">)</span></span>
+<span><span class="fu">utils_averageDailyVP</span><span class="op">(</span><span class="va">Tmin</span>, <span class="va">Tmax</span>, <span class="va">RHmin</span>, <span class="va">RHmax</span><span class="op">)</span></span>
+<span><span class="fu">utils_averageDaylightTemperature</span><span class="op">(</span><span class="va">Tmin</span>, <span class="va">Tmax</span><span class="op">)</span></span>
+<span><span class="fu">utils_latentHeatVaporisation</span><span class="op">(</span><span class="va">temperature</span><span class="op">)</span></span>
+<span><span class="fu">utils_latentHeatVaporisationMol</span><span class="op">(</span><span class="va">temperature</span><span class="op">)</span></span>
+<span><span class="fu">utils_psychrometricConstant</span><span class="op">(</span><span class="va">temperature</span>, <span class="va">Patm</span><span class="op">)</span></span>
+<span><span class="fu">utils_saturationVP</span><span class="op">(</span><span class="va">temperature</span><span class="op">)</span></span>
+<span><span class="fu">utils_saturationVaporPressureCurveSlope</span><span class="op">(</span><span class="va">temperature</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>temperature</dt>
 <dd><p>Air temperature (ºC).</p></dd>
-<dt>Tmin, Tmax</dt>
+
+  <dt>Tmin, Tmax</dt>
 <dd><p>Minimum and maximum daily temperature (ºC).</p></dd>
-<dt>RHmin, RHmax</dt>
+
+  <dt>RHmin, RHmax</dt>
 <dd><p>Minimum and maximum relative humidity (%).</p></dd>
-<dt>Patm</dt>
+
+  <dt>Patm</dt>
 <dd><p>Atmospheric air pressure (in kPa).</p></dd>
-<dt>elevation</dt>
+
+  <dt>elevation</dt>
 <dd><p>Elevation above sea level (in m).</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>Values returned for each function are:</p><ul><li><p><code>utils_airDensity</code>: air density (in kg·m-3).</p></li>
+    
+
+<p>Values returned for each function are:</p><ul><li><p><code>utils_airDensity</code>: air density (in kg·m-3).</p></li>
 <li><p><code>utils_atmosphericPressure</code>: Air atmospheric pressure (in kPa).</p></li>
 <li><p><code>utils_averageDailyVP</code>: average (actual) vapour pressure (in kPa).</p></li>
 <li><p><code>utils_averageDaylightTemperature</code>: average daylight air temperature (in ºC).</p></li>
@@ -108,7 +115,7 @@
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

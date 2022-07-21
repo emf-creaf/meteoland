@@ -50,76 +50,99 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">radiation_dateStringToJulianDays</span><span class="op">(</span><span class="va">dateStrings</span><span class="op">)</span>
-<span class="fu">radiation_daylength</span><span class="op">(</span><span class="va">latrad</span>, <span class="va">slorad</span>, <span class="va">asprad</span>, <span class="va">delta</span><span class="op">)</span>
-<span class="fu">radiation_daylengthseconds</span><span class="op">(</span><span class="va">latrad</span>, <span class="va">slorad</span>, <span class="va">asprad</span>, <span class="va">delta</span><span class="op">)</span>
-<span class="fu">radiation_directDiffuseInstant</span><span class="op">(</span><span class="va">solarConstant</span>, <span class="va">latrad</span>, <span class="va">slorad</span>, <span class="va">asprad</span>, <span class="va">delta</span>,
-                               <span class="va">hrad</span>, <span class="va">R_s</span>, <span class="va">clearday</span><span class="op">)</span>
-<span class="fu">radiation_directDiffuseDay</span><span class="op">(</span><span class="va">solarConstant</span>, <span class="va">latrad</span>, <span class="va">slorad</span>, <span class="va">asprad</span>, <span class="va">delta</span>,
-                           <span class="va">R_s</span>, <span class="va">clearday</span>, nsteps <span class="op">=</span> <span class="fl">24</span><span class="op">)</span>
-<span class="fu">radiation_potentialRadiation</span><span class="op">(</span><span class="va">solarConstant</span>, <span class="va">latrad</span>, <span class="va">slorad</span>, <span class="va">asprad</span>, <span class="va">delta</span><span class="op">)</span>
-<span class="fu">radiation_julianDay</span><span class="op">(</span><span class="va">year</span>, <span class="va">month</span>, <span class="va">day</span><span class="op">)</span>
-<span class="fu">radiation_skyLongwaveRadiation</span><span class="op">(</span><span class="va">Tair</span>, <span class="va">vpa</span>, <span class="va">c</span><span class="op">)</span>
-<span class="fu">radiation_outgoingLongwaveRadiation</span><span class="op">(</span><span class="va">solarConstant</span>, <span class="va">latrad</span>, <span class="va">elevation</span>,  <span class="va">slorad</span>, 
-                                    <span class="va">asprad</span>, <span class="va">delta</span>, <span class="va">vpa</span>, <span class="va">tmin</span>, <span class="va">tmax</span>, <span class="va">R_s</span><span class="op">)</span>
-<span class="fu">radiation_netRadiation</span><span class="op">(</span><span class="va">solarConstant</span>, <span class="va">latrad</span>, <span class="va">elevation</span>, <span class="va">slorad</span>, <span class="va">asprad</span>,  <span class="va">delta</span>, 
-                    <span class="va">vpa</span>, <span class="va">tmin</span>, <span class="va">tmax</span>, <span class="va">R_s</span>, alpha <span class="op">=</span> <span class="fl">0.08</span><span class="op">)</span>
-<span class="fu">radiation_solarConstant</span><span class="op">(</span><span class="va">J</span><span class="op">)</span>
-<span class="fu">radiation_solarDeclination</span><span class="op">(</span><span class="va">J</span><span class="op">)</span>
-<span class="fu">radiation_solarElevation</span><span class="op">(</span><span class="va">latrad</span>, <span class="va">delta</span>, <span class="va">hrad</span><span class="op">)</span>
-<span class="fu">radiation_solarRadiation</span><span class="op">(</span><span class="va">solarConstant</span>, <span class="va">latrad</span>, <span class="va">elevation</span>, <span class="va">slorad</span>, <span class="va">asprad</span>, <span class="va">delta</span>,
-                         <span class="va">diffTemp</span>, <span class="va">diffTempMonth</span>, <span class="va">vpa</span>, <span class="va">precipitation</span><span class="op">)</span>
-<span class="fu">radiation_sunRiseSet</span><span class="op">(</span><span class="va">latrad</span>, <span class="va">slorad</span>, <span class="va">asprad</span>, <span class="va">delta</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">radiation_dateStringToJulianDays</span><span class="op">(</span><span class="va">dateStrings</span><span class="op">)</span></span>
+<span><span class="fu">radiation_daylength</span><span class="op">(</span><span class="va">latrad</span>, <span class="va">slorad</span>, <span class="va">asprad</span>, <span class="va">delta</span><span class="op">)</span></span>
+<span><span class="fu">radiation_daylengthseconds</span><span class="op">(</span><span class="va">latrad</span>, <span class="va">slorad</span>, <span class="va">asprad</span>, <span class="va">delta</span><span class="op">)</span></span>
+<span><span class="fu">radiation_directDiffuseInstant</span><span class="op">(</span><span class="va">solarConstant</span>, <span class="va">latrad</span>, <span class="va">slorad</span>, <span class="va">asprad</span>, <span class="va">delta</span>,</span>
+<span>                               <span class="va">hrad</span>, <span class="va">R_s</span>, <span class="va">clearday</span><span class="op">)</span></span>
+<span><span class="fu">radiation_directDiffuseDay</span><span class="op">(</span><span class="va">solarConstant</span>, <span class="va">latrad</span>, <span class="va">slorad</span>, <span class="va">asprad</span>, <span class="va">delta</span>,</span>
+<span>                           <span class="va">R_s</span>, <span class="va">clearday</span>, nsteps <span class="op">=</span> <span class="fl">24</span><span class="op">)</span></span>
+<span><span class="fu">radiation_potentialRadiation</span><span class="op">(</span><span class="va">solarConstant</span>, <span class="va">latrad</span>, <span class="va">slorad</span>, <span class="va">asprad</span>, <span class="va">delta</span><span class="op">)</span></span>
+<span><span class="fu">radiation_julianDay</span><span class="op">(</span><span class="va">year</span>, <span class="va">month</span>, <span class="va">day</span><span class="op">)</span></span>
+<span><span class="fu">radiation_skyLongwaveRadiation</span><span class="op">(</span><span class="va">Tair</span>, <span class="va">vpa</span>, <span class="va">c</span><span class="op">)</span></span>
+<span><span class="fu">radiation_outgoingLongwaveRadiation</span><span class="op">(</span><span class="va">solarConstant</span>, <span class="va">latrad</span>, <span class="va">elevation</span>,  <span class="va">slorad</span>, </span>
+<span>                                    <span class="va">asprad</span>, <span class="va">delta</span>, <span class="va">vpa</span>, <span class="va">tmin</span>, <span class="va">tmax</span>, <span class="va">R_s</span><span class="op">)</span></span>
+<span><span class="fu">radiation_netRadiation</span><span class="op">(</span><span class="va">solarConstant</span>, <span class="va">latrad</span>, <span class="va">elevation</span>, <span class="va">slorad</span>, <span class="va">asprad</span>,  <span class="va">delta</span>, </span>
+<span>                    <span class="va">vpa</span>, <span class="va">tmin</span>, <span class="va">tmax</span>, <span class="va">R_s</span>, alpha <span class="op">=</span> <span class="fl">0.08</span><span class="op">)</span></span>
+<span><span class="fu">radiation_solarConstant</span><span class="op">(</span><span class="va">J</span><span class="op">)</span></span>
+<span><span class="fu">radiation_solarDeclination</span><span class="op">(</span><span class="va">J</span><span class="op">)</span></span>
+<span><span class="fu">radiation_solarElevation</span><span class="op">(</span><span class="va">latrad</span>, <span class="va">delta</span>, <span class="va">hrad</span><span class="op">)</span></span>
+<span><span class="fu">radiation_solarRadiation</span><span class="op">(</span><span class="va">solarConstant</span>, <span class="va">latrad</span>, <span class="va">elevation</span>, <span class="va">slorad</span>, <span class="va">asprad</span>, <span class="va">delta</span>,</span>
+<span>                         <span class="va">diffTemp</span>, <span class="va">diffTempMonth</span>, <span class="va">vpa</span>, <span class="va">precipitation</span><span class="op">)</span></span>
+<span><span class="fu">radiation_sunRiseSet</span><span class="op">(</span><span class="va">latrad</span>, <span class="va">slorad</span>, <span class="va">asprad</span>, <span class="va">delta</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>dateStrings</dt>
 <dd><p>A character vector with dates in format "YYYY-MM-DD".</p></dd>
-<dt>latrad</dt>
+
+  <dt>latrad</dt>
 <dd><p>Latitude (in radians North).</p></dd>
-<dt>slorad</dt>
+
+  <dt>slorad</dt>
 <dd><p>Slope (in radians).</p></dd>
-<dt>asprad</dt>
+
+  <dt>asprad</dt>
 <dd><p>Aspect (in radians from North).</p></dd>
-<dt>delta</dt>
+
+  <dt>delta</dt>
 <dd><p>Solar declination (in radians).</p></dd>
-<dt>solarConstant</dt>
+
+  <dt>solarConstant</dt>
 <dd><p>Solar constant (in kW·m-2).</p></dd>
-<dt>hrad</dt>
+
+  <dt>hrad</dt>
 <dd><p>Solar hour (in radians).</p></dd>
-<dt>R_s</dt>
+
+  <dt>R_s</dt>
 <dd><p>Daily incident solar radiation (MJ·m-2).</p></dd>
-<dt>clearday</dt>
+
+  <dt>clearday</dt>
 <dd><p>Boolean flag to indicate a clearsky day (vs. overcast).</p></dd>
-<dt>nsteps</dt>
+
+  <dt>nsteps</dt>
 <dd><p>Number of daily substeps.</p></dd>
-<dt>J</dt>
+
+  <dt>J</dt>
 <dd><p>Julian day (integer), number of days since January 1, 4713 BCE at noon UTC.</p></dd>
-<dt>year, month, day</dt>
+
+  <dt>year, month, day</dt>
 <dd><p>Year, month and day as integers.</p></dd>
-<dt>alpha</dt>
+
+  <dt>alpha</dt>
 <dd><p>Surface albedo (from 0 to 1).</p></dd>
-<dt>Tair</dt>
+
+  <dt>Tair</dt>
 <dd><p>Air temperature (in degrees Celsius).</p></dd>
-<dt>vpa</dt>
+
+  <dt>vpa</dt>
 <dd><p>Average daily vapor pressure (kPa).</p></dd>
-<dt>c</dt>
+
+  <dt>c</dt>
 <dd><p>Proportion of sky covered by clouds [0-1].</p></dd>
-<dt>tmin, tmax</dt>
+
+  <dt>tmin, tmax</dt>
 <dd><p>Minimum and maximum daily temperature (ºC).</p></dd>
-<dt>elevation</dt>
+
+  <dt>elevation</dt>
 <dd><p>Elevation above sea level (in m).</p></dd>
-<dt>precipitation</dt>
+
+  <dt>precipitation</dt>
 <dd><p>Precipitation (in mm).</p></dd>
-<dt>diffTemp</dt>
+
+  <dt>diffTemp</dt>
 <dd><p>Difference between maximum and minimum temperature (ºC).</p></dd>
-<dt>diffTempMonth</dt>
+
+  <dt>diffTempMonth</dt>
 <dd><p>Difference between maximum and minimum temperature, averaged over 30 days  (ºC).</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>Values returned for each function are:</p><ul><li><p><code>radiation_dateStringToJulianDays</code>: A vector of Julian days (i.e. number of days since January 1, 4713 BCE at noon UTC).</p></li>
+    
+
+<p>Values returned for each function are:</p><ul><li><p><code>radiation_dateStringToJulianDays</code>: A vector of Julian days (i.e. number of days since January 1, 4713 BCE at noon UTC).</p></li>
 <li><p><code>radiation_daylength</code>: Day length (in hours).</p></li>
 <li><p><code>radiation_daylengthseconds</code>: Day length (in seconds).</p></li>
 <li><p><code>radiation_directDiffuseInstant</code>: A vector with instantaneous direct and diffusive radiation rates (for both SWR and PAR).</p></li>
@@ -168,7 +191,7 @@
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

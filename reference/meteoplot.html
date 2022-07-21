@@ -50,30 +50,39 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">meteoplot</span><span class="op">(</span><span class="va">object</span>, index<span class="op">=</span><span class="fl">1</span>, var<span class="op">=</span><span class="st">"MeanTemperature"</span>, 
-          fun<span class="op">=</span><span class="cn">NULL</span>, freq<span class="op">=</span><span class="cn">NULL</span>, dates <span class="op">=</span> <span class="cn">NULL</span>, months <span class="op">=</span> <span class="cn">NULL</span>, add <span class="op">=</span> <span class="cn">FALSE</span>,<span class="va">...</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">meteoplot</span><span class="op">(</span><span class="va">object</span>, index<span class="op">=</span><span class="fl">1</span>, var<span class="op">=</span><span class="st">"MeanTemperature"</span>, </span>
+<span>          fun<span class="op">=</span><span class="cn">NULL</span>, freq<span class="op">=</span><span class="cn">NULL</span>, dates <span class="op">=</span> <span class="cn">NULL</span>, months <span class="op">=</span> <span class="cn">NULL</span>, add <span class="op">=</span> <span class="cn">FALSE</span>,<span class="va">...</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>object</dt>
 <dd><p>A data frame with daily meteorological data (in this case <code>index</code> is not used) or an object of class <code><a href="SpatialPointsMeteorology-class.html">SpatialPointsMeteorology</a></code>. Alternatively, an object of class <code>SpatialPointsDataFrame</code> containing the meta data (columns <code>dir</code>, <code>filename</code> and possibly <code>format</code>) of meteorological files.</p></dd>
-<dt>index</dt>
+
+  <dt>index</dt>
 <dd><p>An integer to indicate the point in the <code><a href="SpatialPointsMeteorology-class.html">SpatialPointsMeteorology</a></code> object (or the <code>SpatialPointsDataFrame</code> object).</p></dd>
-<dt>var</dt>
+
+  <dt>var</dt>
 <dd><p>The meteorological variable to be plotted.</p></dd>
-<dt>fun</dt>
+
+  <dt>fun</dt>
 <dd><p>The name of a function to be calculated for summaries (only valid if <code>freq</code> is specified).</p></dd>
-<dt>freq</dt>
+
+  <dt>freq</dt>
 <dd><p>A string giving an interval specification for summaries (e.g., <code>"week"</code>, <code>"month"</code>, <code>"quarter"</code> or <code>"year"</code>).</p></dd>
-<dt>dates</dt>
+
+  <dt>dates</dt>
 <dd><p>An object of class <code><a href="https://rdrr.io/r/base/Dates.html" class="external-link">Date</a></code> to define the period to be plotted. If <code>dates = NULL</code> then all dates in <code>object</code> are processed.</p></dd>
-<dt>months</dt>
+
+ <dt>months</dt>
 <dd><p>A numeric vector to indicate the subset of months for which plotting is desired (e.g. <code>c(7,8)</code> for July and August). When combined with <code>fun</code> and <code>freq</code>, this parameter allows plotting summaries for particular seasons. For example  <code>fun = "sum"</code> <code>freq = "years"</code> and <code>months = 6:8</code> leads to plotting the sum over summer months of each year.</p></dd>
-<dt>add</dt>
+
+ <dt>add</dt>
 <dd><p>A flag to indicate wether drawing should be done on the current plot (using function <code>lines</code>).</p></dd>
-<dt>...</dt>
+
+  <dt>...</dt>
 <dd><p>Additional parameters for functions <code>plot</code> or <code>lines</code>.</p></dd>
+
 </dl></div>
     <div id="details">
     <h2>Details</h2>
@@ -90,25 +99,25 @@
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">examplegridtopography</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">exampleinterpolationdata</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co">#Creates spatial topography points from the grid</span></span>
-<span class="r-in"><span class="va">p</span> <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">2</span></span>
-<span class="r-in"><span class="va">spt</span> <span class="op">=</span> <span class="fu">as</span><span class="op">(</span><span class="va">examplegridtopography</span>, <span class="st">"SpatialPointsTopography"</span><span class="op">)</span><span class="op">[</span><span class="va">p</span><span class="op">]</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co">#Interpolation of two points for the whole time period (2000-2003)</span></span>
-<span class="r-in"><span class="va">mp</span> <span class="op">=</span> <span class="fu"><a href="interpolationpoints.html">interpolationpoints</a></span><span class="op">(</span><span class="va">exampleinterpolationdata</span>, <span class="va">spt</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">examplegridtopography</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">exampleinterpolationdata</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">#Creates spatial topography points from the grid</span></span></span>
+<span class="r-in"><span><span class="va">p</span> <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">2</span></span></span>
+<span class="r-in"><span><span class="va">spt</span> <span class="op">=</span> <span class="fu">as</span><span class="op">(</span><span class="va">examplegridtopography</span>, <span class="st">"SpatialPointsTopography"</span><span class="op">)</span><span class="op">[</span><span class="va">p</span><span class="op">]</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">#Interpolation of two points for the whole time period (2000-2003)</span></span></span>
+<span class="r-in"><span><span class="va">mp</span> <span class="op">=</span> <span class="fu"><a href="interpolationpoints.html">interpolationpoints</a></span><span class="op">(</span><span class="va">exampleinterpolationdata</span>, <span class="va">spt</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Processing point '1' (1/2) - done.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Processing point '2' (2/2) - done.</span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co">#Plot interpolated meteorological series</span></span>
-<span class="r-in"><span class="fu">meteoplot</span><span class="op">(</span><span class="va">mp</span>,<span class="fl">1</span>, ylab<span class="op">=</span><span class="st">"Daily mean temperature"</span><span class="op">)</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">#Plot interpolated meteorological series</span></span></span>
+<span class="r-in"><span><span class="fu">meteoplot</span><span class="op">(</span><span class="va">mp</span>,<span class="fl">1</span>, ylab<span class="op">=</span><span class="st">"Daily mean temperature"</span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="meteoplot-1.png" alt="" width="700" height="433"></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="fu">meteoplot</span><span class="op">(</span><span class="va">mp</span>,<span class="fl">1</span>, ylab<span class="op">=</span><span class="st">"Monthly mean temperature"</span>, fun<span class="op">=</span><span class="va">mean</span>, freq<span class="op">=</span><span class="st">"months"</span><span class="op">)</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu">meteoplot</span><span class="op">(</span><span class="va">mp</span>,<span class="fl">1</span>, ylab<span class="op">=</span><span class="st">"Monthly mean temperature"</span>, fun<span class="op">=</span><span class="va">mean</span>, freq<span class="op">=</span><span class="st">"months"</span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="meteoplot-2.png" alt="" width="700" height="433"></span>
-<span class="r-in"></span>
+<span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -123,7 +132,7 @@
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

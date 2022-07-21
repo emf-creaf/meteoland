@@ -50,21 +50,26 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">interpolation.coverage</span><span class="op">(</span><span class="va">object</span>, type <span class="op">=</span> <span class="st">"spatial"</span>, percent <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">interpolation.coverage</span><span class="op">(</span><span class="va">object</span>, type <span class="op">=</span> <span class="st">"spatial"</span>, percent <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>object</dt>
 <dd><p>An object of class <code><a href="MeteorologyInterpolationData-class.html">MeteorologyInterpolationData-class</a></code>.</p></dd>
-<dt>type</dt>
+
+  <dt>type</dt>
 <dd><p>A string with the coverage summary to be produced (either "spatial" or "temporal").</p></dd>
-<dt>percent</dt>
+
+  <dt>percent</dt>
 <dd><p>A boolean flag to indicate that percentages should be returned instead of counts.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>If <code>type = "spatial"</code> the function returns an object of class <code>SpatialPointsDataFrame</code> with the number (or percentage) of dates with data per station and meteorological variable. If <code>type = "temporal"</code> the function returns an object of class <code>data.frame</code> with the number (or percentage) of stations with data per day and meteorological variable.</p>
+    
+
+<p>If <code>type = "spatial"</code> the function returns an object of class <code>SpatialPointsDataFrame</code> with the number (or percentage) of dates with data per station and meteorological variable. If <code>type = "temporal"</code> the function returns an object of class <code>data.frame</code> with the number (or percentage) of stations with data per day and meteorological variable.</p>
     </div>
     <div id="references">
     <h2>References</h2>
@@ -81,10 +86,10 @@
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">exampleinterpolationdata</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co">#Number of days with data per station</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu">interpolation.coverage</span><span class="op">(</span><span class="va">exampleinterpolationdata</span><span class="op">)</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">exampleinterpolationdata</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">#Number of days with data per station</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu">interpolation.coverage</span><span class="op">(</span><span class="va">exampleinterpolationdata</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>          coordinates MinTemperature MaxTemperature Precipitation</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> C7 (347104, 4614634)           1456           1454          1456</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> C8 (358240, 4615380)           1450           1449          1450</span>
@@ -99,9 +104,9 @@
 <span class="r-out co"><span class="r-pr">#&gt;</span> VD                0         0         0             0</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> VP                0         0         0             0</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> W5                0         0         0             0</span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co">#Number of stations with data per day</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu">interpolation.coverage</span><span class="op">(</span><span class="va">exampleinterpolationdata</span>, type <span class="op">=</span> <span class="st">"temporal"</span><span class="op">)</span><span class="op">)</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">#Number of stations with data per day</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu">interpolation.coverage</span><span class="op">(</span><span class="va">exampleinterpolationdata</span>, type <span class="op">=</span> <span class="st">"temporal"</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>            MinTemperature MaxTemperature Precipitation RelativeHumidity</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 2000-01-01             13             13            14                1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 2000-01-02             13             13            14                1</span>
@@ -130,7 +135,7 @@
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

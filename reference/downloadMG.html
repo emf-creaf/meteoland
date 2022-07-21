@@ -50,22 +50,26 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">downloadMGstationlist</span><span class="op">(</span><span class="op">)</span>
-<span class="fu">downloadMGhistorical</span><span class="op">(</span><span class="va">date_from</span>, <span class="va">date_to</span>, station_id <span class="op">=</span> <span class="cn">NULL</span>,  
-                    verbose <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
-<span class="fu">downloadMGcurrentday</span><span class="op">(</span>station_id <span class="op">=</span> <span class="cn">NULL</span>, daily <span class="op">=</span> <span class="cn">TRUE</span>, verbose <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">downloadMGstationlist</span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="fu">downloadMGhistorical</span><span class="op">(</span><span class="va">date_from</span>, <span class="va">date_to</span>, station_id <span class="op">=</span> <span class="cn">NULL</span>,  </span>
+<span>                    verbose <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="fu">downloadMGcurrentday</span><span class="op">(</span>station_id <span class="op">=</span> <span class="cn">NULL</span>, daily <span class="op">=</span> <span class="cn">TRUE</span>, verbose <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>date_from, date_to</dt>
 <dd><p>Strings or objects of class <code><a href="https://rdrr.io/r/base/Dates.html" class="external-link">Date</a></code> specifying first and last date of the desired period.</p></dd>
-<dt>station_id</dt>
+
+  <dt>station_id</dt>
 <dd><p>A string vector containing station ids (the list of stations presently operative is given by <code>downloadMGstationlist</code>). If NULL all stations with available data are returned.</p></dd>
-<dt>verbose</dt>
+
+  <dt>verbose</dt>
 <dd><p>Boolean flag to print process information.</p></dd>
-<dt>daily</dt>
+
+  <dt>daily</dt>
 <dd><p>Boolean flag. Are data to be returned at a daily or hourly scale?</p></dd>
+
 </dl></div>
     <div id="details">
     <h2>Details</h2>
@@ -73,9 +77,13 @@
     </div>
     <div id="value">
     <h2>Value</h2>
-    <p>Function <code>downloadMGstationlist</code> returns a <code>SpatialPointsDataFrame-class</code> object containing the list of MeteoGalicia weather stations currently operative. 
-Function <code>downloadMGhistorical</code> downloads data for the specified MG weather stations (or all) and dates and returns a <code><a href="SpatialPointsMeteorology-class.html">SpatialPointsMeteorology-class</a></code> object with the downloaded meteorology for each station (point).
-Function <code>downloadMGcurrentday</code> downloads recent weather data (the last 24h) from all currently available stations and returns data frame if <code>daily = FALSE</code> or a <code>SpatialPointsDataFrame-class</code> object with observations aggregated at the daily scale otherwise.</p>
+    
+
+<p>Function <code>downloadMGstationlist</code> returns a <code>SpatialPointsDataFrame-class</code> object containing the list of MeteoGalicia weather stations currently operative. 
+Function <code>downloadMGhistorical</code> downloads data for the specified MG weather stations (or all) and dates and returns a <code><a href="SpatialPointsMeteorology-class.html">SpatialPointsMeteorology-class</a></code> object with the downloaded meteorology for each station (point).</p>
+
+
+<p>Function <code>downloadMGcurrentday</code> downloads recent weather data (the last 24h) from all currently available stations and returns data frame if <code>daily = FALSE</code> or a <code>SpatialPointsDataFrame-class</code> object with observations aggregated at the daily scale otherwise.</p>
     </div>
     <div id="note">
     <h2>Note</h2>
@@ -106,7 +114,7 @@ Function <code>downloadMGcurrentday</code> downloads recent weather data (the la
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

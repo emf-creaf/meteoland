@@ -50,28 +50,37 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">extractNetCDF</span><span class="op">(</span><span class="va">ncdf_files</span>, bbox <span class="op">=</span> <span class="cn">NULL</span>, offset <span class="op">=</span> <span class="fl">0</span>, cells <span class="op">=</span> <span class="cn">NULL</span>, export <span class="op">=</span> <span class="cn">TRUE</span>,
-              exportDir <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/getwd.html" class="external-link">getwd</a></span><span class="op">(</span><span class="op">)</span>, exportFormat <span class="op">=</span> <span class="st">"meteoland/txt"</span>, mpfilename <span class="op">=</span> <span class="st">"MP.txt"</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">extractNetCDF</span><span class="op">(</span><span class="va">ncdf_files</span>, bbox <span class="op">=</span> <span class="cn">NULL</span>, offset <span class="op">=</span> <span class="fl">0</span>, cells <span class="op">=</span> <span class="cn">NULL</span>, export <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>              exportDir <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/getwd.html" class="external-link">getwd</a></span><span class="op">(</span><span class="op">)</span>, exportFormat <span class="op">=</span> <span class="st">"meteoland/txt"</span>, mpfilename <span class="op">=</span> <span class="st">"MP.txt"</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>ncdf_files</dt>
 <dd><p>Character vector containing files to read</p></dd>
-<dt>bbox</dt>
+
+  <dt>bbox</dt>
 <dd><p>Boundary box (2 x 2 matrix) specifying the limit coordinates of a study area (in lon/lat format).</p></dd>
-<dt>offset</dt>
+
+  <dt>offset</dt>
 <dd><p>A buffer to include NetCDF cells that are at a certain distance around the boundary box.</p></dd>
-<dt>cells</dt>
+
+  <dt>cells</dt>
 <dd><p>A (n x 2) matrix specifying the x and y indices of n cells in a grid.</p></dd>
-<dt>export</dt>
+
+  <dt>export</dt>
 <dd><p>If <code>export = FALSE</code> the extracted data is stored in memory. Otherwise the result is written in the disk (using the format specified in <code>exportFormat</code>).</p></dd>
-<dt>exportFormat</dt>
+
+  <dt>exportFormat</dt>
 <dd><p>Export format for meteorological data (see <code><a href="writemeteorologypoint.html">writemeteorologypoint</a></code>).</p></dd>
-<dt>exportDir</dt>
+
+  <dt>exportDir</dt>
 <dd><p>Output directory for extracted meteorology.</p></dd>
-<dt>mpfilename</dt>
+
+  <dt>mpfilename</dt>
 <dd><p>The name of the file that will store the meta data describing all written files.</p></dd>
+
+
 </dl></div>
     <div id="details">
     <h2>Details</h2>
@@ -81,7 +90,9 @@
     </div>
     <div id="value">
     <h2>Value</h2>
-    <p>If <code>export = FALSE</code>, the function returns an object of class <code><a href="SpatialPointsMeteorology-class.html">SpatialPointsMeteorology-class</a></code> with the meteorological series for each cell (represented by a spatial point). Otherwise the function returns an object of class <code>SpatialPointsDataFrame-class</code> containing the meta data of the files written in the disk.</p>
+    
+
+<p>If <code>export = FALSE</code>, the function returns an object of class <code><a href="SpatialPointsMeteorology-class.html">SpatialPointsMeteorology-class</a></code> with the meteorological series for each cell (represented by a spatial point). Otherwise the function returns an object of class <code>SpatialPointsDataFrame-class</code> containing the meta data of the files written in the disk.</p>
     </div>
     <div id="author">
     <h2>Author</h2>
@@ -105,7 +116,7 @@
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

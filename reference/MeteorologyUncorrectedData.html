@@ -50,22 +50,27 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">MeteorologyUncorrectedData</span><span class="op">(</span><span class="va">points</span>, <span class="va">reference_data</span>, <span class="va">projection_data</span>, <span class="va">dates</span>,
-                           params <span class="op">=</span> <span class="fu"><a href="defaultCorrectionParams.html">defaultCorrectionParams</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">MeteorologyUncorrectedData</span><span class="op">(</span><span class="va">points</span>, <span class="va">reference_data</span>, <span class="va">projection_data</span>, <span class="va">dates</span>,</span>
+<span>                           params <span class="op">=</span> <span class="fu"><a href="defaultCorrectionParams.html">defaultCorrectionParams</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>points</dt>
 <dd><p>An object of class <code>SpatialPoints</code>.</p></dd>
-<dt>reference_data</dt>
+
+  <dt>reference_data</dt>
 <dd><p>Reference (historic) meteorological data used to calibrate correction factors when compared with observations. A vector of data frames (one per point) or a single data frame containing the meta data (columns <code>dir</code> and <code>filename</code>) of meteorological files that will be read from the disk. Alternatively, a NetCDF file name where points should be read.</p></dd>
-<dt>projection_data</dt>
+
+  <dt>projection_data</dt>
 <dd><p>Projected meteorological data to be corrected. A vector of data frames (one per point) or a single data frame containing the meta data (columns <code>dir</code> and <code>filename</code>) of meteorological files that will be read from the disk. Alternatively, a NetCDF file name where points should be read.</p></dd>
-<dt>dates</dt>
+
+  <dt>dates</dt>
 <dd><p>Object of class <code>"Date"</code> describing the time period for which meteorological correction is possible (corresponding to <code>projection_data</code>).</p></dd>
-<dt>params</dt>
+
+  <dt>params</dt>
 <dd><p>A <code>"list"</code> containing correction parameters.</p></dd>
+
 </dl></div>
     <div id="details">
     <h2>Details</h2>
@@ -73,7 +78,11 @@
     </div>
     <div id="value">
     <h2>Value</h2>
-    <p>An object of class <code><a href="MeteorologyUncorrectedData-class.html">MeteorologyUncorrectedData</a>.</code></p>
+    
+
+<p>An object of class <code><a href="MeteorologyUncorrectedData-class.html">MeteorologyUncorrectedData</a>.</code></p>
+
+
     </div>
     <div id="author">
     <h2>Author</h2>
@@ -96,7 +105,7 @@
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

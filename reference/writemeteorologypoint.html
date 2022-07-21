@@ -50,33 +50,42 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">writemeteorologypoint</span><span class="op">(</span><span class="va">data</span>, <span class="va">file</span>, format <span class="op">=</span> <span class="st">"meteoland/txt"</span><span class="op">)</span>
-<span class="fu">writemeteorologypointfiles</span><span class="op">(</span><span class="va">object</span>, dir<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/getwd.html" class="external-link">getwd</a></span><span class="op">(</span><span class="op">)</span>, format <span class="op">=</span> <span class="st">"meteoland/txt"</span>,
-                           metadataFile<span class="op">=</span><span class="st">"MP.txt"</span><span class="op">)</span>
-<span class="fu">writemeteorologypoints</span><span class="op">(</span><span class="va">object</span>, <span class="va">file</span>, format <span class="op">=</span> <span class="st">"netCDF"</span>, 
-                       add <span class="op">=</span> <span class="cn">FALSE</span>, overwrite <span class="op">=</span> <span class="cn">FALSE</span>, verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">writemeteorologypoint</span><span class="op">(</span><span class="va">data</span>, <span class="va">file</span>, format <span class="op">=</span> <span class="st">"meteoland/txt"</span><span class="op">)</span></span>
+<span><span class="fu">writemeteorologypointfiles</span><span class="op">(</span><span class="va">object</span>, dir<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/getwd.html" class="external-link">getwd</a></span><span class="op">(</span><span class="op">)</span>, format <span class="op">=</span> <span class="st">"meteoland/txt"</span>,</span>
+<span>                           metadataFile<span class="op">=</span><span class="st">"MP.txt"</span><span class="op">)</span></span>
+<span><span class="fu">writemeteorologypoints</span><span class="op">(</span><span class="va">object</span>, <span class="va">file</span>, format <span class="op">=</span> <span class="st">"netCDF"</span>, </span>
+<span>                       add <span class="op">=</span> <span class="cn">FALSE</span>, overwrite <span class="op">=</span> <span class="cn">FALSE</span>, verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>data</dt>
 <dd><p>An data frame with meteorological data.</p></dd>
-<dt>file</dt>
+
+  <dt>file</dt>
 <dd><p>A string with the file name to be written.</p></dd>
-<dt>format</dt>
+
+  <dt>format</dt>
 <dd><p>Output format of meteorological data. Current accepted formats are <code>"meteoland/txt"</code>,  <code>"meteoland/rds"</code>, <code>"castanea/txt"</code> and <code>"castanea/rds"</code>.</p></dd>
-<dt>object</dt>
+
+  <dt>object</dt>
 <dd><p>An object of class <code><a href="SpatialPointsMeteorology-class.html">SpatialPointsMeteorology-class</a></code> with the meteorological data to be written.</p></dd>
-<dt>dir</dt>
+
+  <dt>dir</dt>
 <dd><p>Output directory for meteorology data.</p></dd>
-<dt>metadataFile</dt>
+
+  <dt>metadataFile</dt>
 <dd><p>The name of the file that will store the meta data describing all written files.</p></dd>
-<dt>add</dt>
+
+  <dt>add</dt>
 <dd><p>Boolean flag to indicate that NetCDF exists and data should be added/replaced (see details).</p></dd>
-<dt>overwrite</dt>
+
+  <dt>overwrite</dt>
 <dd><p>Boolean flag to force overwriting an existing NetCDF.</p></dd>
-<dt>verbose</dt>
+
+  <dt>verbose</dt>
 <dd><p>A logical flag to output process information in the console.</p></dd>
+
 </dl></div>
     <div id="details">
     <h2>Details</h2>
@@ -105,7 +114,7 @@
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

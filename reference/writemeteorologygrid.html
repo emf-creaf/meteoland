@@ -50,46 +50,59 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">writemeteorologygrid</span><span class="op">(</span><span class="va">object</span>, <span class="va">file</span>, dates <span class="op">=</span> <span class="cn">NULL</span>, format <span class="op">=</span> <span class="st">"netCDF"</span>, 
-                     byPixel <span class="op">=</span> <span class="cn">FALSE</span>, chunksizes <span class="op">=</span> <span class="cn">NA</span>, add <span class="op">=</span> <span class="cn">FALSE</span>, overwrite <span class="op">=</span> <span class="cn">FALSE</span>, 
-                     verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
-<span class="fu">writeemptymeteorologygrid</span><span class="op">(</span><span class="va">file</span>, <span class="va">grid</span>, <span class="va">proj4string</span>, <span class="va">dates</span>, 
-                     byPixel <span class="op">=</span> <span class="cn">FALSE</span>, chunksizes <span class="op">=</span> <span class="cn">NA</span>, overwrite <span class="op">=</span> <span class="cn">FALSE</span>, 
-                     verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
-<span class="fu">writemeteorologypixels</span><span class="op">(</span><span class="va">object</span>, <span class="va">file</span>, dates <span class="op">=</span> <span class="cn">NULL</span>, format <span class="op">=</span> <span class="st">"netCDF"</span>, 
-                       byPixel <span class="op">=</span> <span class="cn">FALSE</span>, chunksizes <span class="op">=</span> <span class="cn">NA</span>, add <span class="op">=</span> <span class="cn">FALSE</span>, overwrite <span class="op">=</span> <span class="cn">FALSE</span>, 
-                       verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
-<span class="fu">writemeteorologygridpixel</span><span class="op">(</span><span class="va">file</span>, <span class="va">index</span>, <span class="va">data</span>, verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">writemeteorologygrid</span><span class="op">(</span><span class="va">object</span>, <span class="va">file</span>, dates <span class="op">=</span> <span class="cn">NULL</span>, format <span class="op">=</span> <span class="st">"netCDF"</span>, </span>
+<span>                     byPixel <span class="op">=</span> <span class="cn">FALSE</span>, chunksizes <span class="op">=</span> <span class="cn">NA</span>, add <span class="op">=</span> <span class="cn">FALSE</span>, overwrite <span class="op">=</span> <span class="cn">FALSE</span>, </span>
+<span>                     verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span><span class="fu">writeemptymeteorologygrid</span><span class="op">(</span><span class="va">file</span>, <span class="va">grid</span>, <span class="va">proj4string</span>, <span class="va">dates</span>, </span>
+<span>                     byPixel <span class="op">=</span> <span class="cn">FALSE</span>, chunksizes <span class="op">=</span> <span class="cn">NA</span>, overwrite <span class="op">=</span> <span class="cn">FALSE</span>, </span>
+<span>                     verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span><span class="fu">writemeteorologypixels</span><span class="op">(</span><span class="va">object</span>, <span class="va">file</span>, dates <span class="op">=</span> <span class="cn">NULL</span>, format <span class="op">=</span> <span class="st">"netCDF"</span>, </span>
+<span>                       byPixel <span class="op">=</span> <span class="cn">FALSE</span>, chunksizes <span class="op">=</span> <span class="cn">NA</span>, add <span class="op">=</span> <span class="cn">FALSE</span>, overwrite <span class="op">=</span> <span class="cn">FALSE</span>, </span>
+<span>                       verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span><span class="fu">writemeteorologygridpixel</span><span class="op">(</span><span class="va">file</span>, <span class="va">index</span>, <span class="va">data</span>, verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>object</dt>
 <dd><p>An object of class <code><a href="SpatialGridMeteorology-class.html">SpatialGridMeteorology-class</a></code> or class <code><a href="SpatialPixelsMeteorology-class.html">SpatialPixelsMeteorology-class</a></code> with the meteorological data to be written.</p></dd>
-<dt>file</dt>
+
+  <dt>file</dt>
 <dd><p>A string with the file name to be written.</p></dd>
-<dt>dates</dt>
+
+  <dt>dates</dt>
 <dd><p>A <code><a href="https://rdrr.io/r/base/Dates.html" class="external-link">Date</a></code> vector object or a character string indicating the dates to be written.</p></dd>
-<dt>format</dt>
+
+  <dt>format</dt>
 <dd><p>Format of meteorological data. The only  accepted format is <code>"netCDF"</code>.</p></dd>
-<dt>byPixel</dt>
+
+  <dt>byPixel</dt>
 <dd><p>Boolean flag to specify whether file will be written/read by pixels. This forces a different (suposedly) more efficient chunking based on time series data instead of daily grids.</p></dd>
-<dt>chunksizes</dt>
+
+  <dt>chunksizes</dt>
 <dd><p>Specifies the size of data chunks to be read/written. If set, this must be a vector of three integers corresponding to XYT.</p></dd>
-<dt>add</dt>
+
+  <dt>add</dt>
 <dd><p>Boolean flag to indicate that NetCDF exists and data should be added/replaced.</p></dd>
-<dt>grid</dt>
+
+  <dt>grid</dt>
 <dd><p>An object of class <code>GridTopology-class</code></p></dd>
-<dt>proj4string</dt>
+
+  <dt>proj4string</dt>
 <dd><p>Object of class <code>CRS</code>.</p></dd>
-<dt>overwrite</dt>
+
+  <dt>overwrite</dt>
 <dd><p>Boolean flag to force overwriting an existing NetCDF.</p></dd>
-<dt>verbose</dt>
+
+  <dt>verbose</dt>
 <dd><p>A logical flag to output process information in the console.</p></dd>
-<dt>index</dt>
+
+  <dt>index</dt>
 <dd><p>Integer indicating the grid index position to be written.</p></dd>
-<dt>data</dt>
+
+  <dt>data</dt>
 <dd><p>A data frame with meteorological data corresponding to a pixel.</p></dd>
+
 </dl></div>
     <div id="details">
     <h2>Details</h2>
@@ -116,7 +129,7 @@
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

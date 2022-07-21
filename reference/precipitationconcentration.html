@@ -50,26 +50,33 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">precipitation_concentration</span><span class="op">(</span><span class="va">p</span><span class="op">)</span>
-<span class="fu">precipitation_rainfallErosivity</span><span class="op">(</span><span class="va">x</span>, <span class="va">long</span>, scale <span class="op">=</span> <span class="st">"month"</span>, average <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">precipitation_concentration</span><span class="op">(</span><span class="va">p</span><span class="op">)</span></span>
+<span><span class="fu">precipitation_rainfallErosivity</span><span class="op">(</span><span class="va">x</span>, <span class="va">long</span>, scale <span class="op">=</span> <span class="st">"month"</span>, average <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>p</dt>
 <dd><p>A numeric vector with daily precipitation values.</p></dd>
-<dt>x</dt>
+
+  <dt>x</dt>
 <dd><p>A data frame of meteorological variables (dates as row names and variables as columns).</p></dd>
-<dt>long</dt>
+
+  <dt>long</dt>
 <dd><p>Longitude in degrees.</p></dd>
-<dt>scale</dt>
+
+  <dt>scale</dt>
 <dd><p>Either 'month' or 'year'.</p></dd>
-<dt>average</dt>
+
+  <dt>average</dt>
 <dd><p>Boolean flag to calculate multi-year averages before applying MedREM's formula.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>Function <code>precipitation_concentration()</code>  returns a value between 0 (equal distribution of rainfall) and 1 (one day concentrates all rainfall). Function <code>precipitation_rainfallErosivity()</code> returns a vector of twelve values (one for each month) (in MJ·mm·ha-1·h-1·month-1) or one value (in in MJ·mm·ha-1·h-1·yr-1) depending on the scale.</p>
+    
+
+<p>Function <code>precipitation_concentration()</code>  returns a value between 0 (equal distribution of rainfall) and 1 (one day concentrates all rainfall). Function <code>precipitation_rainfallErosivity()</code> returns a vector of twelve values (one for each month) (in MJ·mm·ha-1·h-1·month-1) or one value (in in MJ·mm·ha-1·h-1·yr-1) depending on the scale.</p>
     </div>
     <div id="author">
     <h2>Author</h2>
@@ -98,7 +105,7 @@
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

@@ -5,6 +5,7 @@ MeteorologyInterpolationData<-function(points, elevation = NULL, slope = NULL, a
   if((!inherits(points, "SpatialPoints")) && (!inherits(points, "SpatialPointsTopography")) && (!inherits(points, "SpatialPointsMeteorology"))) stop("'points' has to be of class 'SpatialPointsMeteorology', 'SpatialPointsTopography' or 'SpatialPoints'")
   isPoints = inherits(points,"SpatialPoints")
   isPointsTopo = inherits(points, "SpatialPointsTopography")
+  isSpatialPointsMeteorology = inherits(points, "SpatialPointsMeteorology")
   coords = coordinates(points)
   nstations = nrow(coords)
   if(isPointsTopo) {
@@ -29,7 +30,7 @@ MeteorologyInterpolationData<-function(points, elevation = NULL, slope = NULL, a
     }
   }
   
-  if(isPoints || isPointsTopo) { # Build from variable matrices
+  if((isPoints || isPointsTopo) && (!isSpatialPointsMeteorology)) { # Build from variable matrices
     if(!inherits(MinTemperature,"matrix")) stop("'MinTemperature' has to be a numeric matrix")
     dates = as.Date(colnames(MinTemperature))
     ndays = length(dates)
@@ -66,7 +67,7 @@ MeteorologyInterpolationData<-function(points, elevation = NULL, slope = NULL, a
     } else {
       Radiation = matrix(NA, nrow = nstations, ncol=ndays)
     }
-  } else { # Build from SpatialPointsMeteorology
+  } else if(isSpatialPointsMeteorology) { # Build from SpatialPointsMeteorology
     stnames = names(points@data)
     nstations = length(stnames)
     dates = points@dates

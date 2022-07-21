@@ -19,21 +19,36 @@
 ###     - In .interpolator_arrays_creator, when completing the cases, some needed
 ###       variables, mostly elevation creates NA for the missing cases. This
 ###       generates problems later on. Fix!!! DONE
-# 1. add crs conversion in the interpolation point method.
-#     - Implemented a check in .interpolation_point but a conversion must be done
-#     before calling this method.
-#
-# 1. interpolation process
-#     - .interpolation_points method DONE
-#     - messages (user informed user happy) DONE
-#     - ensure!!! that the points or whatever the user has supplied as input
-#       has all the needed (elevation ie) DONE
-#     - ensure that lat long and alt are present in the interpolator creation,
-#       filter any station without those values DONE
-#     - interpolation dispatcher (different spatial formats as inputs)
-#       - crs conversion
-#     - interpolation general function
-#     - transform from raster(stars) to sf: .stars2sf
+### 1. add crs conversion in the interpolation point method.
+###     - Implemented a check in .interpolation_point but a conversion must be done
+###     before calling this method. DONE
+### 1. interpolation process
+###     - .interpolation_points method DONE
+###     - messages (user informed user happy) DONE
+###     - ensure!!! that the points or whatever the user has supplied as input
+###       has all the needed (elevation ie) DONE
+###     - ensure that lat long and alt are present in the interpolator creation,
+###       filter any station without those values DONE
+###     - interpolation dispatcher (different spatial formats as inputs)
+###       - crs conversion DONE
+###     - interpolation general function DONE
+###     - transform from raster(stars) to sf: .stars2sf DONE
+### 1. Fixes
+###     - mean_* variables not getting retrieved in meteospain2meteoland DONE
+###     - distance calculation is done with repeated points, causing allocation
+###       of big vectors and time wasting. Fix it. DONE
+# 1. Fixes
+#     - add topo with sf DONE
+#     - time spend in joining topo when big meteo. I think is fixed now as i was
+#       multiplying the topo as not taking careof repeated rows DONE
+#     - ensure joining topo get the correct joining DONE
+#     - check for correct params (what happens if user calls debig instead of debug...)
+#     - ensure topo is needed with a warning if meteo has topo and topo is added DONE
+#     - fix NA logical which causes error in interpolator creation. If a variable
+#       is present and is logical (all NA not NA_integer_ nor NA_real_) then
+#       transform to NA_real_ DONE
+#     - What happens when trying to read an nc object that is not an interpolator??
+#       informative error please.
 
 
 
@@ -139,13 +154,25 @@ add_topo <- function(meteo, topo) {
   usethis::ui_done("topology object ok")
 
   usethis::ui_info("Adding topology to meteo (by station ID)...")
+
+  # check if meteo has topo already
+  if (any(c("elevation", "aspect", "slope") %in% names(meteo))) {
+    usethis::ui_warn(
+      "Topology variables found in the meteo object.\nThey will be ignored as a new topology is provided."
+    )
+    meteo <- meteo |>
+      dplyr::select(!dplyr::any_of(c("elevation", "aspect", "slope")))
+  }
+
   res <- dplyr::left_join(
     meteo,
+    # ensure topo is a tibble, with unique rows
     topo |>
       dplyr::as_tibble() |>
       dplyr::select(
         dplyr::any_of(c("stationID", "elevation", "aspect", "slope"))
-      ),
+      ) |>
+      dplyr::distinct(),
     by = 'stationID'
   ) |>
     sf::st_as_sf()
@@ -153,6 +180,36 @@ add_topo <- function(meteo, topo) {
   usethis::ui_done("topology added")
 
   return(res)
+}
+
+.get_params <- function(params) {
+  if (is.null(params)) {
+    usethis::ui_warn("No interpolation parameters provided, using defaults")
+    return(defaultInterpolationParams())
+  }
+
+  default_params <- defaultInterpolationParams()
+  user_params <- params[names(params) %in% names(default_params)]
+
+  if (length(user_params) < length(default_params)) {
+    usethis::ui_info("Some interpolation parameters are missing, using default values for those")
+  }
+
+  if (length(params[!names(params) %in% names(default_params)]) > 0) {
+    offending_params <- names(
+      params[!names(params) %in% names(default_params)]
+    )
+    usethis::ui_warn(
+      "The following interpolation parameters were provided and will not be used:"
+    )
+    purrr::walk(offending_params, usethis::ui_todo)
+  }
+
+  for (name in names(user_params)) {
+    default_params[[name]] <- user_params[[name]]
+  }
+
+  return(default_params)
 }
 
 create_meteo_interpolator <- function(meteo_with_topo, params = NULL, ...) {
@@ -169,16 +226,13 @@ create_meteo_interpolator <- function(meteo_with_topo, params = NULL, ...) {
   usethis::ui_info("Creating interpolator...")
 
   # get params
-  if (is.null(params)) {
-    usethis::ui_warn("No interpolation parameters provided, using defaults")
-    params <- defaultInterpolationParams()
-  }
+  params <- .get_params(params)
 
   # data preparation
 
   # elevation filtering
   if (any(is.na(meteo_with_topo[["elevation"]]))) {
-    usethis::ui_warning(
+    usethis::ui_warn(
       "Some meteo stations lack values for elevation, filtering those stations out"
     )
 
@@ -237,8 +291,13 @@ create_meteo_interpolator <- function(meteo_with_topo, params = NULL, ...) {
     if (! variable %in% names(arranged_data)) {
       array_data <- array(NA_real_, dim = dims)
     } else {
-      array_data <- arranged_data|>
-        dplyr::pull(!!variable) |>
+      variable_data <- arranged_data|>
+        dplyr::pull(!!variable)
+      # transform logical NAs to numeric NAs
+      if (is.logical(variable_data)) {
+        variable_data <- as.numeric(variable_data)
+      }
+      array_data <- variable_data |>
         array(dim = dims)
     }
 
@@ -260,7 +319,7 @@ create_meteo_interpolator <- function(meteo_with_topo, params = NULL, ...) {
       aspect = "aspect",
       slope = "slope"
       # stationID = "stationID"
-    ) %>%
+    ) |>
     purrr::map(
       .interpolator_arrays_creator,
       arranged_data = meteo_arranged,
@@ -296,7 +355,11 @@ create_meteo_interpolator <- function(meteo_with_topo, params = NULL, ...) {
 
   # update initial Rp in params
   usethis::ui_todo("Updating intial_Rp parameter with the actual stations mean distance...")
-  params$initial_Rp <- sf::st_distance(meteo_with_topo) |>
+  params$initial_Rp <-
+    sf::st_geometry(meteo_arranged) |>
+    unique() |>
+    sf::st_as_sfc() |>
+    sf::st_distance() |>
     as.numeric() |>
     mean(na.rm = TRUE)
 
@@ -370,8 +433,12 @@ create_meteo_interpolator <- function(meteo_with_topo, params = NULL, ...) {
       ~ ncdfgeom::write_timeseries_dsg(
         nc_file = filename,
         instance_names = names(prepared_data_list[[1]]),
-        lats = sf::st_coordinates(stars::st_get_dimension_values(interpolator, "station"))[,2],
-        lons = sf::st_coordinates(stars::st_get_dimension_values(interpolator, "station"))[,1],
+        lats = sf::st_coordinates(
+          stars::st_get_dimension_values(interpolator, "station")
+        )[,2],
+        lons = sf::st_coordinates(
+          stars::st_get_dimension_values(interpolator, "station")
+        )[,1],
         times = stars::st_get_dimension_values(interpolator, 'date'),
         data = as.data.frame(..1),
         alts = as.numeric(prepared_data_list$elevation[1,]),
@@ -650,7 +717,7 @@ create_meteo_interpolator <- function(meteo_with_topo, params = NULL, ...) {
   ### TODO assign an id to each element, the sf geom or something!!!!
 
   # return the res df
-  purrr::map(
+  res <- purrr::map(
     1:length(latrad),
     ~ dplyr::tibble(
       dates = dates,
@@ -670,6 +737,8 @@ create_meteo_interpolator <- function(meteo_with_topo, params = NULL, ...) {
   )
 
   usethis::ui_done("Interpolation done...")
+
+  return(res)
 }
 
 .meteospain2meteoland <- function(meteo) {
@@ -685,9 +754,9 @@ create_meteo_interpolator <- function(meteo_with_topo, params = NULL, ...) {
     )
 
   # Renaming optional
-  if ("relative_humidity" %in% names(meteo_temp)) {
+  if ("mean_relative_humidity" %in% names(meteo_temp)) {
     meteo_temp <- meteo_temp |>
-      dplyr::rename(RelativeHumidity = relative_humidty)
+      dplyr::rename(RelativeHumidity = mean_relative_humidity)
   }
 
   if ("mean_wind_speed" %in% names(meteo_temp)) {
@@ -695,9 +764,9 @@ create_meteo_interpolator <- function(meteo_with_topo, params = NULL, ...) {
       dplyr::rename(WindSpeed = mean_wind_speed)
   }
 
-  if ("wind_direction" %in% names(meteo_temp)) {
+  if ("mean_wind_direction" %in% names(meteo_temp)) {
     meteo_temp <- meteo_temp |>
-      dplyr::rename(WindDirection = wind_direction)
+      dplyr::rename(WindDirection = mean_wind_direction)
   }
 
   if ("radiation" %in% names(meteo_temp)) {
@@ -715,10 +784,28 @@ create_meteo_interpolator <- function(meteo_with_topo, params = NULL, ...) {
     ))
 }
 
-.spatial_dispatcher <- function(spatial_data, interpolator, dates) {
+.stars2sf <- function(stars) {
+  # assertions
+  assertthat::assert_that(
+    inherits(stars, "stars"), msg = "No stars class object detected"
+  )
+  assertthat::assert_that(
+    "elevation" %in% names(stars),
+    msg = "No elevation variable/attribute found in data"
+  )
+
+  stars |>
+    sf::st_as_sf(as_points = TRUE, na.rm = FALSE) |>
+    dplyr::select(elevation)
+
+}
+
+.interpolation_spatial_dispatcher <- function(
+    spatial_data, interpolator, dates = NULL
+) {
 
   # general assertions
-  asserthat::assert_that(has_topo_names(spatial_data))
+  assertthat::assert_that(has_topo_names(spatial_data))
 
   # sf
   if (inherits(spatial_data, "sf")) {
@@ -732,7 +819,11 @@ create_meteo_interpolator <- function(meteo_with_topo, params = NULL, ...) {
     )
 
     # interpolation
-    return(spatial_data |> .interpolation_point(interpolator, dates))
+    return(
+      spatial_data |>
+        sf::st_transform(sf::st_crs(interpolator)) |>
+        .interpolation_point(interpolator, dates)
+    )
 
   }
 
@@ -741,6 +832,7 @@ create_meteo_interpolator <- function(meteo_with_topo, params = NULL, ...) {
     return(
       spatial_data |>
         .stars2sf() |>
+        sf::st_transform(sf::st_crs(interpolator)) |>
         .interpolation_point(interpolator, dates)
     )
   }
@@ -748,10 +840,167 @@ create_meteo_interpolator <- function(meteo_with_topo, params = NULL, ...) {
   usethis::ui_stop("No compatible spatial data found. Spatial data must be an sf or a stars object")
 }
 
+.is_spatial_data <- function(spatial_data) {
+  inherits(spatial_data, c('sf', 'stars'))
+}
 
-# library(meteospain)
-# library(sf)
-# #### get meteo
+assertthat::on_failure(.is_spatial_data) <- function(call, env) {
+  paste0(
+    "Spatial data provided (", deparse(call$spatial_data), ")\n",
+    "must be an sf object (for points) or an stars object (for raster and grids).\n",
+    "Other spatial classes (from sp, terra... packages) must be converted first."
+  )
+}
+
+.is_raster <- function(spatial_data) {
+  spatial_dimension <-
+    purrr::map_lgl(sf::st_coordinates(spatial_data), inherits, what = 'sfc') |>
+    any()
+  !spatial_dimension
+}
+
+assertthat::on_failure(.is_raster) <- function(call, env) {
+  paste0(
+    "stars object provided (", deparse(call$spatial_data), ")\n",
+    "is a vector data cube. Please convert to sf points data or raster data\n",
+    "before the interpolatation."
+  )
+}
+
+.is_interpolator <- function(interpolator) {
+  has_params <- !is.null(attr(interpolator, "params"))
+  has_correct_dimensions <-
+    all(c('date', 'station') %in% names(stars::st_dimensions(interpolator)))
+
+  assertthat::assert_that(
+    has_params,
+    msg = "interpolator object is missing the interpolation parameters attribute."
+  )
+  assertthat::assert_that(
+    has_correct_dimensions,
+    msg = "interpolator object is missing the correct dimensions (date and station)"
+  )
+  assertthat::assert_that(has_meteo_names(interpolator))
+  assertthat::assert_that(has_topo_names(interpolator))
+}
+
+.binding_interpolation_results <- function(res_list, spatial_data) {
+  # debug
+  # browser()
+
+  ## points
+  if (inherits(spatial_data, 'sf')) {
+    binded_result <-
+      spatial_data |>
+      dplyr::as_tibble() |>
+      dplyr::mutate(interpolated_data = res_list) |>
+      sf::st_as_sf()
+
+    return(binded_result)
+  }
+
+  ## rasters
+  # check on dimensions
+  x_name_index <-
+    which(
+      names(stars::st_dimensions(spatial_data)) %in% c('x', 'X', 'long', 'longitude')
+    )
+  y_name_index <-
+    which(
+      names(stars::st_dimensions(spatial_data)) %in% c('y', 'Y', 'lat', 'latitude')
+    )
+
+  assertthat::assert_that(
+    length(x_name_index) > 0,
+    msg = "Can't find x dimension. x dimension in spatial data must be named 'x', 'X', 'long' or 'longitude'"
+  )
+  assertthat::assert_that(
+    length(y_name_index) > 0,
+    msg = "Can't find y dimension. y dimension in spatial data must be named 'y', 'Y', 'lat' or 'latitude'"
+  )
+
+  # dimensions
+  result_dimensions <- stars::st_dimensions(
+    x = stars::st_get_dimension_values(spatial_data, x_name_index),
+    y = stars::st_get_dimension_values(spatial_data, y_name_index),
+    date = res_list[[1]][['dates']]
+  )
+
+  # info
+  usethis::ui_info("Binding together interpolation results")
+
+  # helper
+  .result_arrays_creator <- function(variable, res_list, dims) {
+    variable_vecs <- purrr::map(res_list, ~ .x[[variable]])
+    # array_dims <- c(y = dims[['y']], x = dims[['x']], date = dims[['date']])
+
+    var_long_vec <- numeric()
+    for (i in 1:length(variable_vecs[[1]])) {
+      var_long_vec <- c(
+        var_long_vec,
+        variable_vecs |> purrr::map_dbl(~.x[i])
+      )
+    }
+    var_long_vec |> array(dim = dims)
+  }
+
+  res_vars <- names(res_list[[1]]) |>
+    purrr::keep(~ !.x %in% c("dates", "DOY"))
+  binded_result <- res_vars |>
+    purrr::map(~ .result_arrays_creator(.x, res_list, dim(result_dimensions))) |>
+    purrr::set_names(res_vars) |>
+    stars::st_as_stars(dimensions = result_dimensions)
+
+  sf::st_crs(binded_result) <- sf::st_crs(spatial_data)
+
+  binded_result[["elevation"]] <- spatial_data[["elevation"]]
+  usethis::ui_done("Interpolation process finished")
+  return(binded_result)
+
+}
+
+interpolate_data <- function(spatial_data, interpolator, dates = NULL) {
+  # debug
+  # browser()
+
+  ## assertions
+  # spatial
+  assertthat::assert_that(.is_spatial_data(spatial_data))
+  if (inherits(spatial_data, 'stars')) {
+    assertthat::assert_that(.is_raster(spatial_data))
+    # curvilinear
+    assertthat::assert_that(
+      !attr(stars::st_dimensions(spatial_data), "raster")$curvilinear,
+      msg = "Curvilinear grids are not supported yet. Please reproject/warp the raster to regular coordinates."
+    )
+  }
+
+  # dates
+  if (!is.null(dates)) {
+    assertthat::assert_that(
+      assertthat::is.date(dates) | assertthat::is.time(dates),
+      msg = "dates object provided doesn't contain dates (POSIX)"
+    )
+  }
+
+  # interpolator
+  assertthat::assert_that(.is_interpolator(interpolator))
+
+  # Interpolation
+  res <-
+    .interpolation_spatial_dispatcher(spatial_data, interpolator, dates) |>
+    # results binding
+    .binding_interpolation_results(spatial_data)
+
+  return(res)
+}
+
+
+
+
+library(meteospain)
+library(sf)
+#### get meteo
 # service_options <- aemet_options(
 #   'daily', as.Date("2022-04-01"), as.Date("2022-04-30"),
 #   api_key = keyring::key_get('aemet')
@@ -988,7 +1237,7 @@ create_meteo_interpolator <- function(meteo_with_topo, params = NULL, ...) {
 #   meteoland:::with_meteo() |>
 #   meteoland:::add_topo(topo_sf_ok)
 #
-# meteoland:::.interpolation_point(stars_interpolator, points_test)
+# meteoland:::.interpolation_point(points_test, stars_interpolator)
 #
 # points_whole <- meteo_ok |>
 #   dplyr::arrange(dates, stationID) |>
@@ -1043,3 +1292,32 @@ create_meteo_interpolator <- function(meteo_with_topo, params = NULL, ...) {
 # }
 # equality
 # all.equal(recursive_res, c_vec_res)
+
+# library(meteoland)
+# interpolator <- meteoland:::.read_interpolator('interpolator_test.nc')
+# stars_test <- stars::read_ncdf('stars_test.nc') |>
+#   purrr::set_names('elevation')
+# # rast_test <- raster::raster('stars_test.nc') |>
+# #   raster::projectRaster(crs = sf::st_crs(stars_test))
+# # names(rast_test) <- "elevation"
+#
+#
+# sf_test <- sf::st_as_sf(stars_test, as_points = TRUE)
+# dates_test <- stars::st_get_dimension_values(interpolator, "date")[5:9]
+# meteoland:::interpolate_data(stars_test, interpolator, dates = dates_test)
+#
+# rast_benchmark <- bench::mark(
+#   res_rast_big <- meteoland:::interpolate_data(stars_test, interpolator),
+#   res_sf_big <- meteoland:::interpolate_data(sf_test, interpolator),
+#   iterations = 10,
+#   check = FALSE
+# )
+# rast_benchmark_short <- bench::mark(
+#   res_rast_short <- meteoland:::interpolate_data(stars_test, interpolator, dates = dates_test),
+#   res_sf_short <- meteoland:::interpolate_data(sf_test, interpolator, dates = dates_test),
+#   iterations = 10,
+#   check = FALSE
+# )
+# rast_benchmark$time
+# rast_benchmark_short$time
+

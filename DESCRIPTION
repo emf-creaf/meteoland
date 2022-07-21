@@ -15,9 +15,16 @@ URL: https://emf-creaf.github.io/meteoland/index.html
 LazyData: TRUE
 Depends: R (>= 3.4.0), sp
 Imports: sf, spdep, rgdal, ncdf4, methods,  meteospain, Rcpp (>= 0.12.12), units
-Suggests: knitr, forecast, spacetime, stars, rmarkdown
+Suggests: 
+    knitr,
+    forecast,
+    spacetime,
+    stars,
+    rmarkdown,
+    testthat (>= 3.0.0)
 LinkingTo: Rcpp
 Encoding: UTF-8
 NeedsCompilation: yes
 VignetteBuilder: utils, knitr
 RoxygenNote: 7.1.2
+Config/testthat/edition: 3

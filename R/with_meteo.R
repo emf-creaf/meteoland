@@ -37,18 +37,36 @@
 ###     - mean_* variables not getting retrieved in meteospain2meteoland DONE
 ###     - distance calculation is done with repeated points, causing allocation
 ###       of big vectors and time wasting. Fix it. DONE
+### 1. Fixes
+###     - add topo with sf DONE
+###     - time spend in joining topo when big meteo. I think is fixed now as i was
+###       multiplying the topo as not taking careof repeated rows DONE
+###     - ensure joining topo get the correct joining DONE
+###     - check for correct params (what happens if user calls debig instead of debug...)
+###     - ensure topo is needed with a warning if meteo has topo and topo is added DONE
+###     - fix NA logical which causes error in interpolator creation. If a variable
+###       is present and is logical (all NA not NA_integer_ nor NA_real_) then
+###       transform to NA_real_ DONE
+###     - Precip and Rad not interpolated correctly. Possible causes
+###         - ~~transposition of smoothed vars~~ Not this
+###         - creation of smoothed vars DONE
+###         - differences of 1e-05 in correct vars is due to differences in Rp parameter
+###         - Precip, some values interpolate to 0 instead of the value in Miquels method.
+###             - This is SOLVED. I was doing the precip interpolation incorrectly
+###               (some params were missing). DONE
+###     - In raster method, aspect and slope, if they exist, are not copied to
+###       results object DONE
+###     - What happens when trying to read an nc object that is not an interpolator??
+###       informative error please. DONE
+###     - Informative warning when no aspect or slope is registered, as the results
+###       can be really different DONE
 # 1. Fixes
-#     - add topo with sf DONE
-#     - time spend in joining topo when big meteo. I think is fixed now as i was
-#       multiplying the topo as not taking careof repeated rows DONE
-#     - ensure joining topo get the correct joining DONE
-#     - check for correct params (what happens if user calls debig instead of debug...)
-#     - ensure topo is needed with a warning if meteo has topo and topo is added DONE
-#     - fix NA logical which causes error in interpolator creation. If a variable
-#       is present and is logical (all NA not NA_integer_ nor NA_real_) then
-#       transform to NA_real_ DONE
-#     - What happens when trying to read an nc object that is not an interpolator??
-#       informative error please.
+#     - Humidity interpolation is wrong when no humidity in meteo is supplied.
+#       I can't really test this because bug in old method. .interpolationPointSeries
+#       only check if interpolator@RelativeHumidity is NULL, but it can't be NULL ever,
+#       as the class check forces it to be a NA's matrix :(
+#     - Check with Miquel which are the mandatory variables for meteo (only temperatures?
+#       or also precipitation)
 
 
 
@@ -75,7 +93,7 @@ assertthat::on_failure(has_meteo_names) <- function(call, env) {
 has_topo_names <- function(meteo) {
   # topology names
   mandatory_topo_names <- c("elevation")
-
+  # check
   all(mandatory_topo_names %in% names(meteo))
 }
 
@@ -120,7 +138,7 @@ has_meteo <- function(meteo) {
   )
 }
 
-has_topo <- function(topo, ...) {
+has_topo <- function(topo) {
 
   # dataframe or similar with station_id or geometry
   assertthat::assert_that(
@@ -333,10 +351,10 @@ create_meteo_interpolator <- function(meteo_with_topo, params = NULL, ...) {
   usethis::ui_todo("Calculating smoothed variables...")
   stars_interpolator[["SmoothedPrecipitation"]] <-
     .temporalSmoothing(
-      stars_interpolator[["Precipitation"]],
+      t(stars_interpolator[["Precipitation"]]),
       params$St_Precipitation,
       TRUE
-    )
+    ) |> t()
   colnames(stars_interpolator[["SmoothedPrecipitation"]]) <-
     colnames(stars_interpolator[["Precipitation"]])
   attributes(stars_interpolator[["SmoothedPrecipitation"]]) <-
@@ -344,10 +362,10 @@ create_meteo_interpolator <- function(meteo_with_topo, params = NULL, ...) {
 
   stars_interpolator[["SmoothedTemperatureRange"]] <-
     .temporalSmoothing(
-      stars_interpolator[["MaxTemperature"]] - stars_interpolator[["MinTemperature"]],
+      t(stars_interpolator[["MaxTemperature"]] - stars_interpolator[["MinTemperature"]]),
       params$St_TemperatureRange,
       FALSE
-    )
+    ) |> t()
   colnames(stars_interpolator[["SmoothedTemperatureRange"]]) <-
     colnames(stars_interpolator[["MinTemperature"]])
   attributes(stars_interpolator[["SmoothedTemperatureRange"]]) <-
@@ -477,9 +495,6 @@ create_meteo_interpolator <- function(meteo_with_topo, params = NULL, ...) {
   # debug
   # browser()
 
-  # get the data from the nc file
-  ts_data <- ncdfgeom::read_timeseries_dsg(filename)
-
   # get the attributes
   interpolation_attributes <- ncmeta::nc_meta(filename)$attribute |>
     dplyr::filter(
@@ -487,8 +502,17 @@ create_meteo_interpolator <- function(meteo_with_topo, params = NULL, ...) {
       name %in% names(meteoland::defaultInterpolationParams())
     ) |>
     dplyr::pull(value)
+
+  # Check if attributes exist, if not is not an interpolator
+  if (length(interpolation_attributes) < 1) {
+    usethis::ui_stop("{filename} is not a meteoland interpolator file.")
+  }
+
   # remember to convert debug value to logical
   interpolation_attributes$debug <- as.logical(interpolation_attributes$debug)
+
+  # get the data from the nc file
+  ts_data <- ncdfgeom::read_timeseries_dsg(filename)
 
   # get the geometries
   geom_crs <- ncmeta::nc_meta(filename)$attribute |>
@@ -624,6 +648,8 @@ create_meteo_interpolator <- function(meteo_with_topo, params = NULL, ...) {
     iniRp = attr(interpolator, "params")$initial_Rp,
     alpha_event = attr(interpolator, "params")$alpha_PrecipitationEvent,
     alpha_amount = attr(interpolator, "params")$alpha_PrecipitationAmount,
+    N_event = attr(interpolator, "params")$N_PrecipitationEvent,
+    N_amount = attr(interpolator, "params")$N_PrecipitationAmount,
     iterations = attr(interpolator, "params")$iterations,
     popcrit = attr(interpolator, "params")$pop_crit,
     fmax = attr(interpolator, "params")$f_max,
@@ -698,8 +724,8 @@ create_meteo_interpolator <- function(meteo_with_topo, params = NULL, ...) {
   )
 
   latrad <- sf::st_coordinates(sf::st_transform(sf, 4326))[,2] * (pi/180)
-  slorad <- sf$slope * (pi/180)
-  asprad <- sf$aspect * (pi/180)
+  slorad <- sf[["slope"]] * (pi/180)
+  asprad <- sf[["aspect"]] * (pi/180)
   rad <- array(dim = dim(tmin))
   for (i in 1:length(latrad)) {
     rad[i,] <- .radiationSeries(
@@ -796,16 +822,13 @@ create_meteo_interpolator <- function(meteo_with_topo, params = NULL, ...) {
 
   stars |>
     sf::st_as_sf(as_points = TRUE, na.rm = FALSE) |>
-    dplyr::select(elevation)
+    dplyr::select(dplyr::any_of(c("elevation", "slope", "aspect")))
 
 }
 
 .interpolation_spatial_dispatcher <- function(
     spatial_data, interpolator, dates = NULL
 ) {
-
-  # general assertions
-  assertthat::assert_that(has_topo_names(spatial_data))
 
   # sf
   if (inherits(spatial_data, "sf")) {
@@ -951,9 +974,14 @@ assertthat::on_failure(.is_raster) <- function(call, env) {
     purrr::set_names(res_vars) |>
     stars::st_as_stars(dimensions = result_dimensions)
 
+  # crs
   sf::st_crs(binded_result) <- sf::st_crs(spatial_data)
 
+  # user data, if slope and/or aspect are null, they will be null
   binded_result[["elevation"]] <- spatial_data[["elevation"]]
+  binded_result[["slope"]] <- spatial_data[["slope"]]
+  binded_result[["aspect"]] <- spatial_data[["aspect"]]
+
   usethis::ui_done("Interpolation process finished")
   return(binded_result)
 
@@ -966,12 +994,14 @@ interpolate_data <- function(spatial_data, interpolator, dates = NULL) {
   ## assertions
   # spatial
   assertthat::assert_that(.is_spatial_data(spatial_data))
+  assertthat::assert_that(has_topo_names(spatial_data))
+
   if (inherits(spatial_data, 'stars')) {
     assertthat::assert_that(.is_raster(spatial_data))
     # curvilinear
     assertthat::assert_that(
       !attr(stars::st_dimensions(spatial_data), "raster")$curvilinear,
-      msg = "Curvilinear grids are not supported yet. Please reproject/warp the raster to regular coordinates."
+      msg = "Curvilinear grids are not yet supported. Please reproject/warp the raster to regular coordinates."
     )
   }
 
@@ -986,6 +1016,15 @@ interpolate_data <- function(spatial_data, interpolator, dates = NULL) {
   # interpolator
   assertthat::assert_that(.is_interpolator(interpolator))
 
+  # last spatial check. Here because that way all essential checks are done
+  # before
+  optional_topo_names <- c("slope", "aspect")
+  if (!all(optional_topo_names %in% names(spatial_data))) {
+    usethis::ui_warn(
+      "'aspect' and 'slope' variables are not mandatory, but the interpolation will be less accurate without them"
+    )
+  }
+
   # Interpolation
   res <-
     .interpolation_spatial_dispatcher(spatial_data, interpolator, dates) |>
@@ -998,8 +1037,8 @@ interpolate_data <- function(spatial_data, interpolator, dates = NULL) {
 
 
 
-library(meteospain)
-library(sf)
+# library(meteospain)
+# library(sf)
 #### get meteo
 # service_options <- aemet_options(
 #   'daily', as.Date("2022-04-01"), as.Date("2022-04-30"),

@@ -1,6 +1,20 @@
 # meteo test data, 1 month
 meteo_test <- readRDS('meteo_test.rds') |>
   dplyr::filter(timestamp < (as.Date("2021-02-01") |> as.POSIXct()))
+# raster, points data for testing
+raster_data_test <- readRDS("raster_data.rds")
+raster_data_test <- stars::st_warp(
+  raster_data_test,
+  stars::st_as_stars(sf::st_bbox(raster_data_test), dx = 3000)
+  )
+points_data_test <- readRDS("points_data.rds") |>
+  dplyr::slice(1:10)
+# interpolation varaibles names
+interpolation_var_names <- c(
+  "MeanTemperature", "MinTemperature", "MaxTemperature", "Precipitation",
+  "MeanRelativeHumidity", "MinRelativeHumidity", "MaxRelativeHumidity",
+  "Radiation", "WindSpeed", "WindDirection", "PET"
+)
 
 test_that(".meteospain2meteoland works", {
   expect_s3_class(test_res <- .meteospain2meteoland(meteo_test), 'sf')
@@ -246,11 +260,83 @@ test_that("write and read interpolators works as expected", {
     interpolator_read <- .read_interpolator(tmp_file),
     interpolator_test
   )
+  expect_error(
+    .read_interpolator(system.file("nc/reduced.nc", package = "stars")),
+    "not a meteoland interpolator"
+  )
 
   expect_error(.is_interpolator(interpolator_write), NA)
   expect_error(.is_interpolator(interpolator_read), NA)
 })
 
+test_that(".stars2sf works as intended", {
+  expect_error(.stars2sf("wrong_object"), "stars class")
+  expect_error(.stars2sf(raster_data_test[c("slope", "aspect")]), "No elevation")
+  expect_s3_class((res <- .stars2sf(raster_data_test)), "sf")
+  expect_named(res, c("elevation", "slope", "aspect", "geometry"))
+  expect_identical(
+    as.integer(nrow(raster_data_test) * ncol(raster_data_test)),
+    nrow(res)
+  )
+})
+
+test_that(".is_spatial_data, .is_raster works as intended", {
+  # .is_spatial_data
+  expect_false(.is_spatial_data(25))
+  expect_false(.is_spatial_data("25"))
+  expect_false(.is_spatial_data(terra::rast(raster_data_test)))
+  expect_false(.is_spatial_data(sf::as_Spatial(meteo_test)))
+  expect_true(.is_spatial_data(meteo_test))
+  expect_true(.is_spatial_data(raster_data_test))
+  # .is_raster
+  expect_false(.is_raster(interpolator_test))
+  expect_true(.is_raster(raster_data_test))
+})
+
 test_that("interpolation process works as intended", {
-  # test all
+  # argument errors
+  expect_error(
+    interpolate_data(25, interpolator_test), "must be"
+  )
+  expect_error(
+    interpolate_data(interpolator_test, interpolator_test), "vector data cube"
+  )
+  expect_error(
+    interpolate_data(sf::st_transform(raster_data_test, crs = 4326), interpolator_test),
+    "Curvilinear grids"
+  )
+  expect_error(
+    interpolate_data(raster_data_test, interpolator_test, dates = 'tururu'),
+    "dates object provided"
+  )
+  expect_error(interpolate_data(raster_data_test, raster_data_test), NULL)
+  expect_warning(
+    interpolate_data(dplyr::select(points_data_test, -slope), interpolator_test),
+    "not mandatory"
+  )
+
+  # points
+  expect_s3_class(
+    (points_res <- interpolate_data(points_data_test, interpolator_test)),
+    'sf'
+  )
+  expect_identical(nrow(points_res), nrow(points_data_test))
+  expect_true(all(names(points_data_test) %in% names(points_res)))
+  expect_true("interpolated_data" %in% names(points_res))
+  expect_true(all(
+    c(interpolation_var_names, "dates", "DOY") %in%
+      names(points_res |> tidyr::unnest(cols = c(interpolated_data)))
+  ))
+  expect_identical(sf::st_geometry(points_res), sf::st_geometry(points_data_test))
+  expect_identical(sf::st_crs(points_res), sf::st_crs(points_data_test))
+
+  # raster
+  expect_s3_class(
+    (raster_res <- interpolate_data(raster_data_test, interpolator_test)),
+    'stars'
+  )
+  expect_identical(dim(raster_res)[1:2], dim(raster_data_test)[1:2])
+  expect_true(all(names(raster_data_test) %in% names(raster_res)))
+  expect_true(all(interpolation_var_names %in% names(raster_res)))
+  expect_identical(sf::st_crs(raster_res), sf::st_crs(raster_data_test))
 })

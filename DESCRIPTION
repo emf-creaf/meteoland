@@ -26,5 +26,5 @@ LinkingTo: Rcpp
 Encoding: UTF-8
 NeedsCompilation: yes
 VignetteBuilder: utils, knitr
-RoxygenNote: 7.1.2
+RoxygenNote: 7.2.1
 Config/testthat/edition: 3

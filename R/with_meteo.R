@@ -67,10 +67,33 @@
 #       as the class check forces it to be a NA's matrix :(
 #     - Check with Miquel which are the mandatory variables for meteo (only temperatures?
 #       or also precipitation)
+# 1. Add wind logic to interpolation process
+# 1. Add interpolation cross validation and calibration routines
+#    (maybe temporal resolution also)
+#     - calibration process. DONE
+#     - cross validation
+#       - logic DONE
+#       - messaging (remove interpolation messages and add custom ones for the
+#         cross validation routine) DONE
+#       - check results with old method
 
 
 
 #### check_meteo ####
+#' Check if meteo data has the mandatory variables
+#'
+#' Check if meteo data has the mandatory variables
+#'
+#' This function ensures that meteo object have the mandatory variables, and is
+#' used in combination with \code{\link[assertthat]{on_failure}} to produce a
+#' meaningful and human readable error when no mandatory variables are present.
+#'
+#' @param meteo meteo object
+#'
+#' @return TRUE if mandatory variables are present, FALSE otherwise
+#'
+#' @family Argument checks
+#' @noRd
 has_meteo_names <- function(meteo) {
   # meteo names
   mandatory_meteo_names <- c("MinTemperature", "MaxTemperature")
@@ -90,6 +113,20 @@ assertthat::on_failure(has_meteo_names) <- function(call, env) {
   )
 }
 
+#' Check if meteo data has the mandatory topology variables
+#'
+#' Check if meteo data has the mandatory topology variables
+#'
+#' This function ensures that meteo object have the mandatory topology names,
+#' and is used in combination with \code{\link[assertthat]{on_failure}} to produce
+#' a meaningful and human readable error when no mandatory variables are present.
+#'
+#' @param meteo meteo object
+#'
+#' @return TRUE if mandatory variables are present, FALSE otherwise
+#'
+#' @family Argument checks
+#' @noRd
 has_topo_names <- function(meteo) {
   # topology names
   mandatory_topo_names <- c("elevation")
@@ -108,6 +145,20 @@ assertthat::on_failure(has_topo_names) <- function(call, env) {
   )
 }
 
+#' Checks for meteo
+#'
+#' Checks for meteo
+#'
+#' This function checks that meteo object has everything is needed to create the
+#' interpolator. Checks done include being a sf POINT object, correct variables,
+#' numeric variables, dates and meteo stations names.
+#'
+#' @param meteo meteo object
+#'
+#' @family Argument checks
+#'
+#' @return Informative error when any check fails, invisible TRUE otherwise
+#' @noRd
 has_meteo <- function(meteo) {
   # sf object
   assertthat::assert_that(inherits(meteo, 'sf'), msg = "meteo must be an sf object")
@@ -138,6 +189,20 @@ has_meteo <- function(meteo) {
   )
 }
 
+#' Checks for topo
+#'
+#' Checks for topo
+#'
+#' This function checks that topo object has everything is needed to create the
+#' interpolator. Checks done include being a dataframe, correct variables,
+#' numeric variables, and stations names.
+#'
+#' @param topo topo object
+#'
+#' @family Argument checks
+#'
+#' @return Informative error when any check fails, invisible TRUE otherwise
+#' @noRd
 has_topo <- function(topo) {
 
   # dataframe or similar with station_id or geometry
@@ -157,6 +222,18 @@ has_topo <- function(topo) {
   )
 }
 
+#' Ensure meteo object is ready to create an interpolator object
+#'
+#' Check integrity of meteo objects
+#'
+#' This function is the first step in the creation of a meteoland interpolator,
+#' ensuring the meteo provided contains all the required elements
+#'
+#' @param meteo meteo object
+#'
+#' @return invisible meteo object ready to pipe in the interpolator creation
+#' @family interpolator functions
+#' @export
 with_meteo <- function(meteo) {
   usethis::ui_info("Checking meteorology object...")
   assertthat::assert_that(has_meteo(meteo))
@@ -164,6 +241,18 @@ with_meteo <- function(meteo) {
   return(invisible(meteo))
 }
 
+#' Add topology data to meteo object
+#'
+#' Add topology data to meteo object
+#'
+#' When using meteo data without topology info to create an inteprolator,
+#' topology must be addded
+#'
+#' @param meteo meteo object
+#' @param topo topo object
+#' @return meteo with the topology info added
+#' @family interpolator functions
+#' @export
 add_topo <- function(meteo, topo) {
 
   assertthat::assert_that(has_meteo(meteo))
@@ -200,6 +289,22 @@ add_topo <- function(meteo, topo) {
   return(res)
 }
 
+#' Retrieving interpolation parameters from user
+#'
+#' Internal function to ensure all interpolation parameters are included in the
+#' final interpolator
+#'
+#' This functions ensures that if no parameters are provided, the default ones
+#' are used. Also, if params are partially provided, this functions ensures that
+#' the rest of the parameters are taken from the defaults, allowing the user to
+#' provide only those parameters they want to change from default ones. This
+#' function is designed to be used internally by other functions in the package
+#'
+#' @param params list with the parameters provided by the user
+#'
+#' @return A complete parameter list to use in the interpolator object
+#' @family interpolator functions
+#' @noRd
 .get_params <- function(params) {
   if (is.null(params)) {
     usethis::ui_warn("No interpolation parameters provided, using defaults")
@@ -230,6 +335,17 @@ add_topo <- function(meteo, topo) {
   return(default_params)
 }
 
+#' Meteoland interpolator creation
+#'
+#' Function to create the meteoland interpolator
+#'
+#' This function takes meteorology information and a list of interpolation
+#' parameters and creates the interpolator object to be ready to use.
+#'
+#' @param meteo_with_topo meteo object, as returned by \code{\link{with_meteo}}
+#' @return an interpolator object (stars)
+#' @family interpolator functions
+#' @export
 create_meteo_interpolator <- function(meteo_with_topo, params = NULL, ...) {
 
   ## TODO messaging
@@ -391,7 +507,26 @@ create_meteo_interpolator <- function(meteo_with_topo, params = NULL, ...) {
 
 # write the interpolator in the NetCDF-CF standard
 # http://cfconventions.org/cf-conventions/cf-conventions.html
-.write_interpolator <- function(interpolator, filename, .overwrite = FALSE) {
+#' Write the interpolator object
+#'
+#' Write the interpolator object to a file
+#'
+#' This function writes the interpolator object created with
+#' \code{\link{create_meteoland_interpolator}} in a NetCDF-CF standard compliant
+#' format, as specified in
+#' http://cfconventions.org/cf-conventions/cf-conventions.html
+#'
+#' @param interpolator meteoland interpolator object, as created by
+#'   \code{\link{create_meteoland_interpolator}}
+#' @param filename file name for the interpolator nc file
+#' @param .overwrite logical indicating if the file should be overwrited if it
+#'   already exists
+#'
+#' @family interpolator functions
+#' @return invisible interpolator object, to allow using this function as a step
+#'   in a pipe
+#' @export
+write_interpolator <- function(interpolator, filename, .overwrite = FALSE) {
   # debug
   # browser()
 
@@ -490,8 +625,19 @@ create_meteo_interpolator <- function(meteo_with_topo, params = NULL, ...) {
   return(invisible(interpolator))
 }
 
-# read interpolators created with .write_interpolator
-.read_interpolator <- function(filename) {
+#' Read interpolator files
+#'
+#' Read interpolator files created with \code{\link{write_interpolator}}
+#'
+#' This function takes the file name of the nc file storing an interpolator
+#' object and load it into the work environment
+#'
+#' @param filename interpolator file name
+#'
+#' @return an interpolator (stars) object
+#' @family interpolator functions
+#' @export
+read_interpolator <- function(filename) {
   # debug
   # browser()
 
@@ -551,7 +697,24 @@ create_meteo_interpolator <- function(meteo_with_topo, params = NULL, ...) {
 }
 
 
-## C vectorized version
+#' Interpolation core function
+#'
+#' Interpolation core process
+#'
+#' This function takes the points to be interpolated, the interpolator object
+#' and an optional vector of dates to perform the interpolation. It uses the
+#' vectorised C++ methods, so no need to loop through points or dates.
+#'
+#' @param sf sf object with the points topology
+#' @param interpolator interpolator object
+#' @param dates vector with dates (dates must be inside the interpolator date
+#'   range)
+#'
+#' @family interpolator functions
+#' @return A tibble for each point, with the dates as rows and the interpolated
+#'   data as columns
+#'
+#' @noRd
 .interpolation_point <- function(sf, interpolator, dates = NULL) {
   ## debug
   # browser()
@@ -767,7 +930,18 @@ create_meteo_interpolator <- function(meteo_with_topo, params = NULL, ...) {
   return(res)
 }
 
-.meteospain2meteoland <- function(meteo) {
+#' From meteospain to meteoland meteo objects
+#'
+#' Adapting meteospain meteo objects to meteoland meteo objects
+#'
+#' This function converts \code{meteospain} R package meteo objects to compatible
+#' meteoland meteo objects by seelcting the needed variables and adapting the
+#' names to comply with meteoland requirements.
+#'
+#' @param meteo meteospain meteo object
+#' @return a compatible meteo object to use in meteoland
+#' @export
+meteospain2meteoland <- function(meteo) {
 
   # Renaming mandatory variables
   meteo_temp <- meteo |>
@@ -795,9 +969,19 @@ create_meteo_interpolator <- function(meteo_with_topo, params = NULL, ...) {
       dplyr::rename(WindDirection = mean_wind_direction)
   }
 
-  if ("radiation" %in% names(meteo_temp)) {
+  # if ("radiation" %in% names(meteo_temp)) {
+  #   meteo_temp <- meteo_temp |>
+  #     dplyr::rename(Radiation = radiation)
+  # }
+
+  if ("solar_radiation" %in% names(meteo_temp)) {
     meteo_temp <- meteo_temp |>
-      dplyr::rename(Radiation = radiation)
+      dplyr::rename(Radiation = solar_radiation)
+  }
+
+  if ("global_solar_radiation" %in% names(meteo_temp)) {
+    meteo_temp <- meteo_temp |>
+      dplyr::rename(Radiation = global_solar_radiation)
   }
 
   meteo_temp |>
@@ -810,6 +994,20 @@ create_meteo_interpolator <- function(meteo_with_topo, params = NULL, ...) {
     ))
 }
 
+#' Topology raster (stars) cells to points
+#'
+#' Converting stars cells to a topology point object compatible with
+#' .interpolation_point
+#'
+#' This function takes on a stars raster and check for mandatory variables,
+#' returning an sf object
+#'
+#' @param stars topology stars object with at least elevation variable
+#'
+#' @return a sf object with raster cells converted to points (taking the center
+#'   of the cell)
+#'
+#' @noRd
 .stars2sf <- function(stars) {
   # assertions
   assertthat::assert_that(
@@ -826,6 +1024,25 @@ create_meteo_interpolator <- function(meteo_with_topo, params = NULL, ...) {
 
 }
 
+#' Dispatcher of spatial data to interpolation points
+#'
+#' Dispatcher of different kinds (stars, sf) of spatial data to interpolation
+#' point function
+#'
+#' This function takes the spatial data, checks its class (stars or sf), apply
+#' some assertions specific of the class and pass the spatial data to the
+#' \code{\linl{.interpolation_point}} function
+#'
+#' @param spatial_data stars or sf object with the spatial data
+#' @param interpolator meteoland interpolator object, as created by
+#'   \code{\link{create_meteoland_interpolator}}
+#' @param dates vector with dates to interpolate (must be within the
+#'   interpolator date range). Default to NULL (all dates present in the
+#'   interpolator object)
+#'
+#' @return the same as \code{\link{.interpolation_point}} function.
+#'
+#' @noRd
 .interpolation_spatial_dispatcher <- function(
     spatial_data, interpolator, dates = NULL
 ) {
@@ -863,9 +1080,22 @@ create_meteo_interpolator <- function(meteo_with_topo, params = NULL, ...) {
   usethis::ui_stop("No compatible spatial data found. Spatial data must be an sf or a stars object")
 }
 
+#' Check class of provided spatial data
+#'
+#' Check class of provided spatial data
+#'
+#' This function checks the class of the provided spatial data is in the allowed
+#' classes (stars and sf)
+#'
+#' @param spatial_data spatial data provided
+#'
+#' @return TRUE if spatial data is a stars or sf object, FALSE otherwise
+#'
+#' @noRd
 .is_spatial_data <- function(spatial_data) {
   inherits(spatial_data, c('sf', 'stars'))
 }
+
 
 assertthat::on_failure(.is_spatial_data) <- function(call, env) {
   paste0(
@@ -875,6 +1105,18 @@ assertthat::on_failure(.is_spatial_data) <- function(call, env) {
   )
 }
 
+#' Check if spatial data stars is a raster
+#'
+#' Check if spatial data stars is a raster
+#'
+#' This function checks if the provided stars object is a raster, not a vector
+#' data cube (which is not allowed)
+#'
+#' @param spatial_data stars spatial data provided
+#'
+#' @return TRUE when spatial data is a raster, FALSE when is a vector data cube
+#'
+#' @noRd
 .is_raster <- function(spatial_data) {
   spatial_dimension <-
     purrr::map_lgl(sf::st_coordinates(spatial_data), inherits, what = 'sfc') |>
@@ -890,6 +1132,20 @@ assertthat::on_failure(.is_raster) <- function(call, env) {
   )
 }
 
+#' Assertions to check if the object provided is an interpolator
+#'
+#' Assertions to check if the object provided is an interpolator
+#'
+#' This function checks all the mandatory characteristics of an interpolator
+#' object (dimensions, parameters, variables).
+#'
+#' @param interpolator meteoland interpolator object, as created by
+#'   \code{\link{create_meteoland_interpolator}}
+#'
+#' @return invisible TRUE if the object is a meteoland complying interpolator,
+#'   an informative error otherwise
+#'
+#' @noRd
 .is_interpolator <- function(interpolator) {
   has_params <- !is.null(attr(interpolator, "params"))
   has_correct_dimensions <-
@@ -907,6 +1163,23 @@ assertthat::on_failure(.is_raster) <- function(call, env) {
   assertthat::assert_that(has_topo_names(interpolator))
 }
 
+#' Binding interpolation results to spatial data provided
+#'
+#' Binding interpolation results to spatial data provided
+#'
+#' This function takes the results list of the interpolation and join it with
+#' the provided spatial data (raster or sf)
+#'
+#' @param res_list results list as generated by \code{\link{.interpolation_point}}
+#' @param spatial_data spatial data provided
+#'
+#' @return an object with the same class and structure as the provided spatial
+#'   data with the results of the interpolation joined. In the case of spatial
+#'   data being an sf, the results are added as a list-type column that can be
+#'   unnested with \code{\link[tidyr]{unnest}}. In the case of a stars raster
+#'   object, interpolation results are added as attributes (variables)
+#'
+#' @noRd
 .binding_interpolation_results <- function(res_list, spatial_data) {
   # debug
   # browser()
@@ -987,6 +1260,42 @@ assertthat::on_failure(.is_raster) <- function(call, env) {
 
 }
 
+#' Interpolation process for spatial data
+#'
+#' Interpolate spatial data to obtain downscaled meteorologic variables
+#'
+#' This function takes a spatial data object (sf or stars raster), an interpolator
+#' object (\code{\link{create_meteoland_interpolator}}) and a vector of dates to
+#' perform the interpolation of the meteorologic variables for the spatial
+#' locations present in the \code{spatial_data} object.
+#'
+#' @section Spatial data:
+#'   The spatial data provided must be of two types. (I) A sf object containing
+#'   POINT for each location to interpolate or (II) a stars raster object for
+#'   which the interpolation should be done.
+#'   Independently of the class of \code{spatial_data} it has to have some
+#'   mandatory variables, namely \code{elevation}. It should also contain
+#'   \code{aspect} and \code{slope} for a better interpolation process, though
+#'   this two variables are not mandatory.
+#'
+#' @section Curvilinear rasters:
+#'   Rasters with curvilinear projections are not supported. Rasters provided
+#'   must have a planar coordinate system.
+#'
+#' @param spatial_data An sf or stars raster object to interpolate
+#' @param interpolator A meteoland interpolator object, as created by
+#'   \code{\link{create_meteoland_interpolator}}
+#' @param dates vector with dates to interpolate (must be within the
+#'   interpolator date range). Default to NULL (all dates present in the
+#'   interpolator object)
+#'
+#' @return an object with the same class and structure as the provided spatial
+#'   data with the results of the interpolation joined. In the case of spatial
+#'   data being an sf, the results are added as a list-type column that can be
+#'   unnested with \code{\link[tidyr]{unnest}}. In the case of a stars raster
+#'   object, interpolation results are added as attributes (variables)
+#'
+#' @export
 interpolate_data <- function(spatial_data, interpolator, dates = NULL) {
   # debug
   # browser()
@@ -1034,329 +1343,628 @@ interpolate_data <- function(spatial_data, interpolator, dates = NULL) {
   return(res)
 }
 
+#' Calibration and validation of interpolation procedures
+#'
+#' Calibration and validation of interpolation procedures
+#'
+#' Function \code{interpolator_calibration} determines optimal interpolation
+#' parameters \code{"N"} and \code{"alpha"} for a given meteorological variable.
+#' Optimization is done by minimizing mean absolute error ("MAE")
+#' (Thornton \emph{et al.} 1997). Function \code{interpolation_cross_validation}
+#' calculates average mean absolute errors ("MAE") for the prediction period of
+#' the interpolator object.
+#' In both calibration and cross validation procdeures, predictions for each
+#' meteorological station are made using a \emph{leave-one-out} procedure
+#' (i.e. after exluding the station form the predictive set).
+#'
+#' @param interpolator A meteoland interpolator object, as created by
+#'   \code{\link{create_meteoland_interpolator}}
+#'
+#' @param stations A vector with the station indexes (numeric) to be used to
+#'   calculate \code{"MAE"}. All stations with data are included in the training
+#'   set but predictive \code{"MAE"} are calculated for the stations subset
+#'   indicated in \code{stations} param only.
+#'
+#' @param variable A string indicating the meteorological variable for which
+#'   interpolation parameters \code{"N"} and \code{"alpha"} will be calibrated.
+#'   Accepted values are \code{MinTemperature}, \code{MaxTemperature},
+#'   \code{DewTemperature}, \code{Precipitation} (for precipitation with the
+#'   same values for precipitation events an regression of precipitation amounts),
+#'   \code{PrecipitationAmount} (for regression of precipitation amounts) and
+#'   \code{PrecipitationEvent} (for precipitation events).
+#'
+#' @param N_seq Numeric vector with \code{"N"} values to be tested
+#' @param alpha_seq Numeric vector with \code{"alpha"}
+#'
+#' @return \code{interpolator_calibration} returns a list with the following items
+#' \itemize{
+#'   \item{MAE: A numeric matrix with the mean absolute error values, averaged
+#'   across stations, for each combination of parameters \code{"N"} and \code{"alpha"}}
+#'   \item{minMAE: Minimum MAE value}
+#'   \item{N: Value of parameter \code{"N"} corresponding to the minimum MAE}
+#'   \item{alpha: Value of parameter \code{"alpha"} corresponding the the
+#'   minimum MAE}
+#'   \item{observed: matrix with observed values (meteorological measured values)}
+#'   \item{predicted: matrix with interpolated values for the optimum parameter
+#'   combination}
+#' }
+#'
+#' @export
+interpolator_calibration <- function(
+    interpolator, stations = NULL,
+    variable = c(
+      "MinTemperature", "MaxTemperature", "DewTemperature",
+      "Precipitation", "PrecipitationAmount", "PrecipitationEvent"
+    ) ,
+    N_seq = seq(5, 30, by = 5),
+    alpha_seq = seq(0.25, 10, by = 0.25)
+) {
 
+  ### assertions
+  # interpolator
+  assertthat::assert_that(.is_interpolator(interpolator))
+  # stations
+  assertthat::assert_that(
+    is.null(stations) || is.numeric(stations),
+    msg = "stations must be NULL or a numeric vector with the stations indexes"
+  )
+  # variables
+  assertthat::assert_that(
+    is.character(variable), msg = "variable argument must be a character"
+  )
+  variable <- match.arg(variable)
+  # seqs
+  assertthat::assert_that(
+    is.numeric(N_seq),
+    msg = "N_seq must be a numeric vector"
+  )
+  assertthat::assert_that(
+    is.numeric(alpha_seq),
+    msg = "N_seq must be a numeric vector"
+  )
 
+  # get selected stations
+  stations_sfc <- stars::st_get_dimension_values(interpolator, "station")
+  stations_coords <- sf::st_coordinates(stations_sfc)
+  stations_elevation <- interpolator[["elevation"]][1,]
+  stations_length <- length(stations_sfc)
+  if (is.null(stations)) {
+    stations <- 1:stations_length
+  }
+  selected_stations <- rep(FALSE, stations_length)
+  selected_stations[stations] <- TRUE
 
-# library(meteospain)
-# library(sf)
-#### get meteo
-# service_options <- aemet_options(
-#   'daily', as.Date("2022-04-01"), as.Date("2022-04-30"),
-#   api_key = keyring::key_get('aemet')
-# )
-#
-# meteo_test <- get_meteo_from('aemet', service_options)
-# # stations_info_test <- get_stations_info_from('aemet', service_options)
-#
-# meteo_test
-#
-# meteo_test |>
-#   meteoland:::has_meteo()
-#
-# foo <- meteo_test |>
-#   dplyr::rename(
-#     elevation = altitude,
-#     MinTemperature = min_temperature,
-#     MaxTemperature = max_temperature,
-#     stationID = station_id
-#   )
-#
-# foo |>
-#   meteoland:::has_meteo()
-#
-# bar <- foo |>
-#   dplyr::rename(
-#     dates = timestamp
-#   )
-#
-# baz <- bar |>
-#   dplyr::mutate(
-#     dates = as.character(dates)
-#   )
-#
-# xyz <- bar |>
-#   dplyr::mutate(
-#     MinTemperature = as.character(MinTemperature)
-#   )
-#
-# xyzz <- bar |>
-#   dplyr::mutate(elevation = as.character(elevation))
-#
-# fooz <- bar |>
-#   dplyr::select(-stationID)
-#
-# meteoland:::with_meteo(meteo_test) # error meteo vars
-# meteoland:::with_meteo(foo) # error no dates
-# meteoland:::with_meteo(fooz) # error no stationID
-# meteoland:::with_meteo(baz) # error bad dates
-# meteoland:::with_meteo(xyz) # error bad meteo vars
-# meteoland:::with_meteo(xyzz) # No error with bad topo, because we dont check topo
-# meteoland:::with_meteo(bar) # no error, everything ok
-#
-#
-# ## add topo tests ##
-#
-#
-# meteo_ok <- bar |>
-#   dplyr::select(-elevation)
-#
-# topo_tibble_ok <- bar |>
-#   dplyr::as_tibble() |>
-#   dplyr::select(
-#     stationID, elevation
-#   ) |>
-#   dplyr::mutate(aspect = NA_integer_, slope = NA_integer_) |>
-#   dplyr::distinct()
-#
-# topo_sf_ok <- bar |>
-#   dplyr::select(
-#     stationID, elevation
-#   ) |>
-#   dplyr::distinct() |>
-#   dplyr::mutate(aspect = NA_integer_, slope = NA_integer_)
-#
-# topo_no_stations <- topo_tibble_ok |>
-#   dplyr::select(-stationID)
-#
-# topo_bad_elevation <- topo_tibble_ok |>
-#   dplyr::mutate(elevation = as.character(elevation))
-#
-# meteoland:::with_meteo(meteo_ok) |>
-#   meteoland:::add_topo(topo_no_stations) # error because no stationID
-#
-# meteoland:::with_meteo(meteo_ok) |>
-#   meteoland:::add_topo(topo_bad_elevation) # error beacuse elevation is not numeric
-#
-# meteoland:::with_meteo(meteo_ok) |>
-#   meteoland:::add_topo(as.matrix(topo_bad_elevation)) # error because topo is not a tibble
-#
-# meteoland:::with_meteo(meteo_ok) |>
-#   meteoland:::add_topo(topo_tibble_ok) # ok
-#
-# meteoland:::with_meteo(meteo_ok) |>
-#   meteoland:::add_topo(topo_sf_ok) # ok for topos with sf, but geometries get replicated
-#
-# ## interpolator creation ##
-# interpolator <-
-#   meteoland:::with_meteo(meteo_ok) |>
-#   meteoland:::add_topo(topo_tibble_ok) |>
-#   meteoland:::create_meteo_interpolator()
-#
-# attr(interpolator, 'params')
-#
-#
-# # interpolator |>
-# #   dplyr::filter(date > as.Date("2022-04-25"))
-# #
-# # interpolator |>
-# #   dplyr::filter(date > as.Date("2022-04-25")) |>
-# #   magrittr::extract("MinTemperature", 1, 1)
-# #
-# # interpolator[["MinTemperature"]][interpolator[["stationID"]] == "1059X"]
-#
-#
-# sf_test <- topo_sf_ok |> dplyr::distinct()
-# # tictoc::tic()
-# # meteoland:::.interpolation_point(interpolator, sf_test)
-# # tictoc::toc()
-# #
-# # tictoc::tic()
-# # interpolated_points_high_points_high_dates <- meteoland:::.interpolation_point(interpolator, sf_test)
-# # tictoc::toc()
-# #
-# # tictoc::tic()
-# # interpolated_points_purrr_high_points_high_dates <-
-# #   purrr::map(1:nrow(sf_test), ~meteoland:::.interpolation_point(interpolator, sf_test[.x,]))
-# # tictoc::toc()
-# #
-# # tictoc::tic()
-# # interpolated_points_low_points_high_dates <- meteoland:::.interpolation_point(interpolator, sf_test[1:5,])
-# # tictoc::toc()
-# #
-# # tictoc::tic()
-# # interpolated_points_purrr_low_points_high_dates <-
-# #   purrr::map(1:nrow(sf_test[1:5,]), ~meteoland:::.interpolation_point(interpolator, sf_test[1:5,][.x,]))
-# # tictoc::toc()
-# #
-# dates_test <- stars::st_get_dimension_values(interpolator, 'date')[1:5]
-# #
-# # tictoc::tic()
-# # interpolated_points_high_points_low_dates <- meteoland:::.interpolation_point(interpolator, sf_test, dates = dates_test)
-# # tictoc::toc()
-# #
-# # tictoc::tic()
-# # interpolated_points_purrr_high_points_low_dates <-
-# #   purrr::map(1:nrow(sf_test), ~meteoland:::.interpolation_point(interpolator, sf_test[.x,], dates = dates_test))
-# # tictoc::toc()
-# #
-# # tictoc::tic()
-# # interpolated_points_low_points_low_dates <- meteoland:::.interpolation_point(interpolator, sf_test[1:5,], dates = dates_test)
-# # tictoc::toc()
-# #
-# # tictoc::tic()
-# # interpolated_points_purrr_low_points_low_dates <-
-# #   purrr::map(1:nrow(sf_test[1:5,]), ~meteoland:::.interpolation_point(interpolator, sf_test[1:5,][.x,], dates = dates_test))
-# # tictoc::toc()
-#
-#
-# # bench::mark(
-# #   # meteoland:::.interpolation_point(interpolator, sf_test),
-# #   # purrr::map(1:nrow(sf_test), ~meteoland:::.interpolation_point(interpolator, sf_test[.x,])),
-# #   meteoland:::.interpolation_point(interpolator, sf_test[1:5,]),
-# #   purrr::map(1:nrow(sf_test[1:5,]), ~meteoland:::.interpolation_point(interpolator, sf_test[1:5,][.x,])),
-# #   meteoland:::.interpolation_point(interpolator, sf_test, dates = dates_test),
-# #   purrr::map(1:nrow(sf_test), ~meteoland:::.interpolation_point(interpolator, sf_test[.x,], dates = dates_test)),
-# #   meteoland:::.interpolation_point(interpolator, sf_test[1:5,], dates = dates_test),
-# #   purrr::map(1:nrow(sf_test[1:5,]), ~meteoland:::.interpolation_point(interpolator, sf_test[1:5,][.x,], dates = dates_test)),
-# #   iterations = 10,
-# #   check = FALSE
-# # )
-# # foo <- bench::mark(
-# #   meteoland:::.interpolation_point_recursive(interpolator, sf_test),
-# #   meteoland:::.interpolation_point_purrr(interpolator, sf_test),
-# #   meteoland:::.interpolation_point_recursive(interpolator, sf_test[1:5,]),
-# #   meteoland:::.interpolation_point_purrr(interpolator, sf_test[1:5,]),
-# #   meteoland:::.interpolation_point_recursive(interpolator, sf_test, dates = dates_test),
-# #   meteoland:::.interpolation_point_purrr(interpolator, sf_test, dates = dates_test),
-# #   meteoland:::.interpolation_point_recursive(interpolator, sf_test[1:5,], dates = dates_test),
-# #   meteoland:::.interpolation_point_purrr(interpolator, sf_test[1:5,], dates = dates_test),
-# #   iterations = 10,
-# #   check = FALSE
-# # )
-# # foo$time
-# #
-# # recursive_profmem <- profmem::profmem({meteoland:::.interpolation_point_recursive(interpolator, sf_test[1:5,], dates = dates_test)})
-# # purrr_profmem <- profmem::profmem({meteoland:::.interpolation_point_purrr(interpolator, sf_test[1:5,], dates = dates_test)})
-# #
-# # pryr::mem_change({meteoland:::.interpolation_point_recursive(interpolator, sf_test[1:5,], dates = dates_test)})
-# # pryr::mem_change({meteoland:::.interpolation_point_purrr(interpolator, sf_test[1:5,], dates = dates_test)})
-# #
-# pryr::mem_change({recursive_res <- meteoland:::.interpolation_point_recursive(interpolator, sf_test)})
-# pryr::mem_change({purrr_res <- meteoland:::.interpolation_point_purrr(interpolator, sf_test)})
+  # get parameters
+  interpolator_params <- attr(interpolator, 'params')
 
-# library(meteoland)
-# library(meteospain)
-# library(sf)
-# #### get meteo
-# service_options <- aemet_options(
-#   'daily', as.Date("2022-04-01"), as.Date("2022-04-30"),
-#   api_key = keyring::key_get('aemet')
-# )
-#
-# meteo_ok <- get_meteo_from('aemet', service_options) |>
-#   dplyr::rename(
-#     dates = timestamp, elevation = altitude, stationID = station_id,
-#     MinTemperature = min_temperature, MaxTemperature = max_temperature,
-#     Precipitation = precipitation, WindSpeed = mean_wind_speed
-#   )
-#
-# topo_sf_ok <- meteo_ok |>
-#   dplyr::select(
-#     stationID, elevation
-#   ) |>
-#   dplyr::distinct() |>
-#   dplyr::mutate(aspect = NA_real_, slope = NA_real_)
-#
-# meteo_ok <- dplyr::select(meteo_ok, -elevation)
-#
-# interpolator <- meteoland:::with_meteo(meteo_ok) |>
-#   meteoland:::add_topo(topo_sf_ok) |>
-#   meteoland:::create_meteo_interpolator() |>
-#   meteoland:::.write_interpolator(filename = 'interpolator_test.nc', .overwrite = TRUE)
-#
-# stars_interpolator <- meteoland:::.read_interpolator(filename = 'interpolator_test.nc')
-#
-# all.equal(interpolator, stars_interpolator)
-# identical(interpolator, stars_interpolator)
-# identical(interpolator$aspect, stars_interpolator$aspect)
-# class(interpolator$aspect[,1])
-# class(stars_interpolator$aspect[,1])
-#
-# points_test <- dplyr::sample_n(meteo_ok, 5) |>
-#   meteoland:::with_meteo() |>
-#   meteoland:::add_topo(topo_sf_ok)
-#
-# meteoland:::.interpolation_point(points_test, stars_interpolator)
-#
-# points_whole <- meteo_ok |>
-#   dplyr::arrange(dates, stationID) |>
-#   dplyr::slice(1:240) |>
-#   dplyr::distinct() |>
-#   meteoland:::with_meteo() |>
-#   meteoland:::add_topo(topo_sf_ok)
-# #
-# points_test <- dplyr::sample_n(points_whole, 15)
-# #
-# selected_dates <- stars::st_get_dimension_values(interpolator, "date")[5:10]
-# #
-# long_benchmark <- bench::mark(
-#   # long
-#   meteoland:::.interpolation_point_recursive(interpolator, points_whole),
-#   meteoland:::.interpolation_point(interpolator, points_whole),
-#   iterations = 3,
-#   check = FALSE
-# )
-# long_benchmark$time
-# middle_benchmark <- bench::mark(
-#   # middle
-#   meteoland:::.interpolation_point_recursive(interpolator, points_test),
-#   meteoland:::.interpolation_point(interpolator, points_test),
-#   iterations = 10,
-#   check = FALSE
-# )
-# middle_benchmark$time
-# middle_2_benchmark <- bench::mark(
-#   # middle_2
-#   meteoland:::.interpolation_point_recursive(interpolator, points_whole, dates = selected_dates),
-#   meteoland:::.interpolation_point(interpolator, points_whole, dates = selected_dates),
-#   iterations = 3,
-#   check = FALSE
-# )
-# middle_2_benchmark$time
-# short_benchmark <- bench::mark(
-#   # short
-#   meteoland:::.interpolation_point_recursive(interpolator, points_test, dates = selected_dates),
-#   meteoland:::.interpolation_point(interpolator, points_test, dates = selected_dates),
-#   iterations = 3,
-#   check = FALSE
-# )
-# short_benchmark$time
-#
-# recursive_res <- meteoland:::.interpolation_point_recursive(interpolator, points_test)
-# c_vec_res <- meteoland:::.interpolation_point(interpolator, points_test)
-#
-# equality <- character()
-# for (i in 1:length(recursive_res)) {
-#   equality <- c(equality,all.equal(recursive_res[[i]], c_vec_res[[i]]))
-# }
-# equality
-# all.equal(recursive_res, c_vec_res)
+  # MAE matrix
+  mae_matrix <- matrix(
+    0, nrow = length(N_seq), ncol = length(alpha_seq),
+    dimnames = list(N_seq = as.character(N_seq), alpha_seq = as.character(alpha_seq))
+  )
 
-# library(meteoland)
-# interpolator <- meteoland:::.read_interpolator('interpolator_test.nc')
-# stars_test <- stars::read_ncdf('stars_test.nc') |>
-#   purrr::set_names('elevation')
-# # rast_test <- raster::raster('stars_test.nc') |>
-# #   raster::projectRaster(crs = sf::st_crs(stars_test))
-# # names(rast_test) <- "elevation"
-#
-#
-# sf_test <- sf::st_as_sf(stars_test, as_points = TRUE)
-# dates_test <- stars::st_get_dimension_values(interpolator, "date")[5:9]
-# meteoland:::interpolate_data(stars_test, interpolator, dates = dates_test)
-#
-# rast_benchmark <- bench::mark(
-#   res_rast_big <- meteoland:::interpolate_data(stars_test, interpolator),
-#   res_sf_big <- meteoland:::interpolate_data(sf_test, interpolator),
-#   iterations = 10,
-#   check = FALSE
-# )
-# rast_benchmark_short <- bench::mark(
-#   res_rast_short <- meteoland:::interpolate_data(stars_test, interpolator, dates = dates_test),
-#   res_sf_short <- meteoland:::interpolate_data(sf_test, interpolator, dates = dates_test),
-#   iterations = 10,
-#   check = FALSE
-# )
-# rast_benchmark$time
-# rast_benchmark_short$time
+  # variable data
+  variable_matrix <- switch(
+    variable,
+    "PrecipitationAmount" = t(interpolator[["Precipitation"]]),
+    "PrecipitationEvent" = t(interpolator[["Precipitation"]] > 0),
+    "DewTemperature" = t(.dewpointTemperatureFromRH(
+      0.606 * interpolator[["MaxTemperature"]] +
+        0.394 * interpolator[["MinTemperature"]],
+      interpolator[["RelativeHumidity"]]
+    )),
+    t(interpolator[[variable]])
+  )
+  smoothed_matrix <- t(interpolator[["SmoothedPrecipitation"]])
+
+  usethis::ui_info("Total number of stations: {nrow(variable_matrix)}")
+
+  stations_no_data <- rowSums(is.na(variable_matrix)) == ncol(variable_matrix)
+  variable_matrix <- variable_matrix[!stations_no_data,]
+  stations_coords <- stations_coords[!stations_no_data,]
+  stations_elevation <- stations_elevation[!stations_no_data]
+  selected_stations <- selected_stations[!stations_no_data]
+  stations <- which(selected_stations)
+
+  usethis::ui_info("Number of stations with available data: {nrow(variable_matrix)}")
+
+  # MAE assesment
+  selected_variable_matrix <- variable_matrix[stations,]
+  selected_stations_coords <- stations_coords[stations,]
+  selected_stations_elevation <- stations_elevation[stations]
+
+  usethis::ui_info("Number of stations used for MAE calculation: {length(stations)}")
+
+  usethis::ui_info(
+    "Number of parameters combinations to test: {ncol(mae_matrix)*nrow(mae_matrix)}"
+  )
+
+  min_mae <- 9999999.0
+  min_i <- NA
+  min_j <- NA
+
+  usethis::ui_info(
+    "Starting evaluation of parameter combinations for {variable}..."
+  )
+
+  # super complicated triple loop. This could be improved but I don't know how??
+  for (i in N_seq) {
+    for (j in alpha_seq) {
+      # create the results matrix
+      predicted_variable_matrix <-
+        matrix(0, nrow(selected_variable_matrix), ncol(selected_variable_matrix))
+
+      usethis::ui_todo("Evaluating N: {i}, alpha: {j}...")
+
+      # and now loop for stations
+      for (station in stations) {
+        predicted_variable_matrix[station, ] <- switch(
+          variable,
+          "DewTemperature" = .interpolateTdewSeriesPoints(
+            Xp = selected_stations_coords[station, 1],
+            Yp = selected_stations_coords[station, 2],
+            Zp = selected_stations_elevation[station],
+            X = stations_coords[-station, 1],
+            Y = stations_coords[-station, 2],
+            Z = stations_elevation[-station],
+            T = variable_matrix[-station, ],
+            iniRp = interpolator_params$initial_Rp,
+            alpha = j, N = i,
+            iterations = interpolator_params$iterations
+          ),
+          "Precipitation" = .interpolatePrecipitationSeriesPoints(
+            Xp = selected_stations_coords[station, 1],
+            Yp = selected_stations_coords[station, 2],
+            Zp = selected_stations_elevation[station],
+            X = stations_coords[-station, 1],
+            Y = stations_coords[-station, 2],
+            Z = stations_elevation[-station],
+            P = variable_matrix[-station, ],
+            Psmooth = smoothed_matrix[-station, ],
+            iniRp = interpolator_params$initial_Rp,
+            alpha_event = j, alpha_amount = j,
+            N_event = i, N_amount = i,
+            iterations = interpolator_params$iterations,
+            popcrit = interpolator_params$pop_crit,
+            fmax = interpolator_params$f_max
+          ),
+          "PrecipitationAmount" = .interpolatePrecipitationSeriesPoints(
+            Xp = selected_stations_coords[station, 1],
+            Yp = selected_stations_coords[station, 2],
+            Zp = selected_stations_elevation[station],
+            X = stations_coords[-station, 1],
+            Y = stations_coords[-station, 2],
+            Z = stations_elevation[-station],
+            P = variable_matrix[-station, ],
+            Psmooth = smoothed_matrix[-station, ],
+            iniRp = interpolator_params$initial_Rp,
+            alpha_event = interpolator_params$alpha_PrecipitationEvent,
+            alpha_amount = j,
+            N_event = interpolator_params$N_PrecipitationEvent,
+            N_amount = i,
+            iterations = interpolator_params$iterations,
+            popcrit = interpolator_params$pop_crit,
+            fmax = interpolator_params$f_max
+          ),
+          "PrecipitationEvent" = .interpolatePrecipitationEventSeriesPoints(
+            Xp = selected_stations_coords[station, 1],
+            Yp = selected_stations_coords[station, 2],
+            Zp = selected_stations_elevation[station],
+            X = stations_coords[-station, 1],
+            Y = stations_coords[-station, 2],
+            Z = stations_elevation[-station],
+            Pevent = variable_matrix[-station, ],
+            iniRp = interpolator_params$initial_Rp,
+            alpha = j,
+            N = i,
+            iterations = interpolator_params$iterations,
+            popcrit = interpolator_params$pop_crit
+          ),
+          .interpolateTemperatureSeriesPoints(
+            Xp = selected_stations_coords[station, 1],
+            Yp = selected_stations_coords[station, 2],
+            Zp = selected_stations_elevation[station],
+            X = stations_coords[-station, 1],
+            Y = stations_coords[-station, 2],
+            Z = stations_elevation[-station],
+            T = variable_matrix[-station, ],
+            iniRp = interpolator_params$initial_Rp,
+            alpha = j, N = i,
+            iterations = interpolator_params$iterations
+          )
+        )
+      }
+
+      # Now we have the predicted matrix for each estation for a given combination
+      # of N and alpha. Now is time to calculate MAE
+      if (variable %in% c("MinTemperature", "MaxTemperature", "DewTemperature")) {
+        mae_matrix[as.character(i), as.character(j)] <-
+          mean(abs(predicted_variable_matrix - selected_variable_matrix), na.rm = TRUE)
+      } else {
+        denominator_1 <- 0
+        denominator_2 <- 0
+        numerator_1 <- 0
+        numerator_2 <- 0
+        for (col in 1:ncol(selected_variable_matrix)) {
+          observed_prec <- selected_variable_matrix[, col]
+          predicted_prec <- predicted_variable_matrix[!is.na(observed_prec), col]
+          weight <- sum(!is.na(observed_prec))
+          sum_observed <- sum(observed_prec, na.rm = TRUE)
+          sum_predicted <- sum(predicted_prec, na.rm = TRUE)
+          if (weight > 0) {
+            numerator_1 = numerator_1 + abs(sum_predicted/weight - sum_observed/weight)
+            denominator_1 = denominator_1 + 1
+          }
+        }
+        for (row in 1:nrow(selected_variable_matrix)) {
+          observed_prec <- selected_variable_matrix[row, ]
+          predicted_prec <- predicted_variable_matrix[row, !is.na(observed_prec)]
+          weight <- sum(!is.na(observed_prec))
+          sum_observed <- sum(observed_prec, na.rm = TRUE)
+          sum_predicted <- sum(predicted_prec, na.rm = TRUE)
+          if (weight > 0) {
+            numerator_2 = numerator_2 + abs(sum_predicted/weight - sum_observed/weight)
+            denominator_2 = denominator_2 + 1
+          }
+        }
+
+        mae_matrix[as.character(i), as.character(j)] <-
+          sqrt((numerator_1/denominator_1) * (numerator_2/denominator_2))
+      }
+
+      if (mae_matrix[as.character(i), as.character(j)] < min_mae) {
+        min_mae <- mae_matrix[as.character(i), as.character(j)]
+        min_i <- i
+        min_j <- j
+        optimal_observed <- selected_variable_matrix
+        optimal_predicted <- predicted_variable_matrix
+      }
+    }
+  }
+
+  usethis::ui_done(
+    "Minimum MAE: {min_mae}; N: {min_i}; alpha: {min_j}"
+  )
+
+  res <- list(
+    MAE = mae_matrix, minMAE = min_mae,
+    N = min_i, alpha = min_j,
+    observed = optimal_observed,
+    predicted = optimal_predicted
+  )
+
+  return(res)
+}
+
+#' Safely removing a station from the interpolator object
+#'
+#' Safely remove a station from the interpolator object for cross validation
+#' processes
+#'
+#' This function removes the desired stations from the interpolator while
+#' maintaining interpolation parameters attribute
+#'
+#' @param interpolator meteoland interpolator object
+#' @param station_index numeric index for the station to remove
+#'
+#' @return An interpolator object without the station provided
+#'
+#' @noRd
+.remove_station_from_interpolator <- function(interpolator, station_index) {
+  res <- interpolator[, , -station_index]
+  attr(res, "params") <- attr(interpolator, "params")
+  return(res)
+}
+
+#' Cross validation process for a single station
+#'
+#' Cross validation process for a singel station
+#'
+#' This function performs the cross validation process for a single stations,
+#' removing the station from the interpolator and using the spatial station
+#' info to simulate a spatial data object
+#'
+#' @param station_index Numeric value with the station index
+#' @param interpolator meteoland interpolator object
+#'
+#' @return A list with the interpolation results for the desired station
+#'
+#' @noRd
+.station_cross_validation <- function(station_index, interpolator) {
+
+  # get the point sf with topology info
+  station_sf <- dplyr::tibble(
+    elevation = interpolator[["elevation"]][1, station_index],
+    aspect = interpolator[["aspect"]][1, station_index],
+    slope = interpolator[["slope"]][1, station_index],
+    geometry = stars::st_get_dimension_values(interpolator, 'station')[station_index]
+  ) |>
+    sf::st_as_sf()
+
+  # remove the station from the interpolator
+  interpolator_station_removed <-
+    .remove_station_from_interpolator(interpolator, station_index)
+
+  # return the interpolation
+  suppressMessages(suppressWarnings(
+    .interpolation_point(station_sf, interpolator_station_removed)
+  ))[[1]] |>
+    dplyr::mutate(
+      RangeTemperature = MaxTemperature - MinTemperature,
+      station = station_index
+    ) |>
+    dplyr::rename(RelativeHumidity = MeanRelativeHumidity)
+}
+
+#' Transform interpolator values to df
+#'
+#' Transform interpolator values to a data frame
+#'
+#' This function transform the observed meteorological values in the interpolator
+#' object to a data frame for the cross validation process
+#'
+#' @param interpolator meteoland interpolator object
+#'
+#' @return A data frame with the station index, dates and meteorological observed
+#'   values
+#'
+#' @noRd
+.interpolator2tibble <- function(interpolator) {
+  purrr::map_dfr(
+    1:length(stars::st_get_dimension_values(interpolator, 'station')),
+    function(station_index) {
+      res <-
+        dplyr::tibble(dates = stars::st_get_dimension_values(interpolator, 'date'))
+      for (variable in names(interpolator)) {
+        res[[variable]] <- interpolator[[variable]][,station_index]
+      }
+      res |>
+        dplyr::mutate(
+          RangeTemperature = MaxTemperature - MinTemperature,
+          station = station_index
+        )
+    }
+  )
+}
+
+#' Helper to convert predicted values to NA
+#'
+#' Helper to convert predicted values to NA
+#'
+#' This function convert predicted values to NA where no observed values are
+#' recorded, to allow for correct cross validation calculations
+#'
+#' @param predicted_df data frame with the predicted (interpolated) values
+#' @param observed_df data frame with the observed values
+#'
+#' @return \code{predicted_df} data frame with NAs where the \code{observed_df}
+#'   has NAs
+#'
+#' @noRd
+.set_predicted_nas <- function(predicted_df, observed_df) {
+
+  predicted_df$MinTemperature[is.na(observed_df$MinTemperature)] <- NA
+  predicted_df$MaxTemperature[is.na(observed_df$MaxTemperature)] <- NA
+  predicted_df$RangeTemperature[is.na(observed_df$RangeTemperature)] <- NA
+  predicted_df$Precipitation[is.na(observed_df$Precipitation)] <- NA
+  predicted_df$Radiation[is.na(observed_df$Radiation)] <- NA
+  predicted_df$RelativeHumidity[is.na(observed_df$RelativeHumidity)] <- NA
+
+  return(predicted_df)
+
+}
+
+#' Correlation between observed and predicted values
+#'
+#' Correlation between observed and predicted values
+#'
+#' This function return the correlation values for the provided meteorolgical
+#' variable
+#'
+#' @param variable character with the variable name
+#' @param predicted_df data frame with predicted values
+#' @param observed_df data frame with observed values
+#'
+#' @return correlation value (numeric)
+#'
+#' @noRd
+.cv_correlation <- function(variable, predicted_df, observed_df) {
+
+  res <- NA
+
+  if (sum(
+    complete.cases(cbind(predicted_df[[variable]], observed_df[[variable]]))
+  ) > 0) {
+    res <-
+      cor(predicted_df[[variable]], observed_df[[variable]], use = "complete.obs")
+  }
+
+  return(res)
+}
+
+#' Cross validation results processing
+#'
+#' Cross validation results processing
+#'
+#' This function creates the results elements for the cross validation returned
+#' list
+#'
+#' @param predicted_df data frame with predicted values
+#' @param observed_df data frame with observed values
+#'
+#' @return A list with the cross validation results (total errors, stations
+#' stats, dates stats)
+#'
+#' @noRd
+.cv_processing <- function(predicted_df, observed_df) {
+
+  # calculate errors
+  total_errors <- dplyr::tibble(
+    dates = predicted_df[["dates"]],
+    station = predicted_df[["station"]],
+    MinTemperature_error =
+      predicted_df[["MinTemperature"]] - observed_df[["MinTemperature"]],
+    MaxTemperature_error =
+      predicted_df[["MaxTemperature"]] - observed_df[["MaxTemperature"]],
+    RangeTemperature_error =
+      predicted_df[["RangeTemperature"]] - observed_df[["RangeTemperature"]],
+    RelativeHumidity_error =
+      predicted_df[["RelativeHumidity"]] - observed_df[["RelativeHumidity"]],
+    Radiation_error =
+      predicted_df[["Radiation"]] - observed_df[["Radiation"]],
+    Precipiation_error =
+      predicted_df[["Precipitation"]] - observed_df[["Precipitation"]]
+  ) |>
+    dplyr::mutate(
+      MinTemperature_predicted = predicted_df[["MinTemperature"]],
+      MaxTemperature_predicted = predicted_df[["MaxTemperature"]],
+      RangeTemperature_predicted = predicted_df[["RangeTemperature"]],
+      RelativeHumidity_predicted = predicted_df[["RelativeHumidity"]],
+      Radiation_predicted = predicted_df[["Radiation"]],
+      Precipitation_predicted = predicted_df[["Precipitation"]],
+      MinTemperature_observed = observed_df[["MinTemperature"]],
+      MaxTemperature_observed = observed_df[["MaxTemperature"]],
+      RangeTemperature_observed = observed_df[["RangeTemperature"]],
+      RelativeHumidity_observed = observed_df[["RelativeHumidity"]],
+      Radiation_observed = observed_df[["Radiation"]],
+      Precipitation_observed = observed_df[["Precipitation"]]
+    )
+
+  # bias and mae for stations
+  station_stats <- total_errors |>
+    dplyr::group_by(station) |>
+    dplyr::summarise(
+      MinTemperature_station_bias = mean(MinTemperature_error, na.rm = TRUE),
+      MaxTemperature_station_bias = mean(MaxTemperature_error, na.rm = TRUE),
+      RangeTemperature_station_bias = mean(RangeTemperature_error, na.rm = TRUE),
+      RelativeHumidity_station_bias = mean(RelativeHumidity_error, na.rm = TRUE),
+      Radiation_station_bias = mean(Radiation_error, na.rm = TRUE),
+      MinTemperature_station_mae = mean(abs(MinTemperature_error), na.rm = TRUE),
+      MaxTemperature_station_mae = mean(abs(MaxTemperature_error), na.rm = TRUE),
+      RangeTemperature_station_mae = mean(abs(RangeTemperature_error), na.rm = TRUE),
+      RelativeHumidity_station_mae = mean(abs(RelativeHumidity_error), na.rm = TRUE),
+      Radiation_station_mae = mean(abs(Radiation_error), na.rm = TRUE),
+      TotalPrecipitation_station_bias =
+        sum(Precipitation_observed, na.rm = TRUE) -
+        sum(Precipitation_predicted, na.rm = TRUE),
+      TotalPrecipitation_station_relative_bias = 100*(
+        sum(Precipitation_observed, na.rm = TRUE) -
+          sum(Precipitation_predicted, na.rm = TRUE)
+      ) / sum(Precipitation_observed, na.rm = TRUE),
+      DaysPrecipitation_station_bias =
+        sum(Precipitation_observed > 0, na.rm = TRUE) -
+        sum(Precipitation_predicted > 0, na.rm = TRUE),
+      DaysPrecipitation_station_relative_bias = 100*(
+        sum(Precipitation_observed > 0, na.rm = TRUE) -
+          sum(Precipitation_predicted > 0, na.rm = TRUE)
+      ) / sum(Precipitation_observed > 0, na.rm = TRUE),
+      FreqPrecipitation_station_observed =
+        mean(Precipitation_observed > 0, na.rm = TRUE),
+      FreqPrecipitation_station_predicted =
+        mean(Precipitation_predicted > 0, na.rm = TRUE)
+    )
+
+  dates_stats <- total_errors |>
+    dplyr::group_by(dates) |>
+    dplyr::summarise(
+      MinTemperature_date_bias = mean(MinTemperature_error, na.rm = TRUE),
+      MaxTemperature_date_bias = mean(MaxTemperature_error, na.rm = TRUE),
+      RangeTemperature_date_bias = mean(RangeTemperature_error, na.rm = TRUE),
+      RelativeHumidity_date_bias = mean(RelativeHumidity_error, na.rm = TRUE),
+      Radiation_date_bias = mean(Radiation_error, na.rm = TRUE),
+      MinTemperature_date_mae = mean(abs(MinTemperature_error), na.rm = TRUE),
+      MaxTemperature_date_mae = mean(abs(MaxTemperature_error), na.rm = TRUE),
+      RangeTemperature_date_mae = mean(abs(RangeTemperature_error), na.rm = TRUE),
+      RelativeHumidity_date_mae = mean(abs(RelativeHumidity_error), na.rm = TRUE),
+      Radiation_date_mae = mean(abs(Radiation_error), na.rm = TRUE),
+      TotalPrecipitation_date_bias =
+        sum(Precipitation_observed, na.rm = TRUE) -
+        sum(Precipitation_predicted, na.rm = TRUE),
+      TotalPrecipitation_date_relative_bias = 100*(
+        sum(Precipitation_observed, na.rm = TRUE) -
+          sum(Precipitation_predicted, na.rm = TRUE)
+      ) / sum(Precipitation_observed, na.rm = TRUE),
+      DaysPrecipitation_date_bias =
+        sum(Precipitation_observed > 0, na.rm = TRUE) -
+        sum(Precipitation_predicted > 0, na.rm = TRUE),
+      DaysPrecipitation_date_relative_bias = 100*(
+        sum(Precipitation_observed > 0, na.rm = TRUE) -
+          sum(Precipitation_predicted > 0, na.rm = TRUE)
+      ) / sum(Precipitation_observed > 0, na.rm = TRUE),
+      FreqPrecipitation_date_observed =
+        mean(Precipitation_observed > 0, na.rm = TRUE),
+      FreqPrecipitation_date_predicted =
+        mean(Precipitation_predicted > 0, na.rm = TRUE)
+    )
+
+  return(list(
+    errors = total_errors,
+    station_stats = station_stats,
+    dates_stats = dates_stats
+  ))
+}
+
+#' @describeIn interpolator_calibration
+#'
+#' @return \code{interpolation_cross_validation} returns a list with the
+#' following items
+#' \itemize{
+#'   \item{total_errors: Data frame with each combination of station and date with
+#'   observed variables, predicated variables and the total error
+#'   (predicted - observed) calculated for each variable}
+#'   \item{station_stats: Data frame with error and bias statistics aggregated by
+#'   station}
+#'   \item{dates_stats: Data frame with error and bias statistics aggregated by
+#'   date}
+#'   \item{r2: correlation indexes between observed and predicted values for each
+#'   meteorological variable}
+#' }
+#'
+#' @export
+interpolation_cross_validation <- function(interpolator, stations = NULL) {
+
+  # debug
+  # browser()
+
+  # assertions
+  assertthat::assert_that(.is_interpolator(interpolator))
+  assertthat::assert_that(
+    is.null(stations) || is.numeric(stations),
+    msg = "stations must be NULL or a numeric vector with the stations indexes"
+  )
+
+  if (is.null(stations)) {
+    stations <- 1:length(stars::st_get_dimension_values(interpolator, "station"))
+  }
+
+  usethis::ui_info("Starting Cross validation process...")
+  observed_values <- .interpolator2tibble(interpolator) |>
+    dplyr::filter(station %in% stations)
+
+  usethis::ui_todo("interpolating stations...")
+  predicted_values <-
+    purrr::map_dfr(stations, .station_cross_validation, interpolator = interpolator) |>
+    # set predicted to NA when observed is NA
+    .set_predicted_nas(observed_values)
+
+  ### Processing results
+  usethis::ui_todo("calculating R squared...")
+  r2_list <- c(
+    MinTemperature = "MinTemperature", MaxTemperature = "MaxTemperature",
+    RangeTemperature = "RangeTemperature", RelativeHumidity = "RelativeHumidity",
+    Radiation = "Radiation"
+  ) |>
+    purrr::map(
+      .cv_correlation,
+      predicted_df = predicted_values, observed_df = observed_values
+    )
+  usethis::ui_todo("calculating errors, MAE and bias for interpolated variables...")
+  res <- .cv_processing(predicted_values, observed_values)
+
+  res$r2 <- r2_list
+
+  usethis::ui_done("Cross validation done.")
+  return(res)
+
+}
 

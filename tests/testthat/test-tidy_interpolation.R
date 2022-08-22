@@ -16,8 +16,8 @@ interpolation_var_names <- c(
   "Radiation", "WindSpeed", "WindDirection", "PET"
 )
 
-test_that(".meteospain2meteoland works", {
-  expect_s3_class(test_res <- .meteospain2meteoland(meteo_test), 'sf')
+test_that("meteospain2meteoland works", {
+  expect_s3_class(test_res <- meteospain2meteoland(meteo_test), 'sf')
   expect_true(
     all(c(
       "MinTemperature", "MaxTemperature", "Precipitation", "RelativeHumidity",
@@ -30,11 +30,11 @@ test_that(".meteospain2meteoland works", {
     dplyr::select(-mean_relative_humidity)
 
   expect_error(
-    .meteospain2meteoland(meteo_test_no_dates),
+    meteospain2meteoland(meteo_test_no_dates),
     "Column `timestamp` doesn't exist."
   )
   expect_s3_class(
-    test_res_norh <- .meteospain2meteoland(meteo_test_no_relative_humidity),
+    test_res_norh <- meteospain2meteoland(meteo_test_no_relative_humidity),
     "sf"
   )
   expect_true(
@@ -45,7 +45,7 @@ test_that(".meteospain2meteoland works", {
   )
 })
 
-meteo_test_correct <- .meteospain2meteoland(meteo_test)
+meteo_test_correct <- meteospain2meteoland(meteo_test)
 # test_data
 meteo_test_no_sf <- dplyr::as_tibble(meteo_test)
 meteo_test_no_dates <- meteo_test_correct |> dplyr::select(-dates)
@@ -247,21 +247,21 @@ test_that("write and read interpolators works as expected", {
   tmp_file <- paste0(tmp_dir, "/test_interpolator.nc")
 
   expect_equal(
-    .write_interpolator(interpolator_test, tmp_file),
+    write_interpolator(interpolator_test, tmp_file),
     interpolator_test
   )
   expect_equal(
     interpolator_write <-
-      .write_interpolator(interpolator_test, tmp_file, .overwrite = TRUE),
+      write_interpolator(interpolator_test, tmp_file, .overwrite = TRUE),
     interpolator_test
   )
-  expect_error(.write_interpolator(interpolator_test, tmp_file), NULL)
+  expect_error(write_interpolator(interpolator_test, tmp_file), NULL)
   expect_equal(
-    interpolator_read <- .read_interpolator(tmp_file),
+    interpolator_read <- read_interpolator(tmp_file),
     interpolator_test
   )
   expect_error(
-    .read_interpolator(system.file("nc/reduced.nc", package = "stars")),
+    read_interpolator(system.file("nc/reduced.nc", package = "stars")),
     "not a meteoland interpolator"
   )
 

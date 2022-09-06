@@ -2,6 +2,7 @@
 \name{SpatialGridMeteorology-class}
 \docType{class}
 \alias{SpatialGridMeteorology-class}
+\alias{[,SpatialGridMeteorology-method}
 \alias{[,SpatialGridMeteorology,ANY,ANY-method}
 \alias{show,SpatialGridMeteorology-method}
 

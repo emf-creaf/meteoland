@@ -2,6 +2,7 @@
 \name{SpatialPixelsMeteorology-class}
 \docType{class}
 \alias{SpatialPixelsMeteorology-class}
+\alias{[,SpatialPixelsMeteorology-method}
 \alias{[,SpatialPixelsMeteorology,ANY,ANY-method}
 \alias{show,SpatialPixelsMeteorology-method}
 

@@ -2,6 +2,7 @@
 \name{SpatialGridTopography-class}
 \docType{class}
 \alias{SpatialGridTopography-class}
+\alias{[,SpatialGridTopography-method}
 \alias{[,SpatialGridTopography,ANY,ANY-method}
 \alias{show,SpatialGridTopography-method}
 

@@ -2,6 +2,7 @@
 \name{SpatialPointsTopography-class}
 \docType{class}
 \alias{SpatialPointsTopography-class}
+\alias{[,SpatialPointsTopography-method}
 \alias{[,SpatialPointsTopography,ANY,ANY-method}
 \alias{show,SpatialPointsTopography-method}
 

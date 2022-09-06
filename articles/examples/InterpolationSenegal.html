@@ -59,12 +59,11 @@
 
       
 
-      </header><div class="row">
+      </header><script src="InterpolationSenegal_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Daily weather interpolation over Senegal</h1>
-                        <h4 data-toc-skip class="author">Miquel De
-Cáceres</h4>
+                        <h4 data-toc-skip class="author">Miquel De Cáceres</h4>
             
             <h4 data-toc-skip class="date">2022-09-06</h4>
       
@@ -75,20 +74,12 @@ Cáceres</h4>
 
     
     
-<p>In this document we show how to obtain and process the topographic
-and weather data needed by package <strong>meteoland</strong> to conduct
-weather interpolation over a given country. We’ll use Senegal as case
-study.</p>
+<p>In this document we show how to obtain and process the topographic and weather data needed by package <strong>meteoland</strong> to conduct weather interpolation over a given country. We’ll use Senegal as case study.</p>
 <div class="section level2">
 <h2 id="accessing-weather-station-data">Accessing weather station data<a class="anchor" aria-label="anchor" href="#accessing-weather-station-data"></a>
 </h2>
-<p>We start by loading package <strong>worldmet</strong>, which provides
-access to over 30.000 weather stations across the globe:</p>
-<p>In order to download weather data, we must first obtain the codes of
-the weather stations available for our study area. This can be done
-using function <code>getMeta()</code> from worldmet, which we use to
-know available weather stations for Senegal and neighbouring
-countries:</p>
+<p>We start by loading package <strong>worldmet</strong>, which provides access to over 30.000 weather stations across the globe:</p>
+<p>In order to download weather data, we must first obtain the codes of the weather stations available for our study area. This can be done using function <code>getMeta()</code> from worldmet, which we use to know available weather stations for Senegal and neighbouring countries:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">#Country codes for Senegal / Gambia/ Guinea/ Mali/ Mauritania /Guinea bissau</span></span>
 <span><span class="va">countries</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"SG"</span>, <span class="st">"GA"</span>, <span class="st">"GV"</span>, <span class="st">"ML"</span>, <span class="st">"MR"</span>, <span class="st">"PU"</span><span class="op">)</span></span>
@@ -111,14 +102,8 @@ countries:</p>
 <span><span class="co">## <span style="color: #BCBCBC;">10</span> 612720 99999 SEGOU       ML    <span style="color: #BB0000;">NA</span>    GASG     13.4  -<span style="color: #BB0000;">6.15</span>    289   1949-04-06</span></span>
 <span><span class="co">## <span style="color: #949494;"># … with 37 more rows, 2 more variables: end &lt;date&gt;, code &lt;chr&gt;, and</span></span></span>
 <span><span class="co">## <span style="color: #949494;">#   abbreviated variable names ¹​latitude, ²​longitude, ³​`elev(m)`</span></span></span></code></pre>
-<p>Let’s assume that we want to interpolate weather for year 2020. We
-can download hourly weather station data for the selected stations and
-year 2020 using function <code>importNOAA()</code>:</p>
-<p>Some stations had missing data for year 2020 and were excluded from
-the output. Using function <code><a href="../../reference/reshapeworldmet.html">reshapeworldmet()</a></code> from
-meteoland, we can reshape the hourly data of the remaining stations into
-daily data in form of an object
-<code>SpatialPointsMeteorology</code>:</p>
+<p>Let’s assume that we want to interpolate weather for year 2020. We can download hourly weather station data for the selected stations and year 2020 using function <code>importNOAA()</code>:</p>
+<p>Some stations had missing data for year 2020 and were excluded from the output. Using function <code><a href="../../reference/reshapeworldmet.html">reshapeworldmet()</a></code> from meteoland, we can reshape the hourly data of the remaining stations into daily data in form of an object <code>SpatialPointsMeteorology</code>:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">spt_sen</span><span class="op">&lt;-</span><span class="fu"><a href="../../reference/reshapeworldmet.html">reshapeworldmet</a></span><span class="op">(</span><span class="va">hourData</span>, output <span class="op">=</span> <span class="st">"SpatialPointsMeteorology"</span>, verbose<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span></span>
 <span><span class="va">spt_sen</span></span></code></pre></div>
@@ -163,35 +148,23 @@ daily data in form of an object
 <span><span class="co">## https://cran.r-project.org/web/packages/sp/vignettes/CRS_warnings.html</span></span></code></pre>
 <pre><code><span><span class="co">## Coordinate Reference System (CRS) arguments: +proj=longlat +datum=WGS84</span></span>
 <span><span class="co">## +no_defs</span></span></code></pre>
-<p>We can display the time series of one of the weather stations
-using</p>
+<p>We can display the time series of one of the weather stations using</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../../reference/meteoplot.html">meteoplot</a></span><span class="op">(</span><span class="va">spt_sen</span>, <span class="fl">5</span>, <span class="st">"MeanTemperature"</span>, ylab <span class="op">=</span><span class="st">"Mean temperature (ºC)"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="InterpolationSenegal_files/figure-html/unnamed-chunk-8-1.png" width="700"></p>
-<p>While <code>SpatialPointsMeteorology</code> is the class that
-meteoland uses for point weather series, a special object of class
-<code>MeteorologyInterpolationData</code> needs to be created for
-interpolation, containing not only station weather but also station
-elevation and interpolation parameters. This can be obtained using the
-same function <code><a href="../../reference/reshapeworldmet.html">reshapeworldmet()</a></code>:</p>
+<p>While <code>SpatialPointsMeteorology</code> is the class that meteoland uses for point weather series, a special object of class <code>MeteorologyInterpolationData</code> needs to be created for interpolation, containing not only station weather but also station elevation and interpolation parameters. This can be obtained using the same function <code><a href="../../reference/reshapeworldmet.html">reshapeworldmet()</a></code>:</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">spt_mid</span><span class="op">&lt;-</span><span class="fu"><a href="../../reference/reshapeworldmet.html">reshapeworldmet</a></span><span class="op">(</span><span class="va">hourData</span>, output <span class="op">=</span> <span class="st">"MeteorologyInterpolationData"</span>, </span>
 <span>                         proj4string <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/sp/man/CRS-class.html" class="external-link">CRS</a></span><span class="op">(</span>SRS_string <span class="op">=</span><span class="st">"EPSG:32628"</span><span class="op">)</span>,</span>
 <span>                         verbose<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
-<p>Note that we specified a coordinate reference system (CRS) to UTM28N
-(via EPSG initialization). This is because interpolation should be
-preferably conducted on a projected with easting and northing in
-meters.</p>
+<p>Note that we specified a coordinate reference system (CRS) to UTM28N (via EPSG initialization). This is because interpolation should be preferably conducted on a projected with easting and northing in meters.</p>
 </div>
 <div class="section level2">
 <h2 id="accessing-elevation-data">Accessing elevation data<a class="anchor" aria-label="anchor" href="#accessing-elevation-data"></a>
 </h2>
-<p>To perform weather interpolation, we need the topography (elevation,
-slope, aspect) of the target area. We can use function
-<code>getData()</code> from package <strong>raster</strong> to download
-elevation data for Senegal:</p>
+<p>To perform weather interpolation, we need the topography (elevation, slope, aspect) of the target area. We can use function <code>getData()</code> from package <strong>raster</strong> to download elevation data for Senegal:</p>
 <pre><code><span><span class="co">## Warning in getData("alt", country = "SEN"): getData will be removed in a future version of raster</span></span>
-<span><span class="co">## . You can use access these data, and more, with functions from the geodata package instead</span></span></code></pre>
+<span><span class="co">## . Please use the geodata package instead</span></span></code></pre>
 <pre><code><span><span class="co">## class      : RasterLayer </span></span>
 <span><span class="co">## dimensions : 552, 756, 417312  (nrow, ncol, ncell)</span></span>
 <span><span class="co">## resolution : 0.008333333, 0.008333333  (x, y)</span></span>
@@ -200,17 +173,12 @@ elevation data for Senegal:</p>
 <span><span class="co">## source     : SEN_msk_alt.grd </span></span>
 <span><span class="co">## names      : SEN_msk_alt </span></span>
 <span><span class="co">## values     : -13, 535  (min, max)</span></span></code></pre>
-<p>The previous function returns a <code>RasterLayer</code> grid object
-in geographic coordinates, which we can plot along with the weather
-station point locations:</p>
+<p>The previous function returns a <code>RasterLayer</code> grid object in geographic coordinates, which we can plot along with the weather station point locations:</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">elev_raster</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">spt_sen</span>, add<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 <p><img src="InterpolationSenegal_files/figure-html/unnamed-chunk-11-1.png" width="700"></p>
-<p>In order to estimate slope and aspect it is important that the
-spatial reference system is in coordinates that have meters as units. We
-can reproject our raster to 28N UTM using function
-<code>projectRaster()</code> from package <strong>raster</strong>:</p>
+<p>In order to estimate slope and aspect it is important that the spatial reference system is in coordinates that have meters as units. We can reproject our raster to 28N UTM using function <code>projectRaster()</code> from package <strong>raster</strong>:</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">elev_utm</span> <span class="op">=</span> <span class="fu">projectRaster</span><span class="op">(</span><span class="va">elev_raster</span>, crs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/sp/man/CRS-class.html" class="external-link">CRS</a></span><span class="op">(</span>SRS_string <span class="op">=</span><span class="st">"EPSG:32628"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">elev_utm</span></span></code></pre></div>
@@ -222,12 +190,7 @@ can reproject our raster to 28N UTM using function
 <span><span class="co">## source     : memory</span></span>
 <span><span class="co">## names      : SEN_msk_alt </span></span>
 <span><span class="co">## values     : -6.424461, 506.9934  (min, max)</span></span></code></pre>
-<p>Package meteoland allows deriving slope and aspect from elevation
-(i.e. DEM) data when builidng objects of class
-<code>SpatialGridTopography</code>. To this aim, we need first to cast
-our <code>RasterLayer</code> object into a
-<code>SpatialGridDataFrame</code> and then call function
-<code><a href="../../reference/SpatialGridTopography.html">SpatialGridTopography()</a></code>:</p>
+<p>Package meteoland allows deriving slope and aspect from elevation (i.e. DEM) data when builidng objects of class <code>SpatialGridTopography</code>. To this aim, we need first to cast our <code>RasterLayer</code> object into a <code>SpatialGridDataFrame</code> and then call function <code><a href="../../reference/SpatialGridTopography.html">SpatialGridTopography()</a></code>:</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">elev_sgd</span> <span class="op">=</span> <span class="fu">as</span><span class="op">(</span><span class="va">elev_utm</span>, <span class="st">"SpatialGridDataFrame"</span><span class="op">)</span></span>
 <span><span class="va">sgt</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/SpatialGridTopography.html">SpatialGridTopography</a></span><span class="op">(</span><span class="va">elev_sgd</span><span class="op">@</span><span class="va">grid</span>, elevation <span class="op">=</span> <span class="va">elev_sgd</span><span class="op">$</span><span class="va">SEN_msk_alt</span>, </span>
@@ -255,21 +218,17 @@ our <code>RasterLayer</code> object into a
 <span><span class="co">##  3rd Qu.: 62.26   3rd Qu.:0.31     3rd Qu.:287.4   </span></span>
 <span><span class="co">##  Max.   :506.99   Max.   :8.55     Max.   :360.0   </span></span>
 <span><span class="co">##  NA's   :199234   NA's   :199234   NA's   :199234</span></span></code></pre>
-<p>The spatial grid contains many grid cells falling on the sea. We can
-exclude them by transforming our topography to class
-<code>SpatialPixelsTopography</code>:</p>
+<p>The spatial grid contains many grid cells falling on the sea. We can exclude them by transforming our topography to class <code>SpatialPixelsTopography</code>:</p>
 <div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">spxt</span> <span class="op">&lt;-</span> <span class="fu">as</span><span class="op">(</span><span class="va">sgt</span>, <span class="st">"SpatialPixelsTopography"</span><span class="op">)</span></span></code></pre></div>
-<p>This new object has almost half the number of pixels of the original
-grid:</p>
+<p>This new object has almost half the number of pixels of the original grid:</p>
 <div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/dim.html" class="external-link">dim</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/sp/man/coordinates.html" class="external-link">coordinates</a></span><span class="op">(</span><span class="va">sgt</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## [1] 438084      2</span></span></code></pre>
 <div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/dim.html" class="external-link">dim</a></span><span class="op">(</span><span class="va">spxt</span><span class="op">@</span><span class="va">coords</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## [1] 238850      2</span></span></code></pre>
-<p>We can check the slope and aspect calculated by meteoland using plot
-functions:</p>
+<p>We can check the slope and aspect calculated by meteoland using plot functions:</p>
 <div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/sp/man/spplot.html" class="external-link">spplot</a></span><span class="op">(</span><span class="va">spxt</span>, <span class="st">"slope"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="InterpolationSenegal_files/figure-html/unnamed-chunk-16-1.png" width="700"></p>
@@ -280,13 +239,7 @@ functions:</p>
 <div class="section level2">
 <h2 id="performing-interpolation">Performing interpolation<a class="anchor" aria-label="anchor" href="#performing-interpolation"></a>
 </h2>
-<p>We are now ready to perform the interpolation of weather over the
-study area. Since our spatial target are grid pixels, we need to call
-function <code>interpolationpixels</code> with: (a) our object
-<code>MeteorologyInterpolationData</code>; (b) our target topography
-(i.e. in this case <code>SpatialPixelsTopography</code>); and (c) a
-vector of dates (here two distinct days) among the period with available
-data (year 2020):</p>
+<p>We are now ready to perform the interpolation of weather over the study area. Since our spatial target are grid pixels, we need to call function <code>interpolationpixels</code> with: (a) our object <code>MeteorologyInterpolationData</code>; (b) our target topography (i.e. in this case <code>SpatialPixelsTopography</code>); and (c) a vector of dates (here two distinct days) among the period with available data (year 2020):</p>
 <div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">mid</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/interpolationpoints.html">interpolationpixels</a></span><span class="op">(</span><span class="va">spt_mid</span>, <span class="va">spxt</span>, dates<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/as.Date.html" class="external-link">as.Date</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"2020-03-15"</span>, <span class="st">"2020-07-30"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## Warning in proj4string(pixels): CRS object has comment, which is lost in output; in tests, see</span></span>
@@ -298,16 +251,10 @@ data (year 2020):</p>
 <span><span class="co">## object.</span></span></code></pre>
 <pre><code><span><span class="co">## Interpolating day '2020-03-15' (1/2) -  done.</span></span>
 <span><span class="co">## Interpolating day '2020-07-30' (2/2) -  done.</span></span></code></pre>
-<p>A warning is launched because some grid points (hopefully not many)
-are outside the boundary box of the station data. At this point the
-resulting data can be exported via netCDF, displayed using function
-<code>spplot</code> or transformed into other spatio-temporal spatial
-structures. Here we will first transform the output to package
-<code>stars</code>:</p>
+<p>A warning is launched because some grid points (hopefully not many) are outside the boundary box of the station data. At this point the resulting data can be exported via netCDF, displayed using function <code>spplot</code> or transformed into other spatio-temporal spatial structures. Here we will first transform the output to package <code>stars</code>:</p>
 <div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">mid_stars</span> <span class="op">&lt;-</span> <span class="fu">as</span><span class="op">(</span><span class="va">mid</span>, <span class="st">"stars"</span><span class="op">)</span></span></code></pre></div>
-<p>Now we use plot functions defined for stars objects to display mean
-daily temperature interpolation estimates:</p>
+<p>Now we use plot functions defined for stars objects to display mean daily temperature interpolation estimates:</p>
 <div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">mid_stars</span><span class="op">[</span><span class="st">"MeanTemperature"</span><span class="op">]</span><span class="op">)</span></span></code></pre></div>
 <p><img src="InterpolationSenegal_files/figure-html/unnamed-chunk-20-1.png" width="700"></p>
@@ -318,15 +265,12 @@ daily temperature interpolation estimates:</p>
 <p>And radiation in MJ/day:</p>
 <div class="sourceCode" id="cb36"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">mid_stars</span><span class="op">[</span><span class="st">"Radiation"</span><span class="op">]</span><span class="op">)</span></span></code></pre></div>
-<p><img src="InterpolationSenegal_files/figure-html/unnamed-chunk-22-1.png" width="700">
-Note that in the case of date “2020-07-30”, there was a prediction of
-rain in some areas, which decreases the estimated daily radiation.</p>
+<p><img src="InterpolationSenegal_files/figure-html/unnamed-chunk-22-1.png" width="700"> Note that in the case of date “2020-07-30”, there was a prediction of rain in some areas, which decreases the estimated daily radiation.</p>
 </div>
 <div class="section level2">
 <h2 id="exporting-the-result">Exporting the result<a class="anchor" aria-label="anchor" href="#exporting-the-result"></a>
 </h2>
-<p>Finally, we can export the interpolation result back on a netCDF, for
-its use in other software:</p>
+<p>Finally, we can export the interpolation result back on a netCDF, for its use in other software:</p>
 <div class="sourceCode" id="cb37"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../../reference/writemeteorologygrid.html">writemeteorologypixels</a></span><span class="op">(</span><span class="va">mid</span>, <span class="st">"foo.nc"</span>, overwrite <span class="op">=</span> <span class="cn">T</span>, verbose<span class="op">=</span><span class="cn">T</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## </span></span>
@@ -349,8 +293,7 @@ its use in other software:</p>
 <span><span class="co">## names      : MeanRelativeHumidity </span></span>
 <span><span class="co">## z-value    : 2020-07-30 </span></span>
 <span><span class="co">## zvar       : MeanRelativeHumidity</span></span></code></pre>
-<p>Note that the CRS is not read correctly. We can, however, plot the
-data.</p>
+<p>Note that the CRS is not read correctly. We can, however, plot the data.</p>
 <div class="sourceCode" id="cb43"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">a</span><span class="op">)</span></span></code></pre></div>
 <p><img src="InterpolationSenegal_files/figure-html/unnamed-chunk-25-1.png" width="700"></p>

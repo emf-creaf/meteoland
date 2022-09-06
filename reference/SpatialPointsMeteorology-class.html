@@ -50,8 +50,8 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre><code># S4 method for SpatialPointsMeteorology
-[(x, i, j, ..., drop = FALSE)
+    <div class="sourceCode"><pre><code># S4 method for SpatialPointsMeteorology,ANY,ANY
+[(x, i, j, ..., drop = TRUE)
   # S4 method for SpatialPointsMeteorology
 show(object)</code></pre></div>
     </div>
@@ -84,6 +84,24 @@ show(object)</code></pre></div>
     <p>Class <code>"SpatialPoints"</code>, directly.
 Class <code>"Spatial"</code>, by class "SpatialPoints", distance 2.</p>
     </div>
+    <div id="arguments">
+    <h2>Arguments</h2>
+    <dl><dt>x,object</dt>
+<dd><p><code>SpatialPointsMeteorology</code> object</p></dd>
+
+  <dt>i</dt>
+<dd><p>row indices</p></dd>
+
+  <dt>j</dt>
+<dd><p>column indices</p></dd>
+
+  <dt>drop</dt>
+<dd><p>see <code><a href="https://rdrr.io/r/base/Extract.html" class="external-link">Extract</a></code></p></dd>
+
+  <dt>...</dt>
+<dd><p>indices passed through</p></dd>
+
+</dl></div>
     <div id="author">
     <h2>Author</h2>
     <p>Miquel De Cáceres Ainsa, CREAF</p>
@@ -107,7 +125,6 @@ Class <code>"Spatial"</code>, by class "SpatialPoints", distance 2.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Extends: </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Class "SpatialPoints", directly</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Class "Spatial", by class "SpatialPoints", distance 2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Class "SpatialVector", by class "SpatialPoints", distance 2</span>
 </code></pre></div>
     </div>
   </div>

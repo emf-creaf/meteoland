@@ -101,8 +101,10 @@ NumericVector interpolateWindPoint(double xp, double yp, NumericVector ws, Numer
     NumericVector wws = ws*W;
     double num  = std::accumulate(wws.begin(),wws.end(),0.0);
     double den = std::accumulate(W.begin(),W.end(),0.0);
+    double fws = num/den;
+    if(den==0.0) fws = NA_REAL;
     // Rcout<<" num: "<<num<<" den: "<<den<<"\n";
-    return(NumericVector::create(num/den, NA_REAL));
+    return(NumericVector::create(fws, NA_REAL));
   }
 }
 /*

@@ -21,7 +21,8 @@ double saturationVapourPressure(double temperature) {
  * Murray (1967) formulation
  */
 double temp2SVP(double TD) {
-  return(0.61078*exp((17.269*TD)/(237.3+TD)));
+  if(!NumericVector::is_na(TD)) return(0.61078*exp((17.269*TD)/(237.3+TD)));
+  return(NA_REAL);
 }
 
 /**
@@ -30,7 +31,8 @@ double temp2SVP(double TD) {
  * TD - Dewpoint temperature (in Celsius)
  */
 double relativeHumidity(double T,double TD) {
-  return(std::min(100.0*(temp2SVP(TD)/temp2SVP(T)),100.0));
+  if((!NumericVector::is_na(T)) && (!NumericVector::is_na(TD))) return(std::min(100.0*(temp2SVP(TD)/temp2SVP(T)),100.0));
+  return(NA_REAL);
 }
 
 /**
@@ -202,7 +204,16 @@ double PenmanPET(double latrad, double elevation, double slorad, double asprad, 
     //Equation by Valiantzas (2006, eq 33) for situations where wind is not available
     //Valiantzas JD (2006) Simplified versions for the Penman evaporation equation using routine weather data. Journal of Hydrology 331, 690–702. doi:10.1016/j.jhydrol.2006.06.012.
     double R_a = RpotDay(Gsc, latrad,  slorad, asprad, delta2); //Extraterrestrial (potential) radiation
-    PET = 0.047 * R_s * sqrt(Tday + 9.5) - 2.4 * pow(R_s/R_a,2.0) + 0.09 * (Tday + 20.0) * (1.0 - RHmean/100.0);
+    double R_ratio = R_s/R_a;
+    if(R_a==0.0) R_ratio = 0.0;
+    R_ratio = std::min(std::max(R_ratio, 0.0), 1.0);
+    double wf = 0.09;
+    if(windfun == "1956") {
+      wf = 0.06;
+    } else if(windfun == "1948") {
+      wf = 0.09;
+    }
+    PET = 0.047 * R_s * sqrt(Tday + 9.5) - 2.4 * pow(R_ratio,2.0) + wf * (Tday + 20.0) * (1.0 - RHmean/100.0);
   }
   if(PET<0.0) PET = 0.0;
   return(PET);

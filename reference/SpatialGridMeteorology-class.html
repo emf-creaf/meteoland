@@ -49,6 +49,14 @@
     <p>An S4 class that represents a spatial grid with meteorology daily data.</p>
     </div>
 
+    <div id="ref-usage">
+    <div class="sourceCode"><pre><code># S4 method for SpatialGridMeteorology
+[(x, i, j, ..., drop = FALSE)
+  # S4 method for SpatialGridMeteorology
+show(object)
+  # S4 method for SpatialGridMeteorology
+spplot(object)</code></pre></div>
+    </div>
 
     <div id="objects-from-the-class">
     <h2>Objects from the Class</h2>
@@ -75,19 +83,6 @@
     <p>Class <code>"SpatialGrid"</code>, directly.
 Class <code>"Spatial"</code>, by class "SpatialGrid", distance 2.</p>
     </div>
-    <div id="methods">
-    <h2>Methods</h2>
-    <p></p><dl><dt>[</dt>
-<dd><p><code>signature(x = "SpatialGridMeteorology", i = "ANY", j = "ANY", ..., drop = FALSE)</code>: subsets the grid and associated meteorology; only rows (x values) and columns (y values) can be subsetted.</p></dd>
-
-     <dt>coerce</dt>
-<dd><p><code>signature(x = "SpatialGridMeteorology", to = "STFDF")</code>: coerces into a spacetime STFDF object.</p></dd>
-
-     <dt>coerce</dt>
-<dd><p><code>signature(x = "SpatialGridMeteorology", to = "stars")</code>: coerces into a stars object.</p></dd>
-
-  
-</dl></div>
     <div id="author">
     <h2>Author</h2>
     <p>Miquel De Cáceres Ainsa, CREAF</p>

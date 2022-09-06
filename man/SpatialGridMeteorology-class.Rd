@@ -1,10 +1,8 @@
 \encoding{UTF-8}
 \name{SpatialGridMeteorology-class}
-\Rdversion{1.1}
 \docType{class}
 \alias{SpatialGridMeteorology-class}
 \alias{[,SpatialGridMeteorology,ANY,ANY-method}
-\alias{[,SpatialGridMeteorology,ANY,ANY,ANY-method}
 \alias{show,SpatialGridMeteorology-method}
 
 \title{Class \code{"SpatialGridMeteorology"}}
@@ -26,14 +24,18 @@ Objects can be created by calls of the form \code{new("SpatialGridMeteorology", 
 Class \code{"\linkS4class{SpatialGrid}"}, directly.
 Class \code{"\linkS4class{Spatial}"}, by class "SpatialGrid", distance 2.
 }
-\section{Methods}{
-  \describe{
-     \item{[}{\code{signature(x = "SpatialGridMeteorology", i = "ANY", j = "ANY", ..., drop = FALSE)}: subsets the grid and associated meteorology; only rows (x values) and columns (y values) can be subsetted.}
-     \item{coerce}{\code{signature(x = "SpatialGridMeteorology", to = "STFDF")}: coerces into a spacetime STFDF object.}
-     \item{coerce}{\code{signature(x = "SpatialGridMeteorology", to = "stars")}: coerces into a stars object.}
-  }
-}
 
+\usage{
+  \S4method{[}{SpatialGridMeteorology,ANY,ANY}(x, i, j, ..., drop = FALSE)
+  \S4method{show}{SpatialGridMeteorology}(object)
+}
+\arguments{
+  \item{x,object}{\code{SpatialGridMeteorology} object}
+  \item{i}{row indices}
+  \item{j}{column indices}
+  \item{drop}{see \code{\link[base]{Extract}}}
+  \item{...}{indices passed through}
+}
 \author{
 Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF
 }

@@ -1,10 +1,8 @@
 \encoding{UTF-8}
 \name{SpatialPointsTopography-class}
-\Rdversion{1.1}
 \docType{class}
 \alias{SpatialPointsTopography-class}
 \alias{[,SpatialPointsTopography,ANY,ANY-method}
-\alias{[,SpatialPointsTopography,ANY,ANY,ANY-method}
 \alias{show,SpatialPointsTopography-method}
 
 \title{Class \code{"SpatialPointsTopography"}}
@@ -27,10 +25,16 @@ Class \code{"\linkS4class{SpatialPointsDataFrame}"}, directly.
 Class \code{"\linkS4class{SpatialPoints}"}, by class "SpatialPointsDataFrame", distance 2.
 Class \code{"\linkS4class{Spatial}"}, by class "SpatialPointsDataFrame", distance 3.
 }
-\section{Methods}{
-  \describe{
-     \item{[}{\code{signature(x = "SpatialPointsTopography", i = "ANY", j = "ANY", ..., drop = TRUE)}: subsets the spatial points and associated topography; only rows (points) can be subsetted.}
-	 }
+\usage{
+  \S4method{[}{SpatialPointsTopography,ANY,ANY}(x, i, j, ..., drop = TRUE)
+  \S4method{show}{SpatialPointsTopography}(object)
+}
+\arguments{
+  \item{x,object}{\code{SpatialPointsTopography} object}
+  \item{i}{row indices}
+  \item{j}{column indices}
+  \item{drop}{see \code{\link[base]{Extract}}}
+  \item{...}{indices passed through}
 }
 \author{
 Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF

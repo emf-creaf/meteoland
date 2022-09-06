@@ -1,10 +1,8 @@
 \encoding{UTF-8}
 \name{SpatialGridTopography-class}
-\Rdversion{1.1}
 \docType{class}
 \alias{SpatialGridTopography-class}
 \alias{[,SpatialGridTopography,ANY,ANY-method}
-\alias{[,SpatialGridTopography,ANY,ANY,ANY-method}
 \alias{show,SpatialGridTopography-method}
 
 \title{Class \code{"SpatialGridTopography"}}
@@ -27,12 +25,17 @@ Class \code{"\linkS4class{SpatialGridDataFrame}"}, directly.
 Class \code{"\linkS4class{SpatialGrid}"}, by class "SpatialGridDataFrame", distance 2.
 Class \code{"\linkS4class{Spatial}"}, by class "SpatialGridDataFrame", distance 3.
 }
-\section{Methods}{
-  \describe{
-     \item{[}{\code{signature(x = "SpatialGridTopography", i = "ANY", j = "ANY", ..., drop = FALSE)}: subsets the grid and associated topography; only rows (x values) and columns (y values) can be subsetted.}
-	 }
+\usage{
+  \S4method{[}{SpatialGridTopography,ANY,ANY}(x, i, j, ..., drop = FALSE)
+  \S4method{show}{SpatialGridTopography}(object)
 }
-
+\arguments{
+  \item{x,object}{\code{SpatialGridTopography} object}
+  \item{i}{row indices}
+  \item{j}{column indices}
+  \item{drop}{see \code{\link[base]{Extract}}}
+  \item{...}{indices passed through}
+}
 \author{
 Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF
 }

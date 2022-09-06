@@ -1,10 +1,8 @@
 \encoding{UTF-8}
 \name{SpatialPixelsTopography-class}
-\Rdversion{1.1}
 \docType{class}
 \alias{SpatialPixelsTopography-class}
 \alias{[,SpatialPixelsTopography,ANY,ANY-method}
-\alias{[,SpatialPixelsTopography,ANY,ANY,ANY-method}
 \alias{show,SpatialPixelsTopography-method}
 
 \title{Class \code{"SpatialPixelsTopography"}}
@@ -32,13 +30,18 @@ Class \code{"\linkS4class{SpatialPointsDataFrame}"}, by class "SpatialPixelsData
 Class \code{"\linkS4class{SpatialPoints}"}, by class "SpatialPixelsDataFrame", distance 3.
 Class \code{"\linkS4class{Spatial}"}, by class "SpatialPixelsDataFrame", distance 4.
 }
-\section{Methods}{
-  \describe{
-     \item{[}{\code{signature(x = "SpatialGridTopography", i = "ANY", j = "ANY", ..., drop = FALSE)}: subsets the pixels and associated topography; only one dimension can be subsetted. If \code{drop = TRUE} the boundary box is recalculated.}
-    \item{spplot}{\code{signature(object = "SpatialPixelsTopography")}: allows plotting topography maps.}
-	 }
-}
 
+\usage{
+  \S4method{[}{SpatialPixelsTopography,ANY,ANY}(x, i, j, ..., drop = FALSE)
+  \S4method{show}{SpatialPixelsTopography}(object)
+}
+\arguments{
+  \item{x,object}{\code{SpatialPixelsTopography} object}
+  \item{i}{row indices}
+  \item{j}{column indices}
+  \item{drop}{see \code{\link[base]{Extract}}}
+  \item{...}{indices passed through}
+}
 \author{
 Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF
 }

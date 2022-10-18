@@ -82,6 +82,7 @@
 #       - catch all variables
 #       - add subdaily = FALSE subroutine. (if is subdaily, aggregate)
 #     - add tests DONE
+#     - check results with old method DONE
 
 
 

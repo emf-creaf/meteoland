@@ -939,12 +939,15 @@ read_interpolator <- function(filename) {
 #' names to comply with meteoland requirements.
 #'
 #' @param meteo meteospain meteo object
+#' @param complete logical indicating if the meteo data missing variables
+#'  should be calculated (if possible)
 #' @return a compatible meteo object to use in meteoland
 #' @export
-meteospain2meteoland <- function(meteo) {
+meteospain2meteoland <- function(meteo, complete = FALSE) {
 
   # Renaming mandatory variables
   meteo_temp <- meteo |>
+    units::drop_units() |>
     dplyr::select(
       dates = timestamp, stationID = station_id,
       elevation = altitude,
@@ -954,9 +957,24 @@ meteospain2meteoland <- function(meteo) {
     )
 
   # Renaming optional
+  if ("mean_temperature" %in% names(meteo_temp)) {
+    meteo_temp <- meteo_temp |>
+      dplyr::rename(MeanTemperature = mean_temperature)
+  }
+
   if ("mean_relative_humidity" %in% names(meteo_temp)) {
     meteo_temp <- meteo_temp |>
       dplyr::rename(RelativeHumidity = mean_relative_humidity)
+  }
+
+  if ("min_relative_humidity" %in% names(meteo_temp)) {
+    meteo_temp <- meteo_temp |>
+      dplyr::rename(MinRelativeHumidity = min_relative_humidity)
+  }
+
+  if ("max_relative_humidity" %in% names(meteo_temp)) {
+    meteo_temp <- meteo_temp |>
+      dplyr::rename(MaxRelativeHumidity = max_relative_humidity)
   }
 
   if ("mean_wind_speed" %in% names(meteo_temp)) {
@@ -987,12 +1005,156 @@ meteospain2meteoland <- function(meteo) {
   meteo_temp |>
     dplyr::select(dplyr::any_of(
       c(
-        "dates", "stationID", "elevation", "MinTemperature", "MaxTemperature",
-        "Precipitation", "RelativeHumidity", "WindDirection", "WindSpeed",
+        "dates", "stationID", "elevation",
+        "MeanTemperature", "MinTemperature", "MaxTemperature",
+        "Precipitation",
+        "RelativeHumidity", "MinRelativeHumidity", "MaxRelativeHumidity",
+        "WindDirection", "WindSpeed",
         "Radiation"
       )
     ))
 }
+
+#' Complete missing meteo variables
+#'
+#' Calculates missing meteo variables
+#'
+#' This function takes a meteo object (with meteoland names) and complete
+#' any missing variable if it is possible
+#'
+#' @param meteo meteoland meteo data
+#'
+#' @return the same \code{meteo} data provided with the new variables calculated
+#'
+#' @export
+complete_meteo <- function(meteo) {
+
+  # assertions
+  assertthat::assert_that(has_meteo(meteo))
+  assertthat::assert_that(has_topo(meteo))
+
+  # This no!!! We need a function for each row
+  .complete_relative_humidity <- function(RelativeHumidity, MinTemperature, MeanTemperature) {
+    purrr::pmap_dbl(
+      list(RelativeHumidity, MinTemperature, MeanTemperature),
+      ~ dplyr::if_else(
+        is.na(..1),
+        max(min(100 * utils_saturationVP(..2) / utils_saturationVP(..3), 100), 0),
+        ..1
+      )
+    )
+  }
+
+  .complete_min_relative_humidity <- function(MinRelativeHumidity, MinTemperature, MaxTemperature) {
+    purrr::pmap_dbl(
+      list(MinRelativeHumidity, MinTemperature, MaxTemperature),
+      ~ dplyr::if_else(
+        is.na(..1),
+        max(min(100 * utils_saturationVP(..2) / utils_saturationVP(..3), 100), 0),
+        ..1
+      )
+    )
+  }
+
+  .complete_max_relative_humidity <- function(MaxRelativeHumidity) {
+    dplyr::if_else(
+      is.na(MaxRelativeHumidity), 100, MaxRelativeHumidity
+    )
+  }
+
+  .complete_radiation <- function(
+    Radiation, dates, MinTemperature, MaxTemperature,
+    MinRelativeHumidity, MaxRelativeHumidity,
+    Precipitation,
+    elevation, slope, aspect,
+    geometry
+  ) {
+    julian_day <- purrr::map_int(
+      dates,
+      ~ radiation_julianDay(
+        as.numeric(format(.x, "%Y")),
+        as.numeric(format(.x, "%m")),
+        as.numeric(format(.x, "%d"))
+      )
+    )
+    solar_constant <- purrr::map_dbl(julian_day, radiation_solarConstant)
+    declination <- purrr::map_dbl(julian_day, radiation_solarDeclination)
+    average_vapour_pressure <- purrr::pmap_dbl(
+      list(MinTemperature, MaxTemperature, MinRelativeHumidity, MaxRelativeHumidity),
+      utils_averageDailyVP
+    )
+    slope_rad <- dplyr::if_else(
+      is.na(slope), 0, slope*(pi/180)
+    )
+    aspect_rad <- dplyr::if_else(
+      is.na(aspect), 0, aspect*(pi/180)
+    )
+    latitude_rad <-
+      sf::st_coordinates(sf::st_transform(geometry, 4326))[,2] * (pi/180)
+
+    diff_temp <- MaxTemperature - MinTemperature
+
+    purrr::pmap_dbl(
+      list(
+        solar_constant, latitude_rad, elevation, slope_rad,
+        aspect_rad, declination, diff_temp, diff_temp,
+        average_vapour_pressure, Precipitation
+      ),
+      radiation_solarRadiation
+    )
+  }
+
+  # browser()
+
+  if (is.null(meteo[["MeanTemperature"]])) {
+    meteo[["MeanTemperature"]] <- NA_real_
+  }
+
+  if (is.null(meteo[["RelativeHumidity"]])) {
+    meteo[["RelativeHumidity"]] <- NA_real_
+  }
+
+  if (is.null(meteo[["MinRelativeHumidity"]])) {
+    meteo[["MinRelativeHumidity"]] <- NA_real_
+  }
+
+  if (is.null(meteo[["MaxRelativeHumidity"]])) {
+    meteo[["MaxRelativeHumidity"]] <- NA_real_
+  }
+
+  if (is.null(meteo[["Radiation"]])) {
+    meteo[["Radiation"]] <- NA_real_
+  }
+
+  if (is.null(meteo[["aspect"]])) {
+    meteo[["aspect"]] <- NA_real_
+  }
+
+  if (is.null(meteo[["slope"]])) {
+    meteo[["slope"]] <- NA_real_
+  }
+
+  meteo_completed <- meteo |>
+    dplyr::mutate(
+      RelativeHumidity = .complete_relative_humidity(
+        RelativeHumidity, MinTemperature, MeanTemperature
+      ),
+      MinRelativeHumidity = .complete_min_relative_humidity(
+        MinRelativeHumidity, MinTemperature, MaxTemperature
+      ),
+      MaxRelativeHumidity = .complete_max_relative_humidity(MaxRelativeHumidity),
+      Radiation = .complete_radiation(
+        Radiation, dates, MinTemperature, MaxTemperature,
+        MinRelativeHumidity, MaxRelativeHumidity,
+        Precipitation,
+        elevation, slope, aspect,
+        sf::st_geometry(meteo)
+      )
+    )
+
+  return(meteo_completed)
+}
+
 
 #' Topology raster (stars) cells to points
 #'

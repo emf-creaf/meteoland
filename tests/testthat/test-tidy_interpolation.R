@@ -20,8 +20,10 @@ test_that("meteospain2meteoland works", {
   expect_s3_class(test_res <- meteospain2meteoland(meteo_test), 'sf')
   expect_true(
     all(c(
-      "MinTemperature", "MaxTemperature", "Precipitation", "RelativeHumidity",
-      "stationID", "dates"
+      "MeanTemperature", "MinTemperature", "MaxTemperature",
+      "Precipitation",
+      "RelativeHumidity", "MinRelativeHumidity", "MaxRelativeHumidity",
+      "stationID", "dates", "elevation"
     ) %in% names(test_res))
   )
 
@@ -43,6 +45,39 @@ test_that("meteospain2meteoland works", {
       "stationID", "dates"
     ) %in% names(test_res_norh))
   )
+
+  # complete checks
+
+  expect_s3_class(
+    test_complete_no_changes <- meteospain2meteoland(meteo_test, complete = TRUE),
+    "sf"
+  )
+  expect_identical(nrow(test_complete_no_changes), nrow(test_res))
+  expect_identical(names(test_complete_no_changes), c(names(test_res), 'aspect', 'slope'))
+  expect_identical(test_complete_no_changes$MinTemperature, test_res$MinTemperature)
+  expect_false(
+    identical(test_res$RelativeHumidity, test_complete_no_changes$RelativeHumidity)
+  )
+
+  meteo_test_no_vars <- dplyr::mutate(
+    meteo_test,
+    mean_relative_humidity = NA_real_,
+    min_relative_humidity = NA_real_,
+    max_relative_humidity = NA_real_,
+    radiation = NA_real_
+  )
+
+  expect_s3_class(
+    test_complete_all <- meteospain2meteoland(meteo_test_no_vars, complete = TRUE),
+    "sf"
+  )
+  expect_identical(nrow(test_complete_all), nrow(test_res))
+  expect_identical(names(test_complete_all), c(names(test_res), 'aspect', 'slope'))
+  expect_identical(test_complete_all$MinTemperature, test_res$MinTemperature)
+  expect_true(any(!is.na(test_complete_all$RelativeHumidity)))
+  expect_true(any(!is.na(test_complete_all$MinRelativeHumidity)))
+  expect_true(all(!is.na(test_complete_all$MaxRelativeHumidity))) # is all because we put 100 in all
+  expect_true(any(!is.na(test_complete_all$Radiation)))
 })
 
 meteo_test_correct <- meteospain2meteoland(meteo_test)

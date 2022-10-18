@@ -76,6 +76,12 @@
 #       - messaging (remove interpolation messages and add custom ones for the
 #         cross validation routine) DONE
 #       - check results with old method
+# 1. Add complete_meteo method
+#     - add complete_meteo method DONE
+#     - update meteospain2meteoland method
+#       - catch all variables
+#       - add subdaily = FALSE subroutine. (if is subdaily, aggregate)
+#     - add tests DONE
 
 
 
@@ -1002,7 +1008,7 @@ meteospain2meteoland <- function(meteo, complete = FALSE) {
       dplyr::rename(Radiation = global_solar_radiation)
   }
 
-  meteo_temp |>
+  res <- meteo_temp |>
     dplyr::select(dplyr::any_of(
       c(
         "dates", "stationID", "elevation",
@@ -1013,6 +1019,12 @@ meteospain2meteoland <- function(meteo, complete = FALSE) {
         "Radiation"
       )
     ))
+
+  if (isTRUE(complete)) {
+    res <- complete_meteo(res)
+  }
+
+  return(res)
 }
 
 #' Complete missing meteo variables
@@ -1024,7 +1036,7 @@ meteospain2meteoland <- function(meteo, complete = FALSE) {
 #'
 #' @param meteo meteoland meteo data
 #'
-#' @return the same \code{meteo} data provided with the new variables calculated
+#' @return the same \code{meteo} data provided with the the variables completed
 #'
 #' @export
 complete_meteo <- function(meteo) {

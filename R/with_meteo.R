@@ -60,6 +60,14 @@
 ###       informative error please. DONE
 ###     - Informative warning when no aspect or slope is registered, as the results
 ###       can be really different DONE
+### 1. Add complete_meteo method
+###     - add complete_meteo method DONE
+###     - update meteospain2meteoland method
+###       - catch all variables DONE
+###       - if is subdaily, aggregate method must be trigger DONE
+###     - add tests DONE
+###     - check results with old method DONE
+###     - fix error in aggregating when variables are not present (only aemet for example) DONE
 # 1. Fixes
 #     - Humidity interpolation is wrong when no humidity in meteo is supplied.
 #       I can't really test this because bug in old method. .interpolationPointSeries
@@ -76,14 +84,14 @@
 #       - messaging (remove interpolation messages and add custom ones for the
 #         cross validation routine) DONE
 #       - check results with old method
-# 1. Add complete_meteo method
-#     - add complete_meteo method DONE
-#     - update meteospain2meteoland method
-#       - catch all variables
-#       - if is subdaily, aggregate method must be trigger
-#     - add tests DONE
-#     - check results with old method DONE
-#     - fix error in aggregating when variables are not present (only aemet for example) DONE
+# 1. BUG in create_meteo_interpolator
+#     - When station metadata changes (specifically the geometry) it can result in two lines
+#       for the same station in the arranged data (one for each geometry), but with the same data.
+#       In the specific case of the discovery of the bug, it comes from the aggregating test suite,
+#       where one of the aemet stations changes the geometry and the elevation in the middle of the
+#       day.
+#     - Two rows for the same station with different geometries mess with the dimensions of the
+#       arrays. There are more geometries than geometries names :(
 
 
 
@@ -418,6 +426,14 @@ create_meteo_interpolator <- function(meteo_with_topo, params = NULL, ...) {
     dplyr::distinct() |>
     sf::st_geometry()
   dates <- unique(meteo_arranged$dates)
+
+  # check here if there is stations with more than one geometry
+  # (sadly it happens, for example for 2022-10-20 for "4220X", "4549Y", "4642E" aemet
+  # stations, that change in the same day)
+  if (length(meteo_arranged$stationID |> unique()) != length(stations)) {
+    usethis::ui_warn("There are more geometries in the data than unique station IDs. Selecting automatially the most recent geometry")
+    #TODO
+  }
 
   # dimensions
   interpolator_dims <- stars::st_dimensions(

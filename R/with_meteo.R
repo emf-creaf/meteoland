@@ -80,9 +80,10 @@
 #     - add complete_meteo method DONE
 #     - update meteospain2meteoland method
 #       - catch all variables
-#       - add subdaily = FALSE subroutine. (if is subdaily, aggregate)
+#       - if is subdaily, aggregate method must be trigger
 #     - add tests DONE
 #     - check results with old method DONE
+#     - fix error in aggregating when variables are not present (only aemet for example)
 
 
 
@@ -945,16 +946,17 @@ read_interpolator <- function(filename) {
 #' meteoland meteo objects by seelcting the needed variables and adapting the
 #' names to comply with meteoland requirements.
 #'
-#' @param meteo meteospain meteo object
+#' @param meteo meteospain meteo object.
 #' @param complete logical indicating if the meteo data missing variables
-#'  should be calculated (if possible)
-#' @return a compatible meteo object to use in meteoland
+#'  should be calculated (if possible). Default to FALSE.
+#' @return a compatible meteo object to use with meteoland.
 #' @export
 meteospain2meteoland <- function(meteo, complete = FALSE) {
 
   # Renaming mandatory variables
   meteo_temp <- meteo |>
     units::drop_units() |>
+    .aggregate_subdaily_meteospain() |>
     dplyr::select(
       dates = timestamp, stationID = station_id,
       elevation = altitude,
@@ -1021,11 +1023,80 @@ meteospain2meteoland <- function(meteo, complete = FALSE) {
       )
     ))
 
+  # complete step
   if (isTRUE(complete)) {
     res <- complete_meteo(res)
   }
 
   return(res)
+}
+
+.aggregate_subdaily_meteospain <- function(meteo) {
+
+  # browser()
+  # check if data is subdaily
+  grouped_meteo <- meteo |>
+    dplyr::as_tibble() |>
+    dplyr::mutate(
+      timestamp = lubridate::floor_date(timestamp, unit = "day")
+    ) |>
+    dplyr::group_by(timestamp, station_id)
+
+  station_date_values <- grouped_meteo |>
+    dplyr::count() |>
+    dplyr::pull(n)
+
+  # if only one value per station and date exists for all combinations, no need of summarising
+  if (!any(station_date_values > 1)) {
+    return(meteo)
+  }
+
+  # summarise wind function
+  .summarise_wind_direction <- function(wind_direction) {
+    wind_direction <- as.numeric(wind_direction)
+    y <- sum(cos(wind_direction * pi / 180), na.rm = TRUE) / length(wind_direction)
+    x <- sum(sin(wind_direction * pi / 180), na.rm = TRUE) / length(wind_direction)
+    dv <- (180 / pi) * atan2(x, y)
+
+    if (dv < 0) {
+      dv <- dv + 360
+    }
+    return(dv)
+  }
+
+  # na or fun, if all vector is NAs, return NAs, if not apply the function
+  .is_na_or_fun <- function(var, fun, ...) {
+    if (all(is.na(var))) {
+      return(NA_real_)
+    }
+    fun(var, ...)
+  }
+
+  grouped_meteo |>
+    dplyr::summarise(
+      # service = .is_na_or_fun(service, dplyr::first),
+      station_id = .is_na_or_fun(station_id, dplyr::first),
+      station_name = .is_na_or_fun(station_name, dplyr::first),
+      # station_province = .is_na_or_fun(station_province, dplyr::first),
+      altitude = .is_na_or_fun(altitude, dplyr::first),
+      mean_temperature = .is_na_or_fun(temperature, mean, na.rm = TRUE),
+      min_temperature = .is_na_or_fun(temperature, min, min_temperature, na.rm = TRUE),
+      max_temperature = .is_na_or_fun(temperature, max, max_temperature, na.rm = TRUE),
+      mean_relative_humidity = .is_na_or_fun(relative_humidity, mean, na.rm = TRUE),
+      min_relative_humidity = .is_na_or_fun(relative_humidity, min, na.rm = TRUE),
+      max_relative_humidity = .is_na_or_fun(relative_humidity, max, na.rm = TRUE),
+      precipitation = .is_na_or_fun(precipitation, sum, na.rm = TRUE),
+      mean_wind_speed = .is_na_or_fun(wind_speed, mean, na.rm = TRUE),
+      mean_wind_direction = .is_na_or_fun(wind_direction, .summarise_wind_direction),
+      global_solar_radiation = .is_na_or_fun(global_solar_radiation, sum)
+    ) |>
+    dplyr::ungroup() |>
+    dplyr::left_join(
+      grouped_meteo |> dplyr::select(geometry) |> dplyr::distinct()
+    ) |>
+    sf::st_as_sf()
+
+
 }
 
 #' Complete missing meteo variables
@@ -1148,6 +1219,7 @@ complete_meteo <- function(meteo) {
   }
 
   meteo_completed <- meteo |>
+    # dplyr::as_tibble() |>
     dplyr::mutate(
       RelativeHumidity = .complete_relative_humidity(
         RelativeHumidity, MinTemperature, MeanTemperature

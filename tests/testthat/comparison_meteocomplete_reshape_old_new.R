@@ -108,3 +108,50 @@ dplyr::anti_join(
   dplyr::select(new_simplified, dates, stationID),
 ) |>
   dplyr::left_join(old_joined_simplified |> dplyr::mutate(dates = as.Date(dates)))
+
+###################subdaily######################################
+# With subdaily data
+library(meteospain)
+
+subdaily_meteo_cat <- get_meteo_from(
+  "meteocat",
+  meteocat_options(
+    "hourly",
+    api_key = keyring::key_get('meteocat', keyring = "malditobarbudo")
+  )
+)
+
+subdaily_meteo_aemet <- get_meteo_from(
+  "aemet",
+  aemet_options(
+    "current_day",
+    api_key = keyring::key_get('aemet', keyring = "malditobarbudo")
+  )
+)
+
+subdaily_test <- subdaily_meteo_cat |>
+  dplyr::bind_rows(subdaily_meteo_aemet) |>
+  dplyr::arrange(timestamp)
+
+tictoc::tic()
+subdaily_meteo_test_new <-
+  meteoland:::meteospain2meteoland(subdaily_test, complete = TRUE)
+tictoc::toc()
+
+tictoc::tic()
+subdaily_meteo_test_old <- meteoland::reshapemeteospain(subdaily_test)
+tictoc::toc()
+
+identical(
+  subdaily_meteo_test_old@data$ZD$MinTemperature,
+  subdaily_meteo_test_new |>
+    dplyr::filter(stationID == "ZD") |>
+    dplyr::pull(MinTemperature)
+)
+
+identical(
+  subdaily_meteo_test_old@data$`4244X`$MeanRelativeHumidity,
+  subdaily_meteo_test_new |>
+    dplyr::filter(stationID == "4244X") |>
+    dplyr::pull(RelativeHumidity)
+)

@@ -33,7 +33,7 @@ test_that("meteospain2meteoland works", {
 
   expect_error(
     meteospain2meteoland(meteo_test_no_dates),
-    "Column `timestamp` doesn't exist."
+    "Provided data has no timestamp variable"
   )
   expect_s3_class(
     test_res_norh <- meteospain2meteoland(meteo_test_no_relative_humidity),

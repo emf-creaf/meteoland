@@ -83,7 +83,7 @@
 #       - if is subdaily, aggregate method must be trigger
 #     - add tests DONE
 #     - check results with old method DONE
-#     - fix error in aggregating when variables are not present (only aemet for example)
+#     - fix error in aggregating when variables are not present (only aemet for example) DONE
 
 
 
@@ -1034,6 +1034,12 @@ meteospain2meteoland <- function(meteo, complete = FALSE) {
 .aggregate_subdaily_meteospain <- function(meteo) {
 
   # browser()
+  # assertions
+  assertthat::assert_that(
+    "timestamp" %in% names(meteo),
+    msg = "Provided data has no timestamp variable. Is this a meteospain dataset?"
+  )
+
   # check if data is subdaily
   grouped_meteo <- meteo |>
     dplyr::as_tibble() |>
@@ -1050,6 +1056,8 @@ meteospain2meteoland <- function(meteo, complete = FALSE) {
   if (!any(station_date_values > 1)) {
     return(meteo)
   }
+
+  usethis::ui_info("Provided meteospain data seems to be in subdaily time steps, aggregating to daily scale")
 
   # summarise wind function
   .summarise_wind_direction <- function(wind_direction) {
@@ -1072,7 +1080,22 @@ meteospain2meteoland <- function(meteo, complete = FALSE) {
     fun(var, ...)
   }
 
+  .create_missing_vars <- function(meteo) {
+    meteo_names <- names(meteo)
+    if (!"min_temperature" %in% meteo_names) {
+      meteo$min_temperature <- NA_real_
+    }
+    if (!"max_temperature" %in% meteo_names) {
+      meteo$max_temperature <- NA_real_
+    }
+    if (!"gplobal_solar_radiation" %in% meteo_names) {
+      meteo$global_solar_radiation <- NA_real_
+    }
+    return(meteo)
+  }
+
   grouped_meteo |>
+    .create_missing_vars() |>
     dplyr::summarise(
       # service = .is_na_or_fun(service, dplyr::first),
       station_id = .is_na_or_fun(station_id, dplyr::first),
@@ -1095,8 +1118,6 @@ meteospain2meteoland <- function(meteo, complete = FALSE) {
       grouped_meteo |> dplyr::select(geometry) |> dplyr::distinct()
     ) |>
     sf::st_as_sf()
-
-
 }
 
 #' Complete missing meteo variables
@@ -1117,8 +1138,15 @@ complete_meteo <- function(meteo) {
   assertthat::assert_that(has_meteo(meteo))
   assertthat::assert_that(has_topo(meteo))
 
+  usethis::ui_info(
+    "Completing missing variables if possible:"
+  )
+
   # This no!!! We need a function for each row
   .complete_relative_humidity <- function(RelativeHumidity, MinTemperature, MeanTemperature) {
+
+    usethis::ui_todo("RelativeHumidity")
+
     purrr::pmap_dbl(
       list(RelativeHumidity, MinTemperature, MeanTemperature),
       ~ dplyr::if_else(
@@ -1130,6 +1158,8 @@ complete_meteo <- function(meteo) {
   }
 
   .complete_min_relative_humidity <- function(MinRelativeHumidity, MinTemperature, MaxTemperature) {
+    usethis::ui_todo("MinRelativeHumidity")
+
     purrr::pmap_dbl(
       list(MinRelativeHumidity, MinTemperature, MaxTemperature),
       ~ dplyr::if_else(
@@ -1141,6 +1171,8 @@ complete_meteo <- function(meteo) {
   }
 
   .complete_max_relative_humidity <- function(MaxRelativeHumidity) {
+    usethis::ui_todo("MaxRelativeHumidity")
+
     dplyr::if_else(
       is.na(MaxRelativeHumidity), 100, MaxRelativeHumidity
     )
@@ -1153,6 +1185,8 @@ complete_meteo <- function(meteo) {
     elevation, slope, aspect,
     geometry
   ) {
+    usethis::ui_todo("Radiation")
+
     julian_day <- purrr::map_int(
       dates,
       ~ radiation_julianDay(
@@ -1236,6 +1270,8 @@ complete_meteo <- function(meteo) {
         sf::st_geometry(meteo)
       )
     )
+
+  usethis::ui_done("Done")
 
   return(meteo_completed)
 }

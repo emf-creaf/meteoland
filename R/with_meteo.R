@@ -68,6 +68,28 @@
 ###     - add tests DONE
 ###     - check results with old method DONE
 ###     - fix error in aggregating when variables are not present (only aemet for example) DONE
+### 1. BUG in create_meteo_interpolator
+###     - When station metadata changes (specifically the geometry) it can result in two lines
+###       for the same station in the arranged data (one for each geometry), but with the same data.
+###       In the specific case of the discovery of the bug, it comes from the aggregating test suite,
+###       where one of the aemet stations changes the geometry and the elevation in the middle of the
+###       day.
+###     - Two rows for the same station with different geometries mess with the dimensions of the
+###       arrays. There are more geometries than geometries names :(
+###     - Fix should be done maybe in meteospain2meteoland, as for others, user must ensure
+###       by themselves the quality of the data. For this last point, a check in with_meteo
+###       must be added to check that station IDs are unique with only one geometry.
+###       - new check for meteo objects DONE
+###       - remove duplicated maintaining the latest metadata (geometry) DONE
+###       - add new tests for this
+###       - This is all for subdaily, check what happens when this happen in daily DONE
+### 1. Tests round
+###     - add tests for unique id checks DONE
+###     - add tests for subdaily (aggregation) in meteospain DONE
+###     - add tests for complete meteospain
+###       - daily DONE
+###       - subdaily DONE
+###     - add tests for fix not unique id checks in meteospain DONE
 # 1. Fixes
 #     - Humidity interpolation is wrong when no humidity in meteo is supplied.
 #       I can't really test this because bug in old method. .interpolationPointSeries
@@ -84,14 +106,7 @@
 #       - messaging (remove interpolation messages and add custom ones for the
 #         cross validation routine) DONE
 #       - check results with old method
-# 1. BUG in create_meteo_interpolator
-#     - When station metadata changes (specifically the geometry) it can result in two lines
-#       for the same station in the arranged data (one for each geometry), but with the same data.
-#       In the specific case of the discovery of the bug, it comes from the aggregating test suite,
-#       where one of the aemet stations changes the geometry and the elevation in the middle of the
-#       day.
-#     - Two rows for the same station with different geometries mess with the dimensions of the
-#       arrays. There are more geometries than geometries names :(
+# 1. Generalize complete method (not only meteospain) and tests
 
 
 
@@ -161,6 +176,44 @@ assertthat::on_failure(has_topo_names) <- function(call, env) {
   )
 }
 
+#' Check if meteo data has unique stations ID
+#'
+#' Check if meteo data has unique stations ID
+#'
+#' This function ensures that meteo object have unique stations ID with only
+#' one geometry per station code
+#'
+#' @param meteo meteo object
+#'
+#' @return TRUE if station IDs are unique, FALSE otherwise
+#'
+#' @family Argument checks
+#' @noRd
+has_unique_ids <- function(meteo) {
+  distinct_rows <- meteo |>
+    dplyr::select(stationID) |>
+    dplyr::distinct()
+
+  nrow(distinct_rows) == length(unique(distinct_rows[["stationID"]]))
+
+}
+
+assertthat::on_failure(has_unique_ids) <- function(call, env) {
+
+  duplicated_stations <- env$meteo |>
+    dplyr::select(stationID) |>
+    dplyr::distinct() |>
+    dplyr::filter(duplicated(stationID)) |>
+    dplyr::pull(stationID)
+
+  paste0(
+    "There are more geometries in the data than unique station IDs. ",
+    "Duplicated stations IDs are:\n",
+    paste(duplicated_stations, collapse = '\n')
+  )
+}
+
+
 #' Checks for meteo
 #'
 #' Checks for meteo
@@ -199,9 +252,14 @@ has_meteo <- function(meteo) {
     msg = "dates variable must be a date or time class"
   )
 
+  # stations
   assertthat::assert_that(
     "stationID" %in% names(meteo),
     msg = "meteo must have a stationID variable identifying the meteorological stations"
+  )
+
+  assertthat::assert_that(
+    has_unique_ids(meteo)
   )
 }
 
@@ -429,11 +487,25 @@ create_meteo_interpolator <- function(meteo_with_topo, params = NULL, ...) {
 
   # check here if there is stations with more than one geometry
   # (sadly it happens, for example for 2022-10-20 for "4220X", "4549Y", "4642E" aemet
-  # stations, that change in the same day)
-  if (length(meteo_arranged$stationID |> unique()) != length(stations)) {
-    usethis::ui_warn("There are more geometries in the data than unique station IDs. Selecting automatially the most recent geometry")
-    #TODO
-  }
+  # stations, which change within the same day).
+  # If this happens, stop and inform the user about the stations involved
+  # if (length(meteo_arranged$stationID |> unique()) != length(stations)) {
+  #   duplicated_stations <- meteo_arranged |>
+  #     dplyr::filter(
+  #       !sf::st_is_empty(!!dplyr::sym(attr(meteo_arranged, "sf_column")))
+  #     ) |>
+  #     dplyr::select(stationID) |>
+  #     dplyr::distinct() |>
+  #     dplyr::filter(duplicated(stationID)) |>
+  #     dplyr::pull(stationID)
+  #
+  #
+  #   usethis::ui_stop(c(
+  #     "There are more geometries in the data than unique station IDs. ",
+  #     "Duplicated stations IDs are:",
+  #     usethis::ui_todo(duplicated_stations)
+  #   ))
+  # }
 
   # dimensions
   interpolator_dims <- stars::st_dimensions(
@@ -969,9 +1041,16 @@ read_interpolator <- function(filename) {
 #' @export
 meteospain2meteoland <- function(meteo, complete = FALSE) {
 
+  # assertions
+  assertthat::assert_that(
+    "timestamp" %in% names(meteo),
+    msg = "Provided data has no timestamp variable. Is this a meteospain dataset?"
+  )
+
   # Renaming mandatory variables
   meteo_temp <- meteo |>
     units::drop_units() |>
+    .fix_station_geometries() |>
     .aggregate_subdaily_meteospain() |>
     dplyr::select(
       dates = timestamp, stationID = station_id,
@@ -1030,7 +1109,7 @@ meteospain2meteoland <- function(meteo, complete = FALSE) {
   res <- meteo_temp |>
     dplyr::select(dplyr::any_of(
       c(
-        "dates", "stationID", "elevation",
+        "dates", "stationID", "elevation", "aspect", "slope",
         "MeanTemperature", "MinTemperature", "MaxTemperature",
         "Precipitation",
         "RelativeHumidity", "MinRelativeHumidity", "MaxRelativeHumidity",
@@ -1047,15 +1126,43 @@ meteospain2meteoland <- function(meteo, complete = FALSE) {
   return(res)
 }
 
+.fix_station_geometries <- function(meteo) {
+  distinct_rows <- meteo |>
+    dplyr::ungroup() |>
+    dplyr::arrange(timestamp) |>
+    dplyr::select(station_id, geometry) |>
+    dplyr::distinct()
+
+  # res <- meteo |>
+  #   dplyr::select(timestamp, station_id, geometry) |>
+  #   dplyr::distinct()
+
+  # If more geometries than station IDs, issue a warning and filter by the last
+  # geometry to remove duplicates
+  if (nrow(distinct_rows) != length(unique(distinct_rows[["station_id"]]))) {
+    usethis::ui_warn(c(
+      "Some stations have different metadata (elevation, coordinates...) for ",
+      "different dates. Choosing the most recent metadata"
+    ))
+
+    distinct_rows <- distinct_rows |>
+      dplyr::group_by(station_id) |>
+      dplyr::filter(as.character(geometry) == dplyr::last(as.character(geometry)))
+
+    meteo <- meteo |>
+      dplyr::as_tibble() |>
+      dplyr::select(-geometry) |>
+      dplyr::left_join(distinct_rows, by = 'station_id') |>
+      sf::st_as_sf()
+  }
+
+  return(meteo)
+
+}
+
 .aggregate_subdaily_meteospain <- function(meteo) {
 
   # browser()
-  # assertions
-  assertthat::assert_that(
-    "timestamp" %in% names(meteo),
-    msg = "Provided data has no timestamp variable. Is this a meteospain dataset?"
-  )
-
   # check if data is subdaily
   grouped_meteo <- meteo |>
     dplyr::as_tibble() |>
@@ -1104,7 +1211,7 @@ meteospain2meteoland <- function(meteo, complete = FALSE) {
     if (!"max_temperature" %in% meteo_names) {
       meteo$max_temperature <- NA_real_
     }
-    if (!"gplobal_solar_radiation" %in% meteo_names) {
+    if (!"global_solar_radiation" %in% meteo_names) {
       meteo$global_solar_radiation <- NA_real_
     }
     return(meteo)
@@ -1131,7 +1238,11 @@ meteospain2meteoland <- function(meteo, complete = FALSE) {
     ) |>
     dplyr::ungroup() |>
     dplyr::left_join(
-      grouped_meteo |> dplyr::select(geometry) |> dplyr::distinct()
+      meteo |>
+        dplyr::ungroup() |>
+        dplyr::select(station_id, geometry) |>
+        dplyr::distinct(),
+      by = c('station_id')
     ) |>
     sf::st_as_sf()
 }

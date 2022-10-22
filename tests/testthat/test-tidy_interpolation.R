@@ -16,7 +16,13 @@ interpolation_var_names <- c(
   "Radiation", "WindSpeed", "WindDirection", "PET"
 )
 
+meteo_test_subdaily_with_errors <- readRDS('subdaily_with_errors.rds') |>
+  units::drop_units()
+meteo_test_non_unique_ids <- meteo_test
+meteo_test_non_unique_ids$geometry[1] <- meteo_test_non_unique_ids$geometry[5000]
+
 test_that("meteospain2meteoland works", {
+  # daily
   expect_s3_class(test_res <- meteospain2meteoland(meteo_test), 'sf')
   expect_true(
     all(c(
@@ -45,6 +51,12 @@ test_that("meteospain2meteoland works", {
       "stationID", "dates"
     ) %in% names(test_res_norh))
   )
+
+  expect_warning(
+    meteo_test_fixed <- meteospain2meteoland(meteo_test_non_unique_ids),
+    "Choosing the most recent metadata"
+  )
+  expect_identical(meteo_test_fixed, test_res)
 
   # complete checks
 
@@ -78,6 +90,47 @@ test_that("meteospain2meteoland works", {
   expect_true(any(!is.na(test_complete_all$MinRelativeHumidity)))
   expect_true(all(!is.na(test_complete_all$MaxRelativeHumidity))) # is all because we put 100 in all
   expect_true(any(!is.na(test_complete_all$Radiation)))
+
+  # subdaily checks
+  expect_warning(
+    subdaily_fixed <- .fix_station_geometries(meteo_test_subdaily_with_errors),
+    "Choosing the most recent metadata"
+  )
+  expect_message(
+    subdaily_aggregated <- .aggregate_subdaily_meteospain(subdaily_fixed),
+    "Provided meteospain data seems to be in subdaily time steps"
+  )
+  expect_true(nrow(subdaily_fixed) > nrow(subdaily_aggregated))
+  expect_identical(
+    sort(unique(subdaily_fixed$station_id)),
+    sort(unique(subdaily_aggregated$station_id))
+  )
+
+  # we expect no warning now
+  expect_warning(test_subdaily <- meteospain2meteoland(subdaily_fixed), NA)
+
+  expect_s3_class(test_subdaily, 'sf')
+  expect_true(
+    all(c(
+      "MeanTemperature", "MinTemperature", "MaxTemperature",
+      "Precipitation",
+      "RelativeHumidity", "MinRelativeHumidity", "MaxRelativeHumidity",
+      "stationID", "dates", "elevation"
+    ) %in% names(test_res))
+  )
+
+  expect_s3_class(
+    test_subdaily_complete <- meteospain2meteoland(subdaily_fixed, complete = TRUE),
+    "sf"
+  )
+  expect_identical(nrow(test_subdaily_complete), nrow(test_subdaily))
+  expect_identical(names(test_subdaily_complete), c(names(test_subdaily), 'aspect', 'slope'))
+  expect_identical(test_subdaily_complete$MinTemperature, test_subdaily$MinTemperature)
+  expect_false(
+    identical(test_subdaily$RelativeHumidity, test_subdaily_complete$RelativeHumidity)
+  )
+
+
 })
 
 meteo_test_correct <- meteospain2meteoland(meteo_test)
@@ -93,6 +146,8 @@ meteo_test_no_points <- meteo_test_correct |>
   dplyr::slice(1:10) |>
   sf::st_union() |>
   sf::st_as_sf()
+meteo_test_correct_non_unique_ids <- meteo_test_correct
+meteo_test_correct_non_unique_ids$geometry[1] <- meteo_test_correct_non_unique_ids$geometry[5000]
 
 test_that("has_meteo checks work", {
   expect_true(has_meteo(meteo_test_correct))
@@ -103,6 +158,7 @@ test_that("has_meteo checks work", {
   expect_error(has_meteo(meteo_test_no_id), "stationID variable")
   expect_error(has_meteo(meteo_test_no_numeric), "MinTemperature")
   expect_error(has_meteo(meteo_test_no_points), "geometries must be")
+  expect_error(has_meteo(meteo_test_correct_non_unique_ids), "There are more geometries")
 })
 
 topo_test_correct <- meteo_test_correct |>

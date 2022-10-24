@@ -294,6 +294,9 @@ test_that("create_meteo_interpolator works as expected", {
     "No interpolation parameters"
   )
 
+  expect_false(is.null(dimnames(interpolator_test[[1]])[[1]]))
+  expect_false(is.null(dimnames(interpolator_test[[1]])[[2]]))
+
   # everything should be ok, no error (hence the NA)
   expect_error(.is_interpolator(interpolator_test), NA)
 
@@ -430,4 +433,127 @@ test_that("interpolation process works as intended", {
   expect_true(all(names(raster_data_test) %in% names(raster_res)))
   expect_true(all(interpolation_var_names %in% names(raster_res)))
   expect_identical(sf::st_crs(raster_res), sf::st_crs(raster_data_test))
+})
+
+test_that("interpolator calibration works as expected", {
+  expect_error(
+    interpolator_calibration("tururu"),
+    "missing the interpolation parameters"
+  )
+  interpolator_no_params <- interpolator_test
+  attr(interpolator_no_params, "params") <- NULL
+  expect_error(
+    interpolator_calibration(interpolator_no_params),
+    "missing the interpolation parameters"
+  )
+  interpolator_wrong_dims <- interpolator_test
+  dimnames(interpolator_wrong_dims) <- c('tururu', 'larara')
+  expect_error(
+    interpolator_calibration(interpolator_wrong_dims),
+    "missing the correct dimensions"
+  )
+  interpolator_no_meteo_names <- interpolator_test
+  names(interpolator_no_meteo_names) <- c('tururu', names(interpolator_no_meteo_names)[-1])
+  expect_error(
+    interpolator_calibration(interpolator_no_meteo_names),
+    "Names found in interpolator don't comply with the required names"
+  )
+
+  expect_type(
+    (test_calibration <-
+       interpolator_calibration(interpolator_test, N_seq = c(5, 10), alpha_seq = c(9, 9.5))),
+    'list'
+  )
+  expect_named(test_calibration, c("MAE", "minMAE", "N", "alpha", "observed", "predicted"))
+  expect_true(is.matrix(test_calibration$MAE))
+  expect_identical(dim(test_calibration$MAE), c(2L,2L))
+  expect_named(dimnames(test_calibration$MAE), c("N_seq", "alpha_seq"))
+  expect_true(is.numeric(test_calibration$minMAE))
+  expect_length(test_calibration$minMAE, 1)
+  expect_identical(min(test_calibration$MAE, na.rm = TRUE), test_calibration$minMAE)
+  expect_true(is.numeric(test_calibration$N))
+  expect_length(test_calibration$N, 1)
+  expect_true(is.numeric(test_calibration$alpha))
+  expect_length(test_calibration$alpha, 1)
+  expect_true(is.matrix(test_calibration$observed))
+  expect_true(is.matrix(test_calibration$predicted))
+  expect_false(is.null(dimnames(test_calibration$observed)[[1]]))
+  expect_false(is.null(dimnames(test_calibration$observed)[[2]]))
+  expect_false(is.null(dimnames(test_calibration$predicted)[[1]]))
+  expect_false(is.null(dimnames(test_calibration$predicted)[[2]]))
+  expect_true("2021-01-31" %in% dimnames(test_calibration$predicted)[[2]])
+
+  # selecting stations
+  expect_type(
+    (test_calibration_three_stations <- interpolator_calibration(
+      interpolator_test,
+      stations = c(76, 83, 187),
+      N_seq = c(5, 10), alpha_seq = c(9, 9.5))),
+    'list'
+  )
+
+  expect_named(test_calibration_three_stations, c("MAE", "minMAE", "N", "alpha", "observed", "predicted"))
+  expect_true(is.matrix(test_calibration_three_stations$MAE))
+  expect_identical(dim(test_calibration_three_stations$MAE), c(2L,2L))
+  expect_named(dimnames(test_calibration_three_stations$MAE), c("N_seq", "alpha_seq"))
+  expect_true(is.numeric(test_calibration_three_stations$minMAE))
+  expect_length(test_calibration_three_stations$minMAE, 1)
+  expect_identical(min(test_calibration_three_stations$MAE, na.rm = TRUE), test_calibration_three_stations$minMAE)
+  expect_true(is.numeric(test_calibration_three_stations$N))
+  expect_length(test_calibration_three_stations$N, 1)
+  expect_true(is.numeric(test_calibration_three_stations$alpha))
+  expect_length(test_calibration_three_stations$alpha, 1)
+  expect_true(is.matrix(test_calibration_three_stations$observed))
+  expect_length(dimnames(test_calibration_three_stations$observed)[[1]], 3)
+  expect_identical(dimnames(test_calibration_three_stations$observed)[[1]], c("V1", "VC", "ZD"))
+  expect_true(is.matrix(test_calibration_three_stations$predicted))
+  expect_length(dimnames(test_calibration_three_stations$predicted)[[1]], 3)
+  expect_identical(dimnames(test_calibration_three_stations$predicted)[[1]], c("V1", "VC", "ZD"))
+
+  # stations as names
+  expect_type(
+    (test_calibration_three_stations_names <- interpolator_calibration(
+      interpolator_test,
+      stations = c("V1", "VC", "ZD"),
+      N_seq = c(5, 10), alpha_seq = c(9, 9.5))),
+    'list'
+  )
+  expect_identical(test_calibration_three_stations_names, test_calibration_three_stations)
+
+  # returning an interpolator
+  expect_s3_class(
+    (test_calibrated_interpolator <- interpolator_calibration(
+      interpolator_test,
+      stations = c(76, 83, 187),
+      update_interpolator_params = TRUE,
+      N_seq = c(5, 10), alpha_seq = c(9, 9.5))),
+    'stars'
+  )
+  expect_error(.is_interpolator(test_calibrated_interpolator), NA)
+  expect_false(
+    attr(interpolator_test, 'params')$alpha_MinTemperature ==
+      attr(test_calibrated_interpolator, 'params')$alpha_MinTemperature
+  )
+  expect_false(
+    attr(interpolator_test, 'params')$N_MinTemperature ==
+      attr(test_calibrated_interpolator, 'params')$N_MinTemperature
+  )
+  expect_identical(
+    interpolator_test$MinTemperature, test_calibrated_interpolator$MinTemperature
+  )
+  expect_identical(names(interpolator_test), names(test_calibrated_interpolator))
+  expect_identical(
+    names(attr(interpolator_test, 'params')),
+    names(attr(test_calibrated_interpolator, 'params'))
+  )
+
+  expect_identical(
+    test_calibration_three_stations$N,
+    attr(test_calibrated_interpolator, 'params')$N_MinTemperature
+  )
+  expect_identical(
+    test_calibration_three_stations$alpha,
+    attr(test_calibrated_interpolator, 'params')$alpha_MinTemperature
+  )
+
 })

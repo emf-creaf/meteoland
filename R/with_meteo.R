@@ -100,13 +100,24 @@
 # 1. Add wind logic to interpolation process
 # 1. Add interpolation cross validation and calibration routines
 #    (maybe temporal resolution also)
-#     - calibration process. DONE
+#     - calibration process.
+#       - Fix bug in interpolator_calibration when station numeric vector is provided DONE
+#       - If we are on it, then improvements:
+#           - switch argument to return the interpolator with the parameters updated, instead of the
+#             calibration results DONE
+#           - accept also a vector of stations names. When numeric, use indexes, when character, use
+#             the name of the station to get the index (check for wrong names) DONE
+#           - add colnames and rownames to predicted matrix (rownames (dates) also in the
+#             observed matrix) DONE
+#           - perform all variables calibration (or at least more than one)
+#       - check results with old method
 #     - cross validation
 #       - logic DONE
 #       - messaging (remove interpolation messages and add custom ones for the
 #         cross validation routine) DONE
 #       - check results with old method
 # 1. Generalize complete method (not only meteospain) and tests
+# 1. Add a params setter for interpolators
 
 
 
@@ -521,7 +532,7 @@ create_meteo_interpolator <- function(meteo_with_topo, params = NULL, ...) {
     if (! variable %in% names(arranged_data)) {
       array_data <- array(NA_real_, dim = dims)
     } else {
-      variable_data <- arranged_data|>
+      variable_data <- arranged_data |>
         dplyr::pull(!!variable)
       # transform logical NAs to numeric NAs
       if (is.logical(variable_data)) {
@@ -532,6 +543,7 @@ create_meteo_interpolator <- function(meteo_with_topo, params = NULL, ...) {
     }
 
     colnames(array_data) <- col_names
+    rownames(array_data) <- unique(as.character(arranged_data$dates))
 
     return(array_data)
   }
@@ -772,18 +784,22 @@ read_interpolator <- function(filename) {
     station = sf::st_geometry(geom_data)
   )
 
-  .array_creation_helper <- function(dataframe, interpolator_dims) {
+  .array_creation_helper <- function(dataframe, interpolator_dims, dates) {
     array_data <- dataframe |>
       as.matrix() |>
       array(dim = dim(interpolator_dims))
 
     colnames(array_data) <- names(dataframe)
+    rownames(array_data) <- as.character(dates)
     return(array_data)
   }
 
   stars_interpolator <-
     ts_data$data_frames |>
-    purrr::map(.array_creation_helper, interpolator_dims = interpolator_dims) |>
+    purrr::map(
+      .array_creation_helper,
+      interpolator_dims = interpolator_dims, dates = dates
+    ) |>
     stars::st_as_stars(dimensions = interpolator_dims)
 
   attr(stars_interpolator, 'params') <- interpolation_attributes
@@ -1763,17 +1779,21 @@ interpolate_data <- function(spatial_data, interpolator, dates = NULL) {
 #' (Thornton \emph{et al.} 1997). Function \code{interpolation_cross_validation}
 #' calculates average mean absolute errors ("MAE") for the prediction period of
 #' the interpolator object.
-#' In both calibration and cross validation procdeures, predictions for each
+#' In both calibration and cross validation procedures, predictions for each
 #' meteorological station are made using a \emph{leave-one-out} procedure
-#' (i.e. after exluding the station form the predictive set).
+#' (i.e. after exluding the station from the predictive set).
 #'
 #' @param interpolator A meteoland interpolator object, as created by
 #'   \code{\link{create_meteoland_interpolator}}
 #'
-#' @param stations A vector with the station indexes (numeric) to be used to
-#'   calculate \code{"MAE"}. All stations with data are included in the training
-#'   set but predictive \code{"MAE"} are calculated for the stations subset
-#'   indicated in \code{stations} param only.
+#' @param stations A vector with the stations (numeric for station indexes or character
+#'   for stations id) to be used to calculate \code{"MAE"}. All stations with data are
+#'   included in the training set but predictive \code{"MAE"} are calculated for the
+#'   stations subset indicated in \code{stations} param only. If \code{NULL} all stations
+#'   are used in the predictive \code{"MAE"} calculation.
+#'
+#' @param update_interpolation_params Logical indicating if the interpolator object
+#'   must be updated with the calculated parameters. Default to FALSE
 #'
 #' @param variable A string indicating the meteorological variable for which
 #'   interpolation parameters \code{"N"} and \code{"alpha"} will be calibrated.
@@ -1786,7 +1806,8 @@ interpolate_data <- function(spatial_data, interpolator, dates = NULL) {
 #' @param N_seq Numeric vector with \code{"N"} values to be tested
 #' @param alpha_seq Numeric vector with \code{"alpha"}
 #'
-#' @return \code{interpolator_calibration} returns a list with the following items
+#' @return If \code{update_interpolation_params} is FALSE (default), \code{interpolator_calibration}
+#' returns a list with the following items
 #' \itemize{
 #'   \item{MAE: A numeric matrix with the mean absolute error values, averaged
 #'   across stations, for each combination of parameters \code{"N"} and \code{"alpha"}}
@@ -1798,14 +1819,18 @@ interpolate_data <- function(spatial_data, interpolator, dates = NULL) {
 #'   \item{predicted: matrix with interpolated values for the optimum parameter
 #'   combination}
 #' }
+#' If \code{update_interpolation_params} is FALSE, \code{interpolator_calibration} returns
+#' the interpolator provided with the parameters updated
 #'
 #' @export
 interpolator_calibration <- function(
-    interpolator, stations = NULL,
+    interpolator,
+    stations = NULL,
+    update_interpolator_params = FALSE,
     variable = c(
       "MinTemperature", "MaxTemperature", "DewTemperature",
       "Precipitation", "PrecipitationAmount", "PrecipitationEvent"
-    ) ,
+    ),
     N_seq = seq(5, 30, by = 5),
     alpha_seq = seq(0.25, 10, by = 0.25)
 ) {
@@ -1815,7 +1840,7 @@ interpolator_calibration <- function(
   assertthat::assert_that(.is_interpolator(interpolator))
   # stations
   assertthat::assert_that(
-    is.null(stations) || is.numeric(stations),
+    is.null(stations) || is.numeric(stations) || is.character(stations),
     msg = "stations must be NULL or a numeric vector with the stations indexes"
   )
   # variables
@@ -1838,9 +1863,18 @@ interpolator_calibration <- function(
   stations_coords <- sf::st_coordinates(stations_sfc)
   stations_elevation <- interpolator[["elevation"]][1,]
   stations_length <- length(stations_sfc)
+
+  # station vector filling. If null, all the indexes, if character, convert to indexes
   if (is.null(stations)) {
     stations <- 1:stations_length
   }
+  if (is.character(stations)) {
+    stations <- which(colnames(interpolator[[1]]) %in% stations)
+    if (length(stations) < 1) {
+      usethis::ui_stop("Station names not found in interpolator")
+    }
+  }
+
   selected_stations <- rep(FALSE, stations_length)
   selected_stations[stations] <- TRUE
 
@@ -1900,24 +1934,31 @@ interpolator_calibration <- function(
   # super complicated triple loop. This could be improved but I don't know how??
   for (i in N_seq) {
     for (j in alpha_seq) {
-      # create the results matrix
+      # create the results matrix (and add the dim names)
       predicted_variable_matrix <-
         matrix(0, nrow(selected_variable_matrix), ncol(selected_variable_matrix))
+      dimnames(predicted_variable_matrix) <- dimnames(selected_variable_matrix)
 
       usethis::ui_todo("Evaluating N: {i}, alpha: {j}...")
 
       # and now loop for stations
-      for (station in stations) {
+      # We use 1:length(stations) instead of the stations numeric indexes, because
+      # the indexes relates to the interpolator, with all the stations, but in this
+      # case, the matrixes already have only the selected stations rows
+      # BUT!!!, for some of the values in the functions we need the original station
+      # index
+      for (station in 1:length(stations)) {
+        original_station_index <- stations[station]
         predicted_variable_matrix[station, ] <- switch(
           variable,
           "DewTemperature" = .interpolateTdewSeriesPoints(
             Xp = selected_stations_coords[station, 1],
             Yp = selected_stations_coords[station, 2],
             Zp = selected_stations_elevation[station],
-            X = stations_coords[-station, 1],
-            Y = stations_coords[-station, 2],
-            Z = stations_elevation[-station],
-            T = variable_matrix[-station, ],
+            X = stations_coords[-original_station_index, 1],
+            Y = stations_coords[-original_station_index, 2],
+            Z = stations_elevation[-original_station_index],
+            T = variable_matrix[-original_station_index, ],
             iniRp = interpolator_params$initial_Rp,
             alpha = j, N = i,
             iterations = interpolator_params$iterations
@@ -1926,11 +1967,11 @@ interpolator_calibration <- function(
             Xp = selected_stations_coords[station, 1],
             Yp = selected_stations_coords[station, 2],
             Zp = selected_stations_elevation[station],
-            X = stations_coords[-station, 1],
-            Y = stations_coords[-station, 2],
-            Z = stations_elevation[-station],
-            P = variable_matrix[-station, ],
-            Psmooth = smoothed_matrix[-station, ],
+            X = stations_coords[-original_station_index, 1],
+            Y = stations_coords[-original_station_index, 2],
+            Z = stations_elevation[-original_station_index],
+            P = variable_matrix[-original_station_index, ],
+            Psmooth = smoothed_matrix[-original_station_index, ],
             iniRp = interpolator_params$initial_Rp,
             alpha_event = j, alpha_amount = j,
             N_event = i, N_amount = i,
@@ -1942,11 +1983,11 @@ interpolator_calibration <- function(
             Xp = selected_stations_coords[station, 1],
             Yp = selected_stations_coords[station, 2],
             Zp = selected_stations_elevation[station],
-            X = stations_coords[-station, 1],
-            Y = stations_coords[-station, 2],
-            Z = stations_elevation[-station],
-            P = variable_matrix[-station, ],
-            Psmooth = smoothed_matrix[-station, ],
+            X = stations_coords[-original_station_index, 1],
+            Y = stations_coords[-original_station_index, 2],
+            Z = stations_elevation[-original_station_index],
+            P = variable_matrix[-original_station_index, ],
+            Psmooth = smoothed_matrix[-original_station_index, ],
             iniRp = interpolator_params$initial_Rp,
             alpha_event = interpolator_params$alpha_PrecipitationEvent,
             alpha_amount = j,
@@ -1960,10 +2001,10 @@ interpolator_calibration <- function(
             Xp = selected_stations_coords[station, 1],
             Yp = selected_stations_coords[station, 2],
             Zp = selected_stations_elevation[station],
-            X = stations_coords[-station, 1],
-            Y = stations_coords[-station, 2],
-            Z = stations_elevation[-station],
-            Pevent = variable_matrix[-station, ],
+            X = stations_coords[-original_station_index, 1],
+            Y = stations_coords[-original_station_index, 2],
+            Z = stations_elevation[-original_station_index],
+            Pevent = variable_matrix[-original_station_index, ],
             iniRp = interpolator_params$initial_Rp,
             alpha = j,
             N = i,
@@ -1974,10 +2015,10 @@ interpolator_calibration <- function(
             Xp = selected_stations_coords[station, 1],
             Yp = selected_stations_coords[station, 2],
             Zp = selected_stations_elevation[station],
-            X = stations_coords[-station, 1],
-            Y = stations_coords[-station, 2],
-            Z = stations_elevation[-station],
-            T = variable_matrix[-station, ],
+            X = stations_coords[-original_station_index, 1],
+            Y = stations_coords[-original_station_index, 2],
+            Z = stations_elevation[-original_station_index],
+            T = variable_matrix[-original_station_index, ],
             iniRp = interpolator_params$initial_Rp,
             alpha = j, N = i,
             iterations = interpolator_params$iterations
@@ -2043,6 +2084,15 @@ interpolator_calibration <- function(
     predicted = optimal_predicted
   )
 
+  if (isTRUE(update_interpolator_params)) {
+    params_names <- c("alpha_", "N_") |>
+      paste0(variable)
+    attr(interpolator, "params")[[params_names[1]]] <- res[["alpha"]]
+    attr(interpolator, "params")[[params_names[2]]] <- res[["N"]]
+
+    return(interpolator)
+  }
+
   return(res)
 }
 
@@ -2081,6 +2131,9 @@ interpolator_calibration <- function(
 #'
 #' @noRd
 .station_cross_validation <- function(station_index, interpolator) {
+
+  # messaging
+  usethis::ui_todo(station_index)
 
   # get the point sf with topology info
   station_sf <- dplyr::tibble(
@@ -2347,7 +2400,7 @@ interpolation_cross_validation <- function(interpolator, stations = NULL) {
     stations <- 1:length(stars::st_get_dimension_values(interpolator, "station"))
   }
 
-  usethis::ui_info("Starting Cross validation process...")
+  usethis::ui_info("Starting Cross Validation process...")
   observed_values <- .interpolator2tibble(interpolator) |>
     dplyr::filter(station %in% stations)
 

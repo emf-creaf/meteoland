@@ -46,7 +46,7 @@
                                                debug = mPar$debug)
   DOY = as.numeric(format(dates,"%j"))
   J = radiation_dateStringToJulianDays(as.character(dates))
-  if(is.null(object@RelativeHumidity)) { #Estimate VP assuming that dew-point temperature is equal to Tmin
+  if(is.null(object@RelativeHumidity) || all(is.na(object@RelativeHumidity))) { #Estimate VP assuming that dew-point temperature is equal to Tmin
     rhmean = .relativeHumidityFromMinMaxTemp(tmin, tmax)
     VP = .temp2SVP(tmin) #kPA
     rhmax = rep(100, length(rhmean))
@@ -107,7 +107,7 @@
     Wsp = as.vector(Wp$WS)
     Wdp = as.vector(Wp$WD)
   } else if((!is.null(object@WindSpeed)) && (!is.null(object@WindDirection))){
-    Wp = .interpolateWindStationSeriesPoints(Xp= x, Yp =y, object@WindSpeed[,dayIndices, drop=FALSE], 
+    Wp = .interpolateWindStationSeriesPoints(Xp= x, Yp =y, object@WindSpeed[,dayIndices, drop=FALSE],
                                              object@WindDirection[,dayIndices, drop=FALSE],
                                            X = object@coords[,1],
                                            Y = object@coords[,2],
@@ -144,11 +144,11 @@
 }
 
 interpolationpoints<-function(object, points, dates = NULL,
-                              export=FALSE, exportDir = getwd(), exportFile = NULL, 
+                              export=FALSE, exportDir = getwd(), exportFile = NULL,
                               exportFormat = "meteoland/txt",
                               metadataFile = "MP.txt", verbose=TRUE) {
   if(export) exportFormat = match.arg(exportFormat, c("meteoland/txt", "meteoland/rds", "castanea/txt", "castanea/rds", "netCDF"))
-  
+
   if(!inherits(object,"MeteorologyInterpolationData")) stop("'object' has to be of class 'MeteorologyInterpolationData'.")
   if(!inherits(points,"SpatialPointsTopography")) stop("'points' has to be of class 'SpatialPointsTopography'.")
   intpoints = as(points, "SpatialPoints")
@@ -158,7 +158,7 @@ interpolationpoints<-function(object, points, dates = NULL,
   }
   if(!is.null(dates)) {
     if(!inherits(dates,"Date")) stop("'dates' has to be of class 'Date'.")
-    if(sum(as.character(dates) %in% as.character(object@dates))<length(dates)) 
+    if(sum(as.character(dates) %in% as.character(object@dates))<length(dates))
       stop("At least one of the dates is outside the time period for which interpolation is possible.")
   }
   cc = coordinates(intpoints) #
@@ -174,14 +174,14 @@ interpolationpoints<-function(object, points, dates = NULL,
   longlat = spTransform(points,CRS(SRS_string = "EPSG:4326"))
   latitude = longlat@coords[,2]
   bbox = object@bbox
-  
-  
+
+
   if(exportFormat %in% c("meteoland/txt","castanea/txt")) formatType = "txt"
   else if (exportFormat %in% c("meteoland/rds","castanea/rds")) formatType = "rds"
   else if (exportFormat %in% c("netCDF")) formatType = "netCDF"
-  
+
   # Define vector of data frames
-  
+
   if(export & exportFormat %in% c("meteoland/txt","castanea/txt", "meteoland/rds","castanea/rds")) {
     dfout = data.frame(dir = rep(exportDir, npoints), filename=paste0(ids,".", formatType))
     dfout$dir = as.character(dfout$dir)

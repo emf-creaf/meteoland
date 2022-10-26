@@ -123,13 +123,14 @@
 ### 1. Add wind logic to interpolation process
 ###     - Add logic DONE
 ###     - Check results with old method DONE
-# 1. Fixes
-#     - Humidity interpolation is wrong when no humidity in meteo is supplied.
-#       I can't really test this because bug in old method. .interpolationPointSeries
-#       only check if interpolator@RelativeHumidity is NULL, but it can't be NULL ever,
-#       as the class check forces it to be a NA's matrix :(
-#     - Check with Miquel which are the mandatory variables for meteo (only temperatures?
-#       or also precipitation)
+### 1. Fixes
+###     - Humidity interpolation is wrong when no humidity in meteo is supplied.
+###       I can't really test this because bug in old method. .interpolationPointSeries
+###       only check if interpolator@RelativeHumidity is NULL, but it can't be NULL ever,
+###       as the class check forces it to be a NA's matrix :(
+###       Fixed in the old one, checked with the new and same results. DONE
+###     - Check with Miquel which are the mandatory variables for meteo (only temperatures?
+###       or also precipitation) NOTFIX
 # 1. Generalize complete method (not only meteospain) and tests
 # 1. Add a params setter for interpolators
 

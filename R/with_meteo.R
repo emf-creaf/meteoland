@@ -120,6 +120,9 @@
 ###           To fix this I have to create the aspect and the slope with zeros DONE
 ### 1. aggregating in meteospain2meteoland: DONE
 ###       - truncate radiation values to 0 (no negative values) DONE
+### 1. Add wind logic to interpolation process
+###     - Add logic DONE
+###     - Check results with old method DONE
 # 1. Fixes
 #     - Humidity interpolation is wrong when no humidity in meteo is supplied.
 #       I can't really test this because bug in old method. .interpolationPointSeries
@@ -127,7 +130,6 @@
 #       as the class check forces it to be a NA's matrix :(
 #     - Check with Miquel which are the mandatory variables for meteo (only temperatures?
 #       or also precipitation)
-# 1. Add wind logic to interpolation process
 # 1. Generalize complete method (not only meteospain) and tests
 # 1. Add a params setter for interpolators
 
@@ -1062,6 +1064,21 @@ read_interpolator <- function(filename) {
   }
 
   # Wind, (not sure if implement or not)
+  usethis::ui_todo("Interpolating wind...")
+  wind <- .interpolateWindStationSeriesPoints(
+    Xp = sf::st_coordinates(sf)[,1], Yp = sf::st_coordinates(sf)[,2],
+    WS = t(filtered_interpolator[["WindSpeed"]]),
+    WD = t(filtered_interpolator[["WindDirection"]]),
+    X = sf::st_coordinates(stars::st_get_dimension_values(interpolator, "station"))[,1],
+    Y = sf::st_coordinates(stars::st_get_dimension_values(interpolator, "station"))[,2],
+    iniRp = attr(interpolator, "params")$initial_Rp,
+    alpha = attr(interpolator, "params")$alpha_Wind,
+    N = attr(interpolator, "params")$N_Wind,
+    iterations = attr(interpolator, "params")$iterations
+  )
+
+  # wind_speed <- wind$WS
+  # wind_direction <- wind$WD
   # PET, not sure if implement or not
 
 
@@ -1081,8 +1098,8 @@ read_interpolator <- function(filename) {
       MinRelativeHumidity = rhmin[.x,],
       MaxRelativeHumidity = rhmax[.x,],
       Radiation = rad[.x,],
-      WindSpeed = NA,
-      WindDirection = NA,
+      WindSpeed = as.vector(wind$WS[.x,]),
+      WindDirection = as.vector(wind$WD[.x,]),
       PET = NA
     )
   )

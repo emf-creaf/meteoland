@@ -162,13 +162,13 @@ test_that("has_meteo checks work", {
 })
 
 topo_test_correct <- meteo_test_correct |>
-  dplyr::mutate(aspect = NA, slope = NA) |>
+  dplyr::mutate(aspect = NA_real_, slope = NA_real_) |>
   dplyr::as_tibble() |>
   dplyr::select(stationID, elevation, aspect, slope)
 # test data
 topo_test_sf <- meteo_test_correct |>
   dplyr::select(stationID, elevation) |>
-  dplyr::mutate(aspect = NA, slope = NA)
+  dplyr::mutate(aspect = NA_real_, slope = NA_real_)
 topo_test_no_names <- topo_test_correct |>
   dplyr::rename(Elevation = elevation)
 topo_test_no_id <- topo_test_correct |>
@@ -296,6 +296,10 @@ test_that("create_meteo_interpolator works as expected", {
 
   expect_false(is.null(dimnames(interpolator_test[[1]])[[1]]))
   expect_false(is.null(dimnames(interpolator_test[[1]])[[2]]))
+
+  # check that aspect and slope are zeroes
+  expect_true(all(interpolator_test[["aspect"]] == 0))
+  expect_true(all(interpolator_test[["slope"]] == 0))
 
   # everything should be ok, no error (hence the NA)
   expect_error(.is_interpolator(interpolator_test), NA)
@@ -554,6 +558,138 @@ test_that("interpolator calibration works as expected", {
   expect_identical(
     test_calibration_three_stations$alpha,
     attr(test_calibrated_interpolator, 'params')$alpha_MinTemperature
+  )
+
+})
+
+test_that("interpolation cross validation works as expected", {
+
+  expect_type(
+    (crossvalidation_test <- interpolation_cross_validation(interpolator_test)),
+    "list"
+  )
+
+  expect_named(
+    crossvalidation_test, c("errors", "station_stats", "dates_stats", "r2")
+  )
+  expect_true(all(
+    is.data.frame(crossvalidation_test[["errors"]]),
+    is.data.frame(crossvalidation_test[["station_stats"]]),
+    is.data.frame(crossvalidation_test[["dates_stats"]])
+  ))
+  expect_type(crossvalidation_test[["r2"]], "list")
+  expect_named(
+    crossvalidation_test[["errors"]],
+    c(
+      "dates", "station", "stationID",
+      paste0(
+        c("MinTemperature", "MaxTemperature", "RangeTemperature", "RelativeHumidity", "Radiation", "Precipitation"),
+        "_error"
+      ),
+      paste0(
+        c("MinTemperature", "MaxTemperature", "RangeTemperature", "RelativeHumidity", "Radiation", "Precipitation"),
+        "_predicted"
+      ),
+      paste0(
+        c("MinTemperature", "MaxTemperature", "RangeTemperature", "RelativeHumidity", "Radiation", "Precipitation"),
+        "_observed"
+      )
+    )
+  )
+  expect_named(
+    crossvalidation_test[["station_stats"]],
+    c(
+      "station", "stationID",
+      paste0(
+        c("MinTemperature", "MaxTemperature", "RangeTemperature", "RelativeHumidity", "Radiation", "TotalPrecipitation", "DaysPrecipitation"),
+        "_station_bias"
+      ),
+      paste0(
+        c("MinTemperature", "MaxTemperature", "RangeTemperature", "RelativeHumidity", "Radiation"),
+        "_station_mae"
+      ),
+      paste0(
+        c("TotalPrecipitation", "DaysPrecipitation"),
+        "_station_relative_bias"
+      ),
+      paste0("FreqPrecipitation", c("_station_observed", "_station_predicted"))
+    ),
+    ignore.order = TRUE
+  )
+  expect_named(
+    crossvalidation_test[["dates_stats"]],
+    c(
+      "dates",
+      paste0(
+        c("MinTemperature", "MaxTemperature", "RangeTemperature", "RelativeHumidity", "Radiation", "TotalPrecipitation", "DaysPrecipitation"),
+        "_date_bias"
+      ),
+      paste0(
+        c("MinTemperature", "MaxTemperature", "RangeTemperature", "RelativeHumidity", "Radiation"),
+        "_date_mae"
+      ),
+      paste0(
+        c("TotalPrecipitation", "DaysPrecipitation"),
+        "_date_relative_bias"
+      ),
+      paste0("FreqPrecipitation", c("_date_observed", "_date_predicted"))
+    ),
+    ignore.order = TRUE
+  )
+  expect_named(
+    crossvalidation_test[["r2"]],
+    c("MinTemperature", "MaxTemperature", "RangeTemperature", "RelativeHumidity", "Radiation")
+  )
+  expect_equal(
+    nrow(crossvalidation_test[["errors"]]),
+    as.numeric(nrow(interpolator_test[["MinTemperature"]]) * ncol(interpolator_test[["MinTemperature"]]))
+  )
+  expect_equal(
+    nrow(crossvalidation_test[["station_stats"]]),
+    as.numeric(ncol(interpolator_test[["MinTemperature"]]))
+  )
+  expect_equal(
+    nrow(crossvalidation_test[["dates_stats"]]),
+    as.numeric(nrow(interpolator_test[["MinTemperature"]]))
+  )
+
+  # some stations
+  expect_type(
+    (crossvalidation_three_stations_test <-
+       interpolation_cross_validation(interpolator_test, stations = c(76L, 83L, 187L))),
+    "list"
+  )
+  expect_named(
+    crossvalidation_three_stations_test, c("errors", "station_stats", "dates_stats", "r2")
+  )
+  expect_true(all(
+    is.data.frame(crossvalidation_three_stations_test[["errors"]]),
+    is.data.frame(crossvalidation_three_stations_test[["station_stats"]]),
+    is.data.frame(crossvalidation_three_stations_test[["dates_stats"]])
+  ))
+  expect_type(crossvalidation_three_stations_test[["r2"]], "list")
+
+  expect_length(
+    unique(crossvalidation_three_stations_test[["errors"]][["station"]]), 3
+  )
+  expect_true(
+    all(unique(crossvalidation_three_stations_test[["errors"]][["stationID"]]) %in% c("V1", "VC", "ZD"))
+  )
+  expect_length(
+    crossvalidation_three_stations_test[["station_stats"]][["station"]], 3
+  )
+  expect_true(
+    all(crossvalidation_three_stations_test[["station_stats"]][["stationID"]] %in% c("V1", "VC", "ZD"))
+  )
+
+  # some stations by name
+  expect_type(
+    (crossvalidation_three_stations_name_test <-
+       interpolation_cross_validation(interpolator_test, stations = c("V1", "VC", "ZD"))),
+    "list"
+  )
+  expect_identical(
+    crossvalidation_three_stations_name_test, crossvalidation_three_stations_test
   )
 
 })

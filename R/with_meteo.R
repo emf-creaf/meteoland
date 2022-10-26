@@ -90,6 +90,34 @@
 ###       - daily DONE
 ###       - subdaily DONE
 ###     - add tests for fix not unique id checks in meteospain DONE
+### 1. Add interpolation cross validation and calibration routines
+###    (maybe temporal resolution also) DONE
+###     - calibration process.
+###       - Fix bug in interpolator_calibration when station numeric vector is provided DONE
+###       - If we are on it, then improvements:
+###           - switch argument to return the interpolator with the parameters updated, instead of the
+###             calibration results DONE
+###           - accept also a vector of stations names. When numeric, use indexes, when character, use
+###             the name of the station to get the index (check for wrong names) DONE
+###           - add colnames and rownames to predicted matrix (rownames (dates) also in the
+###             observed matrix) DONE
+###           - perform all variables calibration (or at least more than one) NOTFIX
+###       - check results with old method DONE
+###     - cross validation
+###       - logic DONE
+###       - messaging (remove interpolation messages and add custom ones for the
+###         cross validation routine) DONE
+###       - accept also a vector of stations names. When numeric, use indexes, when character, use
+###         the name of the station to get the index (check for wrong names) DONE
+###       - convert the station index in the results in the station name by the interpolator. Added as
+###       stationID, maintaining also station index. DONE
+###       - add tests DONE
+###       - check results with old method
+###         - radiation, radiation biases are different.
+###           This is happening because in my method the interpolator is created with NAs for
+###           the aspect and slope vars if they are not present in the meteo. In Miquel's they are
+###           filled with 0s which makes the difference in the Radiation calculation.
+###           To fix this I have to create the aspect and the slope with zeros DONE
 # 1. Fixes
 #     - Humidity interpolation is wrong when no humidity in meteo is supplied.
 #       I can't really test this because bug in old method. .interpolationPointSeries
@@ -98,26 +126,10 @@
 #     - Check with Miquel which are the mandatory variables for meteo (only temperatures?
 #       or also precipitation)
 # 1. Add wind logic to interpolation process
-# 1. Add interpolation cross validation and calibration routines
-#    (maybe temporal resolution also)
-#     - calibration process.
-#       - Fix bug in interpolator_calibration when station numeric vector is provided DONE
-#       - If we are on it, then improvements:
-#           - switch argument to return the interpolator with the parameters updated, instead of the
-#             calibration results DONE
-#           - accept also a vector of stations names. When numeric, use indexes, when character, use
-#             the name of the station to get the index (check for wrong names) DONE
-#           - add colnames and rownames to predicted matrix (rownames (dates) also in the
-#             observed matrix) DONE
-#           - perform all variables calibration (or at least more than one)
-#       - check results with old method
-#     - cross validation
-#       - logic DONE
-#       - messaging (remove interpolation messages and add custom ones for the
-#         cross validation routine) DONE
-#       - check results with old method
 # 1. Generalize complete method (not only meteospain) and tests
 # 1. Add a params setter for interpolators
+# 1. aggregating in meteospain2meteoland:
+#       - truncate radiation values to 0 (no negative values)
 
 
 
@@ -479,12 +491,50 @@ create_meteo_interpolator <- function(meteo_with_topo, params = NULL, ...) {
       sf::st_as_sf()
   }
 
+  # helper to complete topo when completing cases, also, convert any aspect or slope
+  # that is NA in 0 as it's better for the interpolation.
+  .fill_topo <- function(arranged_data) {
+
+    # create the aspect and slope vars if they dont exist
+    if (is.null(arranged_data[["slope"]])) {
+      arranged_data[["slope"]] <- 0
+    }
+    if (is.null(arranged_data[["aspect"]])) {
+      arranged_data[["aspect"]] <- 0
+    }
+    # fill the variables
+    arranged_data |>
+      dplyr::group_by(stationID) |>
+      dplyr::mutate(
+        # fill elevation
+        elevation = dplyr::if_else(
+          is.na(elevation),
+          unique(purrr::keep(elevation, ~!is.na(.x))),
+          elevation
+        ),
+        # fill slope and aspect
+        slope = dplyr::if_else(
+          is.na(slope),
+          0,
+          slope
+        ),
+        aspect = dplyr::if_else(
+          is.na(aspect),
+          0,
+          aspect
+        )
+      ) |>
+      dplyr::ungroup() |>
+      sf::st_as_sf()
+  }
+
   # data arranging
   meteo_arranged <- meteo_with_topo |>
     # very important step, as we need all combinations to fill the arrays
     tidyr::complete(dates, stationID, explicit = FALSE) |>
     dplyr::arrange(stationID, dates) |>
-    .fill_elevation()
+    # .fill_elevation()
+    .fill_topo()
 
   # stations and dates
   stations <- meteo_arranged |>
@@ -990,7 +1040,7 @@ read_interpolator <- function(filename) {
     X = sf::st_coordinates(stars::st_get_dimension_values(interpolator, "station"))[,1],
     Y = sf::st_coordinates(stars::st_get_dimension_values(interpolator, "station"))[,2],
     Z = interpolator$elevation[1,],
-    T = t(filtered_interpolator[["SmoothedTemperatureRange"]]),
+    T = abs(t(filtered_interpolator[["SmoothedTemperatureRange"]])),
     iniRp = attr(interpolator, "params")$initial_Rp,
     alpha = attr(interpolator, "params")$alpha_MinTemperature,
     N = attr(interpolator, "params")$N_MinTemperature,
@@ -1250,7 +1300,7 @@ meteospain2meteoland <- function(meteo, complete = FALSE) {
       precipitation = .is_na_or_fun(precipitation, sum, na.rm = TRUE),
       mean_wind_speed = .is_na_or_fun(wind_speed, mean, na.rm = TRUE),
       mean_wind_direction = .is_na_or_fun(wind_direction, .summarise_wind_direction),
-      global_solar_radiation = .is_na_or_fun(global_solar_radiation, sum)
+      global_solar_radiation = .is_na_or_fun(global_solar_radiation, sum, na.rm = TRUE)
     ) |>
     dplyr::ungroup() |>
     dplyr::left_join(
@@ -1865,15 +1915,7 @@ interpolator_calibration <- function(
   stations_length <- length(stations_sfc)
 
   # station vector filling. If null, all the indexes, if character, convert to indexes
-  if (is.null(stations)) {
-    stations <- 1:stations_length
-  }
-  if (is.character(stations)) {
-    stations <- which(colnames(interpolator[[1]]) %in% stations)
-    if (length(stations) < 1) {
-      usethis::ui_stop("Station names not found in interpolator")
-    }
-  }
+  stations <- .station_indexes_converter(stations, interpolator)
 
   selected_stations <- rep(FALSE, stations_length)
   selected_stations[stations] <- TRUE
@@ -2132,8 +2174,11 @@ interpolator_calibration <- function(
 #' @noRd
 .station_cross_validation <- function(station_index, interpolator) {
 
-  # messaging
-  usethis::ui_todo(station_index)
+  # messaging (not all, every 5 or 10 maybe?)
+  if (station_index %% 5 == 0) {
+    usethis::ui_line("Processing station {station_index}.....")
+  }
+
 
   # get the point sf with topology info
   station_sf <- dplyr::tibble(
@@ -2184,7 +2229,8 @@ interpolator_calibration <- function(
       res |>
         dplyr::mutate(
           RangeTemperature = MaxTemperature - MinTemperature,
-          station = station_index
+          station = station_index,
+          stationID = colnames(interpolator[[1]])[station_index]
         )
     }
   )
@@ -2265,6 +2311,7 @@ interpolator_calibration <- function(
   total_errors <- dplyr::tibble(
     dates = predicted_df[["dates"]],
     station = predicted_df[["station"]],
+    stationID = observed_df[["stationID"]],
     MinTemperature_error =
       predicted_df[["MinTemperature"]] - observed_df[["MinTemperature"]],
     MaxTemperature_error =
@@ -2275,7 +2322,7 @@ interpolator_calibration <- function(
       predicted_df[["RelativeHumidity"]] - observed_df[["RelativeHumidity"]],
     Radiation_error =
       predicted_df[["Radiation"]] - observed_df[["Radiation"]],
-    Precipiation_error =
+    Precipitation_error =
       predicted_df[["Precipitation"]] - observed_df[["Precipitation"]]
   ) |>
     dplyr::mutate(
@@ -2297,6 +2344,7 @@ interpolator_calibration <- function(
   station_stats <- total_errors |>
     dplyr::group_by(station) |>
     dplyr::summarise(
+      stationID = dplyr::first(stationID),
       MinTemperature_station_bias = mean(MinTemperature_error, na.rm = TRUE),
       MaxTemperature_station_bias = mean(MaxTemperature_error, na.rm = TRUE),
       RangeTemperature_station_bias = mean(RangeTemperature_error, na.rm = TRUE),
@@ -2367,12 +2415,30 @@ interpolator_calibration <- function(
   ))
 }
 
+.station_indexes_converter <- function(stations, interpolator) {
+
+  res <- stations
+
+  if (is.null(stations)) {
+    res <- 1:length(stars::st_get_dimension_values(interpolator, "station"))
+  }
+
+  if (is.character(stations)) {
+    res <- which(colnames(interpolator[[1]]) %in% stations)
+    if (length(res) < 1) {
+      usethis::ui_stop("Station names not found in interpolator")
+    }
+  }
+
+  return(res)
+}
+
 #' @describeIn interpolator_calibration
 #'
 #' @return \code{interpolation_cross_validation} returns a list with the
 #' following items
 #' \itemize{
-#'   \item{total_errors: Data frame with each combination of station and date with
+#'   \item{errors: Data frame with each combination of station and date with
 #'   observed variables, predicated variables and the total error
 #'   (predicted - observed) calculated for each variable}
 #'   \item{station_stats: Data frame with error and bias statistics aggregated by
@@ -2389,16 +2455,16 @@ interpolation_cross_validation <- function(interpolator, stations = NULL) {
   # debug
   # browser()
 
-  # assertions
+  ### assertions
+  # interpolator
   assertthat::assert_that(.is_interpolator(interpolator))
+  # stations
   assertthat::assert_that(
-    is.null(stations) || is.numeric(stations),
+    is.null(stations) || is.numeric(stations) || is.character(stations),
     msg = "stations must be NULL or a numeric vector with the stations indexes"
   )
 
-  if (is.null(stations)) {
-    stations <- 1:length(stars::st_get_dimension_values(interpolator, "station"))
-  }
+  stations <- .station_indexes_converter(stations, interpolator)
 
   usethis::ui_info("Starting Cross Validation process...")
   observed_values <- .interpolator2tibble(interpolator) |>

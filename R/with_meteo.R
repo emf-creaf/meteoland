@@ -118,6 +118,8 @@
 ###           the aspect and slope vars if they are not present in the meteo. In Miquel's they are
 ###           filled with 0s which makes the difference in the Radiation calculation.
 ###           To fix this I have to create the aspect and the slope with zeros DONE
+### 1. aggregating in meteospain2meteoland: DONE
+###       - truncate radiation values to 0 (no negative values) DONE
 # 1. Fixes
 #     - Humidity interpolation is wrong when no humidity in meteo is supplied.
 #       I can't really test this because bug in old method. .interpolationPointSeries
@@ -128,8 +130,6 @@
 # 1. Add wind logic to interpolation process
 # 1. Generalize complete method (not only meteospain) and tests
 # 1. Add a params setter for interpolators
-# 1. aggregating in meteospain2meteoland:
-#       - truncate radiation values to 0 (no negative values)
 
 
 
@@ -1285,6 +1285,11 @@ meteospain2meteoland <- function(meteo, complete = FALSE) {
 
   grouped_meteo |>
     .create_missing_vars() |>
+    dplyr::mutate(
+      global_solar_radiation = dplyr::if_else(
+        global_solar_radiation < 0, 0, global_solar_radiation
+      )
+    ) |>
     dplyr::summarise(
       # service = .is_na_or_fun(service, dplyr::first),
       station_id = .is_na_or_fun(station_id, dplyr::first),

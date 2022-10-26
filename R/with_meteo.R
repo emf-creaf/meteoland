@@ -131,7 +131,12 @@
 ###       Fixed in the old one, checked with the new and same results. DONE
 ###     - Check with Miquel which are the mandatory variables for meteo (only temperatures?
 ###       or also precipitation) NOTFIX
-# 1. Generalize complete method (not only meteospain) and tests
+### 1. Generalize complete method (not only meteospain) and tests DONE
+###       - The method is already generalize. We start from a meteo sf based on the with_meteo
+###         specifications, so is very straightforward. complete_meteo can be used in any
+###         meteo object complying.
+###       - Test for this are already in the meteospain2meteoland tests so no need to add more
+###         for the moment
 # 1. Add a params setter for interpolators
 
 
@@ -405,22 +410,21 @@ add_topo <- function(meteo, topo) {
 #' @return A complete parameter list to use in the interpolator object
 #' @family interpolator functions
 #' @noRd
-.get_params <- function(params) {
+.safely_create_interpolation_params <- function(params, ref = defaultInterpolationParams()) {
   if (is.null(params)) {
     usethis::ui_warn("No interpolation parameters provided, using defaults")
     return(defaultInterpolationParams())
   }
 
-  default_params <- defaultInterpolationParams()
-  user_params <- params[names(params) %in% names(default_params)]
+  user_params <- params[names(params) %in% names(ref)]
 
-  if (length(user_params) < length(default_params)) {
+  if (length(user_params) < length(ref)) {
     usethis::ui_info("Some interpolation parameters are missing, using default values for those")
   }
 
-  if (length(params[!names(params) %in% names(default_params)]) > 0) {
+  if (length(params[!names(params) %in% names(ref)]) > 0) {
     offending_params <- names(
-      params[!names(params) %in% names(default_params)]
+      params[!names(params) %in% names(ref)]
     )
     usethis::ui_warn(
       "The following interpolation parameters were provided and will not be used:"
@@ -429,10 +433,50 @@ add_topo <- function(meteo, topo) {
   }
 
   for (name in names(user_params)) {
-    default_params[[name]] <- user_params[[name]]
+    ref[[name]] <- user_params[[name]]
   }
 
-  return(default_params)
+  return(ref)
+}
+
+#' Retrieving interpolation parameters from interpolator object
+#'
+#' Retrieve the parameter list from and interpolator object
+#'
+#' @param interpolator interpolator object as returned by \code{\link{create_meteo_interpolator}}
+#'
+#' @return The complete parameter list from the interpolator object
+#' @family interpolator functions
+#' @export
+get_interpolation_params <- function(interpolator) {
+  return(attr(interpolator, "params"))
+}
+
+#' Setting interpolation parameters in an interpolator object
+#'
+#' Changing or updating interpolation parameters in an interpolator object
+#'
+#' This function ensures that if no parameters are provided, the default ones
+#' are used (see \code{\link{defaultInterpolationParams}}).
+#' Also, if params are partially provided, this function ensures that
+#' the rest of the parameters are not changed.
+#'
+#' @param interpolator interpolator object to update
+#' @param params list with the parameters provided by the user
+#'
+#' @return The same interpolator object provided, with the updated interpolation parameters
+#' @family interpolator functions
+#' @export
+set_interpolation_params <- function(interpolator, params = NULL) {
+  # ensure the params are correct and fill any lacking with the defaults
+  safe_params <-
+    .safely_create_interpolation_params(params, get_interpolation_params(interpolator))
+  # remove any previous params
+  attr(interpolator, "params") <- NULL
+  # add new ones
+  attr(interpolator, "params") <- safe_params
+
+  return(interpolator)
 }
 
 #' Meteoland interpolator creation
@@ -460,15 +504,12 @@ create_meteo_interpolator <- function(meteo_with_topo, params = NULL, ...) {
   usethis::ui_info("Creating interpolator...")
 
   # get params
-  params <- .get_params(params)
+  params <- .safely_create_interpolation_params(params)
 
   # data preparation
 
   # elevation filtering
   if (any(is.na(meteo_with_topo[["elevation"]]))) {
-    usethis::ui_warn(
-      "Some meteo stations lack values for elevation, filtering those stations out"
-    )
 
     meteo_with_topo <- meteo_with_topo |>
       dplyr::filter(!is.na(elevation))
@@ -477,6 +518,11 @@ create_meteo_interpolator <- function(meteo_with_topo, params = NULL, ...) {
       usethis::ui_stop("No elevation values for any station, stopping creation of the interpolator")
     }
 
+    # warning here, because that way if there is no elevation whatsoever we get
+    # only the error (as it should be), not the warning AND the error.
+    usethis::ui_warn(
+      "Some meteo stations lack values for elevation, filtering those stations out"
+    )
   }
 
   # helper to avoid NAs in elevation when completing cases
@@ -733,7 +779,7 @@ write_interpolator <- function(interpolator, filename, .overwrite = FALSE) {
 
 
 
-  interpolator_attributes <- attr(interpolator, "params")
+  interpolator_attributes <- get_interpolation_params(interpolator)
   interpolator_attributes[["debug"]] <-
     dplyr::if_else(interpolator_attributes[["debug"]], 1, 0)
 
@@ -941,11 +987,11 @@ read_interpolator <- function(filename) {
     Y = sf::st_coordinates(stars::st_get_dimension_values(interpolator, "station"))[,2],
     Z = interpolator$elevation[1,],
     T = tmin_interpolator,
-    iniRp = attr(interpolator, "params")$initial_Rp,
-    alpha = attr(interpolator, "params")$alpha_MinTemperature,
-    N = attr(interpolator, "params")$N_MinTemperature,
-    iterations = attr(interpolator, "params")$iterations,
-    debug = attr(interpolator, "params")$debug
+    iniRp = get_interpolation_params(interpolator)$initial_Rp,
+    alpha = get_interpolation_params(interpolator)$alpha_MinTemperature,
+    N = get_interpolation_params(interpolator)$N_MinTemperature,
+    iterations = get_interpolation_params(interpolator)$iterations,
+    debug = get_interpolation_params(interpolator)$debug
   )
 
   tmax <- .interpolateTemperatureSeriesPoints(
@@ -955,11 +1001,11 @@ read_interpolator <- function(filename) {
     Y = sf::st_coordinates(stars::st_get_dimension_values(interpolator, "station"))[,2],
     Z = interpolator$elevation[1,],
     T = tmax_interpolator,
-    iniRp = attr(interpolator, "params")$initial_Rp,
-    alpha = attr(interpolator, "params")$alpha_MaxTemperature,
-    N = attr(interpolator, "params")$N_MaxTemperature,
-    iterations = attr(interpolator, "params")$iterations,
-    debug = attr(interpolator, "params")$debug
+    iniRp = get_interpolation_params(interpolator)$initial_Rp,
+    alpha = get_interpolation_params(interpolator)$alpha_MaxTemperature,
+    N = get_interpolation_params(interpolator)$N_MaxTemperature,
+    iterations = get_interpolation_params(interpolator)$iterations,
+    debug = get_interpolation_params(interpolator)$debug
   )
 
   tmean <- 0.606*tmax+0.394*tmin
@@ -973,15 +1019,15 @@ read_interpolator <- function(filename) {
     Z = interpolator$elevation[1,],
     P = t(filtered_interpolator[["Precipitation"]]),
     Psmooth = t(filtered_interpolator[["SmoothedPrecipitation"]]),
-    iniRp = attr(interpolator, "params")$initial_Rp,
-    alpha_event = attr(interpolator, "params")$alpha_PrecipitationEvent,
-    alpha_amount = attr(interpolator, "params")$alpha_PrecipitationAmount,
-    N_event = attr(interpolator, "params")$N_PrecipitationEvent,
-    N_amount = attr(interpolator, "params")$N_PrecipitationAmount,
-    iterations = attr(interpolator, "params")$iterations,
-    popcrit = attr(interpolator, "params")$pop_crit,
-    fmax = attr(interpolator, "params")$f_max,
-    debug = attr(interpolator, "params")$debug
+    iniRp = get_interpolation_params(interpolator)$initial_Rp,
+    alpha_event = get_interpolation_params(interpolator)$alpha_PrecipitationEvent,
+    alpha_amount = get_interpolation_params(interpolator)$alpha_PrecipitationAmount,
+    N_event = get_interpolation_params(interpolator)$N_PrecipitationEvent,
+    N_amount = get_interpolation_params(interpolator)$N_PrecipitationAmount,
+    iterations = get_interpolation_params(interpolator)$iterations,
+    popcrit = get_interpolation_params(interpolator)$pop_crit,
+    fmax = get_interpolation_params(interpolator)$f_max,
+    debug = get_interpolation_params(interpolator)$debug
   )
 
   DOY <- as.numeric(format(dates, "%j"))
@@ -1017,11 +1063,11 @@ read_interpolator <- function(filename) {
       Y = sf::st_coordinates(stars::st_get_dimension_values(interpolator, "station"))[,2],
       Z = interpolator$elevation[1,],
       T = t(TdewM),
-      iniRp = attr(interpolator, "params")$initial_Rp,
-      alpha = attr(interpolator, "params")$alpha_DewTemperature,
-      N = attr(interpolator, "params")$N_DewTemperature,
-      iterations = attr(interpolator, "params")$iterations,
-      debug = attr(interpolator, "params")$debug
+      iniRp = get_interpolation_params(interpolator)$initial_Rp,
+      alpha = get_interpolation_params(interpolator)$alpha_DewTemperature,
+      N = get_interpolation_params(interpolator)$N_DewTemperature,
+      iterations = get_interpolation_params(interpolator)$iterations,
+      debug = get_interpolation_params(interpolator)$debug
     )
 
     rhmean <- .relativeHumidityFromDewpointTemp(tmean, tdew) |>
@@ -1044,11 +1090,11 @@ read_interpolator <- function(filename) {
     Y = sf::st_coordinates(stars::st_get_dimension_values(interpolator, "station"))[,2],
     Z = interpolator$elevation[1,],
     T = abs(t(filtered_interpolator[["SmoothedTemperatureRange"]])),
-    iniRp = attr(interpolator, "params")$initial_Rp,
-    alpha = attr(interpolator, "params")$alpha_MinTemperature,
-    N = attr(interpolator, "params")$N_MinTemperature,
-    iterations = attr(interpolator, "params")$iterations,
-    debug = attr(interpolator, "params")$debug
+    iniRp = get_interpolation_params(interpolator)$initial_Rp,
+    alpha = get_interpolation_params(interpolator)$alpha_MinTemperature,
+    N = get_interpolation_params(interpolator)$N_MinTemperature,
+    iterations = get_interpolation_params(interpolator)$iterations,
+    debug = get_interpolation_params(interpolator)$debug
   )
 
   latrad <- sf::st_coordinates(sf::st_transform(sf, 4326))[,2] * (pi/180)
@@ -1072,14 +1118,12 @@ read_interpolator <- function(filename) {
     WD = t(filtered_interpolator[["WindDirection"]]),
     X = sf::st_coordinates(stars::st_get_dimension_values(interpolator, "station"))[,1],
     Y = sf::st_coordinates(stars::st_get_dimension_values(interpolator, "station"))[,2],
-    iniRp = attr(interpolator, "params")$initial_Rp,
-    alpha = attr(interpolator, "params")$alpha_Wind,
-    N = attr(interpolator, "params")$N_Wind,
-    iterations = attr(interpolator, "params")$iterations
+    iniRp = get_interpolation_params(interpolator)$initial_Rp,
+    alpha = get_interpolation_params(interpolator)$alpha_Wind,
+    N = get_interpolation_params(interpolator)$N_Wind,
+    iterations = get_interpolation_params(interpolator)$iterations
   )
 
-  # wind_speed <- wind$WS
-  # wind_direction <- wind$WD
   # PET, not sure if implement or not
 
 
@@ -1646,7 +1690,7 @@ assertthat::on_failure(.is_raster) <- function(call, env) {
 #'
 #' @noRd
 .is_interpolator <- function(interpolator) {
-  has_params <- !is.null(attr(interpolator, "params"))
+  has_params <- !is.null(get_interpolation_params(interpolator))
   has_correct_dimensions <-
     all(c('date', 'station') %in% names(stars::st_dimensions(interpolator)))
 
@@ -1944,7 +1988,7 @@ interpolator_calibration <- function(
   selected_stations[stations] <- TRUE
 
   # get parameters
-  interpolator_params <- attr(interpolator, 'params')
+  interpolator_params <- get_interpolation_params(interpolator)
 
   # MAE matrix
   mae_matrix <- matrix(
@@ -2152,10 +2196,14 @@ interpolator_calibration <- function(
   if (isTRUE(update_interpolator_params)) {
     params_names <- c("alpha_", "N_") |>
       paste0(variable)
-    attr(interpolator, "params")[[params_names[1]]] <- res[["alpha"]]
-    attr(interpolator, "params")[[params_names[2]]] <- res[["N"]]
+    interpolator_params <- get_interpolation_params(interpolator)
+    interpolator_params[[params_names[1]]] <- res[["alpha"]]
+    interpolator_params[[params_names[2]]] <- res[["N"]]
 
-    return(interpolator)
+    interpolator_updated <-
+      set_interpolation_params(interpolator, interpolator_params)
+
+    return(interpolator_updated)
   }
 
   return(res)

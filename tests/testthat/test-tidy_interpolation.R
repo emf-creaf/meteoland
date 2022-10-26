@@ -93,11 +93,11 @@ test_that("meteospain2meteoland works", {
 
   # subdaily checks
   expect_warning(
-    subdaily_fixed <- .fix_station_geometries(meteo_test_subdaily_with_errors),
+    (subdaily_fixed <- .fix_station_geometries(meteo_test_subdaily_with_errors)),
     "Choosing the most recent metadata"
   )
   expect_message(
-    subdaily_aggregated <- .aggregate_subdaily_meteospain(subdaily_fixed),
+    (subdaily_aggregated <- .aggregate_subdaily_meteospain(subdaily_fixed)),
     "Provided meteospain data seems to be in subdaily time steps"
   )
   expect_true(nrow(subdaily_fixed) > nrow(subdaily_aggregated))
@@ -120,7 +120,7 @@ test_that("meteospain2meteoland works", {
   )
 
   expect_s3_class(
-    test_subdaily_complete <- meteospain2meteoland(subdaily_fixed, complete = TRUE),
+    (test_subdaily_complete <- meteospain2meteoland(subdaily_fixed, complete = TRUE)),
     "sf"
   )
   expect_identical(nrow(test_subdaily_complete), nrow(test_subdaily))
@@ -259,19 +259,34 @@ test_that("create_meteo_interpolator works as expected", {
     "are missing"
   )
   expect_identical(
-    suppressWarnings(.get_params(NULL)),
+    suppressWarnings(.safely_create_interpolation_params(NULL)),
     defaultInterpolationParams()
   )
   expect_identical(
-    .get_params(defaultInterpolationParams()), defaultInterpolationParams()
+    .safely_create_interpolation_params(defaultInterpolationParams()), defaultInterpolationParams()
   )
   expect_identical(
-    suppressWarnings(.get_params(list(debug = FALSE))),
+    suppressWarnings(.safely_create_interpolation_params(list(debug = FALSE))),
     defaultInterpolationParams()
   )
   expect_identical(
-    .get_params(list(debug = TRUE))$wind_height, defaultInterpolationParams()$wind_height
+    .safely_create_interpolation_params(list(debug = TRUE))$wind_height, defaultInterpolationParams()$wind_height
   )
+  expect_true(
+    .safely_create_interpolation_params(list(debug = TRUE))$debug
+  )
+
+  params_names <- c(
+    "initial_Rp", "iterations", "alpha_MinTemperature", "alpha_MaxTemperature",
+    "alpha_DewTemperature", "alpha_PrecipitationEvent", "alpha_PrecipitationAmount",
+    "alpha_Wind", "N_MinTemperature", "N_MaxTemperature", "N_DewTemperature",
+    "N_PrecipitationEvent", "N_PrecipitationAmount", "N_Wind", "St_Precipitation",
+    "St_TemperatureRange", "pop_crit", "f_max", "wind_height", "debug"
+  )
+  expect_named(suppressWarnings(.safely_create_interpolation_params(NULL)), params_names)
+  expect_named(suppressWarnings(.safely_create_interpolation_params(list(tururu = 'tururu'))), params_names)
+  expect_named(suppressWarnings(.safely_create_interpolation_params(list(iterations = 25))), params_names)
+
   meteo_test_with_topo_elevation_nas <- meteo_test_with_topo
   meteo_test_with_topo_elevation_nas[1:5, "elevation"] <- NA
   meteo_test_with_topo_elevation_all_nas <- meteo_test_with_topo |>
@@ -339,6 +354,33 @@ test_that("create_meteo_interpolator works as expected", {
 suppressWarnings(
   interpolator_test <- create_meteo_interpolator(meteo_test_with_topo)
 )
+
+test_that("get and set params methods work as expected", {
+
+  # get
+  expect_identical(get_interpolation_params(interpolator_test), attr(interpolator_test, 'params'))
+
+  # set
+  expect_warning(set_interpolation_params(interpolator_test), "using defaults")
+  expect_identical(
+    get_interpolation_params(suppressWarnings(set_interpolation_params(interpolator_test))),
+    defaultInterpolationParams()
+  )
+  expect_warning(set_interpolation_params(interpolator_test, list(debig = FALSE)), "will not be used")
+  expect_message(set_interpolation_params(interpolator_test, list(debug = TRUE)), "using default")
+  expect_s3_class(set_interpolation_params(interpolator_test, list(debug = TRUE)), "stars")
+  expect_true(
+    get_interpolation_params(set_interpolation_params(interpolator_test, list(debug = TRUE)))$debug
+  )
+  interpolator_updated <- set_interpolation_params(interpolator_test, list(N_MinTemperature = 99))
+  interpolator_updated_2 <- set_interpolation_params(interpolator_updated, list(N_MaxTemperature = 125))
+  expect_true(get_interpolation_params(interpolator_updated)$N_MinTemperature == 99)
+  expect_true(
+    get_interpolation_params(interpolator_updated_2)$N_MinTemperature == 99 &&
+      get_interpolation_params(interpolator_updated_2)$N_MaxTemperature == 125
+  )
+  expect_false(get_interpolation_params(interpolator_updated)$N_MaxTemperature == 125)
+})
 
 test_that("write and read interpolators works as expected", {
   tmp_dir <- tempdir()

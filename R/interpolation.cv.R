@@ -1,4 +1,11 @@
 interpolation.cv<-function(object, stations = NULL, verbose = FALSE) {
+  lifecycle::deprecate_warn(
+    when = "1.1.0", what = "interpolation.cv()", with = "interpolation_cross_validation()",
+    details = "MeteorologyInterpolationData class is soft deprecated.
+    Interpolator object should be created with create_meteo_interpolator() and the cross validation
+    must be done with interpolation_cross_validation() "
+  )
+
   if(!inherits(object, "MeteorologyInterpolationData")) stop("'object' has to be of class 'MeteorologyInterpolationData'")
   if(is.null(stations)) stations = 1:length(object@elevation)
   points = SpatialPoints(object@coords, object@proj4string)
@@ -34,7 +41,7 @@ interpolation.cv<-function(object, stations = NULL, verbose = FALSE) {
     if(sum(!is.na(c(oprec, orh, omaxt, omint)))==0) {
       if(verbose) {
         cat(paste("Station #",i," ", codes[i],": No observations.\n",sep=""))
-      } 
+      }
     } else {
       if(verbose) {
         cat(paste("Station #",i," ", codes[i],"\n",sep=""))
@@ -65,7 +72,7 @@ interpolation.cv<-function(object, stations = NULL, verbose = FALSE) {
   Precipitation[is.na(object@Precipitation)] = NA
   Radiation[is.na(object@Radiation)] = NA
   RelativeHumidity[is.na(object@RelativeHumidity)] = NA
-  
+
   #Process results
   nstations = length(codes)
   mintemp_station_mae =rep(NA,nstations)
@@ -103,7 +110,7 @@ interpolation.cv<-function(object, stations = NULL, verbose = FALSE) {
   if(sum(!is.na(as.vector(temprange_pred)) & !is.na(as.vector(temprange_obs)))>0) {
     temprange_r2 = cor(as.vector(temprange_pred), as.vector(temprange_obs), use="complete.obs")
   }
-  
+
   rh_station_mae = rep(NA,nstations)
   rh_station_bias = rep(NA,nstations)
   rh_day_mae = rep(NA,ndates)
@@ -128,7 +135,7 @@ interpolation.cv<-function(object, stations = NULL, verbose = FALSE) {
   if(sum(!is.na(as.vector(rad_pred)) & !is.na(as.vector(rad_obs)))>0) {
     rad_r2 = cor(as.vector(rad_pred), as.vector(rad_obs), use="complete.obs")
   }
-  
+
   prec_obs = as.matrix(object@Precipitation[stations,])
   prec_pred = as.matrix(Precipitation[stations,])
   prec_pred[is.na(prec_obs)] = NA

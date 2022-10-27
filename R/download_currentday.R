@@ -6,7 +6,7 @@
   coords_data <- as.data.frame(coordinates(spdf_data))
   data_df$lon = coords_data$coords.x1
   data_df$lat = coords_data$coords.x2
-  
+
   if(verbose)cat("\nFormating data")
   if(service=="meteocat") {
     varnames <-c("station_id", "lon", "lat", "station_name", "altitude", "timestamp", "temperature",  "precipitation",
@@ -20,11 +20,11 @@
   data_df <- data_df[,varnames]
   data_df[,numvar] <- sapply(data_df[,numvar],as.numeric)
   data_df$timestamp <- as.POSIXlt(sub("T", " ",data_df$timestamp), format = "%Y-%m-%d %H:%M:%S")
-  
+
   if(daily){
     if(verbose)cat("\nAggregating hourly data to 24h-scale\n")
     options(warn=-1)
-    data_agg <- aggregate(data_df[,numvar],list(station_id = data_df$station_id, station_name = data_df$station_name), 
+    data_agg <- aggregate(data_df[,numvar],list(station_id = data_df$station_id, station_name = data_df$station_name),
                           function(x){mean<-mean(x,na.rm=T);min<-min(x,na.rm=T);max<-max(x,na.rm=T);sum<-sum(x,na.rm=T)
                           return(c(mean=mean,min=min,max=max,sum=sum))})
     # wind direction
@@ -38,25 +38,25 @@
                         })
     options(warn=0)
     if(service=="meteocat") {
-      data_df <- data.frame(ID = as.character(data_agg$station_id), name = data_agg$station_name, 
+      data_df <- data.frame(ID = as.character(data_agg$station_id), name = data_agg$station_name,
                             long = data_agg$lon[,"mean"],lat = data_agg$lat[,"mean"], elevation = data_agg$altitude[,"mean"],
                             MeanTemperature = data_agg$temperature[,"mean"], MinTemperature = data_agg$temperature[,"min"], MaxTemperature = data_agg$temperature[,"max"],
                             Precipitation = data_agg$precipitation[,"sum"], WindSpeed = data_agg$wind_speed[,"mean"], WindDirection = dv_agg$dv,
                             MeanRelativeHumidity = data_agg$relative_humidity[,"mean"], MinRelativeHumidity = data_agg$relative_humidity[,"min"], MaxRelativeHumidity = data_agg$relative_humidity[,"max"])
     } else {
-      data_df <- data.frame(ID = as.character(data_agg$station_id), name = data_agg$station_name, 
+      data_df <- data.frame(ID = as.character(data_agg$station_id), name = data_agg$station_name,
                             long = data_agg$lon[,"mean"],lat = data_agg$lat[,"mean"], elevation = data_agg$altitude[,"mean"],
                             MeanTemperature = data_agg$temperature[,"mean"], MinTemperature = data_agg$min_temperature[,"min"], MaxTemperature = data_agg$max_temperature[,"max"],
                             Precipitation = data_agg$precipitation[,"sum"], WindSpeed = data_agg$wind_speed[,"mean"], WindDirection = dv_agg$dv,
                             MeanRelativeHumidity = data_agg$relative_humidity[,"mean"], MinRelativeHumidity = data_agg$relative_humidity[,"min"], MaxRelativeHumidity = data_agg$relative_humidity[,"max"])
     }
-    
+
     data_df <- as.data.frame(lapply(data_df,function(x){
       x. <- x
       if(is.numeric(x.))x.[is.nan(x.)|is.infinite(x.)] <- NA
       return(x.)
     }))
-    
+
     data_sp <- SpatialPointsDataFrame(coords = data_df[,c("long", "lat")],
                                       data = data_df[,which(!colnames(data_df) %in% c("long", "lat", "name", "ID"))],
                                       proj4string = CRS(SRS_string = "EPSG:4326"))
@@ -66,16 +66,16 @@
     if(verbose)cat("\nHourly results are returned\n")
     if(service=="meteocat") {
       data_out <-data_df[,c("station_id", "lon", "lat", "station_name", "altitude", "timestamp",
-                            "temperature", 
+                            "temperature",
                             "precipitation", "relative_humidity", "wind_direction", "wind_speed")]
-      colnames(data_out) <- c("ID", "long", "lat", "name", "elevation", "timestamp", 
-                              "MeanTemperature", 
+      colnames(data_out) <- c("ID", "long", "lat", "name", "elevation", "timestamp",
+                              "MeanTemperature",
                               "Precipitation", "MeanRelativeHumidity", "WindDirection", "WindSpeed")
     } else {
       data_out <-data_df[,c("station_id", "lon", "lat", "station_name", "altitude", "timestamp",
-                            "temperature", "min_temperature", "max_temperature", 
+                            "temperature", "min_temperature", "max_temperature",
                             "precipitation", "relative_humidity", "wind_direction", "wind_speed")]
-      colnames(data_out) <- c("ID", "long", "lat", "name", "elevation", "timestamp", 
+      colnames(data_out) <- c("ID", "long", "lat", "name", "elevation", "timestamp",
                               "MeanTemperature", "MinTemperature", "MaxTemperature",
                               "Precipitation", "MeanRelativeHumidity", "WindDirection", "WindSpeed")
     }
@@ -85,6 +85,13 @@
 
 #### AEMET
 downloadAEMETcurrentday <- function(api, daily = TRUE, verbose=TRUE){
+
+  # deprecation warning
+  lifecycle::deprecate_warn(
+    when = "1.1.0", what = "downloadAEMETcurrentday()", with = "meteospain::get_meteo_from()",
+    details = "This function is deprecated in favour of the meteospain package"
+  )
+
   if(verbose) cat("Downloading hourly data from all available stations")
   api_options <- meteospain::aemet_options(resolution = 'current_day', api_key = api)
   data_ms <- meteospain::get_meteo_from("aemet", api_options)
@@ -94,18 +101,30 @@ downloadAEMETcurrentday <- function(api, daily = TRUE, verbose=TRUE){
 
 
 #### SMC
-downloadSMCcurrentday <- function(api, daily=TRUE, station_id=NULL, 
+downloadSMCcurrentday <- function(api, daily=TRUE, station_id=NULL,
                                   date = Sys.Date(), verbose=TRUE){
-  api_options <- meteospain::meteocat_options(resolution = 'hourly', api_key = api, 
+
+  # deprecation warning
+  lifecycle::deprecate_warn(
+    when = "1.1.0", what = "downloadSMCcurrentday()", with = "meteospain::get_meteo_from()",
+    details = "This function is deprecated in favour of the meteospain package"
+  )
+  api_options <- meteospain::meteocat_options(resolution = 'hourly', api_key = api,
                                   start_date = date, stations = station_id)
   if(verbose)cat("Downloading hourly data from all available stations\n")
   data_ms <- meteospain::get_meteo_from("meteocat", api_options)
   return(.reshapemeteospain_current(data_ms, daily = daily,  service = "meteocat",verbose = verbose))
 }
 
- 
+
 #### MeteoGalicia
 downloadMGcurrentday <- function(station_id=NULL, daily = TRUE, verbose = TRUE) {
+  # deprecation warning
+  lifecycle::deprecate_warn(
+    when = "1.1.0", what = "downloadMGcurrentday()", with = "meteospain::get_meteo_from()",
+    details = "This function is deprecated in favour of the meteospain package"
+  )
+
   if(verbose) cat("Downloading hourly data from all available stations")
   api_options <- meteospain::meteogalicia_options(resolution = 'current_day', stations = station_id)
   data_ms <- meteospain::get_meteo_from("meteogalicia", api_options)
@@ -114,6 +133,11 @@ downloadMGcurrentday <- function(station_id=NULL, daily = TRUE, verbose = TRUE) 
 
 #### Meteoclimatic
 downloadMETEOCLIMATICcurrentday <- function(station_id = "ESCAT") {
+  # deprecation warning
+  lifecycle::deprecate_warn(
+    when = "1.1.0", what = "downloadMETEOCLIMATICcurrentday()", with = "meteospain::get_meteo_from()",
+    details = "This function is deprecated in favour of the meteospain package"
+  )
   api_options <- meteospain::meteoclimatic_options(stations = station_id, resolution = "current_day")
   data_ms <- meteospain::get_meteo_from("meteoclimatic", api_options)
   data_sp <- as(data_ms, "Spatial")

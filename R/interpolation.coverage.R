@@ -1,4 +1,10 @@
 interpolation.coverage<-function(object, type="spatial", percent = FALSE) {
+  lifecycle::deprecate_warn(
+    when = "1.1.0", what = "interpolation.coverage()", with = "create_meteo_interpolator()",
+    details = "MeteorologyInterpolationData class is soft deprecated.
+    A summary of the variables can be glanced calling the interpolator object"
+  )
+
   if(!inherits(object, "MeteorologyInterpolationData")) stop("'object' has to be of class 'MeteorologyInterpolationData'")
   type = match.arg(type, c("spatial","temporal"))
   if(type=="spatial") {

@@ -137,7 +137,8 @@
 ###         meteo object complying.
 ###       - Test for this are already in the meteospain2meteoland tests so no need to add more
 ###         for the moment
-# 1. Add a params setter for interpolators
+### 1. Add a params setter for interpolators DONE
+# 1. Ask Miquel if interpolator.coverage must be implemented
 
 
 

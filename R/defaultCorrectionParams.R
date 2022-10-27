@@ -1,5 +1,12 @@
 #Default parameters for meteorological correction
 defaultCorrectionParams<-function() {
+
+  # deprecation warning
+  lifecycle::deprecate_warn(
+    when = "1.1.0", what = "defaultCorrectionParams()", with = NULL,
+    details = "Better correction methods are provided by other packages (see * and * for example)"
+  )
+
   return(list(
    varmethods = list(MeanTemperature = "unbias",
                  MinTemperature = "quantmap",

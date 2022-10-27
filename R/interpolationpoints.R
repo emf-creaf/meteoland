@@ -147,6 +147,15 @@ interpolationpoints<-function(object, points, dates = NULL,
                               export=FALSE, exportDir = getwd(), exportFile = NULL,
                               exportFormat = "meteoland/txt",
                               metadataFile = "MP.txt", verbose=TRUE) {
+  # deprecation warning
+  lifecycle::deprecate_warn(
+    when = "1.1.0", what = "interpolationpoints()", with = "interpolate_data()",
+    details = "Spatial_*_Topography and MetereologyInterpolationData classes are soft deprecated.
+    Interpolator should be created with create_meteo_interpolator(),
+    and spatial objects to interpolate should be from sf (vector) or star (raster) classes.
+    Interpolation is performed with interpolate_data()"
+  )
+
   if(export) exportFormat = match.arg(exportFormat, c("meteoland/txt", "meteoland/rds", "castanea/txt", "castanea/rds", "netCDF"))
 
   if(!inherits(object,"MeteorologyInterpolationData")) stop("'object' has to be of class 'MeteorologyInterpolationData'.")

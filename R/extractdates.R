@@ -1,10 +1,18 @@
 extractvars<-function(object, vars, verbose = FALSE) {
+  # deprecation warning
+  lifecycle::deprecate_warn(
+    when = "1.1.0", what = "extractvars()", with = NULL,
+    details = "Spatial_*_Meteorology classes are soft deprecated.
+    Extraction of variables or dates can be done as in a normal data.frame as the meteo objects are
+    now sf objects"
+  )
+
   if((!inherits(object,"SpatialPointsMeteorology"))
      && (!inherits(object,"SpatialGridMeteorology"))
      && (!inherits(object,"SpatialPixelsMeteorology"))
-     && (!inherits(object,"character"))) 
+     && (!inherits(object,"character")))
     stop("'object' has to be of class 'Spatial*Meteorology' of a file name.")
-  
+
   for(i in 1:length(vars)) vars[i]<- match.arg(vars[i], c("MeanTemperature", "MinTemperature", "MaxTemperature",
                                                           "MeanRelativeHumidity", "MinRelativeHumidity", "MaxRelativeHumidity",
                                                           "Precipitation", "Radiation", "WindSpeed", "WindDirection", "SpecificHumidity", "PET"))
@@ -35,7 +43,7 @@ extractvars<-function(object, vars, verbose = FALSE) {
         dfj = object@data[[j]]
         df[[dates[j]]] = dfj[[vars[i]]]
       }
-      res[[i]] = SpatialPixelsDataFrame(object@coords, data = df, 
+      res[[i]] = SpatialPixelsDataFrame(object@coords, data = df,
                                         grid = object@grid, proj4string = object@proj4string)
     }
   }
@@ -45,12 +53,12 @@ extractvars<-function(object, vars, verbose = FALSE) {
     if(!is.null(names(object@data))) ids = names(object@data)
     else ids = 1:npoints
     ptsout = as(object,"SpatialPoints")
-    
+
     ndates = length(dates)
     dateschar =as.character(dates)
     res = vector("list", length(vars))
     names(res)<-vars
-    
+
     for(i in 1:length(vars)) {
       df = data.frame(row.names=ids)
       for(j in 1:npoints) {
@@ -59,18 +67,25 @@ extractvars<-function(object, vars, verbose = FALSE) {
       }
       res[[i]] = SpatialPointsDataFrame(ptsout,df)
     }
-  } 
+  }
   if(length(res)==1) return(res[[1]])
-  return(res)  
+  return(res)
 }
 extractdates<-function(object, dates = NULL, verbose=FALSE) {
+  lifecycle::deprecate_warn(
+    when = "1.1.0", what = "extractdates()", with = NULL,
+    details = "Spatial_*_Meteorology classes are soft deprecated.
+    Extraction of variables or dates can be done as in a normal data.frame as the meteo objects are
+    now sf objects"
+  )
+
   if((!inherits(object,"SpatialPointsMeteorology"))
      && (!inherits(object,"SpatialGridMeteorology"))
      && (!inherits(object,"SpatialPixelsMeteorology"))
-     && (!inherits(object,"character"))) 
+     && (!inherits(object,"character")))
     stop("'object' has to be of class 'Spatial*Meteorology' of a file name.")
-  if(!is.null(dates)) 
-    if((!inherits(dates,"Date")) && (!inherits(dates,"character"))) 
+  if(!is.null(dates))
+    if((!inherits(dates,"Date")) && (!inherits(dates,"character")))
       stop("'dates' has to be of class 'Date' or 'character'.")
   if(inherits(object,"SpatialGridMeteorology")) {
     if(is.null(dates)) dates = object@dates
@@ -89,7 +104,7 @@ extractdates<-function(object, dates = NULL, verbose=FALSE) {
     names(res)<-dates
     for(i in 1:length(dates)) {
       if(!(dates[i] %in% as.character(object@dates))) stop(" Date '",paste0(dates[i], "' not found in data."))
-      res[[i]] = SpatialPixelsDataFrame(object@coords, data = object@data[[dates[i]]], 
+      res[[i]] = SpatialPixelsDataFrame(object@coords, data = object@data[[dates[i]]],
                                         grid = object@grid, proj4string = object@proj4string)
     }
   }
@@ -100,13 +115,13 @@ extractdates<-function(object, dates = NULL, verbose=FALSE) {
     if(!is.null(names(object@data))) ids = names(object@data)
     else ids = 1:npoints
     ptsout = as(object,"SpatialPoints")
-    
+
     npoints = length(ids)
     ndates = length(dates)
     dateschar =as.character(dates)
     if(verbose) cat(paste("  Extracting ", ndates, " dates from ", npoints," points...\n", sep=""))
     res = vector("list", ndates)
-    
+
     if(verbose)  pb = txtProgressBar(0, npoints, 0, style = 3)
     for(i in 1:npoints) {
       if(verbose) setTxtProgressBar(pb, i)
@@ -121,13 +136,13 @@ extractdates<-function(object, dates = NULL, verbose=FALSE) {
       }
     }
     if(verbose) cat("\n")
-    
+
     for(d in 1:ndates) {
       res[[d]] = SpatialPointsDataFrame(ptsout,res[[d]])
     }
-  } 
+  }
   if(length(res)==1) return(res[[1]])
-  return(res)  
+  return(res)
 }
 
 

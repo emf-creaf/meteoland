@@ -1,4 +1,11 @@
 meteocomplete<-function(x, latitude, elevation, slope, aspect) {
+  # deprecation warning
+  lifecycle::deprecate_warn(
+    when = "1.1.0", what = "meteocomplete()", with = "complete_meteo()",
+    details = "Meteo objects complying with the new standard (see with_meteo()) can be completed
+    with complete_meteo()"
+  )
+
   patm = utils_atmosphericPressure(elevation)
   latrad = latitude*(pi/180)
   slorad = slope*(pi/180)
@@ -44,7 +51,7 @@ meteocomplete<-function(x, latitude, elevation, slope, aspect) {
       } else {
         rhmax = x$MaxRelativeHumidity[j]
       }
-      
+
     } else {
       #Mean relative humidity
       if(is.na(x$MeanRelativeHumidity[j])) {
@@ -73,7 +80,7 @@ meteocomplete<-function(x, latitude, elevation, slope, aspect) {
       sc = radiation_solarConstant(J)
       delta = radiation_solarDeclination(J)
       vpa = utils_averageDailyVP(tmin, tmax, rhmin, rhmax)
-      r_s = radiation_solarRadiation(sc,latrad = latrad, elevation, slorad, asprad, delta, 
+      r_s = radiation_solarRadiation(sc,latrad = latrad, elevation, slorad, asprad, delta,
                                      diffTemp,diffTemp, vpa, precipitation)
       x$Radiation[j] = r_s
     } else {

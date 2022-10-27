@@ -7,7 +7,7 @@
   z = grid@data$elevation
   mPar = object@params
   if(!("debug" %in% names(mPar))) mPar$debug = FALSE
-  
+
   tmin = .interpolateTemperatureSeriesPoints(Xp= cc[,1], Yp =cc[,2], Zp = z,
                                              X = object@coords[,1],
                                              Y = object@coords[,2],
@@ -87,7 +87,7 @@
   latrad = latitude * (pi/180)
   asprad = grid$aspect * (pi/180)
   slorad = grid$slope  * (pi/180)
-  rad = .radiationPoints(latrad, grid$elevation, slorad, asprad, J, 
+  rad = .radiationPoints(latrad, grid$elevation, slorad, asprad, J,
                          diffTemp, diffTempMonth, VP, prec)
   #wind
   if((!is.null(object@WFIndex)) && (!is.null(object@WFFactor))) {
@@ -144,11 +144,20 @@
 interpolationgrid<-function(object, grid, dates = NULL,
                             exportFile = NULL, exportFormat = "netCDF", add = FALSE, overwrite = FALSE,
                             verbose = TRUE) {
+  # deprecation warning
+  lifecycle::deprecate_warn(
+    when = "1.1.0", what = "interpolationgrid()", with = "interpolate_data()",
+    details = "Spatial_*_Topography and MetereologyInterpolationData classes are soft deprecated.
+    Interpolator should be created with create_meteo_interpolator(),
+    and spatial objects to interpolate should be from sf (vector) or star (raster) classes.
+    Interpolation is performed with interpolate_data()"
+  )
+
   if(!inherits(object,"MeteorologyInterpolationData")) stop("'object' has to be of class 'MeteorologyInterpolationData'.")
   if(!inherits(grid,"SpatialGridTopography")) stop("'grid' has to be of class 'SpatialGridTopography'.")
   if(!is.null(dates)) {
     if(!inherits(dates,"Date")) stop("'dates' has to be of class 'Date'.")
-    if(sum(as.character(dates) %in% as.character(object@dates))<length(dates)) 
+    if(sum(as.character(dates) %in% as.character(object@dates))<length(dates))
       stop("At least one of the dates is outside the time period for which interpolation is possible.")
   }
   else dates = object@dates

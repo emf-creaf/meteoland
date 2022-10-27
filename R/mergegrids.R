@@ -1,4 +1,10 @@
 mergegrids<-function(..., verbose = TRUE) {
+  # deprecation warning
+  lifecycle::deprecate_warn(
+    when = "1.1.0", what = "mergegrids()", with = NULL,
+    details = "Spatial_*_Meteorology classes are soft deprecated.
+    Meteo objects are now sf objects and can be merged, joined or filtered as any data.frame"
+  )
   l <- list(...)
   if(inherits(l[[1]], "list")) l = l[[1]]
   ng <- length(l)
@@ -54,6 +60,13 @@ mergegrids<-function(..., verbose = TRUE) {
 }
 
 mergepoints<-function(..., verbose = TRUE) {
+  # deprecation warning
+  lifecycle::deprecate_warn(
+    when = "1.1.0", what = "mergegrids()", with = NULL,
+    details = "Spatial_*_Meteorology classes are soft deprecated.
+    Meteo objects are now sf objects and can be merged, joined or filtered as any data.frame"
+  )
+
   l <- list(...)
   if(inherits(l[[1]], "list")) l = l[[1]]
   ng <- length(l)

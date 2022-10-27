@@ -1,14 +1,22 @@
-meteoplot<-function(object, index=1, var="MeanTemperature", 
+meteoplot<-function(object, index=1, var="MeanTemperature",
                     fun=NULL, freq=NULL, dates = NULL, months = NULL,
                     add = FALSE, ...){
-  if(!inherits(object,"data.frame") && !inherits(object,"SpatialPointsMeteorology") && !inherits(object,"SpatialPointsDataFrame")) 
+
+  # deprecation warning
+  lifecycle::deprecate_warn(
+    when = "1.1.0", what = "meteoplot()", with = NULL,
+    details = "Spatial_*_Meteorology classes are soft deprecated.
+    Meteo objects are now sf objects and can be plotted as any other data.frame"
+  )
+
+  if(!inherits(object,"data.frame") && !inherits(object,"SpatialPointsMeteorology") && !inherits(object,"SpatialPointsDataFrame"))
     stop("'object' should be of class 'data.frame', SpatialPointsMeteorology' or 'SpatialPointsDataFrame'.")
-  
+
   VARS = c("MeanTemperature", "MinTemperature","MaxTemperature","MaxMinTemperatureDiff","MaxMeanTemperatureDiff", "MinMeanTemperatureDiff","Precipitation",
            "SpecificHumidity", "MeanRelativeHumidity", "MinRelativeHumidity", "MaxRelativeHumidity",
            "Radiation", "WindSpeed", "WindDirection", "PET")
   var = match.arg(var, VARS)
-  
+
   if(inherits(object,"SpatialPointsDataFrame")) {
     f = paste(object@data$dir[index], object@data$filename[index], sep="/")
     cat(paste("Data read from file:", f, "\n"))
@@ -58,7 +66,7 @@ meteoplot<-function(object, index=1, var="MeanTemperature",
     } else if(var=="MinMeanTemperatureDiff") {
       vec = df[as.character(dates),"MinTemperature"] - df[as.character(dates),"MeanTemperature"]
     }
-  } 
+  }
   if((!is.null(fun)) && (!is.null(freq))) {
     date.factor = cut(dates, breaks=freq)
     vec = tapply(vec,INDEX=date.factor, FUN=fun, na.rm=TRUE)

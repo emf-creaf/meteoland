@@ -1,12 +1,20 @@
+#' `r lifecycle::badge("deprecated")`
 averagearea<-function(object, na.rm=TRUE) {
+
+  # deprecation warning
+  lifecycle::deprecate_warn(
+    when = "1.1.0", what = "averagearea()", with = NULL,
+    details = "Spatial_*_Meteorology classes are soft deprecated. To average meteo data series is better to use the corresponding functions in the sf package"
+  )
+
   # Calculate mean area series
-  if((!inherits(object,"SpatialPointsMeteorology")) 
-     && (!inherits(object,"SpatialGridMeteorology")) 
+  if((!inherits(object,"SpatialPointsMeteorology"))
+     && (!inherits(object,"SpatialGridMeteorology"))
      && (!inherits(object,"SpatialPixelsMeteorology"))) stop("'object' has to be of class 'Spatial_*_Meteorology'.")
   #Average coordinates
   cc = matrix(apply(coordinates(object), 2, mean), nrow=1, ncol=2)
   dates = object@dates
-  df = data.frame(row.names=as.character(dates)) 
+  df = data.frame(row.names=as.character(dates))
   cn = names(object@data[[1]])
   if(!("DOY" %in% cn)) cn = c("DOY", cn)
   df[cn] = NA

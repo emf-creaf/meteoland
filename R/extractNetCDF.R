@@ -1,7 +1,12 @@
 
 
-extractNetCDF<-function(ncdf_files, bbox = NULL, offset = 0, cells = NULL, export = TRUE, 
+extractNetCDF<-function(ncdf_files, bbox = NULL, offset = 0, cells = NULL, export = TRUE,
                         exportDir = getwd(), exportFormat = "meteoland/txt", mpfilename = "MP.txt") {
+
+  lifecycle::deprecate_warn(
+    when = "1.1.0", what = "extractNetCDF()", with = NULL,
+    details = "???"
+  )
 
   nfiles = length(ncdf_files)
   cat(paste("Number of NetCDFs: ", nfiles,"\n", sep=""))
@@ -15,7 +20,7 @@ extractNetCDF<-function(ncdf_files, bbox = NULL, offset = 0, cells = NULL, expor
   nx = nrow(lat)
   ny = ncol(lat)
   cat(paste("NetCDF grid: nx",nx, "ny",ny,"ncells", nx*ny,"\n"))
-  
+
   sel = matrix(FALSE, nrow=nx, ncol=ny)
   vertices = FALSE
   if(!is.null(bbox)) {
@@ -59,7 +64,7 @@ extractNetCDF<-function(ncdf_files, bbox = NULL, offset = 0, cells = NULL, expor
     cat("No user cell selection. All cells will be extracted.")
   }
   nc_close(ncin)
-  
+
   ncells = sum(sel)
   cat(paste("Cells to extract: ", ncells,"\n", sep=""))
 
@@ -180,7 +185,7 @@ extractNetCDF<-function(ncdf_files, bbox = NULL, offset = 0, cells = NULL, expor
         } else {
           if(exportFormat %in% c("meteoland/txt","castanea/txt")) formatType = "txt"
           else if (exportFormat %in% c("meteoland/rds","castanea/rds")) formatType = "rds"
-          
+
           filename = paste0("P_",xi,"_",yi,".",formatType)
           if(exportDir!="") dir = paste(getwd(),exportDir,sep="/")
           else dir = getwd()

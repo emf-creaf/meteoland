@@ -1,5 +1,11 @@
 # Bias-correction of a single series
 correction_series<-function(obs, mod, proj = NULL, method = "unbias", isPrec=TRUE, qstep=0.01) {
+  # deprecation warning
+  lifecycle::deprecate_warn(
+    when = "1.1.0", what = "correction_series()", with = NULL,
+    details = "Better correction methods are provided by other packages (see * and * for example)"
+  )
+
   if(method=="unbias") {
     corr<-mean(obs-mod, na.rm=TRUE)
   } else if(method=="scaling") {
@@ -12,21 +18,27 @@ correction_series<-function(obs, mod, proj = NULL, method = "unbias", isPrec=TRU
 }
 # Bias-correction of all variables for a single point
 correctionpoint<-function(obs, mod, proj, dates = NULL, params = defaultCorrectionParams(), verbose=TRUE){
-  
+
+  # deprecation warning
+  lifecycle::deprecate_warn(
+    when = "1.1.0", what = "correctionpoint()", with = NULL,
+    details = "Better correction methods are provided by other packages (see * and * for example)"
+  )
+
   #Calculate mean temperature if absent
   if(!("MeanTemperature" %in% names(obs))) {
     obs$MeanTemperature = 0.606*obs$MaxTemperature+0.394*obs$MinTemperature
   }
-  
+
   #Call statistical correction routine
-  mbias = .monthbiasonepoint(obs,mod, 
-                             params$varmethods, 
-                             qstep = params$qstep, 
+  mbias = .monthbiasonepoint(obs,mod,
+                             params$varmethods,
+                             qstep = params$qstep,
                              verbose = verbose)
-  
+
   # if(verbose) print(mbias)
-  df = .correctiononepoint(mbias,proj, dates, 
-                           fill_wind = params$fill_wind, 
+  df = .correctiononepoint(mbias,proj, dates,
+                           fill_wind = params$fill_wind,
                            allow_saturated =params$allow_saturated,
                            verbose = verbose)
   return(list(monthlyBias = mbias, correctedProj = df))
@@ -36,8 +48,14 @@ correctionpoints<-function(object, points, topodata = NULL, dates = NULL, export
                            exportDir = getwd(), exportFile = NULL, exportFormat = "meteoland/txt",
                            metadataFile = "MP.txt", corrOut = FALSE, verbose=TRUE) {
 
+  # deprecation warning
+  lifecycle::deprecate_warn(
+    when = "1.1.0", what = "correctionpoints()", with = NULL,
+    details = "Better correction methods are provided by other packages (see * and * for example)"
+  )
+
   if(export) exportFormat = match.arg(exportFormat, c("meteoland/txt", "meteoland/rds", "castanea/txt", "castanea/rds", "netCDF"))
-  
+
   #Check input classes
   if(!inherits(object,"MeteorologyUncorrectedData")) stop("'object' has to be of class 'MeteorologyUncorrectedData'.")
   if(!inherits(points,"SpatialPointsMeteorology") && !inherits(points,"SpatialPointsDataFrame")) stop("'points' has to be of class 'SpatialPointsMeteorology' or 'SpatialPointsDataFrame'.")
@@ -70,7 +88,7 @@ correctionpoints<-function(object, points, topodata = NULL, dates = NULL, export
   }
   # Define vector of data frames
   mbiasvec = vector("list", npoints)
-  
+
   if(inherits(points,"SpatialPointsMeteorology")) {
     if(!is.null(names(points@data))) ids = names(points@data)
     else ids = 1:npoints
@@ -78,11 +96,11 @@ correctionpoints<-function(object, points, topodata = NULL, dates = NULL, export
     if(!is.null(rownames(points@data))) ids = rownames(points@data)
     else ids = 1:npoints
   }
-  
+
   if(exportFormat %in% c("meteoland/txt","castanea/txt")) formatType = "txt"
   else if (exportFormat %in% c("meteoland/rds","castanea/rds")) formatType = "rds"
   else if (exportFormat %in% c("netCDF")) formatType = "netCDF"
-  
+
 
   if(export & exportFormat %in% c("meteoland/txt","castanea/txt", "meteoland/rds","castanea/rds")) {
     dfout = data.frame(dir = rep(exportDir, npoints), filename=paste0(ids,".", formatType))
@@ -102,7 +120,7 @@ correctionpoints<-function(object, points, topodata = NULL, dates = NULL, export
   } else {
     dfvec = vector("list",npoints)
   }
-  
+
   #Loop over all points
   for(i in 1:npoints) {
     if(verbose) cat(paste("Correcting point '",ids[i],"' (",i,"/",npoints,") -",sep=""))
@@ -162,17 +180,17 @@ correctionpoints<-function(object, points, topodata = NULL, dates = NULL, export
         stop("Cannot access projection meteorology data")
       }
     }
- 
+
     #Call statistical correction routine
     res = correctionpoint(obs, rcmhist, rcmfut, dates, mPar, verbose)
     df = res$correctedProj
     mbiasvec[[i]] = res$monthlyBias
-    
+
     if(is.null(dates)) dates = as.Date(rownames(df))
     #Calculate PET
     if(!is.null(topodata)) {
       J = radiation_dateStringToJulianDays(as.character(dates))
-      df$PET = .penmanpoint(latrad[i], elevation[i],slorad[i], asprad[i], J, 
+      df$PET = .penmanpoint(latrad[i], elevation[i],slorad[i], asprad[i], J,
                          df$MinTemperature, df$MaxTemperature,
                          df$MinRelativeHumidity, df$MaxRelativeHumidity, df$Radiation,
                          df$WindSpeed, mPar$wind_height,
@@ -212,7 +230,7 @@ correctionpoints<-function(object, points, topodata = NULL, dates = NULL, export
     } else {
       .closeNetCDF(ncfile, nc)
       if(corrOut) invisible(mbiasvec)
-    }    
+    }
   }
 }
 

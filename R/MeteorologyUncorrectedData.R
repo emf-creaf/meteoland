@@ -1,5 +1,12 @@
 MeteorologyUncorrectedData<-function(points, reference_data, projection_data, dates,
                                      params = defaultCorrectionParams()) {
+  
+  lifecycle::deprecate_warn(
+    when = "1.1.0", what = "MeteorologyUncorrectedData()", with = NULL,
+    details = "Correction methods and data classes are soft deprecated.
+    Better correction methods are provided by other packages (see * and * for example)"
+  )
+  
   if(!inherits(points, "SpatialPoints")) stop("'points' has to be of class 'SpatialPoints'")
   if(!inherits(reference_data,"data.frame") && !inherits(reference_data,"list") && !inherits(reference_data,"character")) 
     stop("'reference_data' has to be of class 'data.frame, 'character' or 'list'.")

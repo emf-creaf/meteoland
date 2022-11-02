@@ -2,6 +2,13 @@ MeteorologyInterpolationData<-function(points, elevation = NULL, slope = NULL, a
                                        MinTemperature = NULL, MaxTemperature = NULL, Precipitation = NULL, RelativeHumidity = NULL,
                                        Radiation = NULL, WindSpeed = NULL, WindDirection = NULL, WindFields = NULL,
                                        params = defaultInterpolationParams()) {
+  
+  lifecycle::deprecate_warn(
+    when = "1.1.0", what = "MeteorologyInterpolationData()", with = "create_meteo_interpolator()",
+    details = "MeteorologyInterpolationData class is soft deprecated.
+    Interpolator object should be created with create_meteo_interpolator() which returns an star data cube object"
+  )
+  
   if((!inherits(points, "SpatialPoints")) && (!inherits(points, "SpatialPointsTopography")) && (!inherits(points, "SpatialPointsMeteorology"))) stop("'points' has to be of class 'SpatialPointsMeteorology', 'SpatialPointsTopography' or 'SpatialPoints'")
   isPoints = inherits(points,"SpatialPoints")
   isPointsTopo = inherits(points, "SpatialPointsTopography")

@@ -1,4 +1,12 @@
 SpatialPointsTopography<-function(points, elevation, slope = NULL, aspect = NULL, proj4string = CRS(as.character(NA))) {
+  
+  # deprecation notice
+  lifecycle::deprecate_warn(
+    when = "1.1.0", what = "SpatialPointsTopography()", with = NULL,
+    details = "Spatial_*_Topography classes are soft deprecated.
+    User topography now can be provided as sf or stars objects"
+  )
+  
   if(!(inherits(points,"SpatialPoints")|| inherits(points,"matrix"))) stop("'points' has to be of class 'matrix' or 'SpatialPoints'.")
   if(inherits(points,"SpatialPoints")) {
     npoints = nrow(points@coords)

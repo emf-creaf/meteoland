@@ -1,5 +1,13 @@
 SpatialPixelsMeteorology<-function(points, data, dates, tolerance = sqrt(.Machine$double.eps),
                                    proj4string = CRS(as.character(NA)), round = NULL, grid = NULL) {
+  
+  # deprecation notice
+  lifecycle::deprecate_warn(
+    when = "1.1.0", what = "SpatialPixelsMeteorology()", with = NULL,
+    details = "Spatial_*_Meteorology classes are soft deprecated.
+    Meteorology objects are now normal sf points objects"
+  )
+  
   spx = SpatialPixels(points, tolerance, proj4string, round, grid) 
   if(!inherits(dates, "Date")) stop("'date' has to be of class 'Date'")
   ndates = length(dates)

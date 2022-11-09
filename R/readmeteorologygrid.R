@@ -1,6 +1,15 @@
 # Reads one or many gridded data and merges the result into a SpatialGridMeteorology
 readmeteorologygrid<-function(files, format = "netCDF", varmapping = NULL,
                               dates = NULL, bbox = NULL, offset = 0, verbose = FALSE) {
+  
+  # deprecation notice
+  lifecycle::deprecate_warn(
+    when = "1.1.0", what = "readmeteorologygrid()", with = NULL,
+    details = "Spatial_*_Meteorology classes are soft deprecated.
+    Read of meteorology source data must be done with the corresponding package (sf, terra, stars...)
+    and meteorology data converted to a sf points object"
+  )
+  
   nfiles = length(files)
   l = vector("list", nfiles)
   for(i in 1:nfiles) {
@@ -21,6 +30,14 @@ readmeteorologygrid<-function(files, format = "netCDF", varmapping = NULL,
 # Reads one or many gridded data, subsets pixels with non missing data, and merges the result into a SpatialPixelsMeteorology
 readmeteorologypixels<-function(files, format = "netCDF", varmapping = NULL,
                                 dates = NULL, bbox = NULL, offset = 0, verbose = FALSE) {
+  # deprecation notice
+  lifecycle::deprecate_warn(
+    when = "1.1.0", what = "readmeteorologypixels()", with = NULL,
+    details = "Spatial_*_Meteorology classes are soft deprecated.
+    Read of meteorology source data must be done with the corresponding package (sf, terra, stars...)
+    and meteorology data converted to a sf points object"
+  )
+  
   nfiles = length(files)
   l = vector("list", nfiles)
   for(i in 1:nfiles) {
@@ -42,6 +59,14 @@ readmeteorologypixels<-function(files, format = "netCDF", varmapping = NULL,
 readmeteorologygridpoints<-function(files, format = "netCDF", varmapping = NULL,
                                     dates = NULL, bbox = NULL, offset = 0, 
                                     relativehumidity = FALSE, verbose = FALSE) {
+  # deprecation notice
+  lifecycle::deprecate_warn(
+    when = "1.1.0", what = "readmeteorologygridpoints()", with = NULL,
+    details = "Spatial_*_Meteorology classes are soft deprecated.
+    Read of meteorology source data must be done with the corresponding package (sf, terra, stars...)
+    and meteorology data converted to a sf points object"
+  )
+  
   nfiles = length(files)
   l = vector("list", nfiles)
   for(i in 1:nfiles) {

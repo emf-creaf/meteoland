@@ -1,4 +1,12 @@
 SpatialPointsMeteorology<-function(points, data, dates, dataByDate = FALSE) {
+  
+  # deprecation notice
+  lifecycle::deprecate_warn(
+    when = "1.1.0", what = "SpatialPointsMeteorology()", with = NULL,
+    details = "Spatial_*_Meteorology classes are soft deprecated.
+    Meteorology objects are now normal sf points objects"
+  )
+  
   if(!inherits(points, "SpatialPoints")) stop("'points' has to be of class 'SpatialPoints'")
   if(!inherits(dates, "Date")) stop("'dates' has to be of class 'Date'")
   if(!is.list(data)) stop("'data' has to be a list of data frames")

@@ -1,5 +1,13 @@
 SpatialPixelsTopography<-function(points, elevation, slope, aspect, tolerance = sqrt(.Machine$double.eps), 
                                   proj4string = CRS(as.character(NA)), round = NULL, grid = NULL) {
+  
+  # deprecation notice
+  lifecycle::deprecate_warn(
+    when = "1.1.0", what = "SpatialPixelsTopography()", with = NULL,
+    details = "Spatial_*_Topography classes are soft deprecated.
+    User topography now can be provided as sf or stars objects"
+  )
+  
   if(!(inherits(points,"SpatialPoints")|| inherits(points,"matrix"))) stop("'points' has to be of class 'matrix' or 'SpatialPoints'.")
   if(inherits(points,"SpatialPoints")) {
     npoints = nrow(points@coords)

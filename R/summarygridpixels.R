@@ -84,10 +84,26 @@
   }
 }
 summarypixels<-function(pixels, var, fun=mean, freq=NULL, dates = NULL, months = NULL, ...) {
+  
+  # deprecation notice
+  lifecycle::deprecate_warn(
+    when = "1.1.0", what = "summarypixels()", with = NULL,
+    details = "Spatial_*_Meteorology classes are soft deprecated.
+    Interpolation results are now sf or stars objects and can be summarised in any usual mean for that kind of objects"
+  )
+  
   if(!inherits(pixels,"SpatialPixelsMeteorology") && !inherits(pixels,"character")) stop("'pixels' has to be of class 'SpatialPixelsMeteorology' or a 'character'.")
   return(.summarygridpixels(pixels, var=var, fun=fun, freq=freq, dates=dates, months=months, pixels = TRUE, ...))
 }
 summarygrid<-function(grid, var, fun=mean, freq=NULL, dates = NULL, months = NULL, ...) {
+  
+  # deprecation notice
+  lifecycle::deprecate_warn(
+    when = "1.1.0", what = "summarygrid()", with = NULL,
+    details = "Spatial_*_Meteorology classes are soft deprecated.
+    Interpolation results are now sf or stars objects and can be summarised in any usual mean for that kind of objects"
+  )
+  
   if(!inherits(grid,"SpatialGridMeteorology") && !inherits(grid,"character")) stop("'grid' has to be of class 'SpatialPixelsMeteorology' or a 'character'.")
   return(.summarygridpixels(grid, var=var, fun=fun, freq=freq, dates=dates, months=months, pixels = FALSE, ...))
 }

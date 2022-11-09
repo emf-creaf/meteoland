@@ -232,6 +232,14 @@
 weathergeneration<-function(object,
                             params = defaultGenerationParams(),
                             verbose = TRUE) {
+  
+  # deprecation notice
+  lifecycle::deprecate_warn(
+    when = "1.1.0", what = "weathergeneration()", with = NULL,
+    details = "Weather generation methods are deprecated"
+  )
+  
+  
   if((!inherits(object,"SpatialPointsMeteorology")) 
      && (!inherits(object,"SpatialGridMeteorology")) 
      && (!inherits(object,"SpatialPixelsMeteorology"))

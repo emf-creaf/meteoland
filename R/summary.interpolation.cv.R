@@ -1,4 +1,12 @@
 summary.interpolation.cv<-function(object,...) {
+  
+  # deprecation notice
+  lifecycle::deprecate_warn(
+    when = "1.1.0", what = "summary.interpolation.cv()", with = NULL,
+    details = "interpolation_cross_validation() returns a list with the cross validation results for
+    dates and for stations. List elements are data frames that can be summarise in any usual way (base, tidyverse...)"
+  )
+  
   mintemp_error = as.matrix(object$MinTemperatureError)
   maxtemp_error = as.matrix(object$MaxTemperatureError)
   temprange_error = as.matrix(object$TemperatureRangeError)

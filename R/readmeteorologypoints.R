@@ -1,4 +1,13 @@
 readmeteorologypoint<-function(file, dates = NULL, format="meteoland/txt", sep="\t") {
+  
+  # deprecation notice
+  lifecycle::deprecate_warn(
+    when = "1.1.0", what = "readmeteorologypoint()", with = NULL,
+    details = "Spatial_*_Meteorology classes are soft deprecated.
+    Read of meteorology source data must be done with the corresponding package (sf, terra, stars...)
+    and meteorology data converted to a sf points object"
+  )
+  
   format = match.arg(format, c("meteoland/txt", "meteoland/rds", "castanea/txt", "castanea/rds"))
   CASTANEAvarnames = c("Year","Month","Day","Radiation","WindSpeed","Precipitation","MaxTemperature","MinTemperature","MeanTemperature","MeanRelativeHumidity")
   if(format=="castanea/txt") {
@@ -33,6 +42,15 @@ readmeteorologypoint<-function(file, dates = NULL, format="meteoland/txt", sep="
   return(df)
 }
 readmeteorologypointfiles<-function(points, files=NULL, dates = NULL, format="meteoland/txt", sep="\t") {
+  
+  # deprecation notice
+  lifecycle::deprecate_warn(
+    when = "1.1.0", what = "readmeteorologypointfiles()", with = NULL,
+    details = "Spatial_*_Meteorology classes are soft deprecated.
+    Read of meteorology source data must be done with the corresponding package (sf, terra, stars...)
+    and meteorology data converted to a sf points object"
+  )
+  
   format = match.arg(format, c("meteoland/txt", "meteoland/rds", "castanea/txt", "castanea/rds"))
   if(!inherits(points,"SpatialPoints") && !inherits(points,"SpatialPointsDataFrame")) stop("'points' has to be of class 'SpatialPoints' or 'SpatialPointsDataFrame'.")
   if((inherits(points,"SpatialPoints")) && is.null(files)) stop("Please, provide argument 'files'")
@@ -61,6 +79,15 @@ readmeteorologypointfiles<-function(points, files=NULL, dates = NULL, format="me
   return(SpatialPointsMeteorology(as(points,"SpatialPoints"), dfvec, dates))
 }
 readmeteorologypoints<-function(files, dates = NULL, stations = NULL, format = "netCDF", varmapping = NULL, verbose = FALSE) {
+  
+  # deprecation notice
+  lifecycle::deprecate_warn(
+    when = "1.1.0", what = "readmeteorologypoints()", with = NULL,
+    details = "Spatial_*_Meteorology classes are soft deprecated.
+    Read of meteorology source data must be done with the corresponding package (sf, terra, stars...)
+    and meteorology data converted to a sf points object"
+  )
+  
   nfiles = length(files)
   l = vector("list", nfiles)
   for(i in 1:nfiles) {

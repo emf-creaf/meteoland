@@ -84,6 +84,14 @@
 
 reshapemeteospain<-function(weather_data, output="SpatialPointsMeteorology", 
                             proj4string = NULL, complete=TRUE, verbose = TRUE) {
+  
+  # deprecation notice
+  lifecycle::deprecate_warn(
+    when = "1.1.0", what = "reshapemeteospain()", with = "meteospain2meteoland()",
+    details = "Spatial_*_Meteorology classes are soft deprecated.
+    Adapting meteospain meteo output to meteoland can be done with meteospain2meteoland()"
+  )
+  
   output <- match.arg(output, c("SpatialPointsMeteorology", "SpatialPointsTopography", "MeteorologyInterpolationData"))
 
   # Filter missing coordinates  

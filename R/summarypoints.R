@@ -17,6 +17,14 @@
 }
 
 summarypoint<-function(x, var, fun="mean", freq=NULL, dates = NULL, months= NULL, ...) {
+  
+  # deprecation notice
+  lifecycle::deprecate_warn(
+    when = "1.1.0", what = "summarypoint()", with = NULL,
+    details = "Spatial_*_Meteorology classes are soft deprecated.
+    Interpolation results are now sf or stars objects and can be summarised in any usual mean for that kind of objects"
+  )
+  
   if(!inherits(x,"data.frame")) stop("'x' has to be a data.frame.")
   VARS = c("MeanTemperature", "MinTemperature","MaxTemperature", "Precipitation",
            "MeanRelativeHumidity", "MinRelativeHumidity", "MaxRelativeHumidity",
@@ -28,6 +36,14 @@ summarypoint<-function(x, var, fun="mean", freq=NULL, dates = NULL, months= NULL
 }
 
 summarypoints<-function(points, var, fun=mean, freq=NULL, dates = NULL, months = NULL, ...) {
+  
+  # deprecation notice
+  lifecycle::deprecate_warn(
+    when = "1.1.0", what = "summarypoints()", with = NULL,
+    details = "Spatial_*_Meteorology classes are soft deprecated.
+    Interpolation results are now sf or stars objects and can be summarised in any usual mean for that kind of objects"
+  )
+  
   if(!inherits(points,"SpatialPointsMeteorology") 
      && !inherits(points,"SpatialPointsDataFrame")
      && !inherits(points,"character")) stop("'points' has to be of class 'SpatialPointsMeteorology', 'SpatialPointsDataFrame' or a character string.")

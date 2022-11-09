@@ -1,4 +1,12 @@
 SpatialGridTopography<-function(grid, elevation, slope = NULL, aspect = NULL, proj4string = CRS(as.character(NA))) {
+  
+  # deprecation notice
+  lifecycle::deprecate_warn(
+    when = "1.1.0", what = "SpatialGridTopography()", with = NULL,
+    details = "Spatial_*_Topography classes are soft deprecated.
+    User topography now can be provided as sf or stars objects"
+  )
+  
   if (!is(grid, "SpatialGrid")) sg = SpatialGrid(grid, proj4string)
   else sg = grid
   nrows = sg@grid@cells.dim[1]

@@ -4,7 +4,7 @@ plot.interpolation.cv<-function(x, type="stations",...) {
   lifecycle::deprecate_warn(
     when = "1.1.0", what = "plot.interpolation.cv()", with = "interpolation_cross_validation()",
     details = "interpolation_cross_validation() returns a list with the cross validation results for
-    dates and for stations. List elements are dataframes that can be plotted in the usual ways (plot, ggplot2...)"
+    dates and for stations. List elements are data frames that can be plotted in the usual ways (plot, ggplot2...)"
   )
   
   

@@ -146,6 +146,9 @@
 #     - if interpolator.coverage must be implemented
 #     - if precipitation concentration is ok and then check the results with him
 # 1. Move docs to roxygen2, also C functions
+#     - NAMESPACE DONE
+#     - Build and doc with roxygen DONE
+#     - Roxygenize functions
 # 1. Clean and organize the new functions in files
 # 1. Add tests
 #     - New functions (check existent tests)

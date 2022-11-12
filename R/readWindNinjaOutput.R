@@ -2,6 +2,12 @@ readWindNinjaWindFields<-function(filebase, resolution = "100m",
                                   directionClasses = c(0,45,90,135,180,225,270,315),
                                   speedClasses = c(5,15,25),
                                   proj4string = CRS(as.character(NA))) {
+
+  lifecycle::deprecate_warn(
+    when = "1.1.0", what = "readWindNinjaWindFields()", with = NULL,
+    details = "readWindNinjaWindFields is deprecated and will dissapear from future versions of meteoland"
+  )
+
   nraster = (8*length(speedClasses))
   indexTable = matrix(1:nraster,
                        nrow=8, ncol=length(speedClasses),

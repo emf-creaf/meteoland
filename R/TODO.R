@@ -139,7 +139,9 @@
 ###       - Test for this are already in the meteospain2meteoland tests so no need to add more
 ###         for the moment
 ### 1. Add a params setter for interpolators DONE
-# 1. Ask Miquel if interpolator.coverage must be implemented
+# 1. Ask Miquel
+#     - if interpolator.coverage must be implemented
+#     - if precipitation concentration is ok and then check the results with him
 # 1. Add deprecation notices to deprecated functions
 # 1. Move docs to roxygen2, also C functions
 # 1. Clean and organize the new functions in files
@@ -154,3 +156,4 @@
 #         - points
 #         - raster (stars)
 # 1. Create and test examples for docs
+# 1. Implement worldmet2meteoland method

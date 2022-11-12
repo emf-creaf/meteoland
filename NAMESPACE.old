@@ -1,0 +1,88 @@
+import(sp)
+import(spdep)
+import(ncdf4)
+import(rgdal)
+import(methods)
+import(utils)
+useDynLib(meteoland, .registration = TRUE)
+export(averagearea,
+       correctionpoint, correctionpoints, correctionpoints.errors, 
+       correction_series,
+       defaultCorrectionParams, defaultGenerationParams, defaultInterpolationParams,
+       downloadMGstationlist, downloadMGcurrentday, downloadMGhistorical,
+       downloadSMCstationlist,downloadSMCcurrentday, downloadSMChistorical,
+       downloadAEMETcurrentday,downloadAEMEThistorical, downloadAEMETstationlist,
+       downloadMETEOCLIMATICcurrentday, downloadMETEOCLIMATICstationlist,
+       extractgridindex,
+       extractgridpoints, extractNetCDF,
+       extractdates, extractvars,
+       humidity_relative2specific, humidity_specific2relative, humidity_dewtemperature2relative, humidity_relative2dewtemperature,
+       interpolation_dewtemperature, interpolation_precipitation, interpolation_temperature, interpolation_wind,
+       interpolationpoints, interpolationgrid, interpolationpixels,
+       interpolation.calibration, interpolation.calibration.fmax, interpolation.coverage, interpolation.cv,
+       mergegrids, mergepoints,
+       meteocomplete, meteoplot, MeteorologyUncorrectedData, MeteorologyInterpolationData,
+       penman, penmanmonteith, 
+       precipitation_concentration, precipitation_rainfallErosivity,
+       plot.interpolation.cv,
+       radiation_julianDay, radiation_solarDeclination, radiation_solarConstant, radiation_daylength,
+       radiation_dateStringToJulianDays, radiation_sunRiseSet, radiation_daylengthseconds,
+       radiation_potentialRadiation, radiation_solarElevation, radiation_solarRadiation, 
+       radiation_directDiffuseInstant, radiation_directDiffuseDay, radiation_skyLongwaveRadiation,
+       radiation_outgoingLongwaveRadiation,radiation_netRadiation,
+       readNetCDFpoints,readNetCDFdates, readNetCDFgridtopology, readNetCDFproj4string,
+       readmeteorologygridpoints,
+       readmeteorologygrid, readmeteorologypixels,
+       readmeteorologypoint,readmeteorologypoints,readmeteorologypointfiles, 
+       readWindNinjaWindFields,
+       reshapemeteospain, reshapeweathercan, reshapeworldmet, 
+       SpatialPointsTopography, SpatialGridTopography, SpatialPixelsTopography, 
+       SpatialGridMeteorology, SpatialPointsMeteorology, SpatialPixelsMeteorology,
+       subsample,summary.interpolation.cv, 
+       summarypixels, summarygrid, summarypoint, summarypoints, summaryinterpolationdata,
+       utils_saturationVP, utils_averageDailyVP, utils_atmosphericPressure,
+       utils_airDensity, utils_averageDaylightTemperature, utils_latentHeatVaporisation,
+       utils_latentHeatVaporisationMol,utils_psychrometricConstant,
+       utils_saturationVaporPressureCurveSlope,
+       weathergeneration,
+       writemeteorologypixels, writeemptymeteorologygrid, writemeteorologygrid, writemeteorologygridpixel,
+       writemeteorologypoint, writemeteorologypoints, writemeteorologypointfiles)
+exportClasses(MeteorologyProcedureData, MeteorologyInterpolationData, MeteorologyUncorrectedData)
+exportClasses(SpatialPointsMeteorology,SpatialPointsTopography,
+              SpatialGridMeteorology,SpatialGridTopography,
+              SpatialPixelsMeteorology,SpatialPixelsTopography)
+exportMethods(subsample, spplot, "[", show)
+importFrom(Rcpp, evalCpp)
+importFrom(grDevices, colorRampPalette, topo.colors)
+importFrom(graphics, abline, hist, lines, par)
+importFrom(utils, read.table, setTxtProgressBar,
+             txtProgressBar, write.table)
+importFrom(stats, 
+           aggregate, approx, arima.sim, 
+           coef, cor, dist, 
+           var, rlnorm, sd,
+           lm, na.omit, quantile)
+importFrom(sf, 
+           as_Spatial, st_coordinates)
+importFrom(units,
+           drop_units)
+importFrom(meteospain, 
+           get_stations_info_from, get_meteo_from,
+           aemet_options, meteocat_options, meteogalicia_options, meteoclimatic_options)
+
+S3method(summary, interpolation.cv)
+
+S3method(plot, interpolation.cv)
+
+S3method(head, SpatialPointsMeteorology)
+S3method(head, SpatialPointsTopography)
+
+S3method(tail, SpatialPointsTopography)
+S3method(tail, SpatialPointsMeteorology)
+
+S3method(print, SpatialPointsTopography)
+S3method(print, SpatialPixelsTopography)
+S3method(print, SpatialGridTopography)
+S3method(print, SpatialPointsMeteorology)
+S3method(print, SpatialPixelsMeteorology)
+S3method(print, SpatialGridMeteorology)

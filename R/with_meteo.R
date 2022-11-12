@@ -709,7 +709,7 @@ read_interpolator <- function(filename) {
   interpolation_attributes <- ncmeta::nc_meta(filename)$attribute |>
     dplyr::filter(
       variable == "NC_GLOBAL",
-      name %in% names(meteoland::defaultInterpolationParams())
+      name %in% names(defaultInterpolationParams())
     ) |>
     dplyr::pull(value)
 

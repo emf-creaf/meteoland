@@ -4,16 +4,13 @@
 \alias{meteospain2meteoland}
 \title{From meteospain to meteoland meteo objects}
 \usage{
-meteospain2meteoland(meteo, complete = FALSE)
+meteospain2meteoland(meteo)
 }
 \arguments{
-\item{meteo}{meteospain meteo object.}
-
-\item{complete}{logical indicating if the meteo data missing variables
-should be calculated (if possible). Default to FALSE.}
+\item{meteo}{meteospain meteo object}
 }
 \value{
-a compatible meteo object to use with meteoland.
+a compatible meteo object to use in meteoland
 }
 \description{
 Adapting meteospain meteo objects to meteoland meteo objects

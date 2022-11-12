@@ -8,7 +8,6 @@
 interpolator_calibration(
   interpolator,
   stations = NULL,
-  update_interpolator_params = FALSE,
   variable = c("MinTemperature", "MaxTemperature", "DewTemperature", "Precipitation",
     "PrecipitationAmount", "PrecipitationEvent"),
   N_seq = seq(5, 30, by = 5),
@@ -21,11 +20,10 @@ interpolation_cross_validation(interpolator, stations = NULL)
 \item{interpolator}{A meteoland interpolator object, as created by
 \code{\link{create_meteoland_interpolator}}}
 
-\item{stations}{A vector with the stations (numeric for station indexes or character
-for stations id) to be used to calculate \code{"MAE"}. All stations with data are
-included in the training set but predictive \code{"MAE"} are calculated for the
-stations subset indicated in \code{stations} param only. If \code{NULL} all stations
-are used in the predictive \code{"MAE"} calculation.}
+\item{stations}{A vector with the station indexes (numeric) to be used to
+calculate \code{"MAE"}. All stations with data are included in the training
+set but predictive \code{"MAE"} are calculated for the stations subset
+indicated in \code{stations} param only.}
 
 \item{variable}{A string indicating the meteorological variable for which
 interpolation parameters \code{"N"} and \code{"alpha"} will be calibrated.
@@ -38,13 +36,9 @@ same values for precipitation events an regression of precipitation amounts),
 \item{N_seq}{Numeric vector with \code{"N"} values to be tested}
 
 \item{alpha_seq}{Numeric vector with \code{"alpha"}}
-
-\item{update_interpolation_params}{Logical indicating if the interpolator object
-must be updated with the calculated parameters. Default to FALSE}
 }
 \value{
-If \code{update_interpolation_params} is FALSE (default), \code{interpolator_calibration}
-returns a list with the following items
+\code{interpolator_calibration} returns a list with the following items
 \itemize{
   \item{MAE: A numeric matrix with the mean absolute error values, averaged
   across stations, for each combination of parameters \code{"N"} and \code{"alpha"}}
@@ -56,13 +50,11 @@ returns a list with the following items
   \item{predicted: matrix with interpolated values for the optimum parameter
   combination}
 }
-If \code{update_interpolation_params} is FALSE, \code{interpolator_calibration} returns
-the interpolator provided with the parameters updated
 
 \code{interpolation_cross_validation} returns a list with the
 following items
 \itemize{
-  \item{errors: Data frame with each combination of station and date with
+  \item{total_errors: Data frame with each combination of station and date with
   observed variables, predicated variables and the total error
   (predicted - observed) calculated for each variable}
   \item{station_stats: Data frame with error and bias statistics aggregated by
@@ -83,9 +75,9 @@ Optimization is done by minimizing mean absolute error ("MAE")
 (Thornton \emph{et al.} 1997). Function \code{interpolation_cross_validation}
 calculates average mean absolute errors ("MAE") for the prediction period of
 the interpolator object.
-In both calibration and cross validation procedures, predictions for each
+In both calibration and cross validation procdeures, predictions for each
 meteorological station are made using a \emph{leave-one-out} procedure
-(i.e. after exluding the station from the predictive set).
+(i.e. after exluding the station form the predictive set).
 }
 \section{Functions}{
 \itemize{

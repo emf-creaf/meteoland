@@ -32,9 +32,7 @@ http://cfconventions.org/cf-conventions/cf-conventions.html
 Other interpolator functions: 
 \code{\link{add_topo}()},
 \code{\link{create_meteo_interpolator}()},
-\code{\link{get_interpolation_params}()},
 \code{\link{read_interpolator}()},
-\code{\link{set_interpolation_params}()},
 \code{\link{with_meteo}()}
 }
 \concept{interpolator functions}

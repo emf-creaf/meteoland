@@ -23,9 +23,7 @@ ensuring the meteo provided contains all the required elements
 Other interpolator functions: 
 \code{\link{add_topo}()},
 \code{\link{create_meteo_interpolator}()},
-\code{\link{get_interpolation_params}()},
 \code{\link{read_interpolator}()},
-\code{\link{set_interpolation_params}()},
 \code{\link{write_interpolator}()}
 }
 \concept{interpolator functions}

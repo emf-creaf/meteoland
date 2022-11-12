@@ -9,3 +9,4 @@ data-raw/*
 _pkgdown.yml
 metadata.yml
 ^\.github$
+^old_man/*$

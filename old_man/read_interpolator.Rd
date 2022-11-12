@@ -23,8 +23,6 @@ object and load it into the work environment
 Other interpolator functions: 
 \code{\link{add_topo}()},
 \code{\link{create_meteo_interpolator}()},
-\code{\link{get_interpolation_params}()},
-\code{\link{set_interpolation_params}()},
 \code{\link{with_meteo}()},
 \code{\link{write_interpolator}()}
 }

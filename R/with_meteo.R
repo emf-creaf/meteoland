@@ -1155,29 +1155,6 @@ read_interpolator <- function(filename) {
   return(res)
 }
 
-#' From weathercan to meteoland meteo objects
-#'
-#' Adapting weathercan meteo objects to meteoland meteo objects
-#'
-#' This function converts \code{weathercan} R package meteo objects to compatible
-#' meteoland meteo objects by seelcting the needed variables and adapting the
-#' names to comply with meteoland requirements.
-#'
-#' @param meteo weathercan meteo object.
-#' @param complete logical indicating if the meteo data missing variables
-#'  should be calculated (if possible). Default to FALSE.
-#' @return a compatible meteo object to use with meteoland.
-#' @export
-weathercan2meteoland <- function(meteo, complete = FALSE) {
-  
-  # assertions
-  assertthat::assert_that(
-    is.logical(complete) && !is.na(complete),
-    msg = "'complete' argument must be logical (FALSE or TRUE)"
-  )
-  
-}
-
 #' From meteospain to meteoland meteo objects
 #'
 #' Adapting meteospain meteo objects to meteoland meteo objects

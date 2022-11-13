@@ -21,8 +21,8 @@
 \item{wet_extreme_quantile_threshold}{threshold quantile for wet/extreme states}
 }
 \value{
-monthly list of precipitation thresholds as vectors of length 2 
-(first element is threshold amount between dry/wet, 
+monthly list of precipitation thresholds as vectors of length 2
+(first element is threshold amount between dry/wet,
 second element is threshold amount between wet/extreme)
 }
 \description{

@@ -17,7 +17,7 @@ already exists}
 }
 \value{
 invisible interpolator object, to allow using this function as a step
-  in a pipe
+in a pipe
 }
 \description{
 Write the interpolator object to a file

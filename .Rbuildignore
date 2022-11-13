@@ -10,3 +10,4 @@ _pkgdown.yml
 metadata.yml
 ^\.github$
 ^old_man/*$
+^roxygen_tmp/*$

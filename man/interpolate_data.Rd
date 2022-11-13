@@ -18,10 +18,10 @@ interpolator object)}
 }
 \value{
 an object with the same class and structure as the provided spatial
-  data with the results of the interpolation joined. In the case of spatial
-  data being an sf, the results are added as a list-type column that can be
-  unnested with \code{\link[tidyr]{unnest}}. In the case of a stars raster
-  object, interpolation results are added as attributes (variables)
+data with the results of the interpolation joined. In the case of spatial
+data being an sf, the results are added as a list-type column that can be
+unnested with \code{\link[tidyr]{unnest}}. In the case of a stars raster
+object, interpolation results are added as attributes (variables)
 }
 \description{
 Interpolate spatial data to obtain downscaled meteorologic variables
@@ -34,18 +34,18 @@ locations present in the \code{spatial_data} object.
 }
 \section{Spatial data}{
 
-  The spatial data provided must be of two types. (I) A sf object containing
-  POINT for each location to interpolate or (II) a stars raster object for
-  which the interpolation should be done.
-  Independently of the class of \code{spatial_data} it has to have some
-  mandatory variables, namely \code{elevation}. It should also contain
-  \code{aspect} and \code{slope} for a better interpolation process, though
-  this two variables are not mandatory.
+The spatial data provided must be of two types. (I) A sf object containing
+POINT for each location to interpolate or (II) a stars raster object for
+which the interpolation should be done.
+Independently of the class of \code{spatial_data} it has to have some
+mandatory variables, namely \code{elevation}. It should also contain
+\code{aspect} and \code{slope} for a better interpolation process, though
+this two variables are not mandatory.
 }
 
 \section{Curvilinear rasters}{
 
-  Rasters with curvilinear projections are not supported. Rasters provided
-  must have a planar coordinate system.
+Rasters with curvilinear projections are not supported. Rasters provided
+must have a planar coordinate system.
 }
 

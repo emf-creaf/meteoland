@@ -2,8 +2,9 @@
 "_PACKAGE"
 
 ## usethis namespace: start
-#' @useDynLib meteoland, .registration = TRUE
-#' @importFrom Rcpp sourceCpp
+#' @importFrom lifecycle deprecated
 #' @importFrom Rcpp evalCpp
+#' @importFrom Rcpp sourceCpp
+#' @useDynLib meteoland, .registration = TRUE
 ## usethis namespace: end
 NULL

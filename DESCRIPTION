@@ -22,7 +22,8 @@ Imports:
     methods,
     meteospain,
     Rcpp,
-    units
+    units,
+    lifecycle
 Suggests: 
     knitr,
     forecast,
@@ -36,3 +37,4 @@ NeedsCompilation: yes
 VignetteBuilder: utils, knitr
 RoxygenNote: 7.2.1
 Config/testthat/edition: 3
+Roxygen: list(markdown = TRUE)

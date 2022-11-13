@@ -16,25 +16,21 @@ write_interpolator(interpolator, filename, .overwrite = FALSE)
 already exists}
 }
 \value{
-invisible interpolator object, to allow using this function as a step
-in a pipe
+invisible interpolator object, to allow using this function as a
+step in a pipe
 }
 \description{
 Write the interpolator object to a file
 }
 \details{
 This function writes the interpolator object created with
-\code{\link{create_meteoland_interpolator}} in a NetCDF-CF standard compliant
-format, as specified in
+\code{\link{create_meteoland_interpolator}} in a NetCDF-CF standard
+compliant format, as specified in
 http://cfconventions.org/cf-conventions/cf-conventions.html
 }
 \seealso{
-Other interpolator functions: 
-\code{\link{add_topo}()},
+Other interpolator functions: \code{\link{add_topo}()},
 \code{\link{create_meteo_interpolator}()},
-\code{\link{get_interpolation_params}()},
-\code{\link{read_interpolator}()},
-\code{\link{set_interpolation_params}()},
-\code{\link{with_meteo}()}
+\code{\link{get_interpolation_params}()}, \code{\link{read_interpolator}()},
+\code{\link{set_interpolation_params}()}, \code{\link{with_meteo}()}
 }
-\concept{interpolator functions}

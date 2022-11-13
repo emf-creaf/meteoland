@@ -11,7 +11,8 @@
 
 \item{months}{vector of months corresponding to daily precipitation}
 
-\item{thresholds}{list of monthly transition matrices generated from mc_fit()}
+\item{thresholds}{list of monthly transition matrices generated from
+mc_fit()}
 
 \item{states}{character list of markov states}
 }

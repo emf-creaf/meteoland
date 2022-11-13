@@ -14,16 +14,18 @@
 \arguments{
 \item{x}{vector of daily precipitation}
 
-\item{months}{vector of months corresponding to daily precipitation vector \code{x}}
+\item{months}{vector of months corresponding to daily precipitation vector
+\code{x}}
 
 \item{dry_wet_threshold}{threshold precipitation amount for dry/wet states}
 
-\item{wet_extreme_quantile_threshold}{threshold quantile for wet/extreme states}
+\item{wet_extreme_quantile_threshold}{threshold quantile for wet/extreme
+states}
 }
 \value{
 monthly list of precipitation thresholds as vectors of length 2
-(first element is threshold amount between dry/wet,
-second element is threshold amount between wet/extreme)
+(first element is threshold amount between dry/wet, second element is
+threshold amount between wet/extreme)
 }
 \description{
 Determine Markov State Thresholds from Precipitation

@@ -16,6 +16,6 @@ the same \code{meteo} data provided with the the variables completed
 Calculates missing meteo variables
 }
 \details{
-This function takes a meteo object (with meteoland names) and complete
-any missing variable if it is possible
+This function takes a meteo object (with meteoland names) and complete any
+missing variable if it is possible
 }

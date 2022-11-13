@@ -20,12 +20,9 @@ This function takes the file name of the nc file storing an interpolator
 object and load it into the work environment
 }
 \seealso{
-Other interpolator functions: 
-\code{\link{add_topo}()},
+Other interpolator functions: \code{\link{add_topo}()},
 \code{\link{create_meteo_interpolator}()},
 \code{\link{get_interpolation_params}()},
-\code{\link{set_interpolation_params}()},
-\code{\link{with_meteo}()},
+\code{\link{set_interpolation_params}()}, \code{\link{with_meteo}()},
 \code{\link{write_interpolator}()}
 }
-\concept{interpolator functions}

@@ -20,12 +20,8 @@ This function is the first step in the creation of a meteoland interpolator,
 ensuring the meteo provided contains all the required elements
 }
 \seealso{
-Other interpolator functions: 
-\code{\link{add_topo}()},
+Other interpolator functions: \code{\link{add_topo}()},
 \code{\link{create_meteo_interpolator}()},
-\code{\link{get_interpolation_params}()},
-\code{\link{read_interpolator}()},
-\code{\link{set_interpolation_params}()},
-\code{\link{write_interpolator}()}
+\code{\link{get_interpolation_params}()}, \code{\link{read_interpolator}()},
+\code{\link{set_interpolation_params}()}, \code{\link{write_interpolator}()}
 }
-\concept{interpolator functions}

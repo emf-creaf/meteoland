@@ -20,12 +20,8 @@ This function takes meteorology information and a list of interpolation
 parameters and creates the interpolator object to be ready to use.
 }
 \seealso{
-Other interpolator functions: 
-\code{\link{add_topo}()},
-\code{\link{get_interpolation_params}()},
-\code{\link{read_interpolator}()},
-\code{\link{set_interpolation_params}()},
-\code{\link{with_meteo}()},
+Other interpolator functions: \code{\link{add_topo}()},
+\code{\link{get_interpolation_params}()}, \code{\link{read_interpolator}()},
+\code{\link{set_interpolation_params}()}, \code{\link{with_meteo}()},
 \code{\link{write_interpolator}()}
 }
-\concept{interpolator functions}

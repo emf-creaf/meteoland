@@ -7,7 +7,8 @@
 get_interpolation_params(interpolator)
 }
 \arguments{
-\item{interpolator}{interpolator object as returned by \code{\link{create_meteo_interpolator}}}
+\item{interpolator}{interpolator object as returned by
+\code{\link{create_meteo_interpolator}}}
 }
 \value{
 The complete parameter list from the interpolator object
@@ -16,12 +17,8 @@ The complete parameter list from the interpolator object
 Retrieve the parameter list from and interpolator object
 }
 \seealso{
-Other interpolator functions: 
-\code{\link{add_topo}()},
+Other interpolator functions: \code{\link{add_topo}()},
 \code{\link{create_meteo_interpolator}()},
-\code{\link{read_interpolator}()},
-\code{\link{set_interpolation_params}()},
-\code{\link{with_meteo}()},
-\code{\link{write_interpolator}()}
+\code{\link{read_interpolator}()}, \code{\link{set_interpolation_params}()},
+\code{\link{with_meteo}()}, \code{\link{write_interpolator}()}
 }
-\concept{interpolator functions}

@@ -17,8 +17,10 @@
 Run Markov Chain Simulation
 }
 \examples{
+
 transitions <- mc_fit(x=sample(c('d', 'w', 'e'), size=720, replace=TRUE, prob=c(0.5, 0.3, 0.2)), 
                       months=rep(rep(seq(1, 12), each=30), times=2))
 mc_simulate(months=rep(1:12, each=30), initial='d', transitions=transitions, states=c('d', 'w', 'e'))
+
 
 }

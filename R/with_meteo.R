@@ -184,18 +184,22 @@ has_topo <- function(topo) {
   )
 }
 
+
+
 #' Ensure meteo object is ready to create an interpolator object
-#'
+#' 
 #' Check integrity of meteo objects
-#'
+#' 
 #' This function is the first step in the creation of a meteoland interpolator,
 #' ensuring the meteo provided contains all the required elements
-#'
+#' 
 #' @param meteo meteo object
-#'
 #' @return invisible meteo object ready to pipe in the interpolator creation
-#' @family interpolator functions
-#' @export
+#' @seealso Other interpolator functions: \code{\link{add_topo}()},
+#' \code{\link{create_meteo_interpolator}()},
+#' \code{\link{get_interpolation_params}()}, \code{\link{read_interpolator}()},
+#' \code{\link{set_interpolation_params}()}, \code{\link{write_interpolator}()}
+#' @export with_meteo
 with_meteo <- function(meteo) {
   usethis::ui_info("Checking meteorology object...")
   assertthat::assert_that(has_meteo(meteo))
@@ -203,18 +207,26 @@ with_meteo <- function(meteo) {
   return(invisible(meteo))
 }
 
+
+
+
+
 #' Add topology data to meteo object
-#'
+#' 
 #' Add topology data to meteo object
-#'
+#' 
 #' When using meteo data without topology info to create an inteprolator,
 #' topology must be addded
-#'
+#' 
 #' @param meteo meteo object
 #' @param topo topo object
 #' @return meteo with the topology info added
-#' @family interpolator functions
-#' @export
+#' @seealso Other interpolator functions:
+#' \code{\link{create_meteo_interpolator}()},
+#' \code{\link{get_interpolation_params}()}, \code{\link{read_interpolator}()},
+#' \code{\link{set_interpolation_params}()}, \code{\link{with_meteo}()},
+#' \code{\link{write_interpolator}()}
+#' @export add_topo
 add_topo <- function(meteo, topo) {
 
   assertthat::assert_that(has_meteo(meteo))
@@ -296,34 +308,45 @@ add_topo <- function(meteo, topo) {
   return(ref)
 }
 
+
+
 #' Retrieving interpolation parameters from interpolator object
-#'
+#' 
 #' Retrieve the parameter list from and interpolator object
-#'
-#' @param interpolator interpolator object as returned by \code{\link{create_meteo_interpolator}}
-#'
+#' 
+#' 
+#' @param interpolator interpolator object as returned by
+#' \code{\link{create_meteo_interpolator}}
 #' @return The complete parameter list from the interpolator object
-#' @family interpolator functions
-#' @export
+#' @seealso Other interpolator functions: \code{\link{add_topo}()},
+#' \code{\link{create_meteo_interpolator}()},
+#' \code{\link{read_interpolator}()}, \code{\link{set_interpolation_params}()},
+#' \code{\link{with_meteo}()}, \code{\link{write_interpolator}()}
+#' @export get_interpolation_params
 get_interpolation_params <- function(interpolator) {
   return(attr(interpolator, "params"))
 }
 
+
+
 #' Setting interpolation parameters in an interpolator object
-#'
+#' 
 #' Changing or updating interpolation parameters in an interpolator object
-#'
+#' 
 #' This function ensures that if no parameters are provided, the default ones
-#' are used (see \code{\link{defaultInterpolationParams}}).
-#' Also, if params are partially provided, this function ensures that
-#' the rest of the parameters are not changed.
-#'
+#' are used (see \code{\link{defaultInterpolationParams}}). Also, if params are
+#' partially provided, this function ensures that the rest of the parameters
+#' are not changed.
+#' 
 #' @param interpolator interpolator object to update
 #' @param params list with the parameters provided by the user
-#'
-#' @return The same interpolator object provided, with the updated interpolation parameters
-#' @family interpolator functions
-#' @export
+#' @return The same interpolator object provided, with the updated
+#' interpolation parameters
+#' @seealso Other interpolator functions: \code{\link{add_topo}()},
+#' \code{\link{create_meteo_interpolator}()},
+#' \code{\link{get_interpolation_params}()}, \code{\link{read_interpolator}()},
+#' \code{\link{with_meteo}()}, \code{\link{write_interpolator}()}
+#' @export set_interpolation_params
 set_interpolation_params <- function(interpolator, params = NULL) {
   # ensure the params are correct and fill any lacking with the defaults
   safe_params <-
@@ -336,17 +359,22 @@ set_interpolation_params <- function(interpolator, params = NULL) {
   return(interpolator)
 }
 
+
+
 #' Meteoland interpolator creation
-#'
+#' 
 #' Function to create the meteoland interpolator
-#'
+#' 
 #' This function takes meteorology information and a list of interpolation
 #' parameters and creates the interpolator object to be ready to use.
-#'
+#' 
 #' @param meteo_with_topo meteo object, as returned by \code{\link{with_meteo}}
 #' @return an interpolator object (stars)
-#' @family interpolator functions
-#' @export
+#' @seealso Other interpolator functions: \code{\link{add_topo}()},
+#' \code{\link{get_interpolation_params}()}, \code{\link{read_interpolator}()},
+#' \code{\link{set_interpolation_params}()}, \code{\link{with_meteo}()},
+#' \code{\link{write_interpolator}()}
+#' @export create_meteo_interpolator
 create_meteo_interpolator <- function(meteo_with_topo, params = NULL, ...) {
 
   ## TODO messaging
@@ -571,25 +599,29 @@ create_meteo_interpolator <- function(meteo_with_topo, params = NULL, ...) {
 
 # write the interpolator in the NetCDF-CF standard
 # http://cfconventions.org/cf-conventions/cf-conventions.html
+
+
 #' Write the interpolator object
-#'
+#' 
 #' Write the interpolator object to a file
-#'
+#' 
 #' This function writes the interpolator object created with
-#' \code{\link{create_meteoland_interpolator}} in a NetCDF-CF standard compliant
-#' format, as specified in
+#' \code{\link{create_meteoland_interpolator}} in a NetCDF-CF standard
+#' compliant format, as specified in
 #' http://cfconventions.org/cf-conventions/cf-conventions.html
-#'
+#' 
 #' @param interpolator meteoland interpolator object, as created by
-#'   \code{\link{create_meteoland_interpolator}}
+#' \code{\link{create_meteoland_interpolator}}
 #' @param filename file name for the interpolator nc file
 #' @param .overwrite logical indicating if the file should be overwrited if it
-#'   already exists
-#'
-#' @family interpolator functions
-#' @return invisible interpolator object, to allow using this function as a step
-#'   in a pipe
-#' @export
+#' already exists
+#' @return invisible interpolator object, to allow using this function as a
+#' step in a pipe
+#' @seealso Other interpolator functions: \code{\link{add_topo}()},
+#' \code{\link{create_meteo_interpolator}()},
+#' \code{\link{get_interpolation_params}()}, \code{\link{read_interpolator}()},
+#' \code{\link{set_interpolation_params}()}, \code{\link{with_meteo}()}
+#' @export write_interpolator
 write_interpolator <- function(interpolator, filename, .overwrite = FALSE) {
   # debug
   # browser()
@@ -689,18 +721,23 @@ write_interpolator <- function(interpolator, filename, .overwrite = FALSE) {
   return(invisible(interpolator))
 }
 
+
+
 #' Read interpolator files
-#'
+#' 
 #' Read interpolator files created with \code{\link{write_interpolator}}
-#'
+#' 
 #' This function takes the file name of the nc file storing an interpolator
 #' object and load it into the work environment
-#'
+#' 
 #' @param filename interpolator file name
-#'
 #' @return an interpolator (stars) object
-#' @family interpolator functions
-#' @export
+#' @seealso Other interpolator functions: \code{\link{add_topo}()},
+#' \code{\link{create_meteo_interpolator}()},
+#' \code{\link{get_interpolation_params}()},
+#' \code{\link{set_interpolation_params}()}, \code{\link{with_meteo}()},
+#' \code{\link{write_interpolator}()}
+#' @export read_interpolator
 read_interpolator <- function(filename) {
   # debug
   # browser()
@@ -1011,19 +1048,21 @@ read_interpolator <- function(filename) {
   return(res)
 }
 
+
+
 #' From meteospain to meteoland meteo objects
-#'
+#' 
 #' Adapting meteospain meteo objects to meteoland meteo objects
-#'
-#' This function converts \code{meteospain} R package meteo objects to compatible
-#' meteoland meteo objects by seelcting the needed variables and adapting the
-#' names to comply with meteoland requirements.
-#'
+#' 
+#' This function converts \code{meteospain} R package meteo objects to
+#' compatible meteoland meteo objects by seelcting the needed variables and
+#' adapting the names to comply with meteoland requirements.
+#' 
 #' @param meteo meteospain meteo object.
 #' @param complete logical indicating if the meteo data missing variables
-#'  should be calculated (if possible). Default to FALSE.
+#' should be calculated (if possible). Default to FALSE.
 #' @return a compatible meteo object to use with meteoland.
-#' @export
+#' @export meteospain2meteoland
 meteospain2meteoland <- function(meteo, complete = FALSE) {
 
   # assertions
@@ -1241,18 +1280,18 @@ meteospain2meteoland <- function(meteo, complete = FALSE) {
     sf::st_as_sf()
 }
 
+
+
 #' Complete missing meteo variables
-#'
+#' 
 #' Calculates missing meteo variables
-#'
-#' This function takes a meteo object (with meteoland names) and complete
-#' any missing variable if it is possible
-#'
+#' 
+#' This function takes a meteo object (with meteoland names) and complete any
+#' missing variable if it is possible
+#' 
 #' @param meteo meteoland meteo data
-#'
 #' @return the same \code{meteo} data provided with the the variables completed
-#'
-#' @export
+#' @export complete_meteo
 complete_meteo <- function(meteo) {
 
   # assertions
@@ -1664,42 +1703,37 @@ assertthat::on_failure(.is_raster) <- function(call, env) {
 
 }
 
+
+
 #' Interpolation process for spatial data
-#'
+#' 
 #' Interpolate spatial data to obtain downscaled meteorologic variables
-#'
-#' This function takes a spatial data object (sf or stars raster), an interpolator
-#' object (\code{\link{create_meteoland_interpolator}}) and a vector of dates to
-#' perform the interpolation of the meteorologic variables for the spatial
-#' locations present in the \code{spatial_data} object.
-#'
-#' @section Spatial data:
-#'   The spatial data provided must be of two types. (I) A sf object containing
-#'   POINT for each location to interpolate or (II) a stars raster object for
-#'   which the interpolation should be done.
-#'   Independently of the class of \code{spatial_data} it has to have some
-#'   mandatory variables, namely \code{elevation}. It should also contain
-#'   \code{aspect} and \code{slope} for a better interpolation process, though
-#'   this two variables are not mandatory.
-#'
-#' @section Curvilinear rasters:
-#'   Rasters with curvilinear projections are not supported. Rasters provided
-#'   must have a planar coordinate system.
-#'
+#' 
+#' This function takes a spatial data object (sf or stars raster), an
+#' interpolator object (\code{\link{create_meteoland_interpolator}}) and a
+#' vector of dates to perform the interpolation of the meteorologic variables
+#' for the spatial locations present in the \code{spatial_data} object.
+#' 
 #' @param spatial_data An sf or stars raster object to interpolate
 #' @param interpolator A meteoland interpolator object, as created by
-#'   \code{\link{create_meteoland_interpolator}}
+#' \code{\link{create_meteoland_interpolator}}
 #' @param dates vector with dates to interpolate (must be within the
-#'   interpolator date range). Default to NULL (all dates present in the
-#'   interpolator object)
-#'
+#' interpolator date range). Default to NULL (all dates present in the
+#' interpolator object)
 #' @return an object with the same class and structure as the provided spatial
-#'   data with the results of the interpolation joined. In the case of spatial
-#'   data being an sf, the results are added as a list-type column that can be
-#'   unnested with \code{\link[tidyr]{unnest}}. In the case of a stars raster
-#'   object, interpolation results are added as attributes (variables)
-#'
-#' @export
+#' data with the results of the interpolation joined. In the case of spatial
+#' data being an sf, the results are added as a list-type column that can be
+#' unnested with \code{\link[tidyr]{unnest}}. In the case of a stars raster
+#' object, interpolation results are added as attributes (variables)
+#' @section Spatial data:
+#' 
+#' The spatial data provided must be of two types. (I) A sf object containing
+#' POINT for each location to interpolate or (II) a stars raster object for
+#' which the interpolation should be done. Independently of the class of
+#' \code{spatial_data} it has to have some mandatory variables, namely
+#' \code{elevation}. It should also contain \code{aspect} and \code{slope} for
+#' a better interpolation process, though this two variables are not mandatory.
+#' @export interpolate_data
 interpolate_data <- function(spatial_data, interpolator, dates = NULL) {
   # debug
   # browser()
@@ -1747,60 +1781,66 @@ interpolate_data <- function(spatial_data, interpolator, dates = NULL) {
   return(res)
 }
 
+
+
 #' Calibration and validation of interpolation procedures
-#'
+#' 
 #' Calibration and validation of interpolation procedures
-#'
+#' 
 #' Function \code{interpolator_calibration} determines optimal interpolation
-#' parameters \code{"N"} and \code{"alpha"} for a given meteorological variable.
-#' Optimization is done by minimizing mean absolute error ("MAE")
-#' (Thornton \emph{et al.} 1997). Function \code{interpolation_cross_validation}
-#' calculates average mean absolute errors ("MAE") for the prediction period of
-#' the interpolator object.
-#' In both calibration and cross validation procedures, predictions for each
-#' meteorological station are made using a \emph{leave-one-out} procedure
-#' (i.e. after exluding the station from the predictive set).
-#'
+#' parameters \code{"N"} and \code{"alpha"} for a given meteorological
+#' variable. Optimization is done by minimizing mean absolute error ("MAE")
+#' (Thornton \emph{et al.} 1997). Function
+#' \code{interpolation_cross_validation} calculates average mean absolute
+#' errors ("MAE") for the prediction period of the interpolator object. In both
+#' calibration and cross validation procedures, predictions for each
+#' meteorological station are made using a \emph{leave-one-out} procedure (i.e.
+#' after exluding the station from the predictive set).
+#' 
+#' @aliases interpolator_calibration interpolation_cross_validation
 #' @param interpolator A meteoland interpolator object, as created by
-#'   \code{\link{create_meteoland_interpolator}}
-#'
-#' @param stations A vector with the stations (numeric for station indexes or character
-#'   for stations id) to be used to calculate \code{"MAE"}. All stations with data are
-#'   included in the training set but predictive \code{"MAE"} are calculated for the
-#'   stations subset indicated in \code{stations} param only. If \code{NULL} all stations
-#'   are used in the predictive \code{"MAE"} calculation.
-#'
-#' @param update_interpolation_params Logical indicating if the interpolator object
-#'   must be updated with the calculated parameters. Default to FALSE
-#'
+#' \code{\link{create_meteoland_interpolator}}
+#' @param stations A vector with the stations (numeric for station indexes or
+#' character for stations id) to be used to calculate \code{"MAE"}. All
+#' stations with data are included in the training set but predictive
+#' \code{"MAE"} are calculated for the stations subset indicated in
+#' \code{stations} param only. If \code{NULL} all stations are used in the
+#' predictive \code{"MAE"} calculation.
 #' @param variable A string indicating the meteorological variable for which
-#'   interpolation parameters \code{"N"} and \code{"alpha"} will be calibrated.
-#'   Accepted values are \code{MinTemperature}, \code{MaxTemperature},
-#'   \code{DewTemperature}, \code{Precipitation} (for precipitation with the
-#'   same values for precipitation events an regression of precipitation amounts),
-#'   \code{PrecipitationAmount} (for regression of precipitation amounts) and
-#'   \code{PrecipitationEvent} (for precipitation events).
-#'
+#' interpolation parameters \code{"N"} and \code{"alpha"} will be calibrated.
+#' Accepted values are \code{MinTemperature}, \code{MaxTemperature},
+#' \code{DewTemperature}, \code{Precipitation} (for precipitation with the same
+#' values for precipitation events an regression of precipitation amounts),
+#' \code{PrecipitationAmount} (for regression of precipitation amounts) and
+#' \code{PrecipitationEvent} (for precipitation events).
 #' @param N_seq Numeric vector with \code{"N"} values to be tested
 #' @param alpha_seq Numeric vector with \code{"alpha"}
-#'
-#' @return If \code{update_interpolation_params} is FALSE (default), \code{interpolator_calibration}
-#' returns a list with the following items
-#' \itemize{
-#'   \item{MAE: A numeric matrix with the mean absolute error values, averaged
-#'   across stations, for each combination of parameters \code{"N"} and \code{"alpha"}}
-#'   \item{minMAE: Minimum MAE value}
-#'   \item{N: Value of parameter \code{"N"} corresponding to the minimum MAE}
-#'   \item{alpha: Value of parameter \code{"alpha"} corresponding the the
-#'   minimum MAE}
-#'   \item{observed: matrix with observed values (meteorological measured values)}
-#'   \item{predicted: matrix with interpolated values for the optimum parameter
-#'   combination}
+#' @param update_interpolation_params Logical indicating if the interpolator
+#' object must be updated with the calculated parameters. Default to FALSE
+#' @return If \code{update_interpolation_params} is FALSE (default),
+#' \code{interpolator_calibration} returns a list with the following items
+#' \itemize{ \itemMAE: A numeric matrix with the mean absolute error values,
+#' averaged across stations, for each combination of parameters \code{"N"} and
+#' \code{"alpha"} \itemminMAE: Minimum MAE value \itemN: Value of parameter
+#' \code{"N"} corresponding to the minimum MAE \itemalpha: Value of parameter
+#' \code{"alpha"} corresponding the the minimum MAE \itemobserved: matrix with
+#' observed values (meteorological measured values) \itempredicted: matrix with
+#' interpolated values for the optimum parameter combination } If
+#' \code{update_interpolation_params} is FALSE, \code{interpolator_calibration}
+#' returns the interpolator provided with the parameters updated
+#' 
+#' \code{interpolation_cross_validation} returns a list with the following
+#' items \itemize{ \itemerrors: Data frame with each combination of station and
+#' date with observed variables, predicated variables and the total error
+#' (predicted - observed) calculated for each variable \itemstation_stats: Data
+#' frame with error and bias statistics aggregated by station \itemdates_stats:
+#' Data frame with error and bias statistics aggregated by date \itemr2:
+#' correlation indexes between observed and predicted values for each
+#' meteorological variable }
+#' @section Functions: \itemize{ \item \code{interpolation_cross_validation()}:
+#' 
 #' }
-#' If \code{update_interpolation_params} is FALSE, \code{interpolator_calibration} returns
-#' the interpolator provided with the parameters updated
-#'
-#' @export
+#' @export interpolator_calibration
 interpolator_calibration <- function(
     interpolator,
     stations = NULL,

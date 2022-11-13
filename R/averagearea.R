@@ -1,14 +1,9 @@
 #' Averages area weather
-#'
-#' @description
-#' `r lifecycle::badge("deprecated")`
-#'
+#' 
 #' Averages the weather data series of points or grid pixels.
-#'
-#' @details
+#' 
 #' Assumes that all points/pixels represent the same area.
-#'
-#'
+#' 
 #' @param object An object of class
 #' \code{\link{SpatialPointsMeteorology-class}},
 #' \code{\link{SpatialGridMeteorology-class}} or
@@ -21,24 +16,23 @@
 #' @author Miquel De \enc{CáceresCaceres} Ainsa, CREAF
 #' @seealso \code{\link{weathergeneration}}
 #' @examples
-#'
+#' 
 #' data(examplegridtopography)
 #' data(exampleinterpolationdata)
-#'
+#' 
 #' #Interpolation of meteorology over a grid for two days
 #' ml = interpolationgrid(exampleinterpolationdata, examplegridtopography,
 #'                        as.Date(c("2001-02-03", "2001-06-03")))
-#'
+#' 
 #' #Call averaging function
 #' pa = averagearea(ml)
-#'
+#' 
 #' #Spatial information
 #' pa
-#'
+#' 
 #' #Weather data
 #' pa@data[[1]]
-#'
-#' @export
+#' 
 averagearea<-function(object, na.rm=TRUE) {
 
   # deprecation warning

@@ -12,24 +12,21 @@ set_interpolation_params(interpolator, params = NULL)
 \item{params}{list with the parameters provided by the user}
 }
 \value{
-The same interpolator object provided, with the updated interpolation parameters
+The same interpolator object provided, with the updated
+interpolation parameters
 }
 \description{
 Changing or updating interpolation parameters in an interpolator object
 }
 \details{
 This function ensures that if no parameters are provided, the default ones
-are used (see \code{\link{defaultInterpolationParams}}).
-Also, if params are partially provided, this function ensures that
-the rest of the parameters are not changed.
+are used (see \code{\link{defaultInterpolationParams}}). Also, if params are
+partially provided, this function ensures that the rest of the parameters
+are not changed.
 }
 \seealso{
-Other interpolator functions: 
-\code{\link{add_topo}()},
+Other interpolator functions: \code{\link{add_topo}()},
 \code{\link{create_meteo_interpolator}()},
-\code{\link{get_interpolation_params}()},
-\code{\link{read_interpolator}()},
-\code{\link{with_meteo}()},
-\code{\link{write_interpolator}()}
+\code{\link{get_interpolation_params}()}, \code{\link{read_interpolator}()},
+\code{\link{with_meteo}()}, \code{\link{write_interpolator}()}
 }
-\concept{interpolator functions}

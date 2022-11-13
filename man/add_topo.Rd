@@ -22,12 +22,9 @@ When using meteo data without topology info to create an inteprolator,
 topology must be addded
 }
 \seealso{
-Other interpolator functions: 
+Other interpolator functions:
 \code{\link{create_meteo_interpolator}()},
-\code{\link{get_interpolation_params}()},
-\code{\link{read_interpolator}()},
-\code{\link{set_interpolation_params}()},
-\code{\link{with_meteo}()},
+\code{\link{get_interpolation_params}()}, \code{\link{read_interpolator}()},
+\code{\link{set_interpolation_params}()}, \code{\link{with_meteo}()},
 \code{\link{write_interpolator}()}
 }
-\concept{interpolator functions}

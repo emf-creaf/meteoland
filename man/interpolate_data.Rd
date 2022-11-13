@@ -27,25 +27,19 @@ object, interpolation results are added as attributes (variables)
 Interpolate spatial data to obtain downscaled meteorologic variables
 }
 \details{
-This function takes a spatial data object (sf or stars raster), an interpolator
-object (\code{\link{create_meteoland_interpolator}}) and a vector of dates to
-perform the interpolation of the meteorologic variables for the spatial
-locations present in the \code{spatial_data} object.
+This function takes a spatial data object (sf or stars raster), an
+interpolator object (\code{\link{create_meteoland_interpolator}}) and a
+vector of dates to perform the interpolation of the meteorologic variables
+for the spatial locations present in the \code{spatial_data} object.
 }
 \section{Spatial data}{
 
+
 The spatial data provided must be of two types. (I) A sf object containing
 POINT for each location to interpolate or (II) a stars raster object for
-which the interpolation should be done.
-Independently of the class of \code{spatial_data} it has to have some
-mandatory variables, namely \code{elevation}. It should also contain
-\code{aspect} and \code{slope} for a better interpolation process, though
-this two variables are not mandatory.
-}
-
-\section{Curvilinear rasters}{
-
-Rasters with curvilinear projections are not supported. Rasters provided
-must have a planar coordinate system.
+which the interpolation should be done. Independently of the class of
+\code{spatial_data} it has to have some mandatory variables, namely
+\code{elevation}. It should also contain \code{aspect} and \code{slope} for
+a better interpolation process, though this two variables are not mandatory.
 }
 

@@ -8,11 +8,14 @@ Modified from weathergen}
 .mc_fit(states, months)
 }
 \arguments{
-\item{states}{character array of states (from {'d','w','e'}, for dry, wet and extremely wet)}
+\item{states}{character array of states (from 'd','w','e', for dry, wet and
+extremely wet)}
 
 \item{months}{numeric array of months for each daily time step}
 }
 \value{
+monthly list of transition matrices
+
 monthly list of transition matrices
 }
 \description{
@@ -21,5 +24,16 @@ Modified from weathergen
 }
 \examples{
 transitions <- mc_fit(x=sample(c('d', 'w', 'e'), size=720, replace=TRUE, prob=c(0.5, 0.3, 0.2)), months=rep(rep(seq(1, 12), each=30), times=2))
+
+Fits Markov Chain Transition Matrices to State Sequence Modified from
+weathergen
+
+Fits Markov Chain Transition Matrices to State Sequence Modified from
+weathergen
+
+
+
+transitions <- mc_fit(x=sample(c('d', 'w', 'e'), size=720, replace=TRUE, prob=c(0.5, 0.3, 0.2)), months=rep(rep(seq(1, 12), each=30), times=2))
+
 
 }

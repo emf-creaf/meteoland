@@ -282,10 +282,14 @@
 
 #' Weather generation
 #' 
+#' @description
+#' `r lifecycle::badge("deprecated")`
+#' 
 #' A semiparametric multivariate, multisite weather generator. The algorithm
 #' can be interpreted as a way to resample the original data to create
 #' synthetic data sets of the same length and similar properties.
 #' 
+#' @details
 #' The implemented algorithm is based on Apipattanavis et al. (2007) for the
 #' non-conditional version, and is similar to Steinschneider et al. (2013) for
 #' the conditional one. Part of the code was adapted from package 'weathergen'
@@ -346,6 +350,7 @@
 #' #Plot generated meteorological series
 #' meteoplot(y,1, ylab="Mean temperature")
 #' 
+#' @export
 weathergeneration<-function(object,
                             params = defaultGenerationParams(),
                             verbose = TRUE) {

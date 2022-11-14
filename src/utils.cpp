@@ -11,6 +11,43 @@ const double Cp_MJKG = 0.00101386;// MJ * kg^-1 * ºC^-1
  *  
  *  temperature - temperature (in degrees Celsius) 
  */
+//' Physical utility functions
+//' 
+//' Set of functions used in the calculation of physical variables.
+//' 
+//' 
+//' @aliases utils_airDensity utils_atmosphericPressure utils_averageDailyVP
+//' utils_averageDaylightTemperature utils_latentHeatVaporisation
+//' utils_latentHeatVaporisationMol utils_psychrometricConstant
+//' utils_saturationVP utils_saturationVaporPressureCurveSlope
+//' @param temperature Air temperature (ºC).
+//' @param Tmin,Tmax Minimum and maximum daily temperature (ºC).
+//' @param RHmin,RHmax Minimum and maximum relative humidity (\%).
+//' @param Patm Atmospheric air pressure (in kPa).
+//' @param elevation Elevation above sea level (in m).
+//' @return Values returned for each function are: \itemize{
+//' \item\code{utils_airDensity}: air density (in kg·m-3).
+//' \item\code{utils_atmosphericPressure}: Air atmospheric pressure (in kPa).
+//' \item\code{utils_averageDailyVP}: average (actual) vapour pressure (in kPa).
+//' \item\code{utils_averageDaylightTemperature}: average daylight air
+//' temperature (in ºC). \item\code{utils_latentHeatVaporisation}: Latent heat
+//' of vaporisation (MJ·kg-1).  \item\code{utils_latentHeatVaporisationMol}:
+//' Latent heat of vaporisation (J·mol-1).
+//' \item\code{utils_psychrometricConstant}: Psychrometric constant (kPa·ºC-1).
+//' \item\code{utils_saturationVP}: saturation vapour pressure (in kPa).
+//' \item\code{utils_saturationVaporPressureCurveSlope}: Slope of the saturation
+//' vapor pressure curve (kPa·ºC-1).  }
+//' @author Miquel De \enc{CáceresCaceres} Ainsa, CREAF
+//' @references McMurtrie, R. E., D. A. Rook, and F. M. Kelliher. 1990.
+//' Modelling the yield of Pinus radiata on a site limited by water and
+//' nitrogen. Forest Ecology and Management 30:381–413.
+//' 
+//' McMahon, T. A., M. C. Peel, L. Lowe, R. Srikanthan, and T. R. McVicar. 2013.
+//' Estimating actual, potential, reference crop and pan evaporation using
+//' standard meteorological data: a pragmatic synthesis. Hydrology & Earth
+//' System Sciences 17:1331–1363. See also:
+//' http://www.fao.org/docrep/x0490e/x0490e06.htm
+//' @export
 // [[Rcpp::export("utils_saturationVP")]]
 double saturationVapourPressure(double temperature) {
   return(0.61078 * exp(17.269 * temperature/(temperature + 237.3)));
@@ -50,6 +87,8 @@ double dewpointTemperatureFromRH(double T, double RH) {
 *  Tmin, Tmax - Minimum and maximum temperature (in degrees Celsius) 
 *  RHmin, RHmax - Minimum and maximum relative humidity (in percent) 
 */
+//' @describeIn utils_saturationVP Average daily VP
+//' @export
 // [[Rcpp::export("utils_averageDailyVP")]]
 double averageDailyVapourPressure(double Tmin, double Tmax, double RHmin, double RHmax) {
   double vs_Tmax = saturationVapourPressure(Tmax);
@@ -62,6 +101,8 @@ double averageDailyVapourPressure(double Tmin, double Tmax, double RHmin, double
  *  
  *  z - Elevation (in m) 
  */
+//' @describeIn utils_saturationVP Atmospheric pressure
+//' @export
 // [[Rcpp::export("utils_atmosphericPressure")]]
 double atmosphericPressure(double elevation) {
   return(101.32500*pow(1.0-2.2569*pow(10.0,-5)*elevation,5.2353));
@@ -72,6 +113,8 @@ double atmosphericPressure(double elevation) {
 *  temperature - Air temperature (in degrees Celsius) 
 *  Patm - air atmospheric pressure (in kPa)
 */
+//' @describeIn utils_saturationVP Air density
+//' @export
 // [[Rcpp::export("utils_airDensity")]]
 double airDensity(double temperature, double Patm) {
   return((Patm/(1.01*(temperature+273.16)*0.287)));
@@ -81,6 +124,8 @@ double airDensity(double temperature, double Patm) {
 *  
 *  Tmin, Tmax - Minimum and maximum temperature (in degrees Celsius) 
 */
+//' @describeIn utils_saturationVP Daylight temperature
+//' @export
 // [[Rcpp::export("utils_averageDaylightTemperature")]]
 double averageDaylightTemperature(double Tmin, double Tmax) {
   return(0.606*Tmax + 0.394*Tmin);
@@ -94,6 +139,8 @@ double averageDaylightTemperature(double Tmin, double Tmax) {
 *  
 *  Units: MJ.kg^-1
 */
+//' @describeIn utils_saturationVP latent heat vaporisation
+//' @export
 // [[Rcpp::export("utils_latentHeatVaporisation")]]
 double latentHeatVaporisation(double temperature) {
   return(2.5023 - 0.00243054*temperature);
@@ -105,6 +152,8 @@ double latentHeatVaporisation(double temperature) {
 *  
 *  Units: J.mol^-1
 */
+//' @describeIn utils_saturationVP Heat vaporisation mol
+//' @export
 // [[Rcpp::export("utils_latentHeatVaporisationMol")]]
 double latentHeatVaporisationMol(double temperature) {
   return(latentHeatVaporisation(temperature)*pow(10.0,6.0)*0.018);
@@ -120,6 +169,8 @@ double latentHeatVaporisationMol(double temperature) {
 *  
 *  Units: kPa*ºC-1
 */
+//' @describeIn utils_saturationVP psychrometric constant
+//' @export
 // [[Rcpp::export("utils_psychrometricConstant")]]
 double psychrometricConstant(double temperature, double Patm) {
   return((0.00163*Patm)/latentHeatVaporisation(temperature));
@@ -132,6 +183,8 @@ double psychrometricConstant(double temperature, double Patm) {
 *  
 *  Units: kPa*ºC-1
 */
+//' @describeIn utils_saturationVP Saturation VP curve slope
+//' @export
 // [[Rcpp::export("utils_saturationVaporPressureCurveSlope")]]
 double saturationVaporPressureCurveSlope(double temperature) {
   return(4098.0 * (0.6108 * exp((17.27 * temperature)/(temperature + 237.3)))/pow(temperature + 237.3,2.0));
@@ -158,6 +211,49 @@ double saturationVaporPressureCurveSlope(double temperature) {
  * alpha - Albedo (from 0 to 1)
  * windfun - Wind function version of Penman "1956" or "1948"
  */
+//' Potential evapotranspiration
+//' 
+//' Functions to calculate potential evapotranspiration using Penman or
+//' Penman-Monteith.
+//' 
+//' The code was adapted from package `Evapotranspiration', which follows
+//' McMahon et al. (2013). If wind speed is not available, an alternative
+//' formulation for potential evapotranspiration is used as an approximation
+//' (Valiantzas 2006)
+//' 
+//' @aliases penman penmanmonteith
+//' @param latrad Latitude in radians.
+//' @param elevation Elevation (in m).
+//' @param slorad Slope (in radians).
+//' @param asprad Aspect (in radians from North).
+//' @param J Julian day, number of days since January 1, 4713 BCE at noon UTC.
+//' @param Tmax Maximum temperature (degrees Celsius).
+//' @param Tmin Minimum temperature (degrees Celsius).
+//' @param RHmin Minimum relative humidity (percent).
+//' @param RHmax Maximum relative humidity (percent).
+//' @param R_s Solar radiation (MJ/m2).
+//' @param u With wind speed (m/s).
+//' @param z Wind measuring height (m).
+//' @param z0 Roughness height (m).
+//' @param alpha Albedo.
+//' @param windfun Wind speed function version, either "1948" or "1956".
+//' @param rc Canopy vapour flux (stomatal) resistance (s·m-1).
+//' @param Rn Daily net radiation (MJ·m-2·day-1).
+//' @return Potential evapotranspiration (in mm of water).
+//' @author Miquel De \enc{CáceresCaceres} Ainsa, CREAF
+//' @seealso \code{\link{interpolationpoints}}
+//' @references Penman, H. L. 1948. Natural evaporation from open water, bare
+//' soil and grass. Proceedings of the Royal Society of London. Series A.
+//' Mathematical and Physical Sciences, 193, 120-145.
+//' 
+//' Penman, H. L. 1956. Evaporation: An introductory survey. Netherlands Journal
+//' of Agricultural Science, 4, 9-29.
+//' 
+//' McMahon, T.A., Peel, M.C., Lowe, L., Srikanthan, R., McVicar, T.R. 2013.
+//' Estimating actual, potential, reference crop and pan evaporation using
+//' standard meteorological data: a pragmatic synthesis. Hydrology \& Earth
+//' System Sciences 17, 1331–1363. doi:10.5194/hess-17-1331-2013.
+//' @export
 // [[Rcpp::export("penman")]]
 double PenmanPET(double latrad, double elevation, double slorad, double asprad, int J,
                  double Tmin, double Tmax, double RHmin, double RHmax, double R_s,
@@ -227,6 +323,8 @@ double PenmanPET(double latrad, double elevation, double slorad, double asprad, 
 *   Rn [MJ.m^-2.day^-1] - daily net radiation
 *   u [m.s^-1] - wind speed
 */
+//' @describeIn penman Penman Monteith method
+//' @export
 // [[Rcpp::export("penmanmonteith")]]
 double PenmanMonteithPET(double rc, double elevation, 
                          double Tmin, double Tmax,

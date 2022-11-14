@@ -18,7 +18,7 @@
   }
   return(df)
 }
-#' @describein extractdates `r lifecycle::badge("deprecated")`
+#' @describeIn extractdates `r lifecycle::badge("deprecated")`
 #' @export
 extractgridindex<-function(grid, index) {
   lifecycle::deprecate_warn(
@@ -46,7 +46,7 @@ extractgridindex<-function(grid, index) {
     return(df)
   }
 }
-#' @describein extractdates `r lifecycle::badge("deprecated")`
+#' @describeIn extractdates `r lifecycle::badge("deprecated")`
 #' @export
 extractgridpoints<-function(grid, points, verbose = FALSE) {
   lifecycle::deprecate_warn(

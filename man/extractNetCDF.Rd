@@ -47,6 +47,8 @@ returns an object of class \code{\link{SpatialPointsDataFrame-class}}
 containing the meta data of the files written in the disk.
 }
 \description{
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}
+
 This function reads a set of NetCDF files (one per variable) and extracts
 data for a set of NetCDF cells that are specified using a boundary box (in
 lon/lat format) or a set of (x,y) grid indices.

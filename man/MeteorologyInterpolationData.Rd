@@ -68,6 +68,8 @@ An object of class
 \code{\linkS4class{MeteorologyInterpolationData}}.
 }
 \description{
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}
+
 Initializes an object for meteorology interpolation over landscapes using
 weather station data and the methods described in Thornton et al. (1997) and
 Thornton & Running (1999).
@@ -97,7 +99,6 @@ columns, but other variables may be left as \code{NULL}. }
 \examples{
 
 ## TO BE DONE ##
-
 }
 \references{
 Thornton, P.E., Running, S.W., 1999. An improved algorithm for

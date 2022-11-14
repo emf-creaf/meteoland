@@ -1,3 +1,5 @@
+#' @describeIn interpolation.cv `r lifecycle::badge("deprecated")`
+#' @export
 summary.interpolation.cv<-function(object,...) {
   
   # deprecation notice

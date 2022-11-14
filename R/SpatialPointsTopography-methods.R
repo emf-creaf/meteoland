@@ -1,9 +1,13 @@
 #' Creates a 'SpatialPointsTopography'
 #' 
+#' @description
+#' `r lifecycle::badge("deprecated")`
+#' 
 #' Function \code{SpatialPointsTopography} creates an object of class
 #' \code{\link{SpatialPointsTopography-class}} containing topographic variables
 #' for a set of points.
 #' 
+#' @details
 #' If either \code{slope = NULL} or \code{aspect = NULL} then when estimating
 #' weather on the object locations radiation will be calculated assuming a flat
 #' surface.
@@ -35,6 +39,7 @@
 #' spt = as(examplegridtopography, "SpatialPointsTopography")[p]
 #' spt
 #' 
+#' @export
 SpatialPointsTopography<-function(points, elevation, slope = NULL, aspect = NULL, proj4string = CRS(as.character(NA))) {
   
   # deprecation notice

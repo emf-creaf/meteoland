@@ -7,6 +7,22 @@
 \title{Writes point meteorology to the disk}
 \usage{
 writemeteorologypoint(data, file, format = "meteoland/txt")
+
+writemeteorologypointfiles(
+  object,
+  dir = getwd(),
+  format = "meteoland/txt",
+  metadataFile = "MP.txt"
+)
+
+writemeteorologypoints(
+  object,
+  file,
+  format = "netCDF",
+  add = FALSE,
+  overwrite = FALSE,
+  verbose = FALSE
+)
 }
 \arguments{
 \item{data}{An data frame with meteorological data.}
@@ -34,6 +50,8 @@ added/replaced (see details).}
 \item{verbose}{A logical flag to output process information in the console.}
 }
 \description{
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}
+
 Functions to write point meteorological data to disk files in different
 formats.
 }
@@ -57,6 +75,13 @@ using \code{add=TRUE}, and profits from the fact that some netCDF dimensions
 added to an existing netCDF, the coordinate reference system and the dates
 of \code{object} must be the same as those in the netCDF.
 }
+\section{Functions}{
+\itemize{
+\item \code{writemeteorologypointfiles()}: \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}
+
+\item \code{writemeteorologypoints()}: \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}
+
+}}
 \seealso{
 \code{\link{readmeteorologypoint}},
 \code{\link{SpatialPointsMeteorology-class}}

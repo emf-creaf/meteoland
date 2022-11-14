@@ -1,3 +1,5 @@
+#' @describeIn summarypoints `r lifecycle::badge("deprecated")`
+#' @export
 summaryinterpolationdata<-function(object, var, fun=mean, freq=NULL, dates = NULL, months = NULL, ...) {
   
   # deprecation notice

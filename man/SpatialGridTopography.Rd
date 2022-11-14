@@ -33,6 +33,8 @@ Function \code{SpatialGridTopography} returns an object
 '\code{\link{SpatialGridTopography-class}}'.
 }
 \description{
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}
+
 Function \code{SpatialGridTopography} creates an object of class
 \code{\link{SpatialGridTopography-class}} containing topographic variables
 over a landscape.
@@ -83,7 +85,6 @@ spplot(examplegridtopography, variable="elevation", scales=list(draw=TRUE))
 #Grids can be subsetted
 sgt = examplegridtopography[1:50, 1:50]
 spplot(sgt, variable="elevation", scales=list(draw=TRUE))
-
 
 }
 \references{

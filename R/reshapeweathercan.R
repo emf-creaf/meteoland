@@ -1,3 +1,5 @@
+#' @describeIn reshapemeteospain `r lifecycle::badge("deprecated")`
+#' @export
 reshapeweathercan<-function(hourly_data, daily_data = NULL, output="SpatialPointsMeteorology",
                             proj4string = NULL, complete=TRUE, verbose = TRUE) {
 

@@ -3,8 +3,12 @@
 
 #' Writes grid meteorology to the disk
 #' 
+#' @description
+#' `r lifecycle::badge("deprecated")`
+#' 
 #' Functions to write grid meteorological data to the file system.
 #' 
+#' @details
 #' Functions \code{writemeteorologygrid} and \code{writemeteorologypixels}
 #' writes grided meteorological data (i.e. class
 #' \code{\link{SpatialGridMeteorology-class}} or class
@@ -41,6 +45,7 @@
 #' @author Miquel De \enc{CáceresCaceres} Ainsa, CREAF
 #' @seealso \code{\link{readmeteorologygrid}},
 #' \code{\link{SpatialGridMeteorology-class}}
+#' @export
 writemeteorologygrid<-function(object, file, dates = NULL, format = "netCDF",
                                byPixel = FALSE, chunksizes = NA,
                                add=FALSE, overwrite = FALSE, verbose = FALSE) {
@@ -64,6 +69,8 @@ writemeteorologygrid<-function(object, file, dates = NULL, format = "netCDF",
   .closeNetCDF(file,nc, verbose = verbose)
 }
 # Writes grid meteorological data (SpatialPixelMeteorology) into a netCDF
+#' @describeIn writemeteorologygrid `r lifecycle::badge("deprecated")`
+#' @export
 writemeteorologypixels<-function(object, file, dates = NULL, format = "netCDF",
                                  byPixel = FALSE, chunksizes = NA,
                                  add=FALSE, overwrite = FALSE, verbose = FALSE) {
@@ -85,6 +92,8 @@ writemeteorologypixels<-function(object, file, dates = NULL, format = "netCDF",
                                 byPixel = byPixel, nc=nc)
   .closeNetCDF(file,nc, verbose = verbose)
 }
+#' @describeIn writemeteorologygrid `r lifecycle::badge("deprecated")`
+#' @export
 writeemptymeteorologygrid<-function(file, grid, proj4string, dates, byPixel = FALSE, chunksizes = NA, overwrite = FALSE, verbose = FALSE) {
   lifecycle::deprecate_warn(
     when = "1.1.0", what = "writeemptymeteorologygrid()", with = NULL,
@@ -100,6 +109,8 @@ writeemptymeteorologygrid<-function(file, grid, proj4string, dates, byPixel = FA
 }
 
 # Replaces the content of a grid pixel in an existing netCDF
+#' @describeIn writemeteorologygrid `r lifecycle::badge("deprecated")`
+#' @export
 writemeteorologygridpixel<-function(file, index, data, verbose = FALSE) {
   lifecycle::deprecate_warn(
     when = "1.1.0", what = "writemeteorologygridpixel()", with = NULL,

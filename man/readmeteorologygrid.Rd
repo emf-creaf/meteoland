@@ -15,6 +15,27 @@ readmeteorologygrid(
   offset = 0,
   verbose = FALSE
 )
+
+readmeteorologypixels(
+  files,
+  format = "netCDF",
+  varmapping = NULL,
+  dates = NULL,
+  bbox = NULL,
+  offset = 0,
+  verbose = FALSE
+)
+
+readmeteorologygridpoints(
+  files,
+  format = "netCDF",
+  varmapping = NULL,
+  dates = NULL,
+  bbox = NULL,
+  offset = 0,
+  relativehumidity = FALSE,
+  verbose = FALSE
+)
 }
 \arguments{
 \item{files}{Character vector with the file names to be read.}
@@ -49,6 +70,8 @@ humidity from specific humidity if possible.}
 \code{\link{SpatialPointsMeteorology-class}}. }
 }
 \description{
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}
+
 Functions to read gridded meteorological data from the disk.
 }
 \details{
@@ -72,6 +95,13 @@ a mapping can be supplied to map variable names in the netCDF to variables
 used in meteoland. Rotated grids should not be read using functions
 \code{readmeteorologygrid} or \code{readmeteorologypixels}.
 }
+\section{Functions}{
+\itemize{
+\item \code{readmeteorologypixels()}: \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}
+
+\item \code{readmeteorologygridpoints()}: \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}
+
+}}
 \seealso{
 \code{\link{writemeteorologygrid}},
 \code{\link{writemeteorologypixels}},

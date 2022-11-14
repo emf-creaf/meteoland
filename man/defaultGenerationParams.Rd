@@ -32,6 +32,8 @@ either overall input annual precipitation or simulated annual precipitation.
 \item\code{max_ratio [= 1.2]}: Minimum adjustment ratio for precipitation. }
 }
 \description{
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}
+
 Returns a list with the default parameterization for weather generation.
 }
 \references{

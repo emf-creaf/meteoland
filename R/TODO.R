@@ -148,7 +148,9 @@
 # 1. Move docs to roxygen2, also C functions
 #     - NAMESPACE DONE
 #     - Build and doc with roxygen DONE
-#     - Roxygenize functions
+#     - Roxygenize functions DONE
+#     - Check all exported functions are still exported (check with old namespace)
+#     - Fix bad formatting of items in the Rd to roxygen conversion
 # 1. Clean and organize the new functions in files
 # 1. Add tests
 #     - New functions (check existent tests)

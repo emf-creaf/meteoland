@@ -3,8 +3,12 @@
 
 #' Reads gridded meteorology from the disk
 #' 
+#' @description
+#' `r lifecycle::badge("deprecated")`
+#' 
 #' Functions to read gridded meteorological data from the disk.
 #' 
+#' @details
 #' Function \code{readmeteorologygrid} reads one or several files containing
 #' the meteorology over a grid for a set of days. Function
 #' \code{readmeteorologypixels} reads one or several file containing the
@@ -54,6 +58,7 @@
 #' \code{\link{SpatialGridMeteorology-class}},
 #' \code{\link{SpatialPixelsMeteorology-class}}, \code{\link{mergegrids}},
 #' \code{\link{mergepoints}}
+#' @export
 readmeteorologygrid<-function(files, format = "netCDF", varmapping = NULL,
                               dates = NULL, bbox = NULL, offset = 0, verbose = FALSE) {
   
@@ -83,6 +88,8 @@ readmeteorologygrid<-function(files, format = "netCDF", varmapping = NULL,
   return(mergegrids(l, verbose = verbose))
 }
 # Reads one or many gridded data, subsets pixels with non missing data, and merges the result into a SpatialPixelsMeteorology
+#' @describeIn readmeteorologygrid `r lifecycle::badge("deprecated")`
+#' @export
 readmeteorologypixels<-function(files, format = "netCDF", varmapping = NULL,
                                 dates = NULL, bbox = NULL, offset = 0, verbose = FALSE) {
   # deprecation notice
@@ -111,6 +118,8 @@ readmeteorologypixels<-function(files, format = "netCDF", varmapping = NULL,
   return(mergegrids(l, verbose = verbose))
 }
 # Reads a subset of grid cells from one or many files and merges the result as a SpatialPointsMeteorology
+#' @describeIn readmeteorologygrid `r lifecycle::badge("deprecated")`
+#' @export
 readmeteorologygridpoints<-function(files, format = "netCDF", varmapping = NULL,
                                     dates = NULL, bbox = NULL, offset = 0, 
                                     relativehumidity = FALSE, verbose = FALSE) {

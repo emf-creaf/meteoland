@@ -147,10 +147,14 @@
 
 #' Interpolate daily meteorology over a landscape
 #' 
+#' @description
+#' `r lifecycle::badge("deprecated")`
+#' 
 #' Functions to interpolate meteorological data for spatial locations (at
 #' points, grid pixels or full grids) using an object of class
 #' \code{\link{MeteorologyInterpolationData-class}}.
 #' 
+#' @details
 #' CRS projection needs to be defined for both \code{object} and
 #' \code{points}/\code{pixels}/\code{grid}. If CRS projection is different
 #' between \code{object} and \code{points}/\code{pixels}/\code{grid}, the
@@ -255,6 +259,7 @@
 #' #Plot PET corresponding to 2001-06-03
 #' spplot(ml,2,"PET")
 #' 
+#' @export
 interpolationpoints<-function(object, points, dates = NULL,
                               export=FALSE, exportDir = getwd(), exportFile = NULL,
                               exportFormat = "meteoland/txt",

@@ -6,6 +6,8 @@
 \title{Merges meteorological data}
 \usage{
 mergegrids(..., verbose = TRUE)
+
+mergepoints(..., verbose = TRUE)
 }
 \arguments{
 \item{...}{Objects to be merged, either of class
@@ -21,6 +23,8 @@ returns an object \code{\link{SpatialGridMeteorology-class}} or an object
 \code{\link{SpatialPixelsMeteorology-class}}, depending on the input.
 }
 \description{
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}
+
 Merges point or gridded meteorological data into a single object
 }
 \details{
@@ -30,6 +34,11 @@ have the same coordinates). Function \code{mergegrids} pools dates and
 variables, but spatial structures (i.e. grid topology, pixel indices,
 reference system, ...) should be the same for all objects to be merged.
 }
+\section{Functions}{
+\itemize{
+\item \code{mergepoints()}: \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}
+
+}}
 \seealso{
 \code{\link{SpatialPointsMeteorology-class}},
 \code{\link{SpatialGridMeteorology-class}},

@@ -1,7 +1,11 @@
 #' Merges meteorological data
 #' 
+#' @description 
+#' `r lifecycle::badge("deprecated")`
+#'
 #' Merges point or gridded meteorological data into a single object
 #' 
+#' @details
 #' Function \code{mergepoints} requires all coordinate reference systems to the
 #' same. The function allows merging data from the same points (i.e. if they
 #' have the same coordinates). Function \code{mergegrids} pools dates and
@@ -21,6 +25,7 @@
 #' @seealso \code{\link{SpatialPointsMeteorology-class}},
 #' \code{\link{SpatialGridMeteorology-class}},
 #' \code{\link{SpatialPixelsMeteorology-class}}
+#' @export
 mergegrids<-function(..., verbose = TRUE) {
   # deprecation warning
   lifecycle::deprecate_warn(
@@ -82,6 +87,8 @@ mergegrids<-function(..., verbose = TRUE) {
   return(sgm)
 }
 
+#' @describeIn mergegrids `r lifecycle::badge("deprecated")`
+#' @export
 mergepoints<-function(..., verbose = TRUE) {
   # deprecation warning
   lifecycle::deprecate_warn(

@@ -16,6 +16,8 @@
   return(v)
 }
 
+#' @describeIn summarypoints `r lifecycle::badge("deprecated")`
+#' @export
 summarypoint<-function(x, var, fun="mean", freq=NULL, dates = NULL, months= NULL, ...) {
   
   # deprecation notice
@@ -39,9 +41,13 @@ summarypoint<-function(x, var, fun="mean", freq=NULL, dates = NULL, months= NULL
 
 #' Summaries of meteorological data
 #' 
+#' @description
+#' `r lifecycle::badge("deprecated")`
+#' 
 #' Summarizes the meteorology of a single location, a set of spatial points,
 #' pixels in a grid, or weather stations of interpolation data.
 #' 
+#' @details
 #' If \code{var="ALL"} then function \code{summarypoints} produces a summary of
 #' all variables with default statistics and returns an object of class
 #' \code{SpatialPointsMeteorology}.
@@ -108,7 +114,7 @@ summarypoint<-function(x, var, fun="mean", freq=NULL, dates = NULL, months= NULL
 #' mp.sum = summarypoints(mp, var="PET", freq="months", fun=sum)
 #' 
 #' mp.sum
-#' 
+#' @export
 summarypoints<-function(points, var, fun=mean, freq=NULL, dates = NULL, months = NULL, ...) {
   
   # deprecation notice

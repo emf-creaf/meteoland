@@ -1,5 +1,8 @@
 #' Creates a 'SpatialPixelsMeteorology'
 #' 
+#' @description
+#' `r lifecycle::badge("deprecated")`
+#' 
 #' Initializes an object of class \code{SpatialPixelsMeteorology-class}
 #' 
 #' 
@@ -20,6 +23,7 @@
 #' @return An object of class \code{\link{SpatialPixelsMeteorology-class}}
 #' @author Miquel De \enc{CáceresCaceres} Ainsa, CREAF
 #' @seealso \code{\link{SpatialPixelsMeteorology-class}}
+#' @export
 SpatialPixelsMeteorology<-function(points, data, dates, tolerance = sqrt(.Machine$double.eps),
                                    proj4string = CRS(as.character(NA)), round = NULL, grid = NULL) {
   

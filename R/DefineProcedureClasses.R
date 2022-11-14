@@ -1,8 +1,76 @@
+#' Class \code{"MeteorologyProcedureData"}
+#' 
+#' @description
+#' `r lifecycle::badge("deprecated")`
+#' 
+#' A virtual class for estimating meteorology over landscapes
+#' 
+#' 
+#' @name MeteorologyProcedureData-class
+#' @docType class
+#' @section Objects from the Class: A virtual Class: No objects may be created
+#' from it.
+#' @author Miquel De \enc{CáceresCaceres} Ainsa, CREAF
+#' @seealso \code{\link{MeteorologyInterpolationData-class}},
+#' \code{\link{MeteorologyUncorrectedData-class}}
+#' @keywords classes
+#' @examples
+#' 
+#' showClass("MeteorologyProcedureData")
+#' 
 setClass("MeteorologyProcedureData", slots = list(dates = "Date"), contains="Spatial")
+
+#' Class \code{"MeteorologyUncorrectedData"}
+#' 
+#' @description
+#' `r lifecycle::badge("deprecated")`
+#' 
+#' An S4 class to conduct statistical correction of meteorology over a
+#' landscape.
+#' 
+#' 
+#' @name MeteorologyUncorrectedData-class
+#' @docType class
+#' @section Objects from the Class: Objects can be created by calls of the form
+#' \code{new("MeteorologyUncorrectedData", ...)}, or by calls to the function
+#' \code{\link{MeteorologyUncorrectedData}}.
+#' @author Miquel De \enc{CáceresCaceres} Ainsa, CREAF
+#' @seealso \code{\link{MeteorologyUncorrectedData}},
+#' \code{\link{MeteorologyProcedureData-class}},
+#' \code{\link{examplecorrectiondata}}, \code{\link{subsample}}
+#' @keywords classes
+#' @examples
+#' 
+#' #Structure of the S4 object
+#' showClass("MeteorologyUncorrectedData")
+#' 
 setClass("MeteorologyUncorrectedData",
          slots = list(coords="matrix", reference_data = "ANY", projection_data = "ANY",
                       params = "list"),
          contains="MeteorologyProcedureData")
+
+#' Class \code{"MeteorologyInterpolationData"}
+#' 
+#' @description
+#' `r lifecycle::badge("deprecated")`
+#' 
+#' An S4 class to interpolate meteorology over a landscape.
+#' 
+#' 
+#' @name MeteorologyInterpolationData-class
+#' @docType class
+#' @section Objects from the Class: Objects can be created by calls of the form
+#' \code{new("MeteorologyInterpolationData", ...)}, or by calls to the function
+#' \code{\link{MeteorologyInterpolationData}}.
+#' @author Miquel De \enc{CáceresCaceres} Ainsa, CREAF
+#' @seealso \code{\link{MeteorologyInterpolationData}},
+#' \code{\link{MeteorologyProcedureData-class}}, \code{\link{subsample}}
+#' @keywords classes
+#' @examples
+#' 
+#' #Structure of the S4 object
+#' showClass("MeteorologyInterpolationData")
+#'
 setClass("MeteorologyInterpolationData",
          slots=list(
            coords = "matrix",
@@ -27,6 +95,49 @@ setGeneric("subsample", valueClass=c("MeteorologyProcedureData"), function(objec
   standardGeneric("subsample")
 })
 
+#' Sub-sampling procedure data
+#' 
+#' @description
+#' `r lifecycle::badge("deprecated")`
+#' 
+#' Generates a spatial and/or temporal subset of procedure data
+#' 
+#' 
+#' @name subsample
+#' @aliases subsample subsample-methods
+#' subsample,MeteorologyUncorrectedData-method
+#' subsample,MeteorologyInterpolationData-method
+#' @docType methods
+#' @param object An object of a sub-class
+#' \code{\link{MeteorologyProcedureData-class}}.
+#' @param bbox A 2x2 numeric matrix with the boundaries of the target area. If
+#' \code{NULL}, the original boundary box is kept (except if \code{stations} is
+#' specified).
+#' @param stations A numeric, character or logical vector specifying a subset
+#' of weather stations. If \code{NULL} all original weather stations are kept
+#' (except if \code{bbox} is specified).
+#' @param dates A vector of \code{\link{Date}} with the subset of dates of
+#' interest. If \code{NULL}, all dates are kept.
+#' @param buffer A buffer to put around bbox for the spatial selection of data.
+#' @return An object of the same class as \code{object}.
+#' @section Methods: \describe{ \item{subsample}{\code{signature(object =
+#' "MeteorologyUncorrectedData")}: Generates a
+#' \code{\link{MeteorologyUncorrectedData}} object for a smaller area and a
+#' subset of dates. }
+#' 
+#' \item{subsample}{\code{signature(object = "MeteorologyInterpolationData")}:
+#' Generates a \code{\link{MeteorologyInterpolationData}} object for a smaller
+#' area and a subset of dates. } }
+#' @keywords methods
+#' @examples
+#' 
+#' data(exampleinterpolationdata)
+#' 
+#' oridates = exampleinterpolationdata@dates
+#' 
+#' #Interpolation data using the first ten dates (same boundary box)
+#' subdata = subsample(exampleinterpolationdata, dates = oridates[1:10])
+#' 
 setMethod("subsample", signature("MeteorologyInterpolationData"), definition =
     function(object, bbox = NULL,  stations=NULL, dates = NULL, buffer = 0) {
       cc = object@coords

@@ -1,5 +1,8 @@
 #' Creates a 'SpatialPixelsTopography'
 #' 
+#' @description
+#' `r lifecycle::badge("deprecated")`
+#' 
 #' Function \code{SpatialPixelsTopography} creates an object of class
 #' \code{\link{SpatialPixelsTopography-class}} containing topographic variables
 #' for a set of points.
@@ -46,6 +49,7 @@
 #' spplot(spxt, variable="slope", scales=list(draw=TRUE))
 #' spplot(spxt, variable="aspect", scales=list(draw=TRUE))
 #' 
+#' @export
 SpatialPixelsTopography<-function(points, elevation, slope, aspect, tolerance = sqrt(.Machine$double.eps), 
                                   proj4string = CRS(as.character(NA)), round = NULL, grid = NULL) {
   

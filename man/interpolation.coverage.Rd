@@ -24,6 +24,8 @@ the function returns an object of class \code{data.frame} with the number
 (or percentage) of stations with data per day and meteorological variable.
 }
 \description{
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}
+
 Function \code{interpolation.coverage} calculates, for each meteorological
 variable, the number of stations with data per date or the number of dates
 with data per station in an object of class

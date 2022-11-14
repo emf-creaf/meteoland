@@ -22,6 +22,8 @@ An object of the same class as the input \code{object}. Generated
 meteorological series are of the same length as the input.
 }
 \description{
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}
+
 A semiparametric multivariate, multisite weather generator. The algorithm
 can be interpreted as a way to resample the original data to create
 synthetic data sets of the same length and similar properties.

@@ -1,8 +1,12 @@
 #' Reads point meteorology from the disk
 #' 
+#' @description
+#' `r lifecycle::badge("deprecated")`
+#' 
 #' Functions to read point meteorological data from the disks in different
 #' formats.
 #' 
+#' @details
 #' Function \code{readmeteorologypoint} reads data series of a single location
 #' from an ascii or rds file and returns a data frame. Function
 #' \code{readmeteorologypointfiles} can be used to read multiple ascii/rds
@@ -48,6 +52,7 @@
 #' Nicolas Martin, INRA-Avignon
 #' @seealso \code{\link{writemeteorologypoint}}, \code{\link{read.table}},
 #' \code{\link{SpatialPointsMeteorology-class}}
+#' @export
 readmeteorologypoint<-function(file, dates = NULL, format="meteoland/txt", sep="\t") {
   
   # deprecation notice
@@ -91,6 +96,8 @@ readmeteorologypoint<-function(file, dates = NULL, format="meteoland/txt", sep="
   }
   return(df)
 }
+#' @describeIn readmeteorologypoint `r lifecycle::badge("deprecated")`
+#' @export
 readmeteorologypointfiles<-function(points, files=NULL, dates = NULL, format="meteoland/txt", sep="\t") {
   
   # deprecation notice
@@ -128,6 +135,8 @@ readmeteorologypointfiles<-function(points, files=NULL, dates = NULL, format="me
   cat("\n")
   return(SpatialPointsMeteorology(as(points,"SpatialPoints"), dfvec, dates))
 }
+#' @describeIn readmeteorologypoint `r lifecycle::badge("deprecated")`
+#' @export
 readmeteorologypoints<-function(files, dates = NULL, stations = NULL, format = "netCDF", varmapping = NULL, verbose = FALSE) {
   
   # deprecation notice

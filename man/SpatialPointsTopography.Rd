@@ -30,6 +30,8 @@ Function \code{SpatialPointsTopography} returns an object
 '\code{\link{SpatialPointsTopography-class}}'.
 }
 \description{
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}
+
 Function \code{SpatialPointsTopography} creates an object of class
 \code{\link{SpatialPointsTopography-class}} containing topographic variables
 for a set of points.

@@ -83,6 +83,8 @@
     return(SpatialPixelsDataFrame(points=points, data=dfout, proj4string=crs, grid = gt))
   }
 }
+#' @describeIn summarypoints `r lifecycle::badge("deprecated")`
+#' @export
 summarypixels<-function(pixels, var, fun=mean, freq=NULL, dates = NULL, months = NULL, ...) {
   
   # deprecation notice
@@ -95,6 +97,8 @@ summarypixels<-function(pixels, var, fun=mean, freq=NULL, dates = NULL, months =
   if(!inherits(pixels,"SpatialPixelsMeteorology") && !inherits(pixels,"character")) stop("'pixels' has to be of class 'SpatialPixelsMeteorology' or a 'character'.")
   return(.summarygridpixels(pixels, var=var, fun=fun, freq=freq, dates=dates, months=months, pixels = TRUE, ...))
 }
+#' @describeIn summarypoints `r lifecycle::badge("deprecated")`
+#' @export
 summarygrid<-function(grid, var, fun=mean, freq=NULL, dates = NULL, months = NULL, ...) {
   
   # deprecation notice

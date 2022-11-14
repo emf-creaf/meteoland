@@ -1,9 +1,13 @@
 #' Creates a 'SpatialGridTopography'
 #' 
+#' @description
+#' `r lifecycle::badge("deprecated")`
+#' 
 #' Function \code{SpatialGridTopography} creates an object of class
 #' \code{\link{SpatialGridTopography-class}} containing topographic variables
 #' over a landscape.
 #' 
+#' @details
 #' Slope and aspect calculations were adapted from functions in package
 #' 'SDMTools', which used the approach described in Burrough & McDonell (1998).
 #' 
@@ -67,7 +71,7 @@
 #' sgt = examplegridtopography[1:50, 1:50]
 #' spplot(sgt, variable="elevation", scales=list(draw=TRUE))
 #' 
-#' 
+#' @export
 SpatialGridTopography<-function(grid, elevation, slope = NULL, aspect = NULL, proj4string = CRS(as.character(NA))) {
   
   # deprecation notice

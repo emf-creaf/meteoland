@@ -141,6 +141,8 @@
   return(SpatialGridDataFrame(grid@grid, df, grid@proj4string))
 }
 
+#' @describeIn interpolationpoints `r lifecycle::badge("deprecated")`
+#' @export
 interpolationgrid<-function(object, grid, dates = NULL,
                             exportFile = NULL, exportFormat = "netCDF", add = FALSE, overwrite = FALSE,
                             verbose = TRUE) {

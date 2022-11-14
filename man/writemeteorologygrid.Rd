@@ -18,6 +18,31 @@ writemeteorologygrid(
   overwrite = FALSE,
   verbose = FALSE
 )
+
+writemeteorologypixels(
+  object,
+  file,
+  dates = NULL,
+  format = "netCDF",
+  byPixel = FALSE,
+  chunksizes = NA,
+  add = FALSE,
+  overwrite = FALSE,
+  verbose = FALSE
+)
+
+writeemptymeteorologygrid(
+  file,
+  grid,
+  proj4string,
+  dates,
+  byPixel = FALSE,
+  chunksizes = NA,
+  overwrite = FALSE,
+  verbose = FALSE
+)
+
+writemeteorologygridpixel(file, index, data, verbose = FALSE)
 }
 \arguments{
 \item{object}{An object of class \code{\link{SpatialGridMeteorology-class}}
@@ -55,6 +80,8 @@ added/replaced.}
 \item{data}{A data frame with meteorological data corresponding to a pixel.}
 }
 \description{
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}
+
 Functions to write grid meteorological data to the file system.
 }
 \details{
@@ -68,6 +95,15 @@ corresponding to a specific pixel identified by its grid index. Function
 \code{writemeteorologygrid} creates an empty netCDF with the specified grid
 dimensions, coordinate reference system and dates.
 }
+\section{Functions}{
+\itemize{
+\item \code{writemeteorologypixels()}: \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}
+
+\item \code{writeemptymeteorologygrid()}: \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}
+
+\item \code{writemeteorologygridpixel()}: \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}
+
+}}
 \seealso{
 \code{\link{readmeteorologygrid}},
 \code{\link{SpatialGridMeteorology-class}}

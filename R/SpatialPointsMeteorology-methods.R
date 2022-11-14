@@ -1,7 +1,11 @@
 #' Creates a 'SpatialPointsMeteorology'
 #' 
+#' @description
+#' `r lifecycle::badge("deprecated")`
+#' 
 #' Initializes an object of class \code{SpatialPointsMeteorology-class}
 #' 
+#' @details
 #' There are two ways of building an object of of class
 #' \code{\link{SpatialPointsMeteorology-class}}. The first way
 #' (\code{dataByDate = FALSE}) is to supply as value for \code{data} a vector
@@ -28,6 +32,7 @@
 #' @return An object of class \code{\link{SpatialPointsMeteorology-class}}
 #' @author Miquel De \enc{CáceresCaceres} Ainsa, CREAF
 #' @seealso \code{\link{SpatialPointsMeteorology-class}}
+#' @export
 SpatialPointsMeteorology<-function(points, data, dates, dataByDate = FALSE) {
   
   # deprecation notice

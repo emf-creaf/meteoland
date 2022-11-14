@@ -1,8 +1,12 @@
 #' Creates an object of class 'MeteorologyUncorrectedData'
 #' 
+#' @description
+#' `r lifecycle::badge("deprecated")`
+#' 
 #' Initializes an object for statistical correction of meteorological data over
 #' landscapes.
 #' 
+#' @details
 #' See correction details in vignettes or in \code{\link{correctionpoints}}.
 #' 
 #' @param points An object of class \code{\link{SpatialPoints}}.
@@ -25,6 +29,7 @@
 #' @author Miquel De \enc{CáceresCaceres} Ainsa, CREAF
 #' @seealso \code{\linkS4class{MeteorologyUncorrectedData}},
 #' \code{\link{examplecorrectiondata}}, \code{\link{defaultCorrectionParams}}.
+#' @export
 MeteorologyUncorrectedData<-function(points, reference_data, projection_data, dates,
                                      params = defaultCorrectionParams()) {
   

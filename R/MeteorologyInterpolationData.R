@@ -1,9 +1,13 @@
 #' Creates an object of class 'MeteorologyInterpolationData'
 #' 
+#' @description
+#' `r lifecycle::badge("deprecated")`
+#' 
 #' Initializes an object for meteorology interpolation over landscapes using
 #' weather station data and the methods described in Thornton et al. (1997) and
 #' Thornton & Running (1999).
 #' 
+#' @details
 #' There are three ways of building an object of
 #' \code{\linkS4class{MeteorologyInterpolationData}}: \enumerate{ \itemThe
 #' first way is using an object of
@@ -70,7 +74,7 @@
 #' @examples
 #' 
 #' ## TO BE DONE ##
-#' 
+#' @export
 MeteorologyInterpolationData<-function(points, elevation = NULL, slope = NULL, aspect = NULL,
                                        MinTemperature = NULL, MaxTemperature = NULL, Precipitation = NULL, RelativeHumidity = NULL,
                                        Radiation = NULL, WindSpeed = NULL, WindDirection = NULL, WindFields = NULL,

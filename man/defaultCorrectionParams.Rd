@@ -27,6 +27,8 @@ value between 0 and 1. Quantile mapping is fitted only for the quantiles
 defined by \code{quantile(0,1,probs=seq(0,1,by=qstep)}. }
 }
 \description{
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}
+
 Returns a list with the default parameterization for statistical correction.
 }
 \references{

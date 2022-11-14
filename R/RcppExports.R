@@ -29,6 +29,8 @@
     .Call(`_meteoland_aspect`, data, nrows, ncols, cellWidth, cellHeight)
 }
 
+#' @describeIn interpolation_temperature Precipitation 
+#' @export
 interpolation_precipitation <- function(Xp, Yp, Zp, X, Y, Z, P, Psmooth, iniRp = 140000, alpha_event = 6.25, alpha_amount = 6.25, N_event = 20L, N_amount = 20L, iterations = 3L, popcrit = 0.5, fmax = 0.95, debug = FALSE) {
     .Call(`_meteoland_interpolatePrecipitationPoints`, Xp, Yp, Zp, X, Y, Z, P, Psmooth, iniRp, alpha_event, alpha_amount, N_event, N_amount, iterations, popcrit, fmax, debug)
 }
@@ -45,70 +47,186 @@ interpolation_precipitation <- function(Xp, Yp, Zp, X, Y, Z, P, Psmooth, iniRp =
     .Call(`_meteoland_pseudoRainfall`, RainM, daysMonthAll, shape, scale, firstMonth)
 }
 
+#' Solar radiation utility functions
+#' 
+#' Set of functions used in the calculation of incoming solar radiation and net
+#' radiation.
+#' 
+#' 
+#' @aliases radiation_dateStringToJulianDays radiation_daylength
+#' radiation_daylengthseconds radiation_directDiffuseInstant
+#' radiation_directDiffuseDay radiation_potentialRadiation radiation_julianDay
+#' radiation_skyLongwaveRadiation radiation_outgoingLongwaveRadiation
+#' radiation_netRadiation radiation_solarRadiation radiation_solarConstant
+#' radiation_solarElevation radiation_solarDeclination radiation_sunRiseSet
+#' @param dateStrings A character vector with dates in format "YYYY-MM-DD".
+#' @param latrad Latitude (in radians North).
+#' @param slorad Slope (in radians).
+#' @param asprad Aspect (in radians from North).
+#' @param delta Solar declination (in radians).
+#' @param solarConstant Solar constant (in kW·m-2).
+#' @param hrad Solar hour (in radians).
+#' @param R_s Daily incident solar radiation (MJ·m-2).
+#' @param clearday Boolean flag to indicate a clearsky day (vs. overcast).
+#' @param nsteps Number of daily substeps.
+#' @param J Julian day (integer), number of days since January 1, 4713 BCE at
+#' noon UTC.
+#' @param year,month,day Year, month and day as integers.
+#' @param alpha Surface albedo (from 0 to 1).
+#' @param Tair Air temperature (in degrees Celsius).
+#' @param vpa Average daily vapor pressure (kPa).
+#' @param c Proportion of sky covered by clouds [0-1].
+#' @param tmin,tmax Minimum and maximum daily temperature (ºC).
+#' @param elevation Elevation above sea level (in m).
+#' @param precipitation Precipitation (in mm).
+#' @param diffTemp Difference between maximum and minimum temperature (ºC).
+#' @param diffTempMonth Difference between maximum and minimum temperature,
+#' averaged over 30 days (ºC).
+#' @return Values returned for each function are: \itemize{
+#' \item\code{radiation_dateStringToJulianDays}: A vector of Julian days (i.e.
+#' number of days since January 1, 4713 BCE at noon UTC).
+#' \item\code{radiation_daylength}: Day length (in hours).
+#' \item\code{radiation_daylengthseconds}: Day length (in seconds).
+#' \item\code{radiation_directDiffuseInstant}: A vector with instantaneous
+#' direct and diffusive radiation rates (for both SWR and PAR).
+#' \item\code{radiation_directDiffuseDay}: A data frame with instantaneous
+#' direct and diffusive radiation rates (for both SWR and PAR) for each
+#' subdaily time step. \item\code{radiation_potentialRadiation}: Daily
+#' (potential) solar radiation (in MJ·m-2). \item\code{radiation_julianDay}:
+#' Number of days since January 1, 4713 BCE at noon UTC.
+#' \item\code{radiation_skyLongwaveRadiation}: Instantaneous incoming (sky)
+#' longwave radiation (W·m-2).
+#' \item\code{radiation_outgoingLongwaveRadiation}: Daily outgoing longwave
+#' radiation (MJ·m-2·day-1).  \item\code{radiation_netRadiation}: Daily net
+#' solar radiation (MJ·m-2·day-1).  \item\code{radiation_solarConstant}: Solar
+#' constant (in kW·m-2). \item\code{radiation_solarDeclination}: Solar
+#' declination (in radians). \item\code{radiation_solarElevation}: Angle of
+#' elevation of the sun with respect to the horizon (in radians).
+#' \item\code{radiation_solarRadiation}: Daily incident solar radiation
+#' (MJ·m-2·day-1). \item\code{radiation_sunRiseSet}: Sunrise and sunset hours
+#' in hour angle (radians). }
+#' @note Code for \code{radiation_julianDay()},
+#' \code{radiation_solarConstant()} and \code{radiation_solarDeclination()} was
+#' translated to C++ from R code in package 'insol' (by J. G. Corripio).
+#' @author Miquel De \enc{CáceresCaceres} Ainsa, CREAF
+#' @seealso \code{\link{interpolationpoints}}
+#' @references Danby, J. M. Eqn. 6.16.4 in Fundamentals of Celestial Mechanics,
+#' 2nd ed. Richmond, VA: Willmann-Bell, p. 207, 1988.
+#' 
+#' Garnier, B.J., Ohmura, A., 1968. A method of calculating the direct
+#' shortwave radiation income of slopes. J. Appl. Meteorol. 7: 796-800
+#' 
+#' McMahon, T. A., M. C. Peel, L. Lowe, R. Srikanthan, and T. R. McVicar. 2013.
+#' Estimating actual, potential, reference crop and pan evaporation using
+#' standard meteorological data: a pragmatic synthesis. Hydrology & Earth
+#' System Sciences 17:1331–1363. See also:
+#' http://www.fao.org/docrep/x0490e/x0490e06.htm.
+#' 
+#' Reda, I. and Andreas, A. 2003. Solar Position Algorithm for Solar Radiation
+#' Applications. 55 pp.; NREL Report No. TP-560-34302, Revised January 2008.
+#' http://www.nrel.gov/docs/fy08osti/34302.pdf
+#' 
+#' Spitters, C.J.T., Toussaint, H.A.J.M. and Goudriaan, J. (1986). Separating
+#' the diffuse and direct components of global radiation and its implications
+#' for modeling canopy photosynthesis. I. Components of incoming radiation.
+#' Agricultural and Forest Meteorology, 38, 231–242.
+#' @export
 radiation_julianDay <- function(year, month, day) {
     .Call(`_meteoland_julianDay`, year, month, day)
 }
 
+#' @describeIn radiation_julianDay Date string to julian days
+#' @export
 radiation_dateStringToJulianDays <- function(dateStrings) {
     .Call(`_meteoland_dateStringToJulianDays`, dateStrings)
 }
 
+#' @describeIn radiation_julianDay solar declination
+#' @export
 radiation_solarDeclination <- function(J) {
     .Call(`_meteoland_solarDeclination`, J)
 }
 
+#' @describeIn radiation_julianDay solar constant
+#' @export
 radiation_solarConstant <- function(J) {
     .Call(`_meteoland_solarConstant`, J)
 }
 
+#' @describeIn radiation_julianDay sun rise and set
+#' @export
 radiation_sunRiseSet <- function(latrad, slorad, asprad, delta) {
     .Call(`_meteoland_sunRiseSet`, latrad, slorad, asprad, delta)
 }
 
+#' @describeIn radiation_julianDay solar elevation
+#' @export
 radiation_solarElevation <- function(latrad, delta, hrad) {
     .Call(`_meteoland_solarElevation`, latrad, delta, hrad)
 }
 
+#' @describeIn radiation_julianDay Day length
+#' @export
 radiation_daylength <- function(latrad, slorad, asprad, delta) {
     .Call(`_meteoland_daylength`, latrad, slorad, asprad, delta)
 }
 
+#' @describeIn radiation_julianDay Day length seconds
+#' @export
 radiation_daylengthseconds <- function(latrad, slorad, asprad, delta) {
     .Call(`_meteoland_daylengthseconds`, latrad, slorad, asprad, delta)
 }
 
+#' @describeIn radiation_julianDay Potential radiation
+#' @export
 radiation_potentialRadiation <- function(solarConstant, latrad, slorad, asprad, delta) {
     .Call(`_meteoland_RpotDay`, solarConstant, latrad, slorad, asprad, delta)
 }
 
+#' @describeIn radiation_julianDay solar Radiation
+#' @export
 radiation_solarRadiation <- function(solarConstant, latrad, elevation, slorad, asprad, delta, diffTemp, diffTempMonth, vpa, precipitation) {
     .Call(`_meteoland_RDay`, solarConstant, latrad, elevation, slorad, asprad, delta, diffTemp, diffTempMonth, vpa, precipitation)
 }
 
+#' @describeIn radiation_julianDay Direct diffuse instant
+#' @export
 radiation_directDiffuseInstant <- function(solarConstant, latrad, slorad, asprad, delta, hrad, R_s, clearday) {
     .Call(`_meteoland_directDiffuseInstant`, solarConstant, latrad, slorad, asprad, delta, hrad, R_s, clearday)
 }
 
+#' @describeIn radiation_julianDay Direct diffuse day
+#' @export
 radiation_directDiffuseDay <- function(solarConstant, latrad, slorad, asprad, delta, R_s, clearday, nsteps = 24L) {
     .Call(`_meteoland_directDiffuseDay`, solarConstant, latrad, slorad, asprad, delta, R_s, clearday, nsteps)
 }
 
+#' @describeIn radiation_julianDay Sky longwave radiation
+#' @export
 radiation_skyLongwaveRadiation <- function(Tair, vpa, c = 0) {
     .Call(`_meteoland_skyLongwaveRadiation`, Tair, vpa, c)
 }
 
+#' @describeIn radiation_julianDay Outgoing longwave radiation
+#' @export
 radiation_outgoingLongwaveRadiation <- function(solarConstant, latrad, elevation, slorad, asprad, delta, vpa, tmin, tmax, R_s) {
     .Call(`_meteoland_outgoingLongwaveRadiation`, solarConstant, latrad, elevation, slorad, asprad, delta, vpa, tmin, tmax, R_s)
 }
 
+#' @describeIn radiation_julianDay Net radiation
+#' @export
 radiation_netRadiation <- function(solarConstant, latrad, elevation, slorad, asprad, delta, vpa, tmin, tmax, R_s, alpha = 0.08) {
     .Call(`_meteoland_netRadiation`, solarConstant, latrad, elevation, slorad, asprad, delta, vpa, tmin, tmax, R_s, alpha)
 }
 
+#' @describeIn radiation_julianDay Potential radiation series
+#' @export
 .potentialRadiationSeries <- function(latrad, slorad, asprad, J) {
     .Call(`_meteoland_potentialRadiationSeries`, latrad, slorad, asprad, J)
 }
 
+#' @describeIn radiation_julianDay Potential radiation points
+#' @export
 .potentialRadiationPoints <- function(latrad, slorad, asprad, J) {
     .Call(`_meteoland_potentialRadiationPoints`, latrad, slorad, asprad, J)
 }
@@ -145,6 +263,8 @@ radiation_netRadiation <- function(solarConstant, latrad, elevation, slorad, asp
     .Call(`_meteoland_relativeHumidityFromDewpointTemp`, T, TD)
 }
 
+#' @describeIn interpolation_temperature Dew temperature 
+#' @export
 interpolation_dewtemperature <- function(Xp, Yp, Zp, X, Y, Z, T, iniRp = 140000, alpha = 3.0, N = 30L, iterations = 3L, debug = FALSE) {
     .Call(`_meteoland_interpolateTdewPoints`, Xp, Yp, Zp, X, Y, Z, T, iniRp, alpha, N, iterations, debug)
 }
@@ -153,6 +273,70 @@ interpolation_dewtemperature <- function(Xp, Yp, Zp, X, Y, Z, T, iniRp = 140000,
     .Call(`_meteoland_interpolateTdewSeriesPoints`, Xp, Yp, Zp, X, Y, Z, T, iniRp, alpha, N, iterations, debug)
 }
 
+#' Low-level interpolation functions
+#' 
+#' Low-level functions to interpolate meteorology (one day) on a set of points.
+#' 
+#' 
+#' @aliases interpolation_dewtemperature interpolation_temperature
+#' interpolation_precipitation interpolation_wind
+#' @param Xp,Yp,Zp Spatial coordinates and elevation (Zp; in m.a.s.l) of target
+#' points.
+#' @param X,Y,Z Spatial coordinates and elevation (Zp; in m.a.s.l) of reference
+#' locations (e.g. meteorological stations).
+#' @param T Temperature (e.g., minimum, maximum or dew temperature) at the
+#' reference locations (in degrees).
+#' @param P Precipitation at the reference locations (in mm).
+#' @param Psmooth Temporally-smoothed precipitation at the reference locations
+#' (in mm).
+#' @param WS,WD Wind speed (in m/s) and wind direction (in degrees from north
+#' clock-wise) at the reference locations.
+#' @param iniRp Initial truncation radius.
+#' @param iterations Number of station density iterations.
+#' @param debug Boolean flag to show extra console output.
+#' @param alpha,alpha_amount,alpha_event Gaussian shape parameter.
+#' @param N,N_event,N_amount Average number of stations with non-zero weights.
+#' @param popcrit Critical precipitation occurrence parameter.
+#' @param fmax Maximum value for precipitation regression extrapolations (0.6
+#' equals to a maximum of 4 times extrapolation).
+#' @param directionsAvailable A flag to indicate that wind directions are
+#' available (i.e. non-missing) at the reference locations.
+#' @return All functions return a vector with interpolated values for the
+#' target points.
+#' @author Miquel De \enc{CáceresCaceres} Ainsa, CREAF
+#' @seealso \code{\link{defaultInterpolationParams}}
+#' @references Thornton, P.E., Running, S.W., White, M. A., 1997. Generating
+#' surfaces of daily meteorological variables over large regions of complex
+#' terrain. J. Hydrol. 190, 214–251. doi:10.1016/S0022-1694(96)03128-9.
+#' 
+#' De Caceres M, Martin-StPaul N, Turco M, Cabon A, Granda V (2018) Estimating
+#' daily meteorological data and downscaling climate models over landscapes.
+#' Environmental Modelling and Software 108: 186-196.
+#' @examples
+#' 
+#' data("exampleinterpolationdata")
+#' mxt100 = exampleinterpolationdata@MaxTemperature[,100]
+#' Psmooth100 = exampleinterpolationdata@SmoothedPrecipitation[,100]
+#' P100 = exampleinterpolationdata@Precipitation[,100]
+#' mismxt = is.na(mxt100)
+#' misP = is.na(P100)
+#' Z = exampleinterpolationdata@elevation
+#' X = exampleinterpolationdata@coords[,1]
+#' Y = exampleinterpolationdata@coords[,2]
+#' Zpv = seq(0,1000, by=100)
+#' xp = 360000
+#' yp = 4640000
+#' xpv = rep(xp, 11)
+#' ypv = rep(yp, 11)
+#' 
+#' interpolation_temperature(xpv, ypv, Zpv, 
+#'                           X[!mismxt], Y[!mismxt], Z[!mismxt], 
+#'                           mxt100[!mismxt])
+#' interpolation_precipitation(xpv, ypv, Zpv, 
+#'                            X[!misP], Y[!misP], Z[!misP], 
+#'                            P100[!misP], Psmooth100[!misP])
+#' 
+#' @export
 interpolation_temperature <- function(Xp, Yp, Zp, X, Y, Z, T, iniRp = 140000, alpha = 3.0, N = 30L, iterations = 3L, debug = FALSE) {
     .Call(`_meteoland_interpolateTemperaturePoints`, Xp, Yp, Zp, X, Y, Z, T, iniRp, alpha, N, iterations, debug)
 }
@@ -161,46 +345,144 @@ interpolation_temperature <- function(Xp, Yp, Zp, X, Y, Z, T, iniRp = 140000, al
     .Call(`_meteoland_interpolateTemperatureSeriesPoints`, Xp, Yp, Zp, X, Y, Z, T, iniRp, alpha, N, iterations, debug)
 }
 
+#' Physical utility functions
+#' 
+#' Set of functions used in the calculation of physical variables.
+#' 
+#' 
+#' @aliases utils_airDensity utils_atmosphericPressure utils_averageDailyVP
+#' utils_averageDaylightTemperature utils_latentHeatVaporisation
+#' utils_latentHeatVaporisationMol utils_psychrometricConstant
+#' utils_saturationVP utils_saturationVaporPressureCurveSlope
+#' @param temperature Air temperature (ºC).
+#' @param Tmin,Tmax Minimum and maximum daily temperature (ºC).
+#' @param RHmin,RHmax Minimum and maximum relative humidity (\%).
+#' @param Patm Atmospheric air pressure (in kPa).
+#' @param elevation Elevation above sea level (in m).
+#' @return Values returned for each function are: \itemize{
+#' \item\code{utils_airDensity}: air density (in kg·m-3).
+#' \item\code{utils_atmosphericPressure}: Air atmospheric pressure (in kPa).
+#' \item\code{utils_averageDailyVP}: average (actual) vapour pressure (in kPa).
+#' \item\code{utils_averageDaylightTemperature}: average daylight air
+#' temperature (in ºC). \item\code{utils_latentHeatVaporisation}: Latent heat
+#' of vaporisation (MJ·kg-1).  \item\code{utils_latentHeatVaporisationMol}:
+#' Latent heat of vaporisation (J·mol-1).
+#' \item\code{utils_psychrometricConstant}: Psychrometric constant (kPa·ºC-1).
+#' \item\code{utils_saturationVP}: saturation vapour pressure (in kPa).
+#' \item\code{utils_saturationVaporPressureCurveSlope}: Slope of the saturation
+#' vapor pressure curve (kPa·ºC-1).  }
+#' @author Miquel De \enc{CáceresCaceres} Ainsa, CREAF
+#' @references McMurtrie, R. E., D. A. Rook, and F. M. Kelliher. 1990.
+#' Modelling the yield of Pinus radiata on a site limited by water and
+#' nitrogen. Forest Ecology and Management 30:381–413.
+#' 
+#' McMahon, T. A., M. C. Peel, L. Lowe, R. Srikanthan, and T. R. McVicar. 2013.
+#' Estimating actual, potential, reference crop and pan evaporation using
+#' standard meteorological data: a pragmatic synthesis. Hydrology & Earth
+#' System Sciences 17:1331–1363. See also:
+#' http://www.fao.org/docrep/x0490e/x0490e06.htm
+#' @export
 utils_saturationVP <- function(temperature) {
     .Call(`_meteoland_saturationVapourPressure`, temperature)
 }
 
+#' @describeIn utils_saturationVP Average daily VP
+#' @export
 utils_averageDailyVP <- function(Tmin, Tmax, RHmin, RHmax) {
     .Call(`_meteoland_averageDailyVapourPressure`, Tmin, Tmax, RHmin, RHmax)
 }
 
+#' @describeIn utils_saturationVP Atmospheric pressure
+#' @export
 utils_atmosphericPressure <- function(elevation) {
     .Call(`_meteoland_atmosphericPressure`, elevation)
 }
 
+#' @describeIn utils_saturationVP Air density
+#' @export
 utils_airDensity <- function(temperature, Patm) {
     .Call(`_meteoland_airDensity`, temperature, Patm)
 }
 
+#' @describeIn utils_saturationVP Daylight temperature
+#' @export
 utils_averageDaylightTemperature <- function(Tmin, Tmax) {
     .Call(`_meteoland_averageDaylightTemperature`, Tmin, Tmax)
 }
 
+#' @describeIn utils_saturationVP latent heat vaporisation
+#' @export
 utils_latentHeatVaporisation <- function(temperature) {
     .Call(`_meteoland_latentHeatVaporisation`, temperature)
 }
 
+#' @describeIn utils_saturationVP Heat vaporisation mol
+#' @export
 utils_latentHeatVaporisationMol <- function(temperature) {
     .Call(`_meteoland_latentHeatVaporisationMol`, temperature)
 }
 
+#' @describeIn utils_saturationVP psychrometric constant
+#' @export
 utils_psychrometricConstant <- function(temperature, Patm) {
     .Call(`_meteoland_psychrometricConstant`, temperature, Patm)
 }
 
+#' @describeIn utils_saturationVP Saturation VP curve slope
+#' @export
 utils_saturationVaporPressureCurveSlope <- function(temperature) {
     .Call(`_meteoland_saturationVaporPressureCurveSlope`, temperature)
 }
 
+#' Potential evapotranspiration
+#' 
+#' Functions to calculate potential evapotranspiration using Penman or
+#' Penman-Monteith.
+#' 
+#' The code was adapted from package `Evapotranspiration', which follows
+#' McMahon et al. (2013). If wind speed is not available, an alternative
+#' formulation for potential evapotranspiration is used as an approximation
+#' (Valiantzas 2006)
+#' 
+#' @aliases penman penmanmonteith
+#' @param latrad Latitude in radians.
+#' @param elevation Elevation (in m).
+#' @param slorad Slope (in radians).
+#' @param asprad Aspect (in radians from North).
+#' @param J Julian day, number of days since January 1, 4713 BCE at noon UTC.
+#' @param Tmax Maximum temperature (degrees Celsius).
+#' @param Tmin Minimum temperature (degrees Celsius).
+#' @param RHmin Minimum relative humidity (percent).
+#' @param RHmax Maximum relative humidity (percent).
+#' @param R_s Solar radiation (MJ/m2).
+#' @param u With wind speed (m/s).
+#' @param z Wind measuring height (m).
+#' @param z0 Roughness height (m).
+#' @param alpha Albedo.
+#' @param windfun Wind speed function version, either "1948" or "1956".
+#' @param rc Canopy vapour flux (stomatal) resistance (s·m-1).
+#' @param Rn Daily net radiation (MJ·m-2·day-1).
+#' @return Potential evapotranspiration (in mm of water).
+#' @author Miquel De \enc{CáceresCaceres} Ainsa, CREAF
+#' @seealso \code{\link{interpolationpoints}}
+#' @references Penman, H. L. 1948. Natural evaporation from open water, bare
+#' soil and grass. Proceedings of the Royal Society of London. Series A.
+#' Mathematical and Physical Sciences, 193, 120-145.
+#' 
+#' Penman, H. L. 1956. Evaporation: An introductory survey. Netherlands Journal
+#' of Agricultural Science, 4, 9-29.
+#' 
+#' McMahon, T.A., Peel, M.C., Lowe, L., Srikanthan, R., McVicar, T.R. 2013.
+#' Estimating actual, potential, reference crop and pan evaporation using
+#' standard meteorological data: a pragmatic synthesis. Hydrology \& Earth
+#' System Sciences 17, 1331–1363. doi:10.5194/hess-17-1331-2013.
+#' @export
 penman <- function(latrad, elevation, slorad, asprad, J, Tmin, Tmax, RHmin, RHmax, R_s, u, z = 2.0, z0 = 0.001, alpha = 0.08, windfun = "1956") {
     .Call(`_meteoland_PenmanPET`, latrad, elevation, slorad, asprad, J, Tmin, Tmax, RHmin, RHmax, R_s, u, z, z0, alpha, windfun)
 }
 
+#' @describeIn penman Penman Monteith method
+#' @export
 penmanmonteith <- function(rc, elevation, Tmin, Tmax, RHmin, RHmax, Rn, u = NA_real_) {
     .Call(`_meteoland_PenmanMonteithPET`, rc, elevation, Tmin, Tmax, RHmin, RHmax, Rn, u)
 }
@@ -209,6 +491,8 @@ penmanmonteith <- function(rc, elevation, Tmin, Tmax, RHmin, RHmax, Rn, u = NA_r
     .Call(`_meteoland_getWindFieldIndexAndFactor`, windSpeed, windDirection, wfSpeed, wfDirection)
 }
 
+#' @describeIn interpolation_temperature Wind 
+#' @export
 interpolation_wind <- function(Xp, Yp, WS, WD, X, Y, iniRp = 140000, alpha = 2.0, N = 1L, iterations = 3L, directionsAvailable = TRUE) {
     .Call(`_meteoland_interpolateWindStationPoints`, Xp, Yp, WS, WD, X, Y, iniRp, alpha, N, iterations, directionsAvailable)
 }

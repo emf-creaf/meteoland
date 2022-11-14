@@ -38,6 +38,8 @@ which meteorological correction is possible (corresponding to
 An object of class \code{\linkS4class{MeteorologyUncorrectedData}.}
 }
 \description{
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}
+
 Initializes an object for statistical correction of meteorological data over
 landscapes.
 }

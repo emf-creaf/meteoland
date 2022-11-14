@@ -1,4 +1,4 @@
-#' @describein extractdates `r lifecycle::badge("deprecated")`
+#' @describeIn extractdates `r lifecycle::badge("deprecated")`
 #' @export
 extractvars<-function(object, vars, verbose = FALSE) {
   # deprecation warning

@@ -1,4 +1,25 @@
-
+#' Humidity conversion tools
+#' 
+#' @description
+#' `r lifecycle::badge("deprecated")`
+#' 
+#' Functions to transform relative humidity to specific humidity or dew point
+#' temperature and viceversa.
+#' 
+#' 
+#' @aliases humidity_relative2specific humidity_specific2relative
+#' humidity_relative2dewtemperature humidity_dewtemperature2relative
+#' @param Tc A numeric vector of temperature in degrees Celsius.
+#' @param HS A numeric vector of specific humidity (unitless).
+#' @param HR A numeric vector of relative Humidity (in \%).
+#' @param Td A numeric vector of dew temperature in degrees Celsius.
+#' @param allowSaturated Logical flag to allow values over 100\%
+#' @return A numeric vector with specific or relative humidity.
+#' @author Nicholas Martin-StPaul, INRA
+#' 
+#' Miquel De \enc{CáceresCaceres} Ainsa, CREAF
+#' @seealso \code{\link{meteocomplete}}
+#' @export
 humidity_relative2dewtemperature<-function(Tc, HR) {
   if(is.data.frame(Tc)) Tc = as.matrix(Tc)
   if(is.data.frame(HR)) HR = as.matrix(HR)
@@ -10,6 +31,8 @@ humidity_relative2dewtemperature<-function(Tc, HR) {
   }
   return(Td)
 }
+#' @describeIn humidity_relative2dewtemperature `r lifecycle::badge("deprecated")`
+#' @export
 humidity_dewtemperature2relative<-function(Tc, Td, allowSaturated = FALSE) {
   HR= as.vector(.relativeHumidityFromDewpointTemp(as.numeric(Tc),as.numeric(Td)))
   if(!allowSaturated) HR[HR>100]=100 # On ne passe pas audessus de 100
@@ -17,6 +40,8 @@ humidity_dewtemperature2relative<-function(Tc, Td, allowSaturated = FALSE) {
 }
 
 #Functions to switch from relative humidity to specific humidity
+#' @describeIn humidity_relative2dewtemperature `r lifecycle::badge("deprecated")`
+#' @export
 humidity_specific2relative<-function(Tc, HS, allowSaturated = FALSE){
 
 
@@ -39,6 +64,8 @@ humidity_specific2relative<-function(Tc, HS, allowSaturated = FALSE){
   if(!allowSaturated) HR[HR>100]=100 # On ne passe pas audessus de 100
   return(HR)
 }
+#' @describeIn humidity_relative2dewtemperature `r lifecycle::badge("deprecated")`
+#' @export
 humidity_relative2specific<-function(Tc, HR){
 
   #-------------------------------------------------------------

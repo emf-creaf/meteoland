@@ -53,6 +53,8 @@ plot (using function \code{lines}).}
 \item{...}{Additional parameters for functions \code{plot} or \code{lines}.}
 }
 \description{
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}
+
 Simple plotting of a meteorological series for a given point.
 }
 \details{
@@ -78,7 +80,6 @@ mp = interpolationpoints(exampleinterpolationdata, spt)
 meteoplot(mp,1, ylab="Daily mean temperature")
 
 meteoplot(mp,1, ylab="Monthly mean temperature", fun=mean, freq="months")
-
 
 }
 \seealso{

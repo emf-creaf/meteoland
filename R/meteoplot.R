@@ -1,7 +1,11 @@
 #' Plots point meteorological series
 #' 
+#' @description
+#' `r lifecycle::badge("deprecated")`
+#' 
 #' Simple plotting of a meteorological series for a given point.
 #' 
+#' @details
 #' Daily precipitation is plotted using bars (i.e. \code{type = "h"} when
 #' calling \code{\link{plot}}). Otherwise the function draws lines (i.e.
 #' \code{type = "l"} when calling \code{\link{plot}}). If \code{object} is of
@@ -53,7 +57,7 @@
 #' 
 #' meteoplot(mp,1, ylab="Monthly mean temperature", fun=mean, freq="months")
 #' 
-#' 
+#' @export
 meteoplot<-function(object, index=1, var="MeanTemperature",
                     fun=NULL, freq=NULL, dates = NULL, months = NULL,
                     add = FALSE, ...){

@@ -3,9 +3,13 @@
 
 #' Writes point meteorology to the disk
 #' 
+#' @description
+#' `r lifecycle::badge("deprecated")`
+#' 
 #' Functions to write point meteorological data to disk files in different
 #' formats.
 #' 
+#' @details
 #' Function \code{writemeteorologypoint} writes data series of a single
 #' location (i.e. a data frame) to ascii or rds files. Function
 #' \code{writemeteorologypointfiles} takes an object of
@@ -47,6 +51,7 @@
 #' Nicolas Martin, INRA-Avignon
 #' @seealso \code{\link{readmeteorologypoint}},
 #' \code{\link{SpatialPointsMeteorology-class}}
+#' @export
 writemeteorologypoint<-function(data, file, format = "meteoland/txt") {
   format = match.arg(format, c("meteoland/txt", "meteoland/rds", "castanea/txt", "castanea/rds"))
   if(format=="castanea/txt" || format=="castanea/rds") {
@@ -70,6 +75,8 @@ writemeteorologypoint<-function(data, file, format = "meteoland/txt") {
   }
 }
 # Writes multiple files, one for each point
+#' @describeIn writemeteorologypoint `r lifecycle::badge("deprecated")`
+#' @export
 writemeteorologypointfiles<-function(object, dir=getwd(), format ="meteoland/txt",
                                      metadataFile="MP.txt") {
   format = match.arg(format, c("meteoland/txt", "meteoland/rds", "castanea/txt", "castanea/rds"))
@@ -100,6 +107,8 @@ writemeteorologypointfiles<-function(object, dir=getwd(), format ="meteoland/txt
   invisible(spdf)
 }
 # Writes point meteorology to netCDF
+#' @describeIn writemeteorologypoint `r lifecycle::badge("deprecated")`
+#' @export
 writemeteorologypoints<-function(object, file, format = "netCDF", add = FALSE, 
                                  overwrite = FALSE, verbose = FALSE) {
   if(!inherits(object,"SpatialPointsMeteorology")) stop("'object' has to be of class 'SpatialGridMeteorology'.")

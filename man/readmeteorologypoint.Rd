@@ -7,6 +7,23 @@
 \title{Reads point meteorology from the disk}
 \usage{
 readmeteorologypoint(file, dates = NULL, format = "meteoland/txt", sep = "\\t")
+
+readmeteorologypointfiles(
+  points,
+  files = NULL,
+  dates = NULL,
+  format = "meteoland/txt",
+  sep = "\\t"
+)
+
+readmeteorologypoints(
+  files,
+  dates = NULL,
+  stations = NULL,
+  format = "netCDF",
+  varmapping = NULL,
+  verbose = FALSE
+)
 }
 \arguments{
 \item{file}{A string of the file to be read.}
@@ -43,6 +60,8 @@ in the NetCDF into variables used in meteoland (e.g. \code{c(MinTemperature
 \item{verbose}{A logical flag to output process information in the console.}
 }
 \description{
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}
+
 Functions to read point meteorological data from the disks in different
 formats.
 }
@@ -61,6 +80,13 @@ Function \code{readmeteorologypoints} is used to read multiple point data
 from a netCDF. In this case, a mapping can be supplied to map variable names
 in the netCDF to variables used in meteoland.
 }
+\section{Functions}{
+\itemize{
+\item \code{readmeteorologypointfiles()}: \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}
+
+\item \code{readmeteorologypoints()}: \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}
+
+}}
 \seealso{
 \code{\link{writemeteorologypoint}}, \code{\link{read.table}},
 \code{\link{SpatialPointsMeteorology-class}}

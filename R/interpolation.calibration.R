@@ -1,4 +1,4 @@
-#' @describein interpolation.cv `r lifecycle::badge("deprecated")`
+#' @describeIn interpolation.cv `r lifecycle::badge("deprecated")`
 #' @export
 interpolation.calibration<-function(object, stations = NULL, variable="Tmin", N_seq = seq(5,30, by=5), alpha_seq = seq(0.25,10, by=0.25), verbose = FALSE) {
 
@@ -200,7 +200,7 @@ interpolation.calibration<-function(object, stations = NULL, variable="Tmin", N_
   return(l)
 }
 
-#' @describein interpolation.cv `r lifecycle::badge("deprecated")`
+#' @describeIn interpolation.cv `r lifecycle::badge("deprecated")`
 #' @export
 interpolation.calibration.fmax<-function(object, stations = NULL, fmax_seq = seq(0.05,0.95, by=0.05), verbose = FALSE) {
   lifecycle::deprecate_warn(

@@ -1,5 +1,8 @@
 #' Spatial and temporal coverage of interpolation data
 #' 
+#' @description
+#' `r lifecycle::badge("deprecated")`
+#' 
 #' Function \code{interpolation.coverage} calculates, for each meteorological
 #' variable, the number of stations with data per date or the number of dates
 #' with data per station in an object of class
@@ -32,6 +35,7 @@
 #' #Number of stations with data per day
 #' head(interpolation.coverage(exampleinterpolationdata, type = "temporal"))
 #' 
+#' @export
 interpolation.coverage<-function(object, type="spatial", percent = FALSE) {
   lifecycle::deprecate_warn(
     when = "1.1.0", what = "interpolation.coverage()", with = "create_meteo_interpolator()",

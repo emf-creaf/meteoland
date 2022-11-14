@@ -84,6 +84,72 @@
 }
 
 #### AEMET
+#' Download data from AEMET
+#' 
+#' @description
+#' `r lifecycle::badge("deprecated")`
+#' 
+#' Download data from the Spanish National Meterology Agency
+#' (AEMET)
+#' 
+#' @details
+#' API key needs to be acquired from AEMET (https://opendata.aemet.es/)
+#' 
+#' @aliases downloadAEMETstationlist downloadAEMEThistorical
+#' downloadAEMETcurrentday
+#' @param api String with the AEMET API key (see https://opendata.aemet.es/).
+#' @param dates An object of class \code{\link{Date}}.
+#' @param station_id A string vector containing station ids (the list of
+#' stations for which historical climatic series are available is given by
+#' \code{downloadAEMETstationlist}).
+#' @param export If \code{export = FALSE} the downloaded data is stored in
+#' memory. Otherwise the result is written on the disk (using the format
+#' specified in \code{exportFormat}).
+#' @param exportDir Output directory for downloaded meteorology.
+#' @param exportFormat Format of meteorological data. Current accepted formats
+#' are \code{"castanea"} and \code{"meteoland"}.
+#' @param metadataFile The name of the file that will store the meta data
+#' describing all written files.
+#' @param verbose Boolean flag to print process information.
+#' @param daily Boolean flag. Are data to be returned at a daily or hourly
+#' scale?
+#' @return Function \code{downloadAEMETstationlist} returns a
+#' \code{\link{SpatialPointsDataFrame-class}} object containing the list of
+#' AEMET weather stations for which historical climatic series are available
+#' and can be retrieved using \code{downloadAEMEThistorical}.
+#' 
+#' Function \code{downloadAEMEThistorical} downloads data for the specified
+#' AEMET stations and dates. Data are availables for dates up to 4 days before
+#' current date. If \code{export = FALSE}, function
+#' \code{downloadAEMEThistorical} returns a
+#' \code{\link{SpatialPointsMeteorology-class}} object with the downloaded
+#' meteorology for each station (point). Otherwise the function writes on the
+#' disk at the location specified by \code{exportDir} and solelely returns a
+#' \code{\link{SpatialPointsDataFrame-class}} object containing the files
+#' metadata.
+#' 
+#' Function \code{downloadAEMETcurrentday} downloads recent weather (the last
+#' 24h) from all currently available stations and returns data frame if
+#' \code{daily = FALSE} or a \code{\link{SpatialPointsDataFrame-class}} object
+#' with observations aggregated at the daily scale if else.
+#' @note Since ver. 1.0.1, weather data download functions included in
+#' \code{meteoland} make internal calls to functions in package
+#' \code{meteospain}. For an enhanced flexibility, users are recommended to
+#' call functions in \code{meteospain} themselves, and then to use function
+#' \code{\link{reshapemeteospain}} to generate data suitable for
+#' \code{meteoland}.
+#' 
+#' The list of stations available in \code{downloadAEMETcurrentday} (current
+#' observations) may be different from the list given by
+#' \code{downloadAEMETstationlist} and available in
+#' \code{downloadAEMEThistorical} (stations with historical climate series).
+#' @author Antoine Cabon, CTFC
+#' 
+#' Miquel De \enc{CáceresCaceres} Ainsa, CREAF
+#' @seealso \code{\link{SpatialPointsMeteorology-class}}
+#' @references AEMET should be acknowledged as author of information when using
+#' this data.
+#' @export
 downloadAEMETcurrentday <- function(api, daily = TRUE, verbose=TRUE){
 
   # deprecation warning
@@ -101,6 +167,72 @@ downloadAEMETcurrentday <- function(api, daily = TRUE, verbose=TRUE){
 
 
 #### SMC
+#' Download data from SMC
+#' 
+#' @description
+#' `r lifecycle::badge("deprecated")`
+#' 
+#' Download data from the Catalan automatic weather station network
+#' (XEMA from Servei \enc{MeteorològicMeteorologic} de Catalunya)
+#' 
+#' @details
+#' API key needs to be requested from SMC
+#' (https://apidocs.meteocat.gencat.cat/).
+#' 
+#' @aliases downloadSMCcurrentday downloadSMCstationlist downloadSMChistorical
+#' @param api String with the SMC API key (the procedure to apply for an api
+#' key is explained in https://apidocs.meteocat.gencat.cat/ ).
+#' @param daily Boolean flag. Are data to be returned at a daily or hourly
+#' scale?
+#' @param date An object of class \code{\link{Date}}. By default the current
+#' day in the case of \code{downloadSMCcurrentday()}. In the case of
+#' \code{downloadSMCstationlist()} a date for which operational stations are
+#' queried. In the case of \code{downloadSMChistorical}, the function returns
+#' the whole month the first date selected is in (implementation in package
+#' \code{meteospain}).
+#' @param station_id A string vector containing station ids (the list of
+#' stations for which climatic series are available is given by
+#' \code{downloadSMCstationlist()}). If \code{NULL}, all available stations are
+#' queried. Otherwise, only the data corresponding to the specified stations
+#' will be returned.
+#' @param export If \code{export = FALSE} the downloaded data is stored in
+#' memory. Otherwise the result is written on the disk (using the format
+#' specified in \code{exportFormat}).
+#' @param exportDir Output directory for downloaded meteorology.
+#' @param exportFormat Format of meteorological data. Current accepted formats
+#' are \code{"castanea"} and \code{"meteoland"}.
+#' @param metadataFile The name of the file that will store the meta data
+#' describing all written files.
+#' @param verbose Boolean flag to print process information.
+#' @return Function \code{downloadSMCstationlist} returns a
+#' \code{\link{SpatialPointsDataFrame-class}} object containing the list of SMC
+#' operational weather stations for the date given.
+#' 
+#' Function \code{downloadSMCcurrentday} downloads recent weather (the last 24h
+#' or the weather for a given date) from all currently available stations and
+#' returns data frame if \code{daily_meteoland = FALSE} or a
+#' \code{\link{SpatialPointsDataFrame-class}} object with observations
+#' aggregated at the daily scale otherwise.
+#' 
+#' Function \code{downloadSMChistorical} downloads historical daily weather
+#' corresponding to a given time period from a set (or all currently available)
+#' stations. Results are returned (or exported) after formatting data as a
+#' \code{\link{SpatialPointsMeteorology-class}} if \code{variable_code = NULL},
+#' or as a data frame otherwise.
+#' @note Since ver. 1.0.1, weather data download functions included in
+#' \code{meteoland} make internal calls to functions in package
+#' \code{meteospain}. For an enhanced flexibility, users are recommended to
+#' call functions in \code{meteospain} themselves, and then to use function
+#' \code{\link{reshapemeteospain}} to generate data suitable for
+#' \code{meteoland}.
+#' @author Antoine Cabon, CTFC
+#' 
+#' Miquel De \enc{CáceresCaceres} Ainsa, CREAF
+#' @seealso \code{\link{SpatialPointsMeteorology-class}}
+#' @references Servei \enc{MeteorològicMeteorologic} de Catalunya (SMC) should
+#' be acknowledged as author of information when accessing weather data with
+#' these functions.
+#' @export
 downloadSMCcurrentday <- function(api, daily=TRUE, station_id=NULL,
                                   date = Sys.Date(), verbose=TRUE){
 
@@ -118,6 +250,49 @@ downloadSMCcurrentday <- function(api, daily=TRUE, station_id=NULL,
 
 
 #### MeteoGalicia
+#' Download data from MeteoGalicia
+#' 
+#' @description
+#' `r lifecycle::badge("deprecated")`
+#'
+#' Download data from the Galician Meterology Agency (MeteoGalicia)
+#' @details
+#' See available data services of MeteoGalicia at
+#' https://www.meteogalicia.gal/web/RSS/rssIndex.action?request_locale=es.
+#' 
+#' @aliases downloadMGstationlist downloadMGhistorical downloadMGcurrentday
+#' @param date_from,date_to Strings or objects of class \code{\link{Date}}
+#' specifying first and last date of the desired period.
+#' @param station_id A string vector containing station ids (the list of
+#' stations presently operative is given by \code{downloadMGstationlist}). If
+#' NULL all stations with available data are returned.
+#' @param verbose Boolean flag to print process information.
+#' @param daily Boolean flag. Are data to be returned at a daily or hourly
+#' scale?
+#' @return Function \code{downloadMGstationlist} returns a
+#' \code{\link{SpatialPointsDataFrame-class}} object containing the list of
+#' MeteoGalicia weather stations currently operative.  Function
+#' \code{downloadMGhistorical} downloads data for the specified MG weather
+#' stations (or all) and dates and returns a
+#' \code{\link{SpatialPointsMeteorology-class}} object with the downloaded
+#' meteorology for each station (point).
+#' 
+#' Function \code{downloadMGcurrentday} downloads recent weather data (the last
+#' 24h) from all currently available stations and returns data frame if
+#' \code{daily = FALSE} or a \code{\link{SpatialPointsDataFrame-class}} object
+#' with observations aggregated at the daily scale otherwise.
+#' @note Since ver. 1.0.1, weather data download functions included in
+#' \code{meteoland} make internal calls to functions in package
+#' \code{meteospain}. For an enhanced flexibility, users are recommended to
+#' call functions in \code{meteospain} themselves, and then to use function
+#' \code{\link{reshapemeteospain}} to generate data suitable for
+#' \code{meteoland}.
+#' @author Miquel De \enc{CáceresCaceres} Ainsa, CREAF
+#' @seealso \code{\link{SpatialPointsMeteorology-class}}
+#' @references MeteoGalicia (from the Conselleria de Medio Ambiente, Territorio
+#' e Vivenda of Xunta de Galicia) should be acknowledged as source of
+#' information when using this data.
+#' @export
 downloadMGcurrentday <- function(station_id=NULL, daily = TRUE, verbose = TRUE) {
   # deprecation warning
   lifecycle::deprecate_warn(
@@ -132,6 +307,47 @@ downloadMGcurrentday <- function(station_id=NULL, daily = TRUE, verbose = TRUE) 
 }
 
 #### Meteoclimatic
+#' Download data from Meteoclimatic network
+#' 
+#' @description
+#' `r lifecycle::badge("deprecated")`
+#'
+#' Download data from the Spanish Automatic Stations Network
+#' (non-professional)
+#' 
+#' @details
+#' Meteoclimatic is a non-professional automatic stations network, maintained
+#' by volunteers that share the data from their climatic stations. Data offered
+#' by these stations has not passed any quality control.
+#' 
+#' @aliases downloadMETEOCLIMATICstationlist downloadMETEOCLIMATICcurrentday
+#' @param station_id A string vector containing station ids (the list of
+#' stations for which current day climatic data is available is given by
+#' \code{downloadMETEOCLIMATICstationlist}). By default, returns the list of
+#' stations in Catalonia.
+#' @return Function \code{downloadMETEOCLIMATICstationlist} returns a
+#' \code{\link{SpatialPointsDataFrame-class}} object containing the list of
+#' Meteoclimatic weather stations for which data is available based on the
+#' station_id codes provided.
+#' 
+#' Function \code{downloadMETEOCLIMATICcurrentday} downloads recent weather
+#' (for the current day) from all currently available stations and returns a
+#' \code{\link{SpatialPointsDataFrame-class}} object with observations. Only
+#' acummulated precipitation, maximum and minimum temperature and relative
+#' humidity are returned.
+#' @note Since ver. 1.0.1, weather data download functions included in
+#' \code{meteoland} make internal calls to functions in package
+#' \code{meteospain}. For an enhanced flexibility, users are recommended to
+#' call functions in \code{meteospain} themselves, and then to use function
+#' \code{\link{reshapemeteospain}} to generate data suitable for
+#' \code{meteoland}.
+#' @author Víctor Granda, EMF-CREAF
+#' 
+#' Miquel De \enc{CáceresCaceres} Ainsa, EMF-CREAF
+#' @seealso \code{\link{SpatialPointsMeteorology-class}}
+#' @references Meteoclimatic should be acknowledged as author of information
+#' when using this data.
+#' @export
 downloadMETEOCLIMATICcurrentday <- function(station_id = "ESCAT") {
   # deprecation warning
   lifecycle::deprecate_warn(

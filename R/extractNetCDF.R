@@ -1,9 +1,13 @@
 #' Extraction of climatic data from NetCDF files (deprecated)
 #' 
+#' @description
+#' `r lifecycle::badge("deprecated")`
+#' 
 #' This function reads a set of NetCDF files (one per variable) and extracts
 #' data for a set of NetCDF cells that are specified using a boundary box (in
 #' lon/lat format) or a set of (x,y) grid indices.
 #' 
+#' @details
 #' Function \code{extractNetCDF} first identifies which cells in NetCDF data
 #' should be extracted according to \code{bbox} (or the cells are indicated by
 #' the user using \code{cells}), and the overall period (days). If neither
@@ -52,6 +56,7 @@
 #' @seealso \code{\link{correctionpoints}},
 #' \code{\link{writemeteorologypointfiles}},
 #' \code{\link{SpatialPointsMeteorology-class}}
+#' @export
 extractNetCDF<-function(ncdf_files, bbox = NULL, offset = 0, cells = NULL, export = TRUE,
                         exportDir = getwd(), exportFormat = "meteoland/txt", mpfilename = "MP.txt") {
 

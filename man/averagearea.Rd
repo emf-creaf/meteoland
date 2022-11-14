@@ -21,6 +21,8 @@ An object of class as the input
 the spatial average of the input.
 }
 \description{
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}
+
 Averages the weather data series of points or grid pixels.
 }
 \details{

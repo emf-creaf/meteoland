@@ -1,5 +1,8 @@
 #' Calibration and validation of interpolation procedures
 #' 
+#' @description
+#' `r lifecycle::badge("deprecated")`
+#' 
 #' Function \code{interpolation.calibration} determines optimal interpolation
 #' parameters 'N' and 'alpha' for a given meteorological variable. Optimization
 #' is done by minimizing mean absolute error (MAE) (Thornton et al. 1997).
@@ -151,6 +154,7 @@
 #' #Plot results
 #' plot(cv)
 #' 
+#' @export
 interpolation.cv<-function(object, stations = NULL, verbose = FALSE) {
   lifecycle::deprecate_warn(
     when = "1.1.0", what = "interpolation.cv()", with = "interpolation_cross_validation()",

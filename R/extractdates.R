@@ -1,3 +1,5 @@
+#' @describein extractdates `r lifecycle::badge("deprecated")`
+#' @export
 extractvars<-function(object, vars, verbose = FALSE) {
   # deprecation warning
   lifecycle::deprecate_warn(
@@ -75,8 +77,12 @@ extractvars<-function(object, vars, verbose = FALSE) {
 
 #' Extracts meteorological data
 #' 
+#' @description
+#' `r lifecycle::badge("deprecated")`
+#' 
 #' Extracts meteorological data from an object.
 #' 
+#' @details
 #' Function \code{extractpoints} is deprecated, because its functionality can
 #' be achieved using subsetting of spatial classes
 #' \code{\link{SpatialGridMeteorology}} and
@@ -113,6 +119,7 @@ extractvars<-function(object, vars, verbose = FALSE) {
 #' frame. \itemFunction \code{extractgridpoints()} returns an object of class
 #' \code{\link{SpatialPointsMeteorology}}. }
 #' @author Miquel De \enc{CáceresCaceres} Ainsa, CREAF
+#' @export
 extractdates<-function(object, dates = NULL, verbose=FALSE) {
   lifecycle::deprecate_warn(
     when = "1.1.0", what = "extractdates()", with = NULL,

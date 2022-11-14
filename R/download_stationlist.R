@@ -1,5 +1,7 @@
 
 ### AEMET
+#' @describeIn downloadAEMETcurrentday `r lifecycle::badge("deprecated")`
+#' @export
 downloadAEMETstationlist <- function(api){
   # deprecation warning
   lifecycle::deprecate_warn(
@@ -19,6 +21,8 @@ downloadAEMETstationlist <- function(api){
 
 
 ### SMC
+#' @describeIn downloadSMCcurrentday `r lifecycle::badge("deprecated")`
+#' @export
 downloadSMCstationlist <- function(api, date = NULL){
   # deprecation warning
   lifecycle::deprecate_warn(
@@ -40,6 +44,8 @@ downloadSMCstationlist <- function(api, date = NULL){
 
 
 ### MeteoGalicia
+#' @describeIn downloadMGcurrentday `r lifecycle::badge("deprecated")`
+#' @export
 downloadMGstationlist <- function() {
   # deprecation warning
   lifecycle::deprecate_warn(
@@ -58,6 +64,8 @@ downloadMGstationlist <- function() {
 }
 
 #### Meteoclimatic
+#' @describeIn downloadMETEOCLIMATICcurrentday `r lifecycle::badge("deprecated")`
+#' @export
 downloadMETEOCLIMATICstationlist <- function(station_id = 'ESCAT') {
   # deprecation warning
   lifecycle::deprecate_warn(

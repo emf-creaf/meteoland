@@ -1,4 +1,6 @@
 ### AEMET
+#' @describeIn downloadAEMETcurrentday `r lifecycle::badge("deprecated")`
+#' @export
 downloadAEMEThistorical <- function(api, dates, station_id = NULL, export = FALSE, exportDir = getwd(),
                                 exportFormat = "meteoland/txt",
                                 metadataFile = "MP.txt", verbose=TRUE){
@@ -25,6 +27,8 @@ downloadAEMEThistorical <- function(api, dates, station_id = NULL, export = FALS
 
 
 #### SMC
+#' @describeIn downloadSMCcurrentday `r lifecycle::badge("deprecated")`
+#' @export
 downloadSMChistorical <- function(api, date, station_id=NULL,
                                   export = FALSE, exportDir = getwd(), exportFormat = "meteoland/txt", metadataFile = "MP.txt",
                                   verbose=TRUE){
@@ -50,6 +54,8 @@ downloadSMChistorical <- function(api, date, station_id=NULL,
 }
 
 #### MeteoGalicia
+#' @describeIn downloadMGcurrentday `r lifecycle::badge("deprecated")`
+#' @export
 downloadMGhistorical <- function(date_from, date_to, station_id = NULL, verbose=TRUE) {
   # deprecation warning
   lifecycle::deprecate_warn(

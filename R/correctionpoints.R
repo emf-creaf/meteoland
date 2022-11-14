@@ -1,4 +1,30 @@
-# Bias-correction of a single series
+#' Low-level correction functions
+#' 
+#' @description
+#' `r lifecycle::badge('deprecated')`
+#' 
+#' Low-level function to perform bias correction.
+#' 
+#' 
+#' @aliases correction_series
+#' @param obs Observed series for the reference (historical) period.
+#' @param mod Modelled series for the reference (historical) period.
+#' @param proj Modelled series for the projected period. If missing, the
+#' reference (historical) period is corrected.
+#' @param method Correction method, either \code{"unbias"}, \code{"scaling"},
+#' \code{"quantmap"}
+#' @param isPrec A flag to indicate that variable is precipitation (only
+#' relevant for quantile mapping).
+#' @param qstep Probability step for quantile mapping (see
+#' \code{\link{defaultCorrectionParams}}).
+#' @return Returns a vector with corrected values.
+#' @author Miquel De \enc{CáceresCaceres} Ainsa, CREAF
+#' @seealso \code{\link{correctionpoints}},
+#' \code{\link{defaultCorrectionParams}}
+#' @references De Caceres M, Martin-StPaul N, Turco M, Cabon A, Granda V (2018)
+#' Estimating daily meteorological data and downscaling climate models over
+#' landscapes. Environmental Modelling and Software 108: 186-196.
+#' @export
 correction_series<-function(obs, mod, proj = NULL, method = "unbias", isPrec=TRUE, qstep=0.01) {
   # deprecation warning
   lifecycle::deprecate_warn(
@@ -17,6 +43,8 @@ correction_series<-function(obs, mod, proj = NULL, method = "unbias", isPrec=TRU
   return(.corrApply(mod, corr, method))
 }
 # Bias-correction of all variables for a single point
+#' @describeIn correctionpoints `r lifecycle::badge('deprecated')`
+#' @export
 correctionpoint<-function(obs, mod, proj, dates = NULL, params = defaultCorrectionParams(), verbose=TRUE){
 
   # deprecation warning
@@ -48,6 +76,9 @@ correctionpoint<-function(obs, mod, proj, dates = NULL, params = defaultCorrecti
 
 #' Statistical correction of meteorological variables for a set of points
 #' 
+#' @description
+#' `r lifecycle::badge('deprecated')`
+#' 
 #' Functions \code{correctionpoint} and \code{correctionpoints} perform
 #' correction of predicted climatic data by applying statistical correction
 #' methods (unbiasing, scaling, or quantile mapping) to meteorological
@@ -55,6 +86,7 @@ correctionpoint<-function(obs, mod, proj, dates = NULL, params = defaultCorrecti
 #' each point, the bias and mean absolute error (MAE) obtained before and after
 #' correcting the climate model for the historical period.
 #' 
+#' @details
 #' Function \code{correctionpoints} performs statistical correction of
 #' predicted climatic data for all points supplied in \code{points} whereas
 #' \code{correctionpoint} performs statistical correction of one single point.
@@ -228,6 +260,7 @@ correctionpoint<-function(obs, mod, proj, dates = NULL, params = defaultCorrecti
 #'      ylab="Corrected precipitation (mm)", xlab="Uncorrected precipitation (mm)")
 #' abline(a=0,b=1,col="gray")
 #' 
+#' @export
 correctionpoints<-function(object, points, topodata = NULL, dates = NULL, export = FALSE,
                            exportDir = getwd(), exportFile = NULL, exportFormat = "meteoland/txt",
                            metadataFile = "MP.txt", corrOut = FALSE, verbose=TRUE) {

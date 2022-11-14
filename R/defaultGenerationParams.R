@@ -3,6 +3,9 @@
 
 #' Default generation parameters
 #' 
+#' @description
+#' `r lifecycle::badge('deprecated')`
+#' 
 #' Returns a list with the default parameterization for weather generation.
 #' 
 #' 
@@ -38,6 +41,7 @@
 #' Steinschneider S. & Brown C. (2013) A semiparametric multivariate, multisite
 #' weather generator with low-frequency variability for use in climate risk
 #' assessments. Water Resour. Res. 49, 7205-7220. doi:10.1002/wrcr.20528.
+#' @export
 defaultGenerationParams<-function() {
   # deprecation warning
   lifecycle::deprecate_warn(

@@ -3,6 +3,9 @@
 
 #' Default correction parameters
 #' 
+#' @description
+#' `r lifecycle::badge('deprecated')`
+#' 
 #' Returns a list with the default parameterization for statistical correction.
 #' 
 #' 
@@ -30,6 +33,7 @@
 #' @references De Caceres M, Martin-StPaul N, Turco M, Cabon A, Granda V (2018)
 #' Estimating daily meteorological data and downscaling climate models over
 #' landscapes. Environmental Modelling and Software 108: 186-196.
+#' @export
 defaultCorrectionParams<-function() {
 
   # deprecation warning

@@ -1,7 +1,11 @@
 #' Averages area weather
 #' 
+#' @description 
+#' `r lifecycle::badge("deprecated")`
+#' 
 #' Averages the weather data series of points or grid pixels.
 #' 
+#' @details
 #' Assumes that all points/pixels represent the same area.
 #' 
 #' @param object An object of class
@@ -33,6 +37,7 @@
 #' #Weather data
 #' pa@data[[1]]
 #' 
+#' @export
 averagearea<-function(object, na.rm=TRUE) {
 
   # deprecation warning

@@ -115,6 +115,8 @@
   return(DataCV)
 }
 
+#' @describeIn correctionpoints `r lifecycle::badge('deprecated')`
+#' @export
 correctionpoints.errors<-function(object, points, topodata = NULL,
                                   error.type = "residuals.cv", keep.data = FALSE, verbose = FALSE) {
 

@@ -14,5 +14,5 @@
 #' @return A numeric vector with specific or relative humidity.
 #' @author Nicholas Martin-StPaul, INRA
 #' 
-#' Miquel De \enc{CáceresCaceres} Ainsa, CREAF
+#' Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF
 #' @seealso \code{\link{meteocomplete}}

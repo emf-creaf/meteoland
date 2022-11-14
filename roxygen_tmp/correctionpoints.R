@@ -31,7 +31,7 @@
 #' \code{\link{defaultCorrectionParams}}): (a) 'unbias' for shifting the mean;
 #' (b) 'scaling' for multiplication by a factor; and (c) 'quantmap' for
 #' empirical quantile mapping between observed and modelled data
-#' (\enc{DéquéDeque} 2007).
+#' (\enc{Déqué}{Deque} 2007).
 #' 
 #' A difficulty arises for quantile mapping when the variables bounded by zero,
 #' such as precipitation. As the models tend to drizzle (or may have lower
@@ -41,7 +41,7 @@
 #' interval where the observed cumulative frequency is less than or equal to
 #' the probability of no precipitation in the model. This procedure ensures
 #' that the probability of precipitation after correction is equal to that
-#' observed (\enc{BoéBoe} 2007).
+#' observed (\enc{Boé}{Boe} 2007).
 #' 
 #' @aliases correctionpoint correctionpoints correctionpoints.errors
 #' @param obs A data frame with observed meteorology.
@@ -106,14 +106,14 @@
 #' point. If \code{keep.data = TRUE} then the function also returns a list of
 #' data frames with the uncorrected/corrected series used in the comparisons
 #' with observations. }
-#' @author Miquel De \enc{CáceresCaceres} Ainsa, CREAF
+#' @author Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF
 #' 
 #' Nicolas Martin, INRA-Avignon
 #' @seealso \code{\link{penman}}, \code{\link{SpatialPointsMeteorology-class}},
 #' \code{\link{writemeteorologypointfiles}},
 #' \code{\link{MeteorologyUncorrectedData}},
 #' \code{\link{MeteorologyInterpolationData}}
-#' @references \enc{BoéBoe} J, Terray L, Habets F, Martin E (2007) Statistical
+#' @references \enc{Boé}{Boe} J, Terray L, Habets F, Martin E (2007) Statistical
 #' and dynamical downscaling of the Seine basin climate for
 #' hydro-meteorological studies. Int J Climatol 27:1643–1655. doi:
 #' 10.1002/joc.1602
@@ -122,7 +122,7 @@
 #' daily meteorological data and downscaling climate models over landscapes.
 #' Environmental Modelling and Software 108: 186-196.
 #' 
-#' \enc{DéquéDeque} M (2007) Frequency of precipitation and temperature
+#' \enc{Déqué}{Deque} M (2007) Frequency of precipitation and temperature
 #' extremes over France in an anthropogenic scenario: Model results and
 #' statistical correction according to observed values. Glob Planet Change
 #' 57:16–26. doi: 10.1016/j.gloplacha.2006.11.030

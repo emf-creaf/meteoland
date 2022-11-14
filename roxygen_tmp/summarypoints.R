@@ -49,7 +49,7 @@
 #' \code{\link{SpatialGridDataFrame}} and \code{\link{SpatialPixelsDataFrame}},
 #' respectively, containing the summaries analogously to \code{summarypoints}.
 #' }
-#' @author Miquel De \enc{CáceresCaceres} Ainsa, CREAF
+#' @author Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF
 #' 
 #' Antoine Cabon, CTFC
 #' @seealso \code{\link{SpatialPointsMeteorology-class}}

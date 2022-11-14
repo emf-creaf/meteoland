@@ -22,6 +22,6 @@
 #' \code{projection_data}).
 #' @param params A \code{"list"} containing correction parameters.
 #' @return An object of class \code{\linkS4class{MeteorologyUncorrectedData}.}
-#' @author Miquel De \enc{CáceresCaceres} Ainsa, CREAF
+#' @author Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF
 #' @seealso \code{\linkS4class{MeteorologyUncorrectedData}},
 #' \code{\link{examplecorrectiondata}}, \code{\link{defaultCorrectionParams}}.

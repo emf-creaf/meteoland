@@ -55,7 +55,7 @@
 #' \code{downloadAEMEThistorical} (stations with historical climate series).
 #' @author Antoine Cabon, CTFC
 #' 
-#' Miquel De \enc{CáceresCaceres} Ainsa, CREAF
+#' Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF
 #' @seealso \code{\link{SpatialPointsMeteorology-class}}
 #' @references AEMET should be acknowledged as author of information when using
 #' this data.

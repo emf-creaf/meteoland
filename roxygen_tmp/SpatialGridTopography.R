@@ -51,7 +51,7 @@
 #' @param proj4string An object of class \code{\link{CRS-class}}.
 #' @return Function \code{SpatialGridTopography} returns an object
 #' '\code{\link{SpatialGridTopography-class}}'.
-#' @author Miquel De \enc{CáceresCaceres} Ainsa, CREAF
+#' @author Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF
 #' @seealso \code{\link{SpatialGridTopography-class}}
 #' @references Burrough, P. A. and McDonell, R.A., 1998. Principles of
 #' Geographical Information Systems (Oxford University Press, New York), p.

@@ -24,7 +24,7 @@
 #' \item\code{utils_saturationVP}: saturation vapour pressure (in kPa).
 #' \item\code{utils_saturationVaporPressureCurveSlope}: Slope of the saturation
 #' vapor pressure curve (kPa·ºC-1).  }
-#' @author Miquel De \enc{CáceresCaceres} Ainsa, CREAF
+#' @author Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF
 #' @references McMurtrie, R. E., D. A. Rook, and F. M. Kelliher. 1990.
 #' Modelling the yield of Pinus radiata on a site limited by water and
 #' nitrogen. Forest Ecology and Management 30:381–413.

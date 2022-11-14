@@ -62,5 +62,5 @@ concentration index in peninsular Spain. International Journal of
 Climatology 24, 959–971. doi:10.1002/joc.1030.
 }
 \author{
-Miquel De \enc{CáceresCaceres} Ainsa, CREAF.
+Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF.
 }

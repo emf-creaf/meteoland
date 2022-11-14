@@ -57,7 +57,7 @@
 #' \code{\link{SpatialGridDataFrame-class}} if a single date is interpolated.
 #' If \code{export = TRUE}, the function writes the results in files and a
 #' \code{data.frame} with columns 'dir' and 'filename' is returned.
-#' @author Miquel De \enc{CáceresCaceres} Ainsa, CREAF
+#' @author Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF
 #' @seealso \code{\link{penman}}, \code{\link{SpatialPointsTopography-class}},
 #' \code{\link{SpatialGridTopography}}, \code{\link{SpatialPixelsTopography}},
 #' \code{\link{MeteorologyInterpolationData}}

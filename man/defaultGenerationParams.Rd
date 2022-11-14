@@ -49,5 +49,5 @@ assessments. Water Resour. Res. 49, 7205-7220. doi:10.1002/wrcr.20528.
 \code{\link{weathergeneration}}
 }
 \author{
-Miquel De \enc{CáceresCaceres} Ainsa, CREAF
+Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF
 }

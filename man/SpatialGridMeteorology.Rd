@@ -28,5 +28,5 @@ Initializes an object of class \code{SpatialGridMeteorology-class}
 \code{\link{SpatialGridMeteorology-class}}
 }
 \author{
-Miquel De \enc{CáceresCaceres} Ainsa, CREAF
+Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF
 }

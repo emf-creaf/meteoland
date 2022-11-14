@@ -1,16 +1,3 @@
-#' Fits Markov Chain Transition Matrices to State Sequence
-#' Modified from weathergen
-#' 
-#' @param states character array of states (from {'d','w','e'}, for dry, wet and extremely wet)
-#' @param months numeric array of months for each daily time step
-#' @export
-#' @return monthly list of transition matrices
-#' @examples
-#' transitions <- mc_fit(x=sample(c('d', 'w', 'e'), size=720, replace=TRUE, prob=c(0.5, 0.3, 0.2)), months=rep(rep(seq(1, 12), each=30), times=2))
-#'
-# 
-
-
 #' Fits Markov Chain Transition Matrices to State Sequence Modified from
 #' weathergen
 #' 
@@ -25,9 +12,6 @@
 #' @examples
 #' 
 #' transitions <- mc_fit(x=sample(c('d', 'w', 'e'), size=720, replace=TRUE, prob=c(0.5, 0.3, 0.2)), months=rep(rep(seq(1, 12), each=30), times=2))
-#' 
-#' 
-#' @export .mc_fit
 .mc_fit<-function(states, months) {
   stopifnot(length(states) == length(months))
   ns <- 3
@@ -61,7 +45,6 @@
 #' mc_simulate(months=rep(1:12, each=30), initial='d', transitions=transitions, states=c('d', 'w', 'e'))
 #' 
 #' 
-#' @export .mc_sim
 .mc_sim<-function(months, initial, transitions) {
   n <- length(months)
   
@@ -128,7 +111,6 @@
 #' @param thresholds list of monthly transition matrices generated from
 #' mc_fit()
 #' @param states character list of markov states
-#' @export .mc_assign_states
 .mc_assign_states <- function(x, months, thresholds) {
   stopifnot(length(x)==length(months))
   stopifnot(length(thresholds)==12)
@@ -319,7 +301,7 @@
 #' @param verbose Boolean flag to print process information.
 #' @return An object of the same class as the input \code{object}. Generated
 #' meteorological series are of the same length as the input.
-#' @author Miquel De \enc{CáceresCaceres} Ainsa, CREAF
+#' @author Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF
 #' @seealso \code{\link{defaultGenerationParams}}
 #' @references Apipattanavis, S., G. Podesta, B. Rajagopalan, and R. W. Katz
 #' (2007), A semiparametric multivariate and multisite weather generator, Water

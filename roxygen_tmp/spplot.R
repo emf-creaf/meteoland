@@ -17,7 +17,7 @@
 #' allowed).
 #' @param ... Additional parameters to function \code{\link{spplot}}.
 #' @param date A string or an integer for the date to be plotted.
-#' @author Miquel De \enc{CáceresCaceres} Ainsa, CREAF
+#' @author Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF
 #' @seealso \code{\link{meteoplot}}
 #' @examples
 #' 

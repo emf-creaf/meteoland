@@ -21,7 +21,7 @@
 #' \code{\link{SpatialPointsMeteorology-class}}. Function \code{mergegrids}
 #' returns an object \code{\link{SpatialGridMeteorology-class}} or an object
 #' \code{\link{SpatialPixelsMeteorology-class}}, depending on the input.
-#' @author Miquel De \enc{CáceresCaceres} Ainsa, CREAF
+#' @author Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF
 #' @seealso \code{\link{SpatialPointsMeteorology-class}},
 #' \code{\link{SpatialGridMeteorology-class}},
 #' \code{\link{SpatialPixelsMeteorology-class}}

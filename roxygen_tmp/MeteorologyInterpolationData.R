@@ -56,7 +56,7 @@
 #' @param params A list containing interpolation parameters.
 #' @return An object of class
 #' \code{\linkS4class{MeteorologyInterpolationData}}.
-#' @author Miquel De \enc{CáceresCaceres} Ainsa, CREAF
+#' @author Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF
 #' @seealso \code{\linkS4class{MeteorologyInterpolationData}},
 #' \code{\link{defaultInterpolationParams}}.
 #' @references Thornton, P.E., Running, S.W., 1999. An improved algorithm for

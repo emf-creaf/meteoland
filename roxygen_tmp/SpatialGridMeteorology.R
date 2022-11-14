@@ -9,5 +9,5 @@
 #' @param dates Object of class \code{"Date"} describing the time period of
 #' meteorological estimates.
 #' @return An object of class \code{\link{SpatialGridMeteorology-class}}
-#' @author Miquel De \enc{CáceresCaceres} Ainsa, CREAF
+#' @author Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF
 #' @seealso \code{\link{SpatialGridMeteorology-class}}

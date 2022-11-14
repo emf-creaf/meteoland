@@ -55,7 +55,7 @@
 #' @param proj4string An object of class \code{\link{CRS-class}}.
 #' @return Function \code{SpatialGridTopography} returns an object
 #' '\code{\link{SpatialGridTopography-class}}'.
-#' @author Miquel De \enc{CáceresCaceres} Ainsa, CREAF
+#' @author Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF
 #' @seealso \code{\link{SpatialGridTopography-class}}
 #' @references Burrough, P. A. and McDonell, R.A., 1998. Principles of
 #' Geographical Information Systems (Oxford University Press, New York), p.
@@ -97,6 +97,8 @@ SpatialGridTopography<-function(grid, elevation, slope = NULL, aspect = NULL, pr
           data = data)
   return(lt)
 }
+
+#' @export
 setMethod("spplot", signature("SpatialGridTopography"), definition =
             function(obj, variable="elevation",...) {
               if(variable=="elevation") {
@@ -116,6 +118,7 @@ setMethod("spplot", signature("SpatialGridTopography"), definition =
               }
             }
 )
+
 print.SpatialGridTopography = function(x, ...) {
   cat("Object of class SpatialGridTopography\n")
   print(summary(x@grid))
@@ -133,7 +136,11 @@ print.SpatialGridTopography = function(x, ...) {
   }
   invisible(x)
 }
+
+#' @export
 setMethod("print", "SpatialGridTopography", function(x, ...) print.SpatialGridTopography(x, ...))
+
+#' @export
 setMethod("show", "SpatialGridTopography", 
           function(object) print.SpatialGridTopography(object))
 
@@ -178,6 +185,8 @@ subs.SpatialGridTopography <- function(x, i, j, ..., drop = FALSE) {
              data = x@data[idx, , drop = FALSE])
   }
 }
+
+#' @export
 setMethod("[", "SpatialGridTopography", subs.SpatialGridTopography)
 
 as.SpGrdTop.SpPoiTop = function(from) {

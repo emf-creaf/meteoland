@@ -73,7 +73,7 @@ data (i.e. the coordinates and filename of each file).
 
 Humidity in climate model files is given as specific humidity. This is
 converted to relative humidity and the conversion may produce values above
-saturation (>100\\%) (see also \code{\link{defaultCorrectionParams}} for the
+saturation (>100\%) (see also \code{\link{defaultCorrectionParams}} for the
 same issue when performing bias correction).
 }
 \seealso{
@@ -82,7 +82,7 @@ same issue when performing bias correction).
 \code{\link{SpatialPointsMeteorology-class}}
 }
 \author{
-Miquel De \enc{CáceresCaceres} Ainsa, CREAF
+Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF
 
 Nicolas Martin, INRA-Avignon
 }

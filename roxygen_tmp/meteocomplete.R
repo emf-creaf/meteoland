@@ -26,7 +26,7 @@
 #' daily relative humidity (in percent).  \item\code{Radiation}: Incoming solar
 #' radiation (MJ/m2).  \item\code{PET}: Potential evapotranspiration (in mm of
 #' water).  }
-#' @author Miquel De \enc{CáceresCaceres} Ainsa, CREAF
+#' @author Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF
 #' @seealso \code{\link{penman}}, \code{\link{radiation_solarRadiation}}
 #' @references Thornton, P.E., Running, S.W., 1999. An improved algorithm for
 #' estimating incident daily solar radiation from measurements of temperature,

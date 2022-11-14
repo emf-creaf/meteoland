@@ -109,5 +109,5 @@ dimensions, coordinate reference system and dates.
 \code{\link{SpatialGridMeteorology-class}}
 }
 \author{
-Miquel De \enc{CáceresCaceres} Ainsa, CREAF
+Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF
 }

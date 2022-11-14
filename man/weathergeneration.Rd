@@ -85,5 +85,5 @@ doi:10.1002/wrcr.20528.
 \code{\link{defaultGenerationParams}}
 }
 \author{
-Miquel De \enc{CáceresCaceres} Ainsa, CREAF
+Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF
 }

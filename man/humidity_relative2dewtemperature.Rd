@@ -18,11 +18,11 @@ humidity_relative2specific(Tc, HR)
 \arguments{
 \item{Tc}{A numeric vector of temperature in degrees Celsius.}
 
-\item{HR}{A numeric vector of relative Humidity (in \\%).}
+\item{HR}{A numeric vector of relative Humidity (in \%).}
 
 \item{Td}{A numeric vector of dew temperature in degrees Celsius.}
 
-\item{allowSaturated}{Logical flag to allow values over 100\\%}
+\item{allowSaturated}{Logical flag to allow values over 100\%}
 
 \item{HS}{A numeric vector of specific humidity (unitless).}
 }
@@ -50,5 +50,5 @@ temperature and viceversa.
 \author{
 Nicholas Martin-StPaul, INRA
 
-Miquel De \enc{CáceresCaceres} Ainsa, CREAF
+Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF
 }

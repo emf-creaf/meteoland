@@ -21,7 +21,7 @@
 #' \code{\linkS4class{GridTopology}}; a value of \code{NULL} implies that this
 #' will be derived from the point coordinates.
 #' @return An object of class \code{\link{SpatialPixelsMeteorology-class}}
-#' @author Miquel De \enc{CáceresCaceres} Ainsa, CREAF
+#' @author Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF
 #' @seealso \code{\link{SpatialPixelsMeteorology-class}}
 #' @export
 SpatialPixelsMeteorology<-function(points, data, dates, tolerance = sqrt(.Machine$double.eps),
@@ -65,6 +65,7 @@ SpatialPixelsMeteorology<-function(points, data, dates, tolerance = sqrt(.Machin
   return(spm)
 }
 
+#' @export
 setMethod("[", "SpatialPixelsMeteorology",
           function(x, i, j, ..., drop = FALSE) {
             if (!missing(j))
@@ -108,6 +109,7 @@ setMethod("[", "SpatialPixelsMeteorology",
           }
 )
 
+#' @export
 setMethod("spplot", signature("SpatialPixelsMeteorology"), definition=
             function(obj, date, variable="MeanTemperature", ...) {
               sgd = SpatialPixelsDataFrame(points=obj@coords, grid = obj@grid, data=obj@data[[date]], 
@@ -129,7 +131,11 @@ print.SpatialPixelsMeteorology = function(x, ...) {
   cat(pst, "\n")
   invisible(x)
 }
+
+#' @export
 setMethod("print", "SpatialPixelsMeteorology", function(x, ..., digits = getOption("digits")) print.SpatialPixelsMeteorology(x, ..., digits))
+
+#' @export
 setMethod("show", "SpatialPixelsMeteorology", function(object) print.SpatialPixelsMeteorology(object))
 
 

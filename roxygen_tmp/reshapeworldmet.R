@@ -36,5 +36,5 @@
 #' @param verbose A flag to show information of the reshape process in the
 #' console output.
 #' @return An object of the class indicated in \code{output}.
-#' @author Miquel De \enc{CáceresCaceres} Ainsa, CREAF
+#' @author Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF
 #' @seealso \code{\link{meteocomplete}}

@@ -27,7 +27,7 @@
 #' @param rc Canopy vapour flux (stomatal) resistance (s·m-1).
 #' @param Rn Daily net radiation (MJ·m-2·day-1).
 #' @return Potential evapotranspiration (in mm of water).
-#' @author Miquel De \enc{CáceresCaceres} Ainsa, CREAF
+#' @author Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF
 #' @seealso \code{\link{interpolationpoints}}
 #' @references Penman, H. L. 1948. Natural evaporation from open water, bare
 #' soil and grass. Proceedings of the Royal Society of London. Series A.

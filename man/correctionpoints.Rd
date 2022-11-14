@@ -102,8 +102,8 @@ calculated biases) should be included with the output. Setting \code{corrOut
 the historical period.}
 }
 \value{
-\itemize{ \itemFunction \code{correctionpoint} returns a data frame.
-\itemIf \code{export = FALSE}, the function \code{correctionpoints} returns
+\itemize{ \item{Function \code{correctionpoint} returns a data frame.}
+\item{If \code{export = FALSE}, the function \code{correctionpoints} returns
 an object of class \code{\link{SpatialPointsMeteorology-class}} with the
 bias-corrected meteorology for each point. If \code{export=TRUE} then
 bias-corrected data is written into the disk. For txt/rds export formats,
@@ -112,12 +112,12 @@ the function returns an object of class
 files written in the disk. For netCDF export format the function returns
 \code{NULL}. If \code{corrOut = TRUE} the function returns a list which
 contains any previous output and an object with the calculated correction
-factors (biases, mappings) for each point and month. \itemFunction
+factors (biases, mappings) for each point and month.} \item{Function
 \code{correctionpoints.errors} (\code{keep.data = FALSE}) returns a data
 frame with the mean absolute error (MAE) and bias for each variable and
 point. If \code{keep.data = TRUE} then the function also returns a list of
 data frames with the uncorrected/corrected series used in the comparisons
-with observations. }
+with observations.} }
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}
@@ -154,7 +154,7 @@ correction of each meteorological variable by changing the slot
 \code{\link{defaultCorrectionParams}}): (a) 'unbias' for shifting the mean;
 (b) 'scaling' for multiplication by a factor; and (c) 'quantmap' for
 empirical quantile mapping between observed and modelled data
-(\enc{DéquéDeque} 2007).
+(\enc{Déqué}{Deque} 2007).
 
 A difficulty arises for quantile mapping when the variables bounded by zero,
 such as precipitation. As the models tend to drizzle (or may have lower
@@ -164,7 +164,7 @@ model precipitation is zero an observed value is randomly chosen in the
 interval where the observed cumulative frequency is less than or equal to
 the probability of no precipitation in the model. This procedure ensures
 that the probability of precipitation after correction is equal to that
-observed (\enc{BoéBoe} 2007).
+observed (\enc{Boé}{Boe} 2007).
 }
 \section{Functions}{
 \itemize{
@@ -229,7 +229,7 @@ abline(a=0,b=1,col="gray")
 
 }
 \references{
-\enc{BoéBoe} J, Terray L, Habets F, Martin E (2007) Statistical
+\enc{Boé}{Boe} J, Terray L, Habets F, Martin E (2007) Statistical
 and dynamical downscaling of the Seine basin climate for
 hydro-meteorological studies. Int J Climatol 27:1643–1655. doi:
 10.1002/joc.1602
@@ -238,7 +238,7 @@ De Caceres M, Martin-StPaul N, Turco M, Cabon A, Granda V (2018) Estimating
 daily meteorological data and downscaling climate models over landscapes.
 Environmental Modelling and Software 108: 186-196.
 
-\enc{DéquéDeque} M (2007) Frequency of precipitation and temperature
+\enc{Déqué}{Deque} M (2007) Frequency of precipitation and temperature
 extremes over France in an anthropogenic scenario: Model results and
 statistical correction according to observed values. Glob Planet Change
 57:16–26. doi: 10.1016/j.gloplacha.2006.11.030
@@ -250,7 +250,7 @@ statistical correction according to observed values. Glob Planet Change
 \code{\link{MeteorologyInterpolationData}}
 }
 \author{
-Miquel De \enc{CáceresCaceres} Ainsa, CREAF
+Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF
 
 Nicolas Martin, INRA-Avignon
 }

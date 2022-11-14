@@ -28,7 +28,7 @@
 #' available (i.e. non-missing) at the reference locations.
 #' @return All functions return a vector with interpolated values for the
 #' target points.
-#' @author Miquel De \enc{CáceresCaceres} Ainsa, CREAF
+#' @author Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF
 #' @seealso \code{\link{defaultInterpolationParams}}
 #' @references Thornton, P.E., Running, S.W., White, M. A., 1997. Generating
 #' surfaces of daily meteorological variables over large regions of complex

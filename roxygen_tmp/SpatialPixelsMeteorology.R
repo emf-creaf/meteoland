@@ -18,5 +18,5 @@
 #' \code{\linkS4class{GridTopology}}; a value of \code{NULL} implies that this
 #' will be derived from the point coordinates.
 #' @return An object of class \code{\link{SpatialPixelsMeteorology-class}}
-#' @author Miquel De \enc{CáceresCaceres} Ainsa, CREAF
+#' @author Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF
 #' @seealso \code{\link{SpatialPixelsMeteorology-class}}

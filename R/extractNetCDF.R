@@ -27,7 +27,7 @@
 #' 
 #' Humidity in climate model files is given as specific humidity. This is
 #' converted to relative humidity and the conversion may produce values above
-#' saturation (>100\%) (see also \code{\link{defaultCorrectionParams}} for the
+#' saturation (>100%) (see also \code{\link{defaultCorrectionParams}} for the
 #' same issue when performing bias correction).
 #' 
 #' @param ncdf_files Character vector containing files to read
@@ -50,7 +50,7 @@
 #' for each cell (represented by a spatial point). Otherwise the function
 #' returns an object of class \code{\link{SpatialPointsDataFrame-class}}
 #' containing the meta data of the files written in the disk.
-#' @author Miquel De \enc{CáceresCaceres} Ainsa, CREAF
+#' @author Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF
 #' 
 #' Nicolas Martin, INRA-Avignon
 #' @seealso \code{\link{correctionpoints}},

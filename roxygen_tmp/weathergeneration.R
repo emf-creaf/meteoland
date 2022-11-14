@@ -33,7 +33,7 @@
 #' @param verbose Boolean flag to print process information.
 #' @return An object of the same class as the input \code{object}. Generated
 #' meteorological series are of the same length as the input.
-#' @author Miquel De \enc{CáceresCaceres} Ainsa, CREAF
+#' @author Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF
 #' @seealso \code{\link{defaultGenerationParams}}
 #' @references Apipattanavis, S., G. Podesta, B. Rajagopalan, and R. W. Katz
 #' (2007), A semiparametric multivariate and multisite weather generator, Water

@@ -85,16 +85,16 @@ summarypoint<-function(x, var, fun="mean", freq=NULL, dates = NULL, months= NULL
 #' for grid pixels, or a string pointing to a NetCDF.
 #' @param object An object of class
 #' \code{\link{MeteorologyInterpolationData-class}}.
-#' @return \itemize{ \itemFunction \code{summarypoint} returns a named vector
-#' of values with dates as names. \itemFunctions \code{summarypoints} and
+#' @return \itemize{ \item{Function \code{summarypoint} returns a named vector
+#' of values with dates as names.} \item{Functions \code{summarypoints} and
 #' \code{summaryinterpolationdata} return an object of class
 #' \code{\link{SpatialPointsDataFrame}} containing summaries (either one
-#' variable or several if \code{freq} is specified). \itemFunctions
+#' variable or several if \code{freq} is specified).} \item{Functions
 #' \code{summarygrid} and \code{summarypixels} return an object of class
 #' \code{\link{SpatialGridDataFrame}} and \code{\link{SpatialPixelsDataFrame}},
-#' respectively, containing the summaries analogously to \code{summarypoints}.
+#' respectively, containing the summaries analogously to \code{summarypoints}.}
 #' }
-#' @author Miquel De \enc{CáceresCaceres} Ainsa, CREAF
+#' @author Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF
 #' 
 #' Antoine Cabon, CTFC
 #' @seealso \code{\link{SpatialPointsMeteorology-class}}

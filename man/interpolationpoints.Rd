@@ -180,5 +180,5 @@ Environmental Modelling and Software 108: 186-196.
 \code{\link{MeteorologyInterpolationData}}
 }
 \author{
-Miquel De \enc{CáceresCaceres} Ainsa, CREAF
+Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF
 }

@@ -34,7 +34,7 @@
 #' @param add A flag to indicate wether drawing should be done on the current
 #' plot (using function \code{lines}).
 #' @param ... Additional parameters for functions \code{plot} or \code{lines}.
-#' @author Miquel De \enc{CáceresCaceres} Ainsa, CREAF
+#' @author Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF
 #' @seealso \code{\link{summarypoints}}
 #' @examples
 #' 

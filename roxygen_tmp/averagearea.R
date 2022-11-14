@@ -13,7 +13,7 @@
 #' @return An object of class as the input
 #' \code{SpatialPointsMeteorology-class} with weather series corresponding to
 #' the spatial average of the input.
-#' @author Miquel De \enc{CáceresCaceres} Ainsa, CREAF
+#' @author Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF
 #' @seealso \code{\link{weathergeneration}}
 #' @examples
 #' 

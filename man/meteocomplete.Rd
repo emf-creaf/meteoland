@@ -57,5 +57,5 @@ and Physical Sciences, 193, 120-145.
 \code{\link{penman}}, \code{\link{radiation_solarRadiation}}
 }
 \author{
-Miquel De \enc{CáceresCaceres} Ainsa, CREAF
+Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF
 }

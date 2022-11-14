@@ -7,22 +7,24 @@
 \alias{meteoland}
 \title{meteoland: Landscape Meteorology Tools}
 \description{
-Functions to estimate weather variables at any position of a landscape [De
-Caceres et al. (2018) c("\\Sexpr[results=rd]{tools:::Rd_expr_doi(\"#1\")}",
-"10.1016/j.envsoft.2018.08.003")\Sexpr{tools:::Rd_expr_doi("10.1016/j.envsoft.2018.08.003")}].
+Functions to estimate weather variables at any position of a landscape \href{https://doi.org/10.1016/j.envsoft.2018.08.003}{De Caceres et al. (2018)}.
 }
 \seealso{
-Useful links: \itemize{ \item
-\url{https://emf-creaf.github.io/meteoland/index.html} }
+Useful links: \itemize{ \item{
+\url{https://emf-creaf.github.io/meteoland/index.html}} }
 }
 \author{
 \strong{Maintainer}: Miquel De Cáceres
 \email{miquelcaceres@gmail.com}
-(\href{https://orcid.org/0000-0001-7132-2080ORCID})
+\href{https://orcid.org/0000-0001-7132-2080}{ORCID}
 
-Authors: \itemize{ \item Nicolas Martin
-(\href{https://orcid.org/0000-0001-7574-0108ORCID}) \item Víctor Granda
-(\href{https://orcid.org/0000-0002-0469-1991ORCID}) \item Antoine Cabon
-(\href{https://orcid.org/0000-0001-6426-1726ORCID}) }
+Authors: \itemize{
+\item{ Nicolas Martin
+\href{https://orcid.org/0000-0001-7574-0108}{ORCID}}
+\item{ Víctor Granda
+\href{https://orcid.org/0000-0002-0469-1991}{ORCID}}
+\item{ Antoine Cabon
+\href{https://orcid.org/0000-0001-6426-1726}{ORCID}}
+}
 }
 \keyword{internal}

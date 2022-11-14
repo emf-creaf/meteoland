@@ -44,7 +44,7 @@
 #' \code{\link{SpatialPixelsMeteorology-class}}. \itemFunction
 #' \code{readmeteorologygridpoints} returns an object
 #' \code{\link{SpatialPointsMeteorology-class}}. }
-#' @author Miquel De \enc{CáceresCaceres} Ainsa, CREAF
+#' @author Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF
 #' @seealso \code{\link{writemeteorologygrid}},
 #' \code{\link{writemeteorologypixels}},
 #' \code{\link{SpatialPointsMeteorology-class}},

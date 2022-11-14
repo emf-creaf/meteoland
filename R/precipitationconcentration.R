@@ -24,7 +24,7 @@
 #' rainfall). Function \code{precipitation_rainfallErosivity()} returns a
 #' vector of twelve values (one for each month) (in MJ·mm·ha-1·h-1·month-1) or
 #' one value (in in MJ·mm·ha-1·h-1·yr-1) depending on the scale.
-#' @author Miquel De \enc{CáceresCaceres} Ainsa, CREAF.
+#' @author Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF.
 #' @references Diodato, N., Bellocchi, G., 2010. MedREM, a rainfall erosivity
 #' model for the Mediter-ranean region. J. Hydrol. 387, 119–127,
 #' doi:10.1016/j.jhydrol.2010.04.003.

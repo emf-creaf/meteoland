@@ -17,7 +17,7 @@
 #' data per station and meteorological variable. If \code{type = "temporal"}
 #' the function returns an object of class \code{data.frame} with the number
 #' (or percentage) of stations with data per day and meteorological variable.
-#' @author Miquel De \enc{CáceresCaceres} Ainsa, CREAF
+#' @author Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF
 #' @seealso \code{\link{MeteorologyInterpolationData}}
 #' @references De Caceres M, Martin-StPaul N, Turco M, Cabon A, Granda V (2018)
 #' Estimating daily meteorological data and downscaling climate models over

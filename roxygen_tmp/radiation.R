@@ -59,7 +59,7 @@
 #' @note Code for \code{radiation_julianDay()},
 #' \code{radiation_solarConstant()} and \code{radiation_solarDeclination()} was
 #' translated to C++ from R code in package 'insol' (by J. G. Corripio).
-#' @author Miquel De \enc{CáceresCaceres} Ainsa, CREAF
+#' @author Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF
 #' @seealso \code{\link{interpolationpoints}}
 #' @references Danby, J. M. Eqn. 6.16.4 in Fundamentals of Celestial Mechanics,
 #' 2nd ed. Richmond, VA: Willmann-Bell, p. 207, 1988.

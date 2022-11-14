@@ -86,5 +86,5 @@ meteoplot(mp,1, ylab="Monthly mean temperature", fun=mean, freq="months")
 \code{\link{summarypoints}}
 }
 \author{
-Miquel De \enc{CáceresCaceres} Ainsa, CREAF
+Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF
 }

@@ -26,5 +26,5 @@
 #' to dates, as opposed to the default (\code{dataByDate = FALSE}) which
 #' assumes that elements correspond to points (see 'Details').
 #' @return An object of class \code{\link{SpatialPointsMeteorology-class}}
-#' @author Miquel De \enc{CáceresCaceres} Ainsa, CREAF
+#' @author Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF
 #' @seealso \code{\link{SpatialPointsMeteorology-class}}

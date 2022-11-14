@@ -30,7 +30,7 @@
 #' to dates, as opposed to the default (\code{dataByDate = FALSE}) which
 #' assumes that elements correspond to points (see 'Details').
 #' @return An object of class \code{\link{SpatialPointsMeteorology-class}}
-#' @author Miquel De \enc{CáceresCaceres} Ainsa, CREAF
+#' @author Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF
 #' @seealso \code{\link{SpatialPointsMeteorology-class}}
 #' @export
 SpatialPointsMeteorology<-function(points, data, dates, dataByDate = FALSE) {
@@ -102,6 +102,7 @@ SpatialPointsMeteorology<-function(points, data, dates, dataByDate = FALSE) {
   return(spm)
 }
 
+#' @export
 setMethod("[", signature("SpatialPointsMeteorology"),definition =
             function (x, i, j, ..., drop = TRUE) 
             {
@@ -123,6 +124,8 @@ head.SpatialPointsMeteorology <- function(x, n=6L, ...) {
   ix <- sign(n)*seq(abs(n))
   x[ ix , , drop=FALSE]
 }
+
+#' @export
 setMethod("head", "SpatialPointsMeteorology", function(x, n=6L, ...) head.SpatialPointsMeteorology(x,n,...))
 
 tail.SpatialPointsMeteorology <- function(x, n=6L, ...) {
@@ -130,6 +133,8 @@ tail.SpatialPointsMeteorology <- function(x, n=6L, ...) {
   ix <- sign(n)*rev(seq(length(x), by=-1L, len=abs(n)))
   x[ ix , , drop=FALSE]
 }
+
+#' @export
 setMethod("tail", "SpatialPointsMeteorology", function(x, n=6L, ...) tail.SpatialPointsMeteorology(x,n,...))
 
 print.SpatialPointsMeteorology <- function(x, ..., digits = getOption("digits"))
@@ -144,7 +149,11 @@ print.SpatialPointsMeteorology <- function(x, ..., digits = getOption("digits"))
     proj4string(x))), collapse="\n")
   cat(pst, "\n")
 }
+
+#' @export
 setMethod("print", "SpatialPointsMeteorology", function(x, ..., digits = getOption("digits")) print.SpatialPointsMeteorology(x, ..., digits))
+
+#' @export
 setMethod("show", "SpatialPointsMeteorology", function(object) print.SpatialPointsMeteorology(object))
 
 as.SpPtsMet.STFDF = function(from) {

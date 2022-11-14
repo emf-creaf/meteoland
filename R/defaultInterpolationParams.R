@@ -36,7 +36,7 @@
 #' times extrapolation). \item\code{wind_height [= 10]}: Wind measurement
 #' height (in m). \item\code{debug [= FALSE]}: Boolean flag to show extra
 #' console output. }
-#' @author Miquel De \enc{CáceresCaceres} Ainsa, CREAF
+#' @author Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF
 #' @seealso \code{\link{MeteorologyInterpolationData}}
 #' @references Thornton, P.E., Running, S.W., White, M. A., 1997. Generating
 #' surfaces of daily meteorological variables over large regions of complex

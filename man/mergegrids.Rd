@@ -45,5 +45,5 @@ reference system, ...) should be the same for all objects to be merged.
 \code{\link{SpatialPixelsMeteorology-class}}
 }
 \author{
-Miquel De \enc{CáceresCaceres} Ainsa, CREAF
+Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF
 }

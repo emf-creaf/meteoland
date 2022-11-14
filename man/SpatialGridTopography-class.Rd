@@ -29,6 +29,6 @@ showClass("SpatialGridTopography")
 \code{\link{SpatialGridDataFrame-class}}
 }
 \author{
-Miquel De \enc{CáceresCaceres} Ainsa, CREAF
+Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF
 }
 \keyword{classes}

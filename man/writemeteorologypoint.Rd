@@ -87,7 +87,7 @@ of \code{object} must be the same as those in the netCDF.
 \code{\link{SpatialPointsMeteorology-class}}
 }
 \author{
-Miquel De \enc{CáceresCaceres} Ainsa, CREAF
+Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF
 
 Nicolas Martin, INRA-Avignon
 }

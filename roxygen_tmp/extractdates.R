@@ -37,4 +37,4 @@
 #' it into a list. \itemFunction \code{extractgridindex()} returns a data
 #' frame. \itemFunction \code{extractgridpoints()} returns an object of class
 #' \code{\link{SpatialPointsMeteorology}}. }
-#' @author Miquel De \enc{CáceresCaceres} Ainsa, CREAF
+#' @author Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF

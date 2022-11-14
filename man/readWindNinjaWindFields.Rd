@@ -64,5 +64,5 @@ comparison against measurements. Int. J. Wildl. Fire 23, 969–981.
 \code{\link{MeteorologyInterpolationData}}
 }
 \author{
-Miquel De \enc{CáceresCaceres} Ainsa, CREAF
+Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF
 }

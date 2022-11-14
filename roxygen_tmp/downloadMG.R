@@ -32,7 +32,7 @@
 #' call functions in \code{meteospain} themselves, and then to use function
 #' \code{\link{reshapemeteospain}} to generate data suitable for
 #' \code{meteoland}.
-#' @author Miquel De \enc{CáceresCaceres} Ainsa, CREAF
+#' @author Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF
 #' @seealso \code{\link{SpatialPointsMeteorology-class}}
 #' @references MeteoGalicia (from the Conselleria de Medio Ambiente, Territorio
 #' e Vivenda of Xunta de Galicia) should be acknowledged as source of

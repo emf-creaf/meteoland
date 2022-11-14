@@ -42,7 +42,7 @@
 #' @param verbose A logical flag to output process information in the console.
 #' @param index Integer indicating the grid index position to be written.
 #' @param data A data frame with meteorological data corresponding to a pixel.
-#' @author Miquel De \enc{CáceresCaceres} Ainsa, CREAF
+#' @author Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF
 #' @seealso \code{\link{readmeteorologygrid}},
 #' \code{\link{SpatialGridMeteorology-class}}
 #' @export

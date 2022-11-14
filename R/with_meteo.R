@@ -1819,27 +1819,24 @@ interpolate_data <- function(spatial_data, interpolator, dates = NULL) {
 #' object must be updated with the calculated parameters. Default to FALSE
 #' @return If \code{update_interpolation_params} is FALSE (default),
 #' \code{interpolator_calibration} returns a list with the following items
-#' \itemize{ \itemMAE: A numeric matrix with the mean absolute error values,
+#' \itemize{ \item{MAE: A numeric matrix with the mean absolute error values,
 #' averaged across stations, for each combination of parameters \code{"N"} and
-#' \code{"alpha"} \itemminMAE: Minimum MAE value \itemN: Value of parameter
-#' \code{"N"} corresponding to the minimum MAE \itemalpha: Value of parameter
-#' \code{"alpha"} corresponding the the minimum MAE \itemobserved: matrix with
-#' observed values (meteorological measured values) \itempredicted: matrix with
-#' interpolated values for the optimum parameter combination } If
+#' \code{"alpha"}} \item{minMAE: Minimum MAE value} \item{N: Value of parameter
+#' \code{"N"} corresponding to the minimum MAE} \item{alpha: Value of parameter
+#' \code{"alpha"} corresponding the the minimum MAE} \item{observed: matrix with
+#' observed values (meteorological measured values)} \item{predicted: matrix with
+#' interpolated values for the optimum parameter combination} } If
 #' \code{update_interpolation_params} is FALSE, \code{interpolator_calibration}
 #' returns the interpolator provided with the parameters updated
 #' 
 #' \code{interpolation_cross_validation} returns a list with the following
-#' items \itemize{ \itemerrors: Data frame with each combination of station and
+#' items \itemize{ \item{errors: Data frame with each combination of station and
 #' date with observed variables, predicated variables and the total error
-#' (predicted - observed) calculated for each variable \itemstation_stats: Data
-#' frame with error and bias statistics aggregated by station \itemdates_stats:
-#' Data frame with error and bias statistics aggregated by date \itemr2:
+#' (predicted - observed) calculated for each variable} \item{station_stats: Data
+#' frame with error and bias statistics aggregated by station} \item{dates_stats:
+#' Data frame with error and bias statistics aggregated by date} \item{r2:
 #' correlation indexes between observed and predicted values for each
-#' meteorological variable }
-#' @section Functions: \itemize{ \item \code{interpolation_cross_validation()}:
-#' 
-#' }
+#' meteorological variable} }
 #' @export interpolator_calibration
 interpolator_calibration <- function(
     interpolator,

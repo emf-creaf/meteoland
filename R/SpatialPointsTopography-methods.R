@@ -21,7 +21,7 @@
 #' \code{\linkS4class{Spatial}}.
 #' @return Function \code{SpatialPointsTopography} returns an object
 #' '\code{\link{SpatialPointsTopography-class}}'.
-#' @author Miquel De \enc{CáceresCaceres} Ainsa, CREAF
+#' @author Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF
 #' @seealso \code{\link{SpatialPointsTopography-class}}
 #' @examples
 #' 
@@ -78,6 +78,8 @@ SpatialPointsTopography<-function(points, elevation, slope = NULL, aspect = NULL
           data = data)
   return(lt)
 }
+
+#' @export
 setMethod("[", signature("SpatialPointsTopography"),definition =
             function (x, i, j, ..., drop = TRUE) 
             {
@@ -109,7 +111,11 @@ print.SpatialPointsTopography = function(x, ..., digits = getOption("digits")) {
   row.names(df) = row.names(x@data)
   print(df, ..., digits = digits)
 }
+
+#' @export
 setMethod("print", "SpatialPointsTopography", function(x, ..., digits = getOption("digits")) print.SpatialPointsTopography(x, ..., digits))
+
+#' @export
 setMethod("show", "SpatialPointsTopography", function(object) print.SpatialPointsTopography(object))
 
 head.SpatialPointsTopography <- function(x, n=6L, ...) {
@@ -124,9 +130,12 @@ tail.SpatialPointsTopography <- function(x, n=6L, ...) {
   ix <- sign(n)*rev(seq(nrow(x), by=-1L, len=abs(n)))
   x[ ix , , drop=FALSE]
 }
+
+#' @export
 setMethod("tail", "SpatialPointsTopography", function(x, n=6L, ...) tail.SpatialPointsTopography(x,n,...))
 
 
+#' @export
 setMethod("spTransform", signature("SpatialPointsTopography", "CRS"),
       function(x, CRSobj, ...) {
             sp = spTransform(as(x,"SpatialPoints"), CRSobj) # calls the rgdal methods

@@ -13,6 +13,6 @@
 #' \code{readNetCDFgridtopology} returns an object
 #' \code{\link{GridTopology-class}}. \itemFunction \code{readNetCDFproj4string}
 #' returns an object \code{\link{CRS-class}}. }
-#' @author Miquel De \enc{CáceresCaceres} Ainsa, CREAF
+#' @author Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF
 #' @seealso \code{\link{readmeteorologypoints}},
 #' \code{\link{readmeteorologygrid}}

@@ -21,7 +21,7 @@
 #' 10]}: Wind measurement height (in m). \item\code{qstep [= 0.01]}: a numeric
 #' value between 0 and 1. Quantile mapping is fitted only for the quantiles
 #' defined by \code{quantile(0,1,probs=seq(0,1,by=qstep)}. }
-#' @author Miquel De \enc{CáceresCaceres} Ainsa, CREAF
+#' @author Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF
 #' @seealso \code{\link{MeteorologyInterpolationData}},
 #' \code{\link{MeteorologyUncorrectedData}}
 #' @references De Caceres M, Martin-StPaul N, Turco M, Cabon A, Granda V (2018)

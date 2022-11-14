@@ -10,15 +10,16 @@
 #' readNetCDFproj4string
 #' @param file String of the NetCDF whose spatial/temporal coordinates are
 #' desired.
-#' @return \itemize{ \itemFunction \code{readNetCDFdates} returns a
-#' \code{\link{Date}} vector. \itemFunction \code{readNetCDFpoints} returns an
-#' object \code{\link{SpatialPoints-class}}. \itemFunction
+#' @return \itemize{ \item{Function \code{readNetCDFdates} returns a
+#' \code{\link{Date}} vector.} \item{Function \code{readNetCDFpoints} returns an
+#' object \code{\link{SpatialPoints-class}}.} \item{Function
 #' \code{readNetCDFgridtopology} returns an object
-#' \code{\link{GridTopology-class}}. \itemFunction \code{readNetCDFproj4string}
-#' returns an object \code{\link{CRS-class}}. }
-#' @author Miquel De \enc{CáceresCaceres} Ainsa, CREAF
+#' \code{\link{GridTopology-class}}.} \item{Function \code{readNetCDFproj4string}
+#' returns an object \code{\link{CRS-class}}.} }
+#' @author Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF
 #' @seealso \code{\link{readmeteorologypoints}},
 #' \code{\link{readmeteorologygrid}}
+#' @export
 readNetCDFpoints<-function(file) {
 
   lifecycle::deprecate_warn(

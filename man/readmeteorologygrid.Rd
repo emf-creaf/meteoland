@@ -62,12 +62,12 @@ distance around the boundary box.}
 humidity from specific humidity if possible.}
 }
 \value{
-\itemize{ \itemFunction \code{readmeteorologygrid} returns an object
-\code{\link{SpatialGridMeteorology-class}}. \itemFunction
+\itemize{ \item{Function \code{readmeteorologygrid} returns an object
+\code{\link{SpatialGridMeteorology-class}}.} \item{Function
 \code{readmeteorologypixels} returns an object
-\code{\link{SpatialPixelsMeteorology-class}}. \itemFunction
+\code{\link{SpatialPixelsMeteorology-class}}.} \item{Function
 \code{readmeteorologygridpoints} returns an object
-\code{\link{SpatialPointsMeteorology-class}}. }
+\code{\link{SpatialPointsMeteorology-class}}.} }
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}
@@ -111,5 +111,5 @@ used in meteoland. Rotated grids should not be read using functions
 \code{\link{mergepoints}}
 }
 \author{
-Miquel De \enc{CáceresCaceres} Ainsa, CREAF
+Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF
 }

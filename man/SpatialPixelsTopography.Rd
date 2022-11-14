@@ -77,5 +77,5 @@ spplot(spxt, variable="aspect", scales=list(draw=TRUE))
 \code{\link{SpatialPixelsTopography-class}}
 }
 \author{
-Miquel De \enc{CáceresCaceres} Ainsa, CREAF
+Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF
 }

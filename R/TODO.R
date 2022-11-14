@@ -142,15 +142,17 @@
 #### Road to meteoland 2.0.0 ####
 #### TODO list
 ### 1. Add deprecation notices to deprecated functions DONE
+### 1. Move docs to roxygen2, also C functions DONE
+###     - NAMESPACE DONE
+###     - Build and doc with roxygen DONE
+###     - Roxygenize functions DONE
+###     - Check all exported functions are still exported (check with old namespace) DONE
+###     - Classes methods also exported DONE
+###     - Fix bad formatting of items in the Rd to roxygen conversion DONE
 # 1. Ask Miquel
 #     - if interpolator.coverage must be implemented
 #     - if precipitation concentration is ok and then check the results with him
-# 1. Move docs to roxygen2, also C functions
-#     - NAMESPACE DONE
-#     - Build and doc with roxygen DONE
-#     - Roxygenize functions DONE
-#     - Check all exported functions are still exported (check with old namespace)
-#     - Fix bad formatting of items in the Rd to roxygen conversion
+#     - if weathergeneration utils (dot knn and others) should be exported
 # 1. Clean and organize the new functions in files
 # 1. Add tests
 #     - New functions (check existent tests)

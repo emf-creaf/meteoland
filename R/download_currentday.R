@@ -145,7 +145,7 @@
 #' \code{downloadAEMEThistorical} (stations with historical climate series).
 #' @author Antoine Cabon, CTFC
 #' 
-#' Miquel De \enc{CáceresCaceres} Ainsa, CREAF
+#' Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF
 #' @seealso \code{\link{SpatialPointsMeteorology-class}}
 #' @references AEMET should be acknowledged as author of information when using
 #' this data.
@@ -173,7 +173,7 @@ downloadAEMETcurrentday <- function(api, daily = TRUE, verbose=TRUE){
 #' `r lifecycle::badge("deprecated")`
 #' 
 #' Download data from the Catalan automatic weather station network
-#' (XEMA from Servei \enc{MeteorològicMeteorologic} de Catalunya)
+#' (XEMA from Servei \enc{Meteorològic}{Meteorologic} de Catalunya)
 #' 
 #' @details
 #' API key needs to be requested from SMC
@@ -227,9 +227,9 @@ downloadAEMETcurrentday <- function(api, daily = TRUE, verbose=TRUE){
 #' \code{meteoland}.
 #' @author Antoine Cabon, CTFC
 #' 
-#' Miquel De \enc{CáceresCaceres} Ainsa, CREAF
+#' Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF
 #' @seealso \code{\link{SpatialPointsMeteorology-class}}
-#' @references Servei \enc{MeteorològicMeteorologic} de Catalunya (SMC) should
+#' @references Servei \enc{Meteorològic}{Meteorologic} de Catalunya (SMC) should
 #' be acknowledged as author of information when accessing weather data with
 #' these functions.
 #' @export
@@ -287,7 +287,7 @@ downloadSMCcurrentday <- function(api, daily=TRUE, station_id=NULL,
 #' call functions in \code{meteospain} themselves, and then to use function
 #' \code{\link{reshapemeteospain}} to generate data suitable for
 #' \code{meteoland}.
-#' @author Miquel De \enc{CáceresCaceres} Ainsa, CREAF
+#' @author Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF
 #' @seealso \code{\link{SpatialPointsMeteorology-class}}
 #' @references MeteoGalicia (from the Conselleria de Medio Ambiente, Territorio
 #' e Vivenda of Xunta de Galicia) should be acknowledged as source of
@@ -343,7 +343,7 @@ downloadMGcurrentday <- function(station_id=NULL, daily = TRUE, verbose = TRUE) 
 #' \code{meteoland}.
 #' @author Víctor Granda, EMF-CREAF
 #' 
-#' Miquel De \enc{CáceresCaceres} Ainsa, EMF-CREAF
+#' Miquel De \enc{Cáceres}{Caceres} Ainsa, EMF-CREAF
 #' @seealso \code{\link{SpatialPointsMeteorology-class}}
 #' @references Meteoclimatic should be acknowledged as author of information
 #' when using this data.

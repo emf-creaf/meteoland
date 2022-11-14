@@ -9,6 +9,8 @@
 \title{Sub-sampling procedure data}
 \usage{
 \S4method{subsample}{MeteorologyInterpolationData}(object, bbox = NULL, stations = NULL, dates = NULL, buffer = 0)
+
+\S4method{subsample}{MeteorologyUncorrectedData}(object, bbox = NULL, stations = NULL, dates = NULL, buffer = 0)
 }
 \arguments{
 \item{object}{An object of a sub-class
@@ -35,6 +37,11 @@ An object of the same class as \code{object}.
 
 Generates a spatial and/or temporal subset of procedure data
 }
+\section{Functions}{
+\itemize{
+\item \code{subsample(MeteorologyUncorrectedData)}: Signature for MeteorologyUncorrectedData
+
+}}
 \section{Methods}{
  \describe{ \item{subsample}{\code{signature(object =
 "MeteorologyUncorrectedData")}: Generates a

@@ -92,5 +92,5 @@ downloading both daily and hourly data and then calling function
 \code{\link{meteocomplete}}
 }
 \author{
-Miquel De \enc{CáceresCaceres} Ainsa, CREAF
+Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF
 }

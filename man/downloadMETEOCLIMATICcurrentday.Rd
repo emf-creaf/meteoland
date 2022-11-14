@@ -61,5 +61,5 @@ when using this data.
 \author{
 Víctor Granda, EMF-CREAF
 
-Miquel De \enc{CáceresCaceres} Ainsa, EMF-CREAF
+Miquel De \enc{Cáceres}{Caceres} Ainsa, EMF-CREAF
 }

@@ -96,5 +96,5 @@ Geographical Information Systems (Oxford University Press, New York), p.
 \code{\link{SpatialGridTopography-class}}
 }
 \author{
-Miquel De \enc{CáceresCaceres} Ainsa, CREAF
+Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF
 }

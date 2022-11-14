@@ -15,7 +15,7 @@
 #' @param qstep Probability step for quantile mapping (see
 #' \code{\link{defaultCorrectionParams}}).
 #' @return Returns a vector with corrected values.
-#' @author Miquel De \enc{CáceresCaceres} Ainsa, CREAF
+#' @author Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF
 #' @seealso \code{\link{correctionpoints}},
 #' \code{\link{defaultCorrectionParams}}
 #' @references De Caceres M, Martin-StPaul N, Turco M, Cabon A, Granda V (2018)

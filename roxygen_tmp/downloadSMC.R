@@ -1,7 +1,7 @@
 #' Download data from SMC
 #' 
 #' DEPRECATED. Download data from the Catalan automatic weather station network
-#' (XEMA from Servei \enc{MeteorològicMeteorologic} de Catalunya)
+#' (XEMA from Servei \enc{Meteorològic}{Meteorologic} de Catalunya)
 #' 
 #' API key needs to be requested from SMC
 #' (https://apidocs.meteocat.gencat.cat/).
@@ -54,8 +54,8 @@
 #' \code{meteoland}.
 #' @author Antoine Cabon, CTFC
 #' 
-#' Miquel De \enc{CáceresCaceres} Ainsa, CREAF
+#' Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF
 #' @seealso \code{\link{SpatialPointsMeteorology-class}}
-#' @references Servei \enc{MeteorològicMeteorologic} de Catalunya (SMC) should
+#' @references Servei \enc{Meteorològic}{Meteorologic} de Catalunya (SMC) should
 #' be acknowledged as author of information when accessing weather data with
 #' these functions.

@@ -17,7 +17,7 @@
 #' \code{\linkS4class{Spatial}}.
 #' @return Function \code{SpatialPointsTopography} returns an object
 #' '\code{\link{SpatialPointsTopography-class}}'.
-#' @author Miquel De \enc{CáceresCaceres} Ainsa, CREAF
+#' @author Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF
 #' @seealso \code{\link{SpatialPointsTopography-class}}
 #' @examples
 #' 

@@ -45,13 +45,13 @@
 #' @param relativehumidity A logical flag to indicate estimation of relative
 #' humidity from specific humidity if possible.
 #' @param verbose A logical flag to output process information in the console.
-#' @return \itemize{ \itemFunction \code{readmeteorologygrid} returns an object
-#' \code{\link{SpatialGridMeteorology-class}}. \itemFunction
+#' @return \itemize{ \item{Function \code{readmeteorologygrid} returns an object
+#' \code{\link{SpatialGridMeteorology-class}}.} \item{Function
 #' \code{readmeteorologypixels} returns an object
-#' \code{\link{SpatialPixelsMeteorology-class}}. \itemFunction
+#' \code{\link{SpatialPixelsMeteorology-class}}.} \item{Function
 #' \code{readmeteorologygridpoints} returns an object
-#' \code{\link{SpatialPointsMeteorology-class}}. }
-#' @author Miquel De \enc{CáceresCaceres} Ainsa, CREAF
+#' \code{\link{SpatialPointsMeteorology-class}}.} }
+#' @author Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF
 #' @seealso \code{\link{writemeteorologygrid}},
 #' \code{\link{writemeteorologypixels}},
 #' \code{\link{SpatialPointsMeteorology-class}},

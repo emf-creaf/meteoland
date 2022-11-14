@@ -103,14 +103,14 @@ containing the meta data (columns \code{dir}, \code{filename} and possibly
 the disk. Finally, \code{points} can also be a string pointing to a netCDF.}
 }
 \value{
-\itemize{ \itemFunction \code{summarypoint} returns a named vector
-of values with dates as names. \itemFunctions \code{summarypoints} and
+\itemize{ \item{Function \code{summarypoint} returns a named vector
+of values with dates as names.} \item{Functions \code{summarypoints} and
 \code{summaryinterpolationdata} return an object of class
 \code{\link{SpatialPointsDataFrame}} containing summaries (either one
-variable or several if \code{freq} is specified). \itemFunctions
+variable or several if \code{freq} is specified).} \item{Functions
 \code{summarygrid} and \code{summarypixels} return an object of class
 \code{\link{SpatialGridDataFrame}} and \code{\link{SpatialPixelsDataFrame}},
-respectively, containing the summaries analogously to \code{summarypoints}.
+respectively, containing the summaries analogously to \code{summarypoints}.}
 }
 }
 \description{
@@ -156,7 +156,7 @@ mp.sum
 \code{\link{SpatialPointsMeteorology-class}}
 }
 \author{
-Miquel De \enc{CáceresCaceres} Ainsa, CREAF
+Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF
 
 Antoine Cabon, CTFC
 }

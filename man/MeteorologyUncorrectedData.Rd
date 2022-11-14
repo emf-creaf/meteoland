@@ -51,5 +51,5 @@ See correction details in vignettes or in \code{\link{correctionpoints}}.
 \code{\link{examplecorrectiondata}}, \code{\link{defaultCorrectionParams}}.
 }
 \author{
-Miquel De \enc{CáceresCaceres} Ainsa, CREAF
+Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF
 }

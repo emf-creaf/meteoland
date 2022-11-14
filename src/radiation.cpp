@@ -77,7 +77,7 @@ const double SIGMA_Wm2 = 5.67*pow(10,-8.0); //Stefan-Boltzmann constant J/s/K^4/
 //' @note Code for \code{radiation_julianDay()},
 //' \code{radiation_solarConstant()} and \code{radiation_solarDeclination()} was
 //' translated to C++ from R code in package 'insol' (by J. G. Corripio).
-//' @author Miquel De \enc{CáceresCaceres} Ainsa, CREAF
+//' @author Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF
 //' @seealso \code{\link{interpolationpoints}}
 //' @references Danby, J. M. Eqn. 6.16.4 in Fundamentals of Celestial Mechanics,
 //' 2nd ed. Richmond, VA: Willmann-Bell, p. 207, 1988.
@@ -611,8 +611,6 @@ double netRadiation(double solarConstant, double latrad,  double elevation, doub
 *  asprad - Azimuth of slope, in radians from north
 *  J - A vector with julian days
 */
-//' @describeIn radiation_julianDay Potential radiation series
-//' @export
 // [[Rcpp::export(".potentialRadiationSeries")]]
 NumericVector potentialRadiationSeries(double latrad, double slorad,  double asprad, NumericVector J) {
   NumericVector Rpot(J.size());
@@ -621,8 +619,6 @@ NumericVector potentialRadiationSeries(double latrad, double slorad,  double asp
   }
   return(Rpot);
 }
-//' @describeIn radiation_julianDay Potential radiation points
-//' @export
 // [[Rcpp::export(".potentialRadiationPoints")]]
 NumericVector potentialRadiationPoints(double latrad, NumericVector slorad, NumericVector asprad, int J) {
   NumericVector Rpot(slorad.size());

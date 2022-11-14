@@ -110,7 +110,7 @@
 #' \item\code{RelativeHumidityError}: A matrix with predicted relative humidity
 #' errors. \item\code{Radiation}: A data frame with predicted radiation values.
 #' \item\code{RadiationError}: A matrix with predicted radiation errors. }
-#' @author Miquel De \enc{CáceresCaceres} Ainsa, CREAF
+#' @author Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF
 #' @seealso \code{\link{MeteorologyInterpolationData}}
 #' @references Thornton, P.E., Running, S.W., 1999. An improved algorithm for
 #' estimating incident daily solar radiation from measurements of temperature,

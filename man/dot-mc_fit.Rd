@@ -2,8 +2,8 @@
 % Please edit documentation in R/weathergeneration.R
 \name{.mc_fit}
 \alias{.mc_fit}
-\title{Fits Markov Chain Transition Matrices to State Sequence
-Modified from weathergen}
+\title{Fits Markov Chain Transition Matrices to State Sequence Modified from
+weathergen}
 \usage{
 .mc_fit(states, months)
 }
@@ -15,25 +15,12 @@ extremely wet)}
 }
 \value{
 monthly list of transition matrices
-
-monthly list of transition matrices
 }
 \description{
-Fits Markov Chain Transition Matrices to State Sequence
-Modified from weathergen
+Fits Markov Chain Transition Matrices to State Sequence Modified from
+weathergen
 }
 \examples{
-transitions <- mc_fit(x=sample(c('d', 'w', 'e'), size=720, replace=TRUE, prob=c(0.5, 0.3, 0.2)), months=rep(rep(seq(1, 12), each=30), times=2))
-
-Fits Markov Chain Transition Matrices to State Sequence Modified from
-weathergen
-
-Fits Markov Chain Transition Matrices to State Sequence Modified from
-weathergen
-
-
 
 transitions <- mc_fit(x=sample(c('d', 'w', 'e'), size=720, replace=TRUE, prob=c(0.5, 0.3, 0.2)), months=rep(rep(seq(1, 12), each=30), times=2))
-
-
 }

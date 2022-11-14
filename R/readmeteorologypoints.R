@@ -47,7 +47,7 @@
 #' in the NetCDF into variables used in meteoland (e.g. \code{c(MinTemperature
 #' = "tmn")} specifies a map of variable 'tmn' to MinTemperature).
 #' @param verbose A logical flag to output process information in the console.
-#' @author Miquel De \enc{CáceresCaceres} Ainsa, CREAF
+#' @author Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF
 #' 
 #' Nicolas Martin, INRA-Avignon
 #' @seealso \code{\link{writemeteorologypoint}}, \code{\link{read.table}},

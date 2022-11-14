@@ -10,7 +10,7 @@
 #' @docType class
 #' @section Objects from the Class: A virtual Class: No objects may be created
 #' from it.
-#' @author Miquel De \enc{CáceresCaceres} Ainsa, CREAF
+#' @author Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF
 #' @seealso \code{\link{MeteorologyInterpolationData-class}},
 #' \code{\link{MeteorologyUncorrectedData-class}}
 #' @keywords classes
@@ -18,6 +18,7 @@
 #' 
 #' showClass("MeteorologyProcedureData")
 #' 
+#' @export
 setClass("MeteorologyProcedureData", slots = list(dates = "Date"), contains="Spatial")
 
 #' Class \code{"MeteorologyUncorrectedData"}
@@ -34,7 +35,7 @@ setClass("MeteorologyProcedureData", slots = list(dates = "Date"), contains="Spa
 #' @section Objects from the Class: Objects can be created by calls of the form
 #' \code{new("MeteorologyUncorrectedData", ...)}, or by calls to the function
 #' \code{\link{MeteorologyUncorrectedData}}.
-#' @author Miquel De \enc{CáceresCaceres} Ainsa, CREAF
+#' @author Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF
 #' @seealso \code{\link{MeteorologyUncorrectedData}},
 #' \code{\link{MeteorologyProcedureData-class}},
 #' \code{\link{examplecorrectiondata}}, \code{\link{subsample}}
@@ -44,6 +45,7 @@ setClass("MeteorologyProcedureData", slots = list(dates = "Date"), contains="Spa
 #' #Structure of the S4 object
 #' showClass("MeteorologyUncorrectedData")
 #' 
+#' @export
 setClass("MeteorologyUncorrectedData",
          slots = list(coords="matrix", reference_data = "ANY", projection_data = "ANY",
                       params = "list"),
@@ -62,7 +64,7 @@ setClass("MeteorologyUncorrectedData",
 #' @section Objects from the Class: Objects can be created by calls of the form
 #' \code{new("MeteorologyInterpolationData", ...)}, or by calls to the function
 #' \code{\link{MeteorologyInterpolationData}}.
-#' @author Miquel De \enc{CáceresCaceres} Ainsa, CREAF
+#' @author Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF
 #' @seealso \code{\link{MeteorologyInterpolationData}},
 #' \code{\link{MeteorologyProcedureData-class}}, \code{\link{subsample}}
 #' @keywords classes
@@ -71,6 +73,7 @@ setClass("MeteorologyUncorrectedData",
 #' #Structure of the S4 object
 #' showClass("MeteorologyInterpolationData")
 #'
+#' @export
 setClass("MeteorologyInterpolationData",
          slots=list(
            coords = "matrix",
@@ -138,6 +141,7 @@ setGeneric("subsample", valueClass=c("MeteorologyProcedureData"), function(objec
 #' #Interpolation data using the first ten dates (same boundary box)
 #' subdata = subsample(exampleinterpolationdata, dates = oridates[1:10])
 #' 
+#' @export
 setMethod("subsample", signature("MeteorologyInterpolationData"), definition =
     function(object, bbox = NULL,  stations=NULL, dates = NULL, buffer = 0) {
       cc = object@coords
@@ -219,6 +223,9 @@ setMethod("subsample", signature("MeteorologyInterpolationData"), definition =
       return(ilm)
     }
 )
+
+#' @describeIn subsample Signature for MeteorologyUncorrectedData
+#' @export
 setMethod("subsample", signature("MeteorologyUncorrectedData"), definition =
             function(object, bbox = NULL, stations=NULL, dates = NULL, buffer = 0) {
               cc = object@coords

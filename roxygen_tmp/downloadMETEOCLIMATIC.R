@@ -30,7 +30,7 @@
 #' \code{meteoland}.
 #' @author Víctor Granda, EMF-CREAF
 #' 
-#' Miquel De \enc{CáceresCaceres} Ainsa, EMF-CREAF
+#' Miquel De \enc{Cáceres}{Caceres} Ainsa, EMF-CREAF
 #' @seealso \code{\link{SpatialPointsMeteorology-class}}
 #' @references Meteoclimatic should be acknowledged as author of information
 #' when using this data.

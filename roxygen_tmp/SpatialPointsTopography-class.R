@@ -12,7 +12,7 @@
 #' @section Objects from the Class: Objects can be created by calls of the form
 #' \code{new("SpatialPointsTopography", ...)}, or by calls to the function
 #' \code{\link{SpatialPointsTopography}}.
-#' @author Miquel De \enc{CáceresCaceres} Ainsa, CREAF
+#' @author Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF
 #' @seealso \code{\link{SpatialPointsTopography}},
 #' \code{\link{SpatialPointsDataFrame-class}}
 #' @keywords classes

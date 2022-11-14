@@ -25,7 +25,7 @@
 #' will be derived from the point coordinates.
 #' @return Function \code{SpatialPixelsTopography} returns an object
 #' '\code{\link{SpatialPixelsTopography-class}}'.
-#' @author Miquel De \enc{CáceresCaceres} Ainsa, CREAF
+#' @author Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF
 #' @seealso \code{\link{SpatialPixelsTopography-class}}
 #' @examples
 #' 
@@ -82,6 +82,7 @@ SpatialPixelsTopography<-function(points, elevation, slope, aspect, tolerance = 
   return(lt)
 }
 
+#' @export
 setMethod("[", "SpatialPixelsTopography",
           function(x, i, j, ..., drop = FALSE) {
             if (!missing(j))
@@ -147,6 +148,7 @@ as.SpPixTop.SpGrdTop = function(from) {
 setAs("SpatialPixelsTopography", "SpatialGridTopography", as.SpPixTop.SpGrdTop)
 
 
+#' @export
 setMethod("spplot", signature("SpatialPixelsTopography"), definition =
             function(obj, variable="elevation",...) {
               if(variable=="elevation") {
@@ -184,5 +186,7 @@ print.SpatialPixelsTopography = function(x, ...) {
   }
   invisible(x)
 }
+
+#' @export
 setMethod("show", "SpatialPixelsTopography", 
           function(object) print.SpatialPixelsTopography(object))

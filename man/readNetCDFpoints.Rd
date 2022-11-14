@@ -20,12 +20,12 @@ readNetCDFproj4string(file)
 desired.}
 }
 \value{
-\itemize{ \itemFunction \code{readNetCDFdates} returns a
-\code{\link{Date}} vector. \itemFunction \code{readNetCDFpoints} returns an
-object \code{\link{SpatialPoints-class}}. \itemFunction
+\itemize{ \item{Function \code{readNetCDFdates} returns a
+\code{\link{Date}} vector.} \item{Function \code{readNetCDFpoints} returns an
+object \code{\link{SpatialPoints-class}}.} \item{Function
 \code{readNetCDFgridtopology} returns an object
-\code{\link{GridTopology-class}}. \itemFunction \code{readNetCDFproj4string}
-returns an object \code{\link{CRS-class}}. }
+\code{\link{GridTopology-class}}.} \item{Function \code{readNetCDFproj4string}
+returns an object \code{\link{CRS-class}}.} }
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}
@@ -46,5 +46,5 @@ Functions to read spatial and temporal coordinates from NetCDFs.
 \code{\link{readmeteorologygrid}}
 }
 \author{
-Miquel De \enc{CáceresCaceres} Ainsa, CREAF
+Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF
 }

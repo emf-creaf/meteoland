@@ -26,6 +26,6 @@ showClass("MeteorologyInterpolationData")
 \code{\link{MeteorologyProcedureData-class}}, \code{\link{subsample}}
 }
 \author{
-Miquel De \enc{CáceresCaceres} Ainsa, CREAF
+Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF
 }
 \keyword{classes}

@@ -95,5 +95,5 @@ System Sciences 17, 1331–1363. doi:10.5194/hess-17-1331-2013.
 \code{\link{interpolationpoints}}
 }
 \author{
-Miquel De \enc{CáceresCaceres} Ainsa, CREAF
+Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF
 }

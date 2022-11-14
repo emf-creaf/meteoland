@@ -7,7 +7,7 @@
 #' @docType class
 #' @section Objects from the Class: A virtual Class: No objects may be created
 #' from it.
-#' @author Miquel De \enc{CáceresCaceres} Ainsa, CREAF
+#' @author Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF
 #' @seealso \code{\link{MeteorologyInterpolationData-class}},
 #' \code{\link{MeteorologyUncorrectedData-class}}
 #' @keywords classes

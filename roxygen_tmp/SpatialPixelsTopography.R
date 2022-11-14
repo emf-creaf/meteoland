@@ -22,7 +22,7 @@
 #' will be derived from the point coordinates.
 #' @return Function \code{SpatialPixelsTopography} returns an object
 #' '\code{\link{SpatialPixelsTopography-class}}'.
-#' @author Miquel De \enc{CáceresCaceres} Ainsa, CREAF
+#' @author Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF
 #' @seealso \code{\link{SpatialPixelsTopography-class}}
 #' @examples
 #' 

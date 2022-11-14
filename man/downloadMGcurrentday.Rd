@@ -73,5 +73,5 @@ information when using this data.
 \code{\link{SpatialPointsMeteorology-class}}
 }
 \author{
-Miquel De \enc{CáceresCaceres} Ainsa, CREAF
+Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF
 }

@@ -46,7 +46,7 @@
 #' added/replaced (see details).
 #' @param overwrite Boolean flag to force overwriting an existing NetCDF.
 #' @param verbose A logical flag to output process information in the console.
-#' @author Miquel De \enc{CáceresCaceres} Ainsa, CREAF
+#' @author Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF
 #' 
 #' Nicolas Martin, INRA-Avignon
 #' @seealso \code{\link{readmeteorologypoint}},

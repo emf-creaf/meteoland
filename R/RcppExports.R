@@ -108,7 +108,7 @@ interpolation_precipitation <- function(Xp, Yp, Zp, X, Y, Z, P, Psmooth, iniRp =
 #' @note Code for \code{radiation_julianDay()},
 #' \code{radiation_solarConstant()} and \code{radiation_solarDeclination()} was
 #' translated to C++ from R code in package 'insol' (by J. G. Corripio).
-#' @author Miquel De \enc{CáceresCaceres} Ainsa, CREAF
+#' @author Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF
 #' @seealso \code{\link{interpolationpoints}}
 #' @references Danby, J. M. Eqn. 6.16.4 in Fundamentals of Celestial Mechanics,
 #' 2nd ed. Richmond, VA: Willmann-Bell, p. 207, 1988.
@@ -219,14 +219,10 @@ radiation_netRadiation <- function(solarConstant, latrad, elevation, slorad, asp
     .Call(`_meteoland_netRadiation`, solarConstant, latrad, elevation, slorad, asprad, delta, vpa, tmin, tmax, R_s, alpha)
 }
 
-#' @describeIn radiation_julianDay Potential radiation series
-#' @export
 .potentialRadiationSeries <- function(latrad, slorad, asprad, J) {
     .Call(`_meteoland_potentialRadiationSeries`, latrad, slorad, asprad, J)
 }
 
-#' @describeIn radiation_julianDay Potential radiation points
-#' @export
 .potentialRadiationPoints <- function(latrad, slorad, asprad, J) {
     .Call(`_meteoland_potentialRadiationPoints`, latrad, slorad, asprad, J)
 }
@@ -303,7 +299,7 @@ interpolation_dewtemperature <- function(Xp, Yp, Zp, X, Y, Z, T, iniRp = 140000,
 #' available (i.e. non-missing) at the reference locations.
 #' @return All functions return a vector with interpolated values for the
 #' target points.
-#' @author Miquel De \enc{CáceresCaceres} Ainsa, CREAF
+#' @author Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF
 #' @seealso \code{\link{defaultInterpolationParams}}
 #' @references Thornton, P.E., Running, S.W., White, M. A., 1997. Generating
 #' surfaces of daily meteorological variables over large regions of complex
@@ -356,22 +352,22 @@ interpolation_temperature <- function(Xp, Yp, Zp, X, Y, Z, T, iniRp = 140000, al
 #' utils_saturationVP utils_saturationVaporPressureCurveSlope
 #' @param temperature Air temperature (ºC).
 #' @param Tmin,Tmax Minimum and maximum daily temperature (ºC).
-#' @param RHmin,RHmax Minimum and maximum relative humidity (\%).
+#' @param RHmin,RHmax Minimum and maximum relative humidity (%).
 #' @param Patm Atmospheric air pressure (in kPa).
 #' @param elevation Elevation above sea level (in m).
 #' @return Values returned for each function are: \itemize{
-#' \item\code{utils_airDensity}: air density (in kg·m-3).
-#' \item\code{utils_atmosphericPressure}: Air atmospheric pressure (in kPa).
-#' \item\code{utils_averageDailyVP}: average (actual) vapour pressure (in kPa).
-#' \item\code{utils_averageDaylightTemperature}: average daylight air
+#' \item{\code{utils_airDensity}: air density (in kg·m-3).}
+#' \item{\code{utils_atmosphericPressure}: Air atmospheric pressure (in kPa).}
+#' \item{\code{utils_averageDailyVP}: average (actual) vapour pressure (in kPa).}
+#' \item{\code{utils_averageDaylightTemperature}: average daylight air
 #' temperature (in ºC). \item\code{utils_latentHeatVaporisation}: Latent heat
 #' of vaporisation (MJ·kg-1).  \item\code{utils_latentHeatVaporisationMol}:
-#' Latent heat of vaporisation (J·mol-1).
-#' \item\code{utils_psychrometricConstant}: Psychrometric constant (kPa·ºC-1).
-#' \item\code{utils_saturationVP}: saturation vapour pressure (in kPa).
-#' \item\code{utils_saturationVaporPressureCurveSlope}: Slope of the saturation
-#' vapor pressure curve (kPa·ºC-1).  }
-#' @author Miquel De \enc{CáceresCaceres} Ainsa, CREAF
+#' Latent heat of vaporisation (J·mol-1).}
+#' \item{\code{utils_psychrometricConstant}: Psychrometric constant (kPa·ºC-1).}
+#' \item{\code{utils_saturationVP}: saturation vapour pressure (in kPa).}
+#' \item{\code{utils_saturationVaporPressureCurveSlope}: Slope of the saturation
+#' vapor pressure curve (kPa·ºC-1).}  }
+#' @author Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF
 #' @references McMurtrie, R. E., D. A. Rook, and F. M. Kelliher. 1990.
 #' Modelling the yield of Pinus radiata on a site limited by water and
 #' nitrogen. Forest Ecology and Management 30:381–413.
@@ -463,7 +459,7 @@ utils_saturationVaporPressureCurveSlope <- function(temperature) {
 #' @param rc Canopy vapour flux (stomatal) resistance (s·m-1).
 #' @param Rn Daily net radiation (MJ·m-2·day-1).
 #' @return Potential evapotranspiration (in mm of water).
-#' @author Miquel De \enc{CáceresCaceres} Ainsa, CREAF
+#' @author Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF
 #' @seealso \code{\link{interpolationpoints}}
 #' @references Penman, H. L. 1948. Natural evaporation from open water, bare
 #' soil and grass. Proceedings of the Royal Society of London. Series A.

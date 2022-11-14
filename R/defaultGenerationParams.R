@@ -32,7 +32,7 @@
 #' either overall input annual precipitation or simulated annual precipitation.
 #' \item\code{min_ratio [= 0.9]}: Minimum adjustment ratio for precipitation.
 #' \item\code{max_ratio [= 1.2]}: Minimum adjustment ratio for precipitation. }
-#' @author Miquel De \enc{CáceresCaceres} Ainsa, CREAF
+#' @author Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF
 #' @seealso \code{\link{weathergeneration}}
 #' @references Apipattanavis, S., G. Podesta, B. Rajagopalan, and R. W. Katz
 #' (2007), A semiparametric multivariate and multisite weather generator, Water

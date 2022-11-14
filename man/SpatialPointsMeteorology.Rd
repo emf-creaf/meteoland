@@ -47,5 +47,5 @@ different rows and different columns. Only the information corresponding to
 \code{\link{SpatialPointsMeteorology-class}}
 }
 \author{
-Miquel De \enc{CáceresCaceres} Ainsa, CREAF
+Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF
 }

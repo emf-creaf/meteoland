@@ -108,5 +108,5 @@ this data.
 \author{
 Antoine Cabon, CTFC
 
-Miquel De \enc{CáceresCaceres} Ainsa, CREAF
+Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF
 }

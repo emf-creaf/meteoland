@@ -12,7 +12,7 @@
 #' @param dates Object of class \code{"Date"} describing the time period of
 #' meteorological estimates.
 #' @return An object of class \code{\link{SpatialGridMeteorology-class}}
-#' @author Miquel De \enc{CáceresCaceres} Ainsa, CREAF
+#' @author Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF
 #' @seealso \code{\link{SpatialGridMeteorology-class}}
 #' @export
 SpatialGridMeteorology<-function(grid, proj4string=CRS(as.character(NA)), data, dates) {
@@ -77,7 +77,7 @@ SpatialGridMeteorology<-function(grid, proj4string=CRS(as.character(NA)), data, 
 #' allowed).
 #' @param ... Additional parameters to function \code{\link{spplot}}.
 #' @param date A string or an integer for the date to be plotted.
-#' @author Miquel De \enc{CáceresCaceres} Ainsa, CREAF
+#' @author Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF
 #' @seealso \code{\link{meteoplot}}
 #' @examples
 #' 
@@ -88,6 +88,7 @@ SpatialGridMeteorology<-function(grid, proj4string=CRS(as.character(NA)), data, 
 #' spplot(examplegridtopography, type="slope", scales=list(draw=TRUE))
 #' spplot(examplegridtopography, type="aspect", scales=list(draw=TRUE))
 #' 
+#' @export
 setMethod("spplot", signature("SpatialGridMeteorology"), definition=
             function(obj, date, variable="MeanTemperature", ...) {
               sgd = SpatialGridDataFrame(grid = obj@grid, data=obj@data[[date]], 
@@ -107,7 +108,11 @@ print.SpatialGridMeteorology = function(x, ...) {
   cat(pst, "\n")
   invisible(x)
 }
+
+#' @export
 setMethod("print", "SpatialGridMeteorology", function(x, ...) print.SpatialGridMeteorology(x, ...))
+
+#' @export
 setMethod("show", "SpatialGridMeteorology", function(object) print.SpatialGridMeteorology(object))
 
 subs.SpatialGridMeteorology <- function(x, i, j, ..., drop = FALSE) {
@@ -153,6 +158,8 @@ subs.SpatialGridMeteorology <- function(x, i, j, ..., drop = FALSE) {
         data = x@data[idx])
   }
 }
+
+#' @export
 setMethod("[", "SpatialGridMeteorology", subs.SpatialGridMeteorology)
 
 

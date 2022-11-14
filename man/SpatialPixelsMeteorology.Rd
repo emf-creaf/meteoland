@@ -48,5 +48,5 @@ Initializes an object of class \code{SpatialPixelsMeteorology-class}
 \code{\link{SpatialPixelsMeteorology-class}}
 }
 \author{
-Miquel De \enc{CáceresCaceres} Ainsa, CREAF
+Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF
 }

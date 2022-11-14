@@ -29,7 +29,7 @@
 #' and wind speed. }
 #' @note WindNinja should be run with m/s as wind speed units and for all the
 #' combinations of domain-level wind speed and wind direction required.
-#' @author Miquel De \enc{CáceresCaceres} Ainsa, CREAF
+#' @author Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF
 #' @seealso \code{\link{MeteorologyInterpolationData}}
 #' @references Forthofer, J.M., Butler, B.W., Wagenbrenner, N.S., 2014. A
 #' comparison of three approaches for simulating fine-scale surface winds in

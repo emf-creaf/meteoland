@@ -37,22 +37,22 @@ string specifying a NetCDF to be read from the disk.}
 \item{points}{An object of class \code{\link{SpatialPoints}}.}
 }
 \value{
-\itemize{ \itemFunction \code{extractdates()}, returns a \code{list}
+\itemize{ \item{Function \code{extractdates()}, returns a \code{list}
 with the same length as \code{dates}. Each element of the list is a spatial
 object (\code{\link{SpatialPointsDataFrame}},
 \code{\link{SpatialGridDataFrame}} or \code{\link{SpatialPixelsDataFrame}},
 depending on the input) with the meteorological data for all the spatial
 elements. If only one date is asked, the function returns directly the
-spatial object, without embedding it into a list. \itemFunction
+spatial object, without embedding it into a list.} \item{Function
 \code{extractvars()}, returns a \code{list} with the same length as
 \code{vars}. Each element of the list is a spatial object
 (\code{\link{SpatialPointsDataFrame}}, \code{\link{SpatialGridDataFrame}} or
 \code{\link{SpatialPixelsDataFrame}}, depending on the input) with the
 meteorological data for all the spatial elements. If only one variable is
 asked, the function returns directly the spatial object, without embedding
-it into a list. \itemFunction \code{extractgridindex()} returns a data
-frame. \itemFunction \code{extractgridpoints()} returns an object of class
-\code{\link{SpatialPointsMeteorology}}. }
+it into a list.} \item{Function \code{extractgridindex()} returns a data
+frame.} \item{Function \code{extractgridpoints()} returns an object of class
+\code{\link{SpatialPointsMeteorology}}.} }
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}
@@ -75,5 +75,5 @@ be achieved using subsetting of spatial classes
 
 }}
 \author{
-Miquel De \enc{CáceresCaceres} Ainsa, CREAF
+Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF
 }

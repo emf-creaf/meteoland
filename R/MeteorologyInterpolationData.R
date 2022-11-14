@@ -9,25 +9,25 @@
 #' 
 #' @details
 #' There are three ways of building an object of
-#' \code{\linkS4class{MeteorologyInterpolationData}}: \enumerate{ \itemThe
+#' \code{\linkS4class{MeteorologyInterpolationData}}: \enumerate{ \item{The
 #' first way is using an object of
 #' \code{\linkS4class{SpatialPointsMeteorology}} containing both the
 #' coordinates and meteorological series of stations. In this case
 #' \code{elevation} has to be provided, but \code{aspect} and \code{slope} may
 #' be ommitted. Parameters \code{MinTemperature} to \code{WindDirection} can be
-#' left as \code{NULL}. \itemThe second way is using an object of class of
+#' left as \code{NULL}.} \item{The second way is using an object of class of
 #' \code{\link{SpatialPointsTopography}} containing the coordinates of stations
 #' and topographic variables. In this case parameters \code{MinTemperature} and
 #' \code{MaxTemperature} will need to be supplied, each being a matrix with
 #' weather stations in rows and days in columns, but \code{Precipitation},
 #' \code{RelativeHumidity}, \code{Radiation}, \code{WindSpeed} and
-#' \code{WindDirection} may be left as \code{NULL}. \itemThe third way is using
+#' \code{WindDirection} may be left as \code{NULL}.} \item{The third way is using
 #' an object of \code{\link{SpatialPoints}} containing the coordinates of
 #' stations only. In this case \code{elevation} has to be provided, but
 #' \code{aspect} and \code{slope} may be ommitted. As in the second case,
 #' parameters \code{MinTemperature} and \code{MaxTemperature} will need to be
 #' supplied, each being a matrix with weather stations in rows and days in
-#' columns, but other variables may be left as \code{NULL}. }
+#' columns, but other variables may be left as \code{NULL}.} }
 #' 
 #' @param points An object of class \code{\link{SpatialPointsMeteorology}}, an
 #' object of \code{\link{SpatialPointsTopography}} or an object of class
@@ -60,7 +60,7 @@
 #' @param params A list containing interpolation parameters.
 #' @return An object of class
 #' \code{\linkS4class{MeteorologyInterpolationData}}.
-#' @author Miquel De \enc{CáceresCaceres} Ainsa, CREAF
+#' @author Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF
 #' @seealso \code{\linkS4class{MeteorologyInterpolationData}},
 #' \code{\link{defaultInterpolationParams}}.
 #' @references Thornton, P.E., Running, S.W., 1999. An improved algorithm for

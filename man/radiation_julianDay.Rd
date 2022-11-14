@@ -16,8 +16,6 @@
 \alias{radiation_solarElevation}
 \alias{radiation_solarDeclination}
 \alias{radiation_sunRiseSet}
-\alias{.potentialRadiationSeries}
-\alias{.potentialRadiationPoints}
 \title{Solar radiation utility functions}
 \usage{
 radiation_julianDay(year, month, day)
@@ -101,10 +99,6 @@ radiation_netRadiation(
   R_s,
   alpha = 0.08
 )
-
-.potentialRadiationSeries(latrad, slorad, asprad, J)
-
-.potentialRadiationPoints(latrad, slorad, asprad, J)
 }
 \arguments{
 \item{year, month, day}{Year, month and day as integers.}
@@ -210,10 +204,6 @@ radiation.
 
 \item \code{radiation_netRadiation()}: Net radiation
 
-\item \code{.potentialRadiationSeries()}: Potential radiation series
-
-\item \code{.potentialRadiationPoints()}: Potential radiation points
-
 }}
 \note{
 Code for \code{radiation_julianDay()},
@@ -246,5 +236,5 @@ Agricultural and Forest Meteorology, 38, 231–242.
 \code{\link{interpolationpoints}}
 }
 \author{
-Miquel De \enc{CáceresCaceres} Ainsa, CREAF
+Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF
 }

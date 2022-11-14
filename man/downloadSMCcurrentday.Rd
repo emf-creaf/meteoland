@@ -83,7 +83,7 @@ or as a data frame otherwise.
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}
 
 Download data from the Catalan automatic weather station network
-(XEMA from Servei \enc{MeteorològicMeteorologic} de Catalunya)
+(XEMA from Servei \enc{Meteorològic}{Meteorologic} de Catalunya)
 }
 \details{
 API key needs to be requested from SMC
@@ -105,7 +105,7 @@ call functions in \code{meteospain} themselves, and then to use function
 \code{meteoland}.
 }
 \references{
-Servei \enc{MeteorològicMeteorologic} de Catalunya (SMC) should
+Servei \enc{Meteorològic}{Meteorologic} de Catalunya (SMC) should
 be acknowledged as author of information when accessing weather data with
 these functions.
 }
@@ -115,5 +115,5 @@ these functions.
 \author{
 Antoine Cabon, CTFC
 
-Miquel De \enc{CáceresCaceres} Ainsa, CREAF
+Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF
 }

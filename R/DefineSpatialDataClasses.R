@@ -15,7 +15,7 @@
 #' @section Objects from the Class: Objects can be created by calls of the form
 #' \code{new("SpatialPointsMeteorology", ...)}, or by calls to the function
 #' \code{\link{SpatialPointsMeteorology}}.
-#' @author Miquel De \enc{CáceresCaceres} Ainsa, CREAF
+#' @author Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF
 #' @seealso \code{\link{SpatialPointsTopography-class}},
 #' \code{\link{SpatialPoints-class}}
 #' @keywords classes
@@ -24,6 +24,7 @@
 #' #Structure of the S4 object
 #' showClass("SpatialPointsMeteorology")
 #' 
+#' @export
 setClass("SpatialPointsMeteorology", slots = list(dates = "Date", data="vector"), contains="SpatialPoints")
 
 #' Class \code{"SpatialPointsTopography"}
@@ -43,7 +44,7 @@ setClass("SpatialPointsMeteorology", slots = list(dates = "Date", data="vector")
 #' @section Objects from the Class: Objects can be created by calls of the form
 #' \code{new("SpatialPointsTopography", ...)}, or by calls to the function
 #' \code{\link{SpatialPointsTopography}}.
-#' @author Miquel De \enc{CáceresCaceres} Ainsa, CREAF
+#' @author Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF
 #' @seealso \code{\link{SpatialPointsTopography}},
 #' \code{\link{SpatialPointsDataFrame-class}}
 #' @keywords classes
@@ -52,6 +53,7 @@ setClass("SpatialPointsMeteorology", slots = list(dates = "Date", data="vector")
 #' #Structure of the S4 object
 #' showClass("SpatialPointsTopography")
 #' 
+#' @export
 setClass("SpatialPointsTopography", contains="SpatialPointsDataFrame")
 
 #' Class \code{"SpatialGridMeteorology"}
@@ -71,7 +73,7 @@ setClass("SpatialPointsTopography", contains="SpatialPointsDataFrame")
 #' @section Objects from the Class: Objects can be created by calls of the form
 #' \code{new("SpatialGridMeteorology", ...)}, or by calls to the function
 #' \code{\link{SpatialGridMeteorology}}.
-#' @author Miquel De \enc{CáceresCaceres} Ainsa, CREAF
+#' @author Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF
 #' @seealso \code{\link{SpatialGridTopography}},
 #' \code{\link{SpatialGridDataFrame-class}}
 #' @keywords classes
@@ -80,6 +82,7 @@ setClass("SpatialPointsTopography", contains="SpatialPointsDataFrame")
 #' #Structure of the S4 object
 #' showClass("SpatialGridMeteorology")
 #' 
+#' @export
 setClass("SpatialGridMeteorology", slots = list(dates = "Date", data="vector"), contains="SpatialGrid")
 
 #' Class \code{"SpatialGridTopography"}
@@ -97,7 +100,7 @@ setClass("SpatialGridMeteorology", slots = list(dates = "Date", data="vector"), 
 #' @section Objects from the Class: Objects can be created by calls of the form
 #' \code{new("SpatialGridTopography", ...)}, or by calls to the function
 #' \code{\link{SpatialGridTopography}}.
-#' @author Miquel De \enc{CáceresCaceres} Ainsa, CREAF
+#' @author Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF
 #' @seealso \code{\link{SpatialGridTopography}},
 #' \code{\link{SpatialGridDataFrame-class}}
 #' @keywords classes
@@ -106,6 +109,7 @@ setClass("SpatialGridMeteorology", slots = list(dates = "Date", data="vector"), 
 #' #Structure of the S4 object
 #' showClass("SpatialGridTopography")
 #' 
+#' @export
 setClass("SpatialGridTopography", contains="SpatialGridDataFrame")
 
 #' Class \code{"SpatialPixelsMeteorology"}
@@ -126,7 +130,7 @@ setClass("SpatialGridTopography", contains="SpatialGridDataFrame")
 #' @section Objects from the Class: Objects can be created by calls of the form
 #' \code{new("SpatialPixelsMeteorology", ...)}, or by calls to the function
 #' \code{\link{SpatialPixelsMeteorology}}.
-#' @author Miquel De \enc{CáceresCaceres} Ainsa, CREAF
+#' @author Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF
 #' @seealso \code{\link{SpatialPixelsTopography}},
 #' \code{\link{SpatialPixelsDataFrame-class}}
 #' @keywords classes
@@ -135,6 +139,7 @@ setClass("SpatialGridTopography", contains="SpatialGridDataFrame")
 #' #Structure of the S4 object
 #' showClass("SpatialPixelsMeteorology")
 #' 
+#' @export
 setClass("SpatialPixelsMeteorology", slots = list(dates = "Date", data="vector"), contains="SpatialPixels")
 
 #' Class \code{"SpatialPixelsTopography"}
@@ -154,7 +159,7 @@ setClass("SpatialPixelsMeteorology", slots = list(dates = "Date", data="vector")
 #' @section Objects from the Class: Objects can be created by calls of the form
 #' \code{new("SpatialPixelsTopography", ...)}, or by calls to the function
 #' \code{\link{SpatialPixelsTopography}}.
-#' @author Miquel De \enc{CáceresCaceres} Ainsa, CREAF
+#' @author Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF
 #' @seealso \code{\link{SpatialPixelsTopography}},
 #' \code{\link{SpatialPixelsDataFrame-class}}
 #' @keywords classes
@@ -163,4 +168,5 @@ setClass("SpatialPixelsMeteorology", slots = list(dates = "Date", data="vector")
 #' #Structure of the S4 object
 #' showClass("SpatialPixelsTopography")
 #' 
+#' @export
 setClass("SpatialPixelsTopography", contains="SpatialPixelsDataFrame")

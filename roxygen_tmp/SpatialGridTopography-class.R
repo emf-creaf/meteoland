@@ -10,7 +10,7 @@
 #' @section Objects from the Class: Objects can be created by calls of the form
 #' \code{new("SpatialGridTopography", ...)}, or by calls to the function
 #' \code{\link{SpatialGridTopography}}.
-#' @author Miquel De \enc{CáceresCaceres} Ainsa, CREAF
+#' @author Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF
 #' @seealso \code{\link{SpatialGridTopography}},
 #' \code{\link{SpatialGridDataFrame-class}}
 #' @keywords classes

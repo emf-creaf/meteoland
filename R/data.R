@@ -159,7 +159,7 @@ NULL
 #' @name raster_to_interpolate_example
 #' @docType data
 #' @format stars object
-#' @source Spanish National Forest Inventory
+#' @source ICGC
 #' @keywords datasets
 #' @examples
 #'

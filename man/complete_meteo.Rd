@@ -19,3 +19,16 @@ Calculates missing meteo variables
 This function takes a meteo object (with meteoland names) and complete any
 missing variable if it is possible
 }
+\examples{
+
+# example data
+data("meteoland_meteo_example")
+
+# remove MinRelativeHumidity
+meteoland_meteo_example$MinRelativeHumidity <- NULL
+# complete vars
+completed_meteo <- complete_meteo(meteoland_meteo_example)
+# check MinRelativeHumidity
+completed_meteo$MinRelativeHumidity
+
+}

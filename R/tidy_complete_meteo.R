@@ -10,6 +10,21 @@
 #' @param complete logical indicating if the meteo data missing variables
 #' should be calculated (if possible). Default to FALSE.
 #' @return a compatible meteo object to use with meteoland.
+#'
+#' @examples
+#'
+#' # meteospain data
+#' library(meteospain)
+#' mg_april_2022_data <- get_meteo_from(
+#'   "meteogalicia",
+#'   meteogalicia_options("daily", as.Date("2022-04-01"), as.Date("2022-04-30"))
+#' )
+#'
+#' # just convert
+#' meteospain2meteoland(mg_april_2022_data)
+#' # convert and complete
+#' meteospain2meteoland(mg_april_2022_data, complete = TRUE)
+#'
 #' @export meteospain2meteoland
 meteospain2meteoland <- function(meteo, complete = FALSE) {
 
@@ -205,6 +220,19 @@ meteospain2meteoland <- function(meteo, complete = FALSE) {
 #'
 #' @param meteo meteoland meteo data
 #' @return the same \code{meteo} data provided with the the variables completed
+#'
+#' @examples
+#'
+#' # example data
+#' data("meteoland_meteo_example")
+#'
+#' # remove MinRelativeHumidity
+#' meteoland_meteo_example$MinRelativeHumidity <- NULL
+#' # complete vars
+#' completed_meteo <- complete_meteo(meteoland_meteo_example)
+#' # check MinRelativeHumidity
+#' completed_meteo$MinRelativeHumidity
+#'
 #' @export complete_meteo
 complete_meteo <- function(meteo) {
 

@@ -23,3 +23,18 @@ This function converts \code{meteospain} R package meteo objects to
 compatible meteoland meteo objects by seelcting the needed variables and
 adapting the names to comply with meteoland requirements.
 }
+\examples{
+
+# meteospain data
+library(meteospain)
+mg_april_2022_data <- get_meteo_from(
+  "meteogalicia",
+  meteogalicia_options("daily", as.Date("2022-04-01"), as.Date("2022-04-30"))
+)
+
+# just convert
+meteospain2meteoland(mg_april_2022_data)
+# convert and complete
+meteospain2meteoland(mg_april_2022_data, complete = TRUE)
+
+}

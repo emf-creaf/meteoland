@@ -28,6 +28,27 @@ This function writes the interpolator object created with
 compliant format, as specified in
 http://cfconventions.org/cf-conventions/cf-conventions.html
 }
+\examples{
+
+# example interpolator
+data(meteoland_interpolator_example)
+
+# temporal folder
+tmp_dir <- tempdir()
+
+# write interpolator
+write_interpolator(
+  meteoland_interpolator_example,
+  file.path(tmp_dir, "meteoland_interpolator_example.nc")
+)
+
+# check file exists
+file.exists(file.path(tmp_dir, "meteoland_interpolator_example.nc"))
+
+# read it again
+read_interpolator(file.path(tmp_dir, "meteoland_interpolator_example.nc"))
+
+}
 \seealso{
 Other interpolator functions: \code{\link{add_topo}()},
 \code{\link{create_meteo_interpolator}()},

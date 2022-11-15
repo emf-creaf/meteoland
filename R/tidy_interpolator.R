@@ -55,6 +55,13 @@
 #' \code{\link{create_meteo_interpolator}()},
 #' \code{\link{read_interpolator}()}, \code{\link{set_interpolation_params}()},
 #' \code{\link{with_meteo}()}, \code{\link{write_interpolator}()}
+#'
+#' @examples
+#' # example interpolator
+#' data(meteoland_interpolator_example)
+#' # get the params from the interpolator
+#' get_interpolation_params(meteoland_interpolator_example)
+#'
 #' @export get_interpolation_params
 get_interpolation_params <- function(interpolator) {
   return(attr(interpolator, "params"))
@@ -77,6 +84,24 @@ get_interpolation_params <- function(interpolator) {
 #' \code{\link{create_meteo_interpolator}()},
 #' \code{\link{get_interpolation_params}()}, \code{\link{read_interpolator}()},
 #' \code{\link{with_meteo}()}, \code{\link{write_interpolator}()}
+#'
+#' @examples
+#' # example interpolator
+#' data(meteoland_interpolator_example)
+#' # store the actual parameters
+#' old_parameters <- get_interpolation_params(meteoland_interpolator_example)
+#' # we can provide only the parameter we want to change
+#' meteoland_interpolator_example <- set_interpolation_params(
+#'   meteoland_interpolator_example,
+#'   list(debug = TRUE)
+#' )
+#' # check
+#' get_interpolation_params(meteoland_interpolator_example)$debug
+#' # compare with old
+#' old_parameters$debug
+#' # the rest should be the same
+#' setdiff(old_parameters, get_interpolation_params(meteoland_interpolator_example))
+#'
 #' @export set_interpolation_params
 set_interpolation_params <- function(interpolator, params = NULL) {
   # ensure the params are correct and fill any lacking with the defaults
@@ -103,6 +128,20 @@ set_interpolation_params <- function(interpolator, params = NULL) {
 #' \code{\link{get_interpolation_params}()}, \code{\link{read_interpolator}()},
 #' \code{\link{set_interpolation_params}()}, \code{\link{with_meteo}()},
 #' \code{\link{write_interpolator}()}
+#'
+#' @examples
+#'
+#' # example meteo data
+#' data(meteoland_meteo_example)
+#'
+#' # create the interpolator with default params
+#' with_meteo(meteoland_meteo_example) |>
+#'   create_meteo_interpolator()
+#'
+#' # create the interpolator with some params changed
+#' with_meteo(meteoland_meteo_example) |>
+#'   create_meteo_interpolator(params = list(debug = TRUE))
+#'
 #' @export create_meteo_interpolator
 create_meteo_interpolator <- function(meteo_with_topo, params = NULL, ...) {
 
@@ -348,6 +387,27 @@ create_meteo_interpolator <- function(meteo_with_topo, params = NULL, ...) {
 #' \code{\link{create_meteo_interpolator}()},
 #' \code{\link{get_interpolation_params}()}, \code{\link{read_interpolator}()},
 #' \code{\link{set_interpolation_params}()}, \code{\link{with_meteo}()}
+#'
+#' @examples
+#'
+#' # example interpolator
+#' data(meteoland_interpolator_example)
+#'
+#' # temporal folder
+#' tmp_dir <- tempdir()
+#'
+#' # write interpolator
+#' write_interpolator(
+#'   meteoland_interpolator_example,
+#'   file.path(tmp_dir, "meteoland_interpolator_example.nc")
+#' )
+#'
+#' # check file exists
+#' file.exists(file.path(tmp_dir, "meteoland_interpolator_example.nc"))
+#'
+#' # read it again
+#' read_interpolator(file.path(tmp_dir, "meteoland_interpolator_example.nc"))
+#'
 #' @export write_interpolator
 write_interpolator <- function(interpolator, filename, .overwrite = FALSE) {
   # debug
@@ -462,6 +522,27 @@ write_interpolator <- function(interpolator, filename, .overwrite = FALSE) {
 #' \code{\link{get_interpolation_params}()},
 #' \code{\link{set_interpolation_params}()}, \code{\link{with_meteo}()},
 #' \code{\link{write_interpolator}()}
+#'
+#' @examples
+#'
+#' # example interpolator
+#' data(meteoland_interpolator_example)
+#'
+#' # temporal folder
+#' tmp_dir <- tempdir()
+#'
+#' # write interpolator
+#' write_interpolator(
+#'   meteoland_interpolator_example,
+#'   file.path(tmp_dir, "meteoland_interpolator_example.nc")
+#' )
+#'
+#' # check file exists
+#' file.exists(file.path(tmp_dir, "meteoland_interpolator_example.nc"))
+#'
+#' # read it again
+#' read_interpolator(file.path(tmp_dir, "meteoland_interpolator_example.nc"))
+#'
 #' @export read_interpolator
 read_interpolator <- function(filename) {
   # debug
@@ -580,6 +661,37 @@ read_interpolator <- function(filename) {
 #' Data frame with error and bias statistics aggregated by date} \item{r2:
 #' correlation indexes between observed and predicted values for each
 #' meteorological variable} }
+#'
+#' @examples
+#'
+#' # example interpolator
+#' data("meteoland_interpolator_example")
+#'
+#' # As the calibration for all stations can be time consuming, we are gonna
+#' # interpolate only for the first 5 stations of the 198 and only a handful
+#' # of parameter combinations
+#' calibration <- interpolator_calibration(
+#'   meteoland_interpolator_example,
+#'   stations = 1:5,
+#'   variable = "MaxTemperature",
+#'   N_seq = seq(10, 20, by = 5),
+#'   alpha_seq = seq(8, 9, by = 0.25)
+#' )
+#'
+#' # we can update the interpolator params directly:
+#' updated_interpolator <- interpolator_calibration(
+#'   meteoland_interpolator_example,
+#'   stations = 1:5,
+#'   update_interpolator_params = TRUE,
+#'   variable = "MaxTemperature",
+#'   N_seq = seq(10, 20, by = 5),
+#'   alpha_seq = seq(8, 9, by = 0.25)
+#' )
+#'
+#' # check the new interpolator have the parameters updated
+#' get_interpolation_params(updated_interpolator)$N_MaxTemperature
+#' get_interpolation_params(updated_interpolator)$alpha_MaxTemperature
+#'
 #' @export interpolator_calibration
 interpolator_calibration <- function(
     interpolator,

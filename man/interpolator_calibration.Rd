@@ -99,3 +99,38 @@ after exluding the station from the predictive set).
 \item \code{interpolation_cross_validation()}: 
 
 }}
+\examples{
+
+# example interpolator
+data("meteoland_interpolator_example")
+
+# As the calibration for all stations can be time consuming, we are gonna
+# interpolate only for the first 5 stations of the 198 and only a handful
+# of parameter combinations
+calibration <- interpolator_calibration(
+  meteoland_interpolator_example,
+  stations = 1:5,
+  variable = "MaxTemperature",
+  N_seq = seq(10, 20, by = 5),
+  alpha_seq = seq(8, 9, by = 0.25)
+)
+
+# check parameters
+calibration$N
+calibration$alpha
+
+# we can update the interpolator params directly:
+updated_interpolator <- interpolator_calibration(
+  meteoland_interpolator_example,
+  stations = 1:5,
+  update_interpolator_params = TRUE,
+  variable = "MaxTemperature",
+  N_seq = seq(10, 20, by = 5),
+  alpha_seq = seq(8, 9, by = 0.25)
+)
+
+# check the new interpolator have the parameters updated
+get_interpolation_params(updated_interpolator)$alpha_MaxTemperature
+get_interpolation_params(updated_interpolator)$N_MaxTemperature
+
+}

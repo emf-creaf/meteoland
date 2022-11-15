@@ -16,6 +16,13 @@ The complete parameter list from the interpolator object
 \description{
 Retrieve the parameter list from and interpolator object
 }
+\examples{
+# example interpolator
+data(meteoland_interpolator_example)
+# get the params from the interpolator
+get_interpolation_params(meteoland_interpolator_example)
+
+}
 \seealso{
 Other interpolator functions: \code{\link{add_topo}()},
 \code{\link{create_meteo_interpolator}()},

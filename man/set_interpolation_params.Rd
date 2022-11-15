@@ -24,6 +24,24 @@ are used (see \code{\link{defaultInterpolationParams}}). Also, if params are
 partially provided, this function ensures that the rest of the parameters
 are not changed.
 }
+\examples{
+# example interpolator
+data(meteoland_interpolator_example)
+# store the actual parameters
+old_parameters <- get_interpolation_params(meteoland_interpolator_example)
+# we can provide only the parameter we want to change
+meteoland_interpolator_example <- set_interpolation_params(
+  meteoland_interpolator_example,
+  list(debug = TRUE)
+)
+# check
+get_interpolation_params(meteoland_interpolator_example)$debug
+# compare with old
+old_parameters$debug
+# the rest should be the same
+setdiff(old_parameters, get_interpolation_params(meteoland_interpolator_example))
+
+}
 \seealso{
 Other interpolator functions: \code{\link{add_topo}()},
 \code{\link{create_meteo_interpolator}()},

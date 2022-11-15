@@ -19,6 +19,20 @@ Function to create the meteoland interpolator
 This function takes meteorology information and a list of interpolation
 parameters and creates the interpolator object to be ready to use.
 }
+\examples{
+
+# example meteo data
+data(meteoland_meteo_example)
+
+# create the interpolator with default params
+with_meteo(meteoland_meteo_example) |>
+  create_meteo_interpolator()
+
+# create the interpolator with some params changed
+with_meteo(meteoland_meteo_example) |>
+  create_meteo_interpolator(params = list(debug = TRUE))
+
+}
 \seealso{
 Other interpolator functions: \code{\link{add_topo}()},
 \code{\link{get_interpolation_params}()}, \code{\link{read_interpolator}()},

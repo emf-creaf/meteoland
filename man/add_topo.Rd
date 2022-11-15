@@ -21,6 +21,16 @@ Add topology data to meteo object
 When using meteo data without topology info to create an inteprolator,
 topology must be addded
 }
+\examples{
+# example meteo
+data(meteoland_meteo_no_topo_example)
+# example topo
+data(meteoland_topo_example)
+# add topo
+with_meteo(meteoland_meteo_no_topo_example) |>
+  add_topo(meteoland_topo_example)
+
+}
 \seealso{
 Other interpolator functions:
 \code{\link{create_meteo_interpolator}()},

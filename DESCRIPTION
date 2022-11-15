@@ -23,12 +23,12 @@ Imports:
     meteospain,
     Rcpp,
     units,
-    lifecycle
+    lifecycle,
+    stars
 Suggests: 
     knitr,
     forecast,
     spacetime,
-    stars,
     rmarkdown,
     testthat (>= 3.0.0)
 LinkingTo: Rcpp

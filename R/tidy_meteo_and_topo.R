@@ -11,6 +11,12 @@
 #' \code{\link{create_meteo_interpolator}()},
 #' \code{\link{get_interpolation_params}()}, \code{\link{read_interpolator}()},
 #' \code{\link{set_interpolation_params}()}, \code{\link{write_interpolator}()}
+#'
+#' @examples
+#' # example meteo
+#' data(meteoland_meteo_example)
+#' with_meteo(meteoland_meteo_example)
+#'
 #' @export with_meteo
 with_meteo <- function(meteo) {
   usethis::ui_info("Checking meteorology object...")
@@ -34,6 +40,16 @@ with_meteo <- function(meteo) {
 #' \code{\link{get_interpolation_params}()}, \code{\link{read_interpolator}()},
 #' \code{\link{set_interpolation_params}()}, \code{\link{with_meteo}()},
 #' \code{\link{write_interpolator}()}
+#'
+#' @examples
+#' # example meteo
+#' data(meteoland_meteo_no_topo_example)
+#' # example topo
+#' data(meteoland_topo_example)
+#' # add topo
+#' with_meteo(meteoland_meteo_no_topo_example) |>
+#'   add_topo(meteoland_topo_example)
+#'
 #' @export add_topo
 add_topo <- function(meteo, topo) {
 

@@ -26,7 +26,7 @@ meteoland_topo_example <- meteoland_meteo_example |>
 
 # meteo without topo example
 meteoland_meteo_no_topo_example <- meteoland_meteo_example |>
-  dplyr::select(-elevation)
+  dplyr::select(-elevation, -aspect, -slope)
 
 # interpolation data (points)
 set.seed(2525) # for sample returning always the same

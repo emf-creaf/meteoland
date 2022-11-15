@@ -19,6 +19,12 @@ Check integrity of meteo objects
 This function is the first step in the creation of a meteoland interpolator,
 ensuring the meteo provided contains all the required elements
 }
+\examples{
+# example meteo
+data(meteoland_meteo_example)
+with_meteo(meteoland_meteo_example)
+
+}
 \seealso{
 Other interpolator functions: \code{\link{add_topo}()},
 \code{\link{create_meteo_interpolator}()},

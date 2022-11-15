@@ -159,10 +159,11 @@
 #     - Old functions no deprecated
 # 1. Add vignette with the new logic and workflows
 # 1. Create example data for new logic and workflows
-#     - interpolator
-#     - meteo data
+#     - interpolator DONE
+#     - meteo data DONE
 #     - topo data
-#         - points
-#         - raster (stars)
+#         - points DONE
+#         - raster (stars) DONE
 # 1. Create and test examples for docs
 # 1. Implement worldmet2meteoland method
+# 1. Update dependencies (usethis::use_package)

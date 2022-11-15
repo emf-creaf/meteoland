@@ -1,3 +1,31 @@
+worldmet2meteoland <- function(meteo, complete = FALSE) {
+  # assertions
+  assertthat::assert_that(
+    "date" %in% names(meteo),
+    msg = "Provided data has no date variable. Is this a worldmet dataset?"
+  )
+  assertthat::assert_that(
+    is.logical(complete) && !is.na(complete),
+    msg = "'complete' argument must be logical (FALSE or TRUE)"
+  )
+
+  # Renaming mandatory variables
+  meteo_temp <- meteo |>
+    # .fix_station_geometries() |>
+    # .aggregate_subdaily_worldmet() |>
+    dplyr::select(
+      dates = date, stationID = code,
+      elevation = elev,
+      WindDirection = wd, WindSpeed = ws,
+      MeanTemperature = mean_air_temp,
+      MinTemperature = min_air_temp, MaxTemperature = max_air_temp,
+      MeanRelativeHumidity = mean_RH,
+      MinRelativeHumidity = min_RH, MaxRelativeHumidity = max_RH,
+      Precipitation = precipitation,
+      everything()
+    )
+}
+
 #' From meteospain to meteoland meteo objects
 #'
 #' Adapting meteospain meteo objects to meteoland meteo objects

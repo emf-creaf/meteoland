@@ -653,15 +653,6 @@ read_interpolator <- function(filename) {
 #' \code{update_interpolation_params} is FALSE, \code{interpolator_calibration}
 #' returns the interpolator provided with the parameters updated
 #'
-#' \code{interpolation_cross_validation} returns a list with the following
-#' items \itemize{ \item{errors: Data frame with each combination of station and
-#' date with observed variables, predicated variables and the total error
-#' (predicted - observed) calculated for each variable} \item{station_stats: Data
-#' frame with error and bias statistics aggregated by station} \item{dates_stats:
-#' Data frame with error and bias statistics aggregated by date} \item{r2:
-#' correlation indexes between observed and predicted values for each
-#' meteorological variable} }
-#'
 #' @examples
 #'
 #' # example interpolator

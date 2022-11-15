@@ -70,15 +70,6 @@ observed values (meteorological measured values)} \item{predicted: matrix with
 interpolated values for the optimum parameter combination} } If
 \code{update_interpolation_params} is FALSE, \code{interpolator_calibration}
 returns the interpolator provided with the parameters updated
-
-\code{interpolation_cross_validation} returns a list with the following
-items \itemize{ \item{errors: Data frame with each combination of station and
-date with observed variables, predicated variables and the total error
-(predicted - observed) calculated for each variable} \item{station_stats: Data
-frame with error and bias statistics aggregated by station} \item{dates_stats:
-Data frame with error and bias statistics aggregated by date} \item{r2:
-correlation indexes between observed and predicted values for each
-meteorological variable} }
 }
 \description{
 Calibration and validation of interpolation procedures
@@ -104,6 +95,20 @@ after exluding the station from the predictive set).
 # example interpolator
 data("meteoland_interpolator_example")
 
+# As the cross validation for all stations can be time consuming, we are
+# gonna use only for the first 5 stations of the 198
+cv <- interpolation_cross_validation(meteoland_interpolator_example, stations = 1:5)
+
+# Inspect the results
+cv$errors
+cv$station_stats
+cv$dates_stats
+cv$r2
+
+
+# example interpolator
+data("meteoland_interpolator_example")
+
 # As the calibration for all stations can be time consuming, we are gonna
 # interpolate only for the first 5 stations of the 198 and only a handful
 # of parameter combinations
@@ -114,10 +119,6 @@ calibration <- interpolator_calibration(
   N_seq = seq(10, 20, by = 5),
   alpha_seq = seq(8, 9, by = 0.25)
 )
-
-# check parameters
-calibration$N
-calibration$alpha
 
 # we can update the interpolator params directly:
 updated_interpolator <- interpolator_calibration(
@@ -130,7 +131,7 @@ updated_interpolator <- interpolator_calibration(
 )
 
 # check the new interpolator have the parameters updated
-get_interpolation_params(updated_interpolator)$alpha_MaxTemperature
 get_interpolation_params(updated_interpolator)$N_MaxTemperature
+get_interpolation_params(updated_interpolator)$alpha_MaxTemperature
 
 }

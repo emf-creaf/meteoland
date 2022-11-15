@@ -291,6 +291,21 @@
 #'   meteorological variable}
 #' }
 #'
+#' @examples
+#'
+#' # example interpolator
+#' data("meteoland_interpolator_example")
+#'
+#' # As the cross validation for all stations can be time consuming, we are
+#' # gonna use only for the first 5 stations of the 198
+#' cv <- interpolation_cross_validation(meteoland_interpolator_example, stations = 1:5)
+#'
+#' # Inspect the results
+#' cv$errors
+#' cv$station_stats
+#' cv$dates_stats
+#' cv$r2
+#'
 #' @export
 interpolation_cross_validation <- function(interpolator, stations = NULL) {
 

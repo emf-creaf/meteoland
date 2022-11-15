@@ -452,6 +452,26 @@
 #' \code{spatial_data} it has to have some mandatory variables, namely
 #' \code{elevation}. It should also contain \code{aspect} and \code{slope} for
 #' a better interpolation process, though this two variables are not mandatory.
+#'
+#' @examples
+#'
+#' # example of data to interpolate and example interpolator
+#' data("points_to_interpolate_example")
+#' data("meteoland_interpolator_example")
+#'
+#' # interpolate data
+#' res <- interpolate_data(points_to_interpolate_example, meteoland_interpolator_example)
+#'
+#' # check result
+#' # same class as input data
+#' class(res)
+#' # data
+#' res
+#' # results for the first location
+#' res[["interpolated_data"]][1]
+#' # unnest results
+#' tidyr::unnest(res, cols = "interpolated_data")
+#'
 #' @export interpolate_data
 interpolate_data <- function(spatial_data, interpolator, dates = NULL) {
   # debug

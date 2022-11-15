@@ -43,3 +43,23 @@ which the interpolation should be done. Independently of the class of
 a better interpolation process, though this two variables are not mandatory.
 }
 
+\examples{
+
+# example of data to interpolate and example interpolator
+data("points_to_interpolate_example")
+data("meteoland_interpolator_example")
+
+# interpolate data
+res <- interpolate_data(points_to_interpolate_example, meteoland_interpolator_example)
+
+# check result
+# same class as input data
+class(res)
+# data
+res
+# results for the first location
+res[["interpolated_data"]][1]
+# unnest results
+tidyr::unnest(res, cols = "interpolated_data")
+
+}

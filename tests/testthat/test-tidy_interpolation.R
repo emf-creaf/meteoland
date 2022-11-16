@@ -28,7 +28,7 @@ test_that("meteospain2meteoland works", {
     all(c(
       "MeanTemperature", "MinTemperature", "MaxTemperature",
       "Precipitation",
-      "RelativeHumidity", "MinRelativeHumidity", "MaxRelativeHumidity",
+      "MeanRelativeHumidity", "MinRelativeHumidity", "MaxRelativeHumidity",
       "stationID", "dates", "elevation"
     ) %in% names(test_res))
   )
@@ -68,7 +68,7 @@ test_that("meteospain2meteoland works", {
   expect_identical(names(test_complete_no_changes), c(names(test_res), 'aspect', 'slope'))
   expect_identical(test_complete_no_changes$MinTemperature, test_res$MinTemperature)
   expect_false(
-    identical(test_res$RelativeHumidity, test_complete_no_changes$RelativeHumidity)
+    identical(test_res$MeanRelativeHumidity, test_complete_no_changes$MeanRelativeHumidity)
   )
 
   meteo_test_no_vars <- dplyr::mutate(
@@ -86,7 +86,7 @@ test_that("meteospain2meteoland works", {
   expect_identical(nrow(test_complete_all), nrow(test_res))
   expect_identical(names(test_complete_all), c(names(test_res), 'aspect', 'slope'))
   expect_identical(test_complete_all$MinTemperature, test_res$MinTemperature)
-  expect_true(any(!is.na(test_complete_all$RelativeHumidity)))
+  expect_true(any(!is.na(test_complete_all$MeanRelativeHumidity)))
   expect_true(any(!is.na(test_complete_all$MinRelativeHumidity)))
   expect_true(all(!is.na(test_complete_all$MaxRelativeHumidity))) # is all because we put 100 in all
   expect_true(any(!is.na(test_complete_all$Radiation)))
@@ -114,7 +114,7 @@ test_that("meteospain2meteoland works", {
     all(c(
       "MeanTemperature", "MinTemperature", "MaxTemperature",
       "Precipitation",
-      "RelativeHumidity", "MinRelativeHumidity", "MaxRelativeHumidity",
+      "MeanRelativeHumidity", "MinRelativeHumidity", "MaxRelativeHumidity",
       "stationID", "dates", "elevation"
     ) %in% names(test_res))
   )
@@ -127,7 +127,7 @@ test_that("meteospain2meteoland works", {
   expect_identical(names(test_subdaily_complete), c(names(test_subdaily), 'aspect', 'slope'))
   expect_identical(test_subdaily_complete$MinTemperature, test_subdaily$MinTemperature)
   expect_false(
-    identical(test_subdaily$RelativeHumidity, test_subdaily_complete$RelativeHumidity)
+    identical(test_subdaily$MeanRelativeHumidity, test_subdaily_complete$MeanRelativeHumidity)
   )
 
 

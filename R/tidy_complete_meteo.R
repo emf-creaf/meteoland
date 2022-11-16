@@ -66,176 +66,185 @@ meteospain2meteoland <- function(meteo, complete = FALSE) {
     msg = "'complete' argument must be logical (FALSE or TRUE)"
   )
 
-  # Renaming mandatory variables
-  meteo_temp <- meteo |>
-    units::drop_units() |>
-    .fix_station_geometries() |>
-    .aggregate_subdaily_meteospain() |>
-    dplyr::select(
-      dates = timestamp, stationID = station_id,
-      elevation = altitude,
-      MinTemperature = min_temperature, MaxTemperature = max_temperature,
-      Precipitation = precipitation,
-      everything()
-    )
-
-  # Renaming optional
-  if ("mean_temperature" %in% names(meteo_temp)) {
-    meteo_temp <- meteo_temp |>
-      dplyr::rename(MeanTemperature = mean_temperature)
-  }
-
-  if ("mean_relative_humidity" %in% names(meteo_temp)) {
-    meteo_temp <- meteo_temp |>
-      dplyr::rename(RelativeHumidity = mean_relative_humidity)
-  }
-
-  if ("min_relative_humidity" %in% names(meteo_temp)) {
-    meteo_temp <- meteo_temp |>
-      dplyr::rename(MinRelativeHumidity = min_relative_humidity)
-  }
-
-  if ("max_relative_humidity" %in% names(meteo_temp)) {
-    meteo_temp <- meteo_temp |>
-      dplyr::rename(MaxRelativeHumidity = max_relative_humidity)
-  }
-
-  if ("mean_wind_speed" %in% names(meteo_temp)) {
-    meteo_temp <- meteo_temp |>
-      dplyr::rename(WindSpeed = mean_wind_speed)
-  }
-
-  if ("mean_wind_direction" %in% names(meteo_temp)) {
-    meteo_temp <- meteo_temp |>
-      dplyr::rename(WindDirection = mean_wind_direction)
-  }
-
-  # if ("radiation" %in% names(meteo_temp)) {
+  # # Renaming mandatory variables
+  # meteo_temp <- meteo |>
+  #   units::drop_units() |>
+  #   .fix_station_geometries() |>
+  #   .aggregate_subdaily_meteospain() |>
+  #   dplyr::select(
+  #     dates = timestamp, stationID = station_id,
+  #     elevation = altitude,
+  #     MinTemperature = min_temperature, MaxTemperature = max_temperature,
+  #     Precipitation = precipitation,
+  #     everything()
+  #   )
+  # 
+  # # Renaming optional
+  # if ("mean_temperature" %in% names(meteo_temp)) {
   #   meteo_temp <- meteo_temp |>
-  #     dplyr::rename(Radiation = radiation)
+  #     dplyr::rename(MeanTemperature = mean_temperature)
   # }
-
-  if ("solar_radiation" %in% names(meteo_temp)) {
-    meteo_temp <- meteo_temp |>
-      dplyr::rename(Radiation = solar_radiation)
+  # 
+  # if ("mean_relative_humidity" %in% names(meteo_temp)) {
+  #   meteo_temp <- meteo_temp |>
+  #     dplyr::rename(RelativeHumidity = mean_relative_humidity)
+  # }
+  # 
+  # if ("min_relative_humidity" %in% names(meteo_temp)) {
+  #   meteo_temp <- meteo_temp |>
+  #     dplyr::rename(MinRelativeHumidity = min_relative_humidity)
+  # }
+  # 
+  # if ("max_relative_humidity" %in% names(meteo_temp)) {
+  #   meteo_temp <- meteo_temp |>
+  #     dplyr::rename(MaxRelativeHumidity = max_relative_humidity)
+  # }
+  # 
+  # if ("mean_wind_speed" %in% names(meteo_temp)) {
+  #   meteo_temp <- meteo_temp |>
+  #     dplyr::rename(WindSpeed = mean_wind_speed)
+  # }
+  # 
+  # if ("mean_wind_direction" %in% names(meteo_temp)) {
+  #   meteo_temp <- meteo_temp |>
+  #     dplyr::rename(WindDirection = mean_wind_direction)
+  # }
+  # 
+  # # if ("radiation" %in% names(meteo_temp)) {
+  # #   meteo_temp <- meteo_temp |>
+  # #     dplyr::rename(Radiation = radiation)
+  # # }
+  # 
+  # if ("solar_radiation" %in% names(meteo_temp)) {
+  #   meteo_temp <- meteo_temp |>
+  #     dplyr::rename(Radiation = solar_radiation)
+  # }
+  # 
+  # if ("global_solar_radiation" %in% names(meteo_temp)) {
+  #   meteo_temp <- meteo_temp |>
+  #     dplyr::rename(Radiation = global_solar_radiation)
+  # }
+  # 
+  # res <- meteo_temp |>
+  #   dplyr::select(dplyr::any_of(
+  #     c(
+  #       "dates", "stationID", "elevation", "aspect", "slope",
+  #       "MeanTemperature", "MinTemperature", "MaxTemperature",
+  #       "Precipitation",
+  #       "RelativeHumidity", "MinRelativeHumidity", "MaxRelativeHumidity",
+  #       "WindDirection", "WindSpeed",
+  #       "Radiation"
+  #     )
+  #   ))
+  # 
+  # # complete step
+  # if (isTRUE(complete)) {
+  #   res <- complete_meteo(res)
+  # }
+  # 
+  # return(res)
+  
+  # check dictionary
+  dictionary <- .meteospain_variables_dictionary(TRUE)
+  if ("mean_temperature" %in% names(meteo)) {
+    dictionary <- .meteospain_variables_dictionary(FALSE)
   }
-
-  if ("global_solar_radiation" %in% names(meteo_temp)) {
-    meteo_temp <- meteo_temp |>
-      dplyr::rename(Radiation = global_solar_radiation)
-  }
-
-  res <- meteo_temp |>
-    dplyr::select(dplyr::any_of(
-      c(
-        "dates", "stationID", "elevation", "aspect", "slope",
-        "MeanTemperature", "MinTemperature", "MaxTemperature",
-        "Precipitation",
-        "RelativeHumidity", "MinRelativeHumidity", "MaxRelativeHumidity",
-        "WindDirection", "WindSpeed",
-        "Radiation"
-      )
-    ))
-
-  # complete step
-  if (isTRUE(complete)) {
-    res <- complete_meteo(res)
-  }
-
-  return(res)
+  
+  .reshape_meteo(meteo, dictionary, complete)
+  
 }
 
-.aggregate_subdaily_meteospain <- function(meteo) {
-
-  # browser()
-  # check if data is subdaily
-  grouped_meteo <- meteo |>
-    dplyr::as_tibble() |>
-    dplyr::mutate(
-      timestamp = lubridate::floor_date(timestamp, unit = "day")
-    ) |>
-    dplyr::group_by(timestamp, station_id)
-
-  station_date_values <- grouped_meteo |>
-    dplyr::count() |>
-    dplyr::pull(n)
-
-  # if only one value per station and date exists for all combinations, no need of summarising
-  if (!any(station_date_values > 1)) {
-    return(meteo)
-  }
-
-  usethis::ui_info("Provided meteospain data seems to be in subdaily time steps, aggregating to daily scale")
-
-  # summarise wind function
-  .summarise_wind_direction <- function(wind_direction) {
-    wind_direction <- as.numeric(wind_direction)
-    y <- sum(cos(wind_direction * pi / 180), na.rm = TRUE) / length(wind_direction)
-    x <- sum(sin(wind_direction * pi / 180), na.rm = TRUE) / length(wind_direction)
-    dv <- (180 / pi) * atan2(x, y)
-
-    if (dv < 0) {
-      dv <- dv + 360
-    }
-    return(dv)
-  }
-
-  # na or fun, if all vector is NAs, return NAs, if not apply the function
-  .is_na_or_fun <- function(var, fun, ...) {
-    if (all(is.na(var))) {
-      return(NA_real_)
-    }
-    fun(var, ...)
-  }
-
-  .create_missing_vars <- function(meteo) {
-    meteo_names <- names(meteo)
-    if (!"min_temperature" %in% meteo_names) {
-      meteo$min_temperature <- NA_real_
-    }
-    if (!"max_temperature" %in% meteo_names) {
-      meteo$max_temperature <- NA_real_
-    }
-    if (!"global_solar_radiation" %in% meteo_names) {
-      meteo$global_solar_radiation <- NA_real_
-    }
-    return(meteo)
-  }
-
-  grouped_meteo |>
-    .create_missing_vars() |>
-    dplyr::mutate(
-      global_solar_radiation = dplyr::if_else(
-        global_solar_radiation < 0, 0, global_solar_radiation
-      )
-    ) |>
-    dplyr::summarise(
-      # service = .is_na_or_fun(service, dplyr::first),
-      station_id = .is_na_or_fun(station_id, dplyr::first),
-      station_name = .is_na_or_fun(station_name, dplyr::first),
-      # station_province = .is_na_or_fun(station_province, dplyr::first),
-      altitude = .is_na_or_fun(altitude, dplyr::first),
-      mean_temperature = .is_na_or_fun(temperature, mean, na.rm = TRUE),
-      min_temperature = .is_na_or_fun(temperature, min, min_temperature, na.rm = TRUE),
-      max_temperature = .is_na_or_fun(temperature, max, max_temperature, na.rm = TRUE),
-      mean_relative_humidity = .is_na_or_fun(relative_humidity, mean, na.rm = TRUE),
-      min_relative_humidity = .is_na_or_fun(relative_humidity, min, na.rm = TRUE),
-      max_relative_humidity = .is_na_or_fun(relative_humidity, max, na.rm = TRUE),
-      precipitation = .is_na_or_fun(precipitation, sum, na.rm = TRUE),
-      mean_wind_speed = .is_na_or_fun(wind_speed, mean, na.rm = TRUE),
-      mean_wind_direction = .is_na_or_fun(wind_direction, .summarise_wind_direction),
-      global_solar_radiation = .is_na_or_fun(global_solar_radiation, sum, na.rm = TRUE)
-    ) |>
-    dplyr::ungroup() |>
-    dplyr::left_join(
-      meteo |>
-        dplyr::ungroup() |>
-        dplyr::select(station_id, geometry) |>
-        dplyr::distinct(),
-      by = c('station_id')
-    ) |>
-    sf::st_as_sf()
-}
+# .aggregate_subdaily_meteospain <- function(meteo) {
+# 
+#   # browser()
+#   # check if data is subdaily
+#   grouped_meteo <- meteo |>
+#     dplyr::as_tibble() |>
+#     dplyr::mutate(
+#       timestamp = lubridate::floor_date(timestamp, unit = "day")
+#     ) |>
+#     dplyr::group_by(timestamp, station_id)
+# 
+#   station_date_values <- grouped_meteo |>
+#     dplyr::count() |>
+#     dplyr::pull(n)
+# 
+#   # if only one value per station and date exists for all combinations, no need of summarising
+#   if (!any(station_date_values > 1)) {
+#     return(meteo)
+#   }
+# 
+#   usethis::ui_info("Provided meteospain data seems to be in subdaily time steps, aggregating to daily scale")
+# 
+#   # summarise wind function
+#   .summarise_wind_direction <- function(wind_direction) {
+#     wind_direction <- as.numeric(wind_direction)
+#     y <- sum(cos(wind_direction * pi / 180), na.rm = TRUE) / length(wind_direction)
+#     x <- sum(sin(wind_direction * pi / 180), na.rm = TRUE) / length(wind_direction)
+#     dv <- (180 / pi) * atan2(x, y)
+# 
+#     if (dv < 0) {
+#       dv <- dv + 360
+#     }
+#     return(dv)
+#   }
+# 
+#   # na or fun, if all vector is NAs, return NAs, if not apply the function
+#   .is_na_or_fun <- function(var, fun, ...) {
+#     if (all(is.na(var))) {
+#       return(NA_real_)
+#     }
+#     fun(var, ...)
+#   }
+# 
+#   .create_missing_vars <- function(meteo) {
+#     meteo_names <- names(meteo)
+#     if (!"min_temperature" %in% meteo_names) {
+#       meteo$min_temperature <- NA_real_
+#     }
+#     if (!"max_temperature" %in% meteo_names) {
+#       meteo$max_temperature <- NA_real_
+#     }
+#     if (!"global_solar_radiation" %in% meteo_names) {
+#       meteo$global_solar_radiation <- NA_real_
+#     }
+#     return(meteo)
+#   }
+# 
+#   grouped_meteo |>
+#     .create_missing_vars() |>
+#     dplyr::mutate(
+#       global_solar_radiation = dplyr::if_else(
+#         global_solar_radiation < 0, 0, global_solar_radiation
+#       )
+#     ) |>
+#     dplyr::summarise(
+#       # service = .is_na_or_fun(service, dplyr::first),
+#       station_id = .is_na_or_fun(station_id, dplyr::first),
+#       station_name = .is_na_or_fun(station_name, dplyr::first),
+#       # station_province = .is_na_or_fun(station_province, dplyr::first),
+#       altitude = .is_na_or_fun(altitude, dplyr::first),
+#       mean_temperature = .is_na_or_fun(temperature, mean, na.rm = TRUE),
+#       min_temperature = .is_na_or_fun(temperature, min, min_temperature, na.rm = TRUE),
+#       max_temperature = .is_na_or_fun(temperature, max, max_temperature, na.rm = TRUE),
+#       mean_relative_humidity = .is_na_or_fun(relative_humidity, mean, na.rm = TRUE),
+#       min_relative_humidity = .is_na_or_fun(relative_humidity, min, na.rm = TRUE),
+#       max_relative_humidity = .is_na_or_fun(relative_humidity, max, na.rm = TRUE),
+#       precipitation = .is_na_or_fun(precipitation, sum, na.rm = TRUE),
+#       mean_wind_speed = .is_na_or_fun(wind_speed, mean, na.rm = TRUE),
+#       mean_wind_direction = .is_na_or_fun(wind_direction, .summarise_wind_direction),
+#       global_solar_radiation = .is_na_or_fun(global_solar_radiation, sum, na.rm = TRUE)
+#     ) |>
+#     dplyr::ungroup() |>
+#     dplyr::left_join(
+#       meteo |>
+#         dplyr::ungroup() |>
+#         dplyr::select(station_id, geometry) |>
+#         dplyr::distinct(),
+#       by = c('station_id')
+#     ) |>
+#     sf::st_as_sf()
+# }
 
 
 
@@ -358,8 +367,8 @@ complete_meteo <- function(meteo) {
     meteo[["MeanTemperature"]] <- NA_real_
   }
 
-  if (is.null(meteo[["RelativeHumidity"]])) {
-    meteo[["RelativeHumidity"]] <- NA_real_
+  if (is.null(meteo[["MeanRelativeHumidity"]])) {
+    meteo[["MeanRelativeHumidity"]] <- NA_real_
   }
 
   if (is.null(meteo[["MinRelativeHumidity"]])) {
@@ -385,8 +394,8 @@ complete_meteo <- function(meteo) {
   meteo_completed <- meteo |>
     # dplyr::as_tibble() |>
     dplyr::mutate(
-      RelativeHumidity = .complete_relative_humidity(
-        RelativeHumidity, MinTemperature, MeanTemperature
+      MeanRelativeHumidity = .complete_relative_humidity(
+        MeanRelativeHumidity, MinTemperature, MeanTemperature
       ),
       MinRelativeHumidity = .complete_min_relative_humidity(
         MinRelativeHumidity, MinTemperature, MaxTemperature

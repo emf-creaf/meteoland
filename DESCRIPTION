@@ -13,7 +13,10 @@ Description: Functions to estimate weather variables at any position of a landsc
 License: GPL (>= 2)
 URL: https://emf-creaf.github.io/meteoland/index.html
 LazyData: TRUE
-Depends: R (>= 3.4.0), sp
+Depends:
+    R (>= 3.4.0),
+    sp,
+    stars
 Imports: 
     sf,
     spdep,
@@ -23,8 +26,7 @@ Imports:
     meteospain,
     Rcpp,
     units,
-    lifecycle,
-    stars
+    lifecycle
 Suggests: 
     knitr,
     forecast,

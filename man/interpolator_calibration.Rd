@@ -6,7 +6,11 @@
 \alias{interpolator_calibration}
 \title{Calibration and validation of interpolation procedures}
 \usage{
-interpolation_cross_validation(interpolator, stations = NULL)
+interpolation_cross_validation(
+  interpolator,
+  stations = NULL,
+  verbose = getOption("meteoland_verbosity", "TRUE")
+)
 
 interpolator_calibration(
   interpolator,

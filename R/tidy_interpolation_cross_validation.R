@@ -32,11 +32,14 @@
 #' @return A list with the interpolation results for the desired station
 #'
 #' @noRd
-.station_cross_validation <- function(station_index, interpolator) {
+.station_cross_validation <- function(station_index, interpolator, verbose) {
 
   # messaging (not all, every 5 or 10 maybe?)
   if (station_index %% 5 == 0) {
-    usethis::ui_line("Processing station {station_index}.....")
+    .verbosity_control(
+      usethis::ui_line("Processing station {station_index}....."),
+      verbose
+    )
   }
 
 
@@ -307,7 +310,7 @@
 #' cv$r2
 #'
 #' @export
-interpolation_cross_validation <- function(interpolator, stations = NULL) {
+interpolation_cross_validation <- function(interpolator, stations = NULL, verbose = getOption("meteoland_verbosity", "TRUE")) {
 
   # debug
   # browser()
@@ -323,18 +326,29 @@ interpolation_cross_validation <- function(interpolator, stations = NULL) {
 
   stations <- .station_indexes_converter(stations, interpolator)
 
-  usethis::ui_info("Starting Cross Validation process...")
+  .verbosity_control(
+    usethis::ui_info("Starting Cross Validation process..."),
+    verbose
+  )
+
   observed_values <- .interpolator2tibble(interpolator) |>
     dplyr::filter(station %in% stations)
 
-  usethis::ui_todo("interpolating stations...")
+  .verbosity_control(
+    usethis::ui_todo("interpolating stations..."),
+    verbose
+  )
   predicted_values <-
-    purrr::map_dfr(stations, .station_cross_validation, interpolator = interpolator) |>
+    purrr::map_dfr(stations, .station_cross_validation, interpolator = interpolator, verbose = verbose) |>
     # set predicted to NA when observed is NA
     .set_predicted_nas(observed_values)
 
   ### Processing results
-  usethis::ui_todo("calculating R squared...")
+  .verbosity_control(
+    usethis::ui_todo("calculating R squared..."),
+    verbose
+  )
+
   r2_list <- c(
     MinTemperature = "MinTemperature", MaxTemperature = "MaxTemperature",
     RangeTemperature = "RangeTemperature", RelativeHumidity = "RelativeHumidity",
@@ -344,12 +358,21 @@ interpolation_cross_validation <- function(interpolator, stations = NULL) {
       .cv_correlation,
       predicted_df = predicted_values, observed_df = observed_values
     )
-  usethis::ui_todo("calculating errors, MAE and bias for interpolated variables...")
+
+  .verbosity_control(
+    usethis::ui_todo("calculating errors, MAE and bias for interpolated variables..."),
+    verbose
+  )
+
   res <- .cv_processing(predicted_values, observed_values)
 
   res$r2 <- r2_list
 
-  usethis::ui_done("Cross validation done.")
+  .verbosity_control(
+    usethis::ui_done("Cross validation done."),
+    verbose
+  )
+
   return(res)
 
 }

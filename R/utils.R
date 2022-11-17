@@ -1,11 +1,11 @@
 #' Humidity conversion tools
-#' 
+#'
 #' @description
 #' `r lifecycle::badge("deprecated")`
-#' 
+#'
 #' Functions to transform relative humidity to specific humidity or dew point
 #' temperature and viceversa.
-#' 
+#'
 #' @aliases humidity_relative2specific humidity_specific2relative
 #' humidity_relative2dewtemperature humidity_dewtemperature2relative
 #' @param Tc A numeric vector of temperature in degrees Celsius.
@@ -15,7 +15,7 @@
 #' @param allowSaturated Logical flag to allow values over 100%
 #' @return A numeric vector with specific or relative humidity.
 #' @author Nicholas Martin-StPaul, INRA
-#' 
+#'
 #' Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF
 #' @seealso \code{\link{meteocomplete}}
 #' @export
@@ -85,4 +85,23 @@ humidity_relative2specific<-function(Tc, HR){
   masshum=nhum*Mh2o # en mol.m-3
   HS=masshum/Dair
   return(HS)
+}
+
+#' Verbosity control
+#'
+#' Verbose check for meteoland messages
+#'
+#' Function print to console the usethis expression if the verbose control is TRUE. Always returns
+#' \code{invisible()}
+#'
+#' @param expr usethis expression to print if verbose is TRUE
+#' @param verbose verbosity user control
+#'
+#' @return invisible()
+#' @noRd
+.verbosity_control <- function(expr, verbose) {
+    if (verbose) {
+    expr
+  }
+  return(invisible())
 }

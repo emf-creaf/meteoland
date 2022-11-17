@@ -176,6 +176,11 @@
 ###     - test infra for testing both mixed and individual origin data
 ###         - infra for both mixed DONE
 ###     - add dates tests to interpolation DONE
+### 1. Add verbosity control to functions DONE
+###     - create helper function to check verbosity DONE
+###     - accept session option "meteoland_verbosity" DONE
+###     - add verbosity checks to all usethis::ui_info, usethis::ui_todo... (NOT warnings or errors) DONE
+###     - add tests for the verbosity control and workflows DONE
 # 1. Ask Miquel
 #     - if interpolator.coverage must be implemented
 #     - if precipitation concentration is ok and then check the results with him
@@ -185,8 +190,3 @@
 #     - Old functions no deprecated
 # 1. Add vignette with the new logic and workflows
 # 1. Update dependencies (usethis::use_package)
-# 1. Add verbosity control to functions
-#     - create helper function to check verbosity DONE
-#     - accept session option "meteoland_verbosity" DONE
-#     - add verbosity checks to all usethis::ui_info, usethis::ui_todo... (NOT warnings or errors)
-#     - add tests for the verbosity control and workflows

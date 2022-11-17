@@ -4,10 +4,15 @@
 \alias{with_meteo}
 \title{Ensure meteo object is ready to create an interpolator object}
 \usage{
-with_meteo(meteo)
+with_meteo(meteo, verbose = getOption("meteoland_verbosity", TRUE))
 }
 \arguments{
 \item{meteo}{meteo object}
+
+\item{verbose}{Logical indicating if the function must show messages and info.
+Default value checks \code{"meteoland_verbosity"} option and if not set, defaults
+to TRUE. It can be turned off for the function with FALSE, or session wide with
+\code{options(meteoland_verbosity = FALSE)}}
 }
 \value{
 invisible meteo object ready to pipe in the interpolator creation

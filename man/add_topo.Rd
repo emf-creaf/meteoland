@@ -4,12 +4,17 @@
 \alias{add_topo}
 \title{Add topology data to meteo object}
 \usage{
-add_topo(meteo, topo)
+add_topo(meteo, topo, verbose = getOption("meteoland_verbosity", TRUE))
 }
 \arguments{
 \item{meteo}{meteo object}
 
 \item{topo}{topo object}
+
+\item{verbose}{Logical indicating if the function must show messages and info.
+Default value checks \code{"meteoland_verbosity"} option and if not set, defaults
+to TRUE. It can be turned off for the function with FALSE, or session wide with
+\code{options(meteoland_verbosity = FALSE)}}
 }
 \value{
 meteo with the topology info added

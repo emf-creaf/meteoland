@@ -6,6 +6,10 @@
 #' ensuring the meteo provided contains all the required elements
 #'
 #' @param meteo meteo object
+#' @param verbose Logical indicating if the function must show messages and info.
+#' Default value checks \code{"meteoland_verbosity"} option and if not set, defaults
+#' to TRUE. It can be turned off for the function with FALSE, or session wide with
+#' \code{options(meteoland_verbosity = FALSE)}
 #' @return invisible meteo object ready to pipe in the interpolator creation
 #' @seealso Other interpolator functions: \code{\link{add_topo}()},
 #' \code{\link{create_meteo_interpolator}()},
@@ -18,10 +22,16 @@
 #' with_meteo(meteoland_meteo_example)
 #'
 #' @export with_meteo
-with_meteo <- function(meteo) {
-  usethis::ui_info("Checking meteorology object...")
+with_meteo <- function(meteo, verbose = getOption("meteoland_verbosity", TRUE)) {
+  .verbosity_control(
+    usethis::ui_info("Checking meteorology object..."),
+    verbose
+  )
   assertthat::assert_that(has_meteo(meteo))
-  usethis::ui_done("meteorology object ok")
+  .verbosity_control(
+    usethis::ui_done("meteorology object ok"),
+    verbose
+  )
   return(invisible(meteo))
 }
 
@@ -34,6 +44,10 @@ with_meteo <- function(meteo) {
 #'
 #' @param meteo meteo object
 #' @param topo topo object
+#' @param verbose Logical indicating if the function must show messages and info.
+#' Default value checks \code{"meteoland_verbosity"} option and if not set, defaults
+#' to TRUE. It can be turned off for the function with FALSE, or session wide with
+#' \code{options(meteoland_verbosity = FALSE)}
 #' @return meteo with the topology info added
 #' @seealso Other interpolator functions:
 #' \code{\link{create_meteo_interpolator}()},
@@ -51,14 +65,23 @@ with_meteo <- function(meteo) {
 #'   add_topo(meteoland_topo_example)
 #'
 #' @export add_topo
-add_topo <- function(meteo, topo) {
+add_topo <- function(meteo, topo, verbose = getOption("meteoland_verbosity", TRUE)) {
 
   assertthat::assert_that(has_meteo(meteo))
-  usethis::ui_info("Checking topology object...")
+  .verbosity_control(
+    usethis::ui_info("Checking topology object..."),
+    verbose
+  )
   assertthat::assert_that(has_topo(topo))
-  usethis::ui_done("topology object ok")
+  .verbosity_control(
+    usethis::ui_done("topology object ok"),
+    verbose
+  )
 
-  usethis::ui_info("Adding topology to meteo (by station ID)...")
+  .verbosity_control(
+    usethis::ui_info("Adding topology to meteo (by station ID)..."),
+    verbose
+  )
 
   # check if meteo has topo already
   if (any(c("elevation", "aspect", "slope") %in% names(meteo))) {
@@ -81,8 +104,11 @@ add_topo <- function(meteo, topo) {
     by = 'stationID'
   ) |>
     sf::st_as_sf()
-  # res <- dplyr::left_join(meteo, dplyr::as_tibble(topo), by = 'stationID')
-  usethis::ui_done("topology added")
+
+  .verbosity_control(
+    usethis::ui_done("topology added"),
+    verbose
+  )
 
   return(res)
 }

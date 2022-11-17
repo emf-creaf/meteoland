@@ -4,12 +4,21 @@
 \alias{set_interpolation_params}
 \title{Setting interpolation parameters in an interpolator object}
 \usage{
-set_interpolation_params(interpolator, params = NULL)
+set_interpolation_params(
+  interpolator,
+  params = NULL,
+  verbose = getOption("meteoland_verbosity", TRUE)
+)
 }
 \arguments{
 \item{interpolator}{interpolator object to update}
 
 \item{params}{list with the parameters provided by the user}
+
+\item{verbose}{Logical indicating if the function must show messages and info.
+Default value checks \code{"meteoland_verbosity"} option and if not set, defaults
+to TRUE. It can be turned off for the function with FALSE, or session wide with
+\code{options(meteoland_verbosity = FALSE)}}
 }
 \value{
 The same interpolator object provided, with the updated

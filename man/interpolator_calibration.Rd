@@ -9,7 +9,7 @@
 interpolation_cross_validation(
   interpolator,
   stations = NULL,
-  verbose = getOption("meteoland_verbosity", "TRUE")
+  verbose = getOption("meteoland_verbosity", TRUE)
 )
 
 interpolator_calibration(

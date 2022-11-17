@@ -4,10 +4,22 @@
 \alias{create_meteo_interpolator}
 \title{Meteoland interpolator creation}
 \usage{
-create_meteo_interpolator(meteo_with_topo, params = NULL, ...)
+create_meteo_interpolator(
+  meteo_with_topo,
+  params = NULL,
+  verbose = getOption("meteoland_verbosity", TRUE)
+)
 }
 \arguments{
-\item{meteo_with_topo}{meteo object, as returned by \code{\link{with_meteo}}}
+\item{meteo_with_topo}{Meteo object, as returned by \code{\link{with_meteo}}}
+
+\item{params}{Interpolation parameters as a list. Tipically the result of
+\code{\link{defaultInterpolationParams}}.}
+
+\item{verbose}{Logical indicating if the function must show messages and info.
+Default value checks \code{"meteoland_verbosity"} option and if not set, defaults
+to TRUE. It can be turned off for the function with FALSE, or session wide with
+\code{options(meteoland_verbosity = FALSE)}}
 }
 \value{
 an interpolator object (stars)

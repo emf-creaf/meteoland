@@ -10,11 +10,17 @@
 #' function is designed to be used internally by other functions in the package
 #'
 #' @param params list with the parameters provided by the user
+#' @param ref reference parameters to get missing ones from params argument. Default
+#'   to \code{\link{defaultInterpolationParams}}
+#' @param verbose Logical indicating if the function must show messages and info.
+#' Default value checks \code{"meteoland_verbosity"} option and if not set, defaults
+#' to TRUE. It can be turned off for the function with FALSE, or session wide with
+#' \code{options(meteoland_verbosity = FALSE)}
 #'
 #' @return A complete parameter list to use in the interpolator object
 #' @family interpolator functions
 #' @noRd
-.safely_create_interpolation_params <- function(params, ref = defaultInterpolationParams()) {
+.safely_create_interpolation_params <- function(params, ref = defaultInterpolationParams(), verbose = getOption("meteoland_verbosity", TRUE)) {
   if (is.null(params)) {
     usethis::ui_warn("No interpolation parameters provided, using defaults")
     return(defaultInterpolationParams())
@@ -23,7 +29,10 @@
   user_params <- params[names(params) %in% names(ref)]
 
   if (length(user_params) < length(ref)) {
-    usethis::ui_info("Some interpolation parameters are missing, using default values for those")
+    .verbosity_control(
+      usethis::ui_info("Some interpolation parameters are missing, using default values for those"),
+      verbose
+    )
   }
 
   if (length(params[!names(params) %in% names(ref)]) > 0) {
@@ -78,6 +87,10 @@ get_interpolation_params <- function(interpolator) {
 #'
 #' @param interpolator interpolator object to update
 #' @param params list with the parameters provided by the user
+#' @param verbose Logical indicating if the function must show messages and info.
+#' Default value checks \code{"meteoland_verbosity"} option and if not set, defaults
+#' to TRUE. It can be turned off for the function with FALSE, or session wide with
+#' \code{options(meteoland_verbosity = FALSE)}
 #' @return The same interpolator object provided, with the updated
 #' interpolation parameters
 #' @seealso Other interpolator functions: \code{\link{add_topo}()},
@@ -103,10 +116,10 @@ get_interpolation_params <- function(interpolator) {
 #' setdiff(old_parameters, get_interpolation_params(meteoland_interpolator_example))
 #'
 #' @export set_interpolation_params
-set_interpolation_params <- function(interpolator, params = NULL) {
+set_interpolation_params <- function(interpolator, params = NULL, verbose = getOption("meteoland_verbosity", TRUE)) {
   # ensure the params are correct and fill any lacking with the defaults
   safe_params <-
-    .safely_create_interpolation_params(params, get_interpolation_params(interpolator))
+    .safely_create_interpolation_params(params, get_interpolation_params(interpolator), verbose)
   # remove any previous params
   attr(interpolator, "params") <- NULL
   # add new ones
@@ -122,7 +135,13 @@ set_interpolation_params <- function(interpolator, params = NULL) {
 #' This function takes meteorology information and a list of interpolation
 #' parameters and creates the interpolator object to be ready to use.
 #'
-#' @param meteo_with_topo meteo object, as returned by \code{\link{with_meteo}}
+#' @param meteo_with_topo Meteo object, as returned by \code{\link{with_meteo}}
+#' @param params Interpolation parameters as a list. Tipically the result of
+#'   \code{\link{defaultInterpolationParams}}.
+#' @param verbose Logical indicating if the function must show messages and info.
+#' Default value checks \code{"meteoland_verbosity"} option and if not set, defaults
+#' to TRUE. It can be turned off for the function with FALSE, or session wide with
+#' \code{options(meteoland_verbosity = FALSE)}
 #' @return an interpolator object (stars)
 #' @seealso Other interpolator functions: \code{\link{add_topo}()},
 #' \code{\link{get_interpolation_params}()}, \code{\link{read_interpolator}()},
@@ -143,7 +162,7 @@ set_interpolation_params <- function(interpolator, params = NULL) {
 #'   create_meteo_interpolator(params = list(debug = TRUE))
 #'
 #' @export create_meteo_interpolator
-create_meteo_interpolator <- function(meteo_with_topo, params = NULL, ...) {
+create_meteo_interpolator <- function(meteo_with_topo, params = NULL, verbose = getOption("meteoland_verbosity", TRUE)) {
 
   ## TODO messaging
   assertthat::assert_that(has_meteo(meteo_with_topo))
@@ -154,10 +173,13 @@ create_meteo_interpolator <- function(meteo_with_topo, params = NULL, ...) {
     msg = "params must be NULL or a named list with the interpolation parameters"
   )
 
-  usethis::ui_info("Creating interpolator...")
+  .verbosity_control(
+    usethis::ui_info("Creating interpolator..."),
+    verbose
+  )
 
   # get params
-  params <- .safely_create_interpolation_params(params)
+  params <- .safely_create_interpolation_params(params, verbose = verbose)
 
   # data preparation
 
@@ -324,7 +346,10 @@ create_meteo_interpolator <- function(meteo_with_topo, params = NULL, ...) {
 
 
   # add smoothed vars
-  usethis::ui_todo("Calculating smoothed variables...")
+  .verbosity_control(
+    usethis::ui_todo("Calculating smoothed variables..."),
+    verbose
+  )
   stars_interpolator[["SmoothedPrecipitation"]] <-
     .temporalSmoothing(
       t(stars_interpolator[["Precipitation"]]),
@@ -348,7 +373,10 @@ create_meteo_interpolator <- function(meteo_with_topo, params = NULL, ...) {
     attributes(stars_interpolator[["MinTemperature"]])
 
   # update initial Rp in params
-  usethis::ui_todo("Updating intial_Rp parameter with the actual stations mean distance...")
+  .verbosity_control(
+    usethis::ui_todo("Updating intial_Rp parameter with the actual stations mean distance..."),
+    verbose
+  )
   params$initial_Rp <-
     sf::st_geometry(meteo_arranged) |>
     unique() |>
@@ -361,7 +389,10 @@ create_meteo_interpolator <- function(meteo_with_topo, params = NULL, ...) {
   attr(stars_interpolator, "params") <- params
 
   # return the interpolator
-  usethis::ui_done("Interpolator created.")
+  .verbosity_control(
+    usethis::ui_done("Interpolator created."),
+    verbose
+  )
   return(stars_interpolator)
 }
 

@@ -4,7 +4,12 @@
 \alias{interpolate_data}
 \title{Interpolation process for spatial data}
 \usage{
-interpolate_data(spatial_data, interpolator, dates = NULL)
+interpolate_data(
+  spatial_data,
+  interpolator,
+  dates = NULL,
+  verbose = getOption("meteoland_verbosity", TRUE)
+)
 }
 \arguments{
 \item{spatial_data}{An sf or stars raster object to interpolate}
@@ -15,6 +20,11 @@ interpolate_data(spatial_data, interpolator, dates = NULL)
 \item{dates}{vector with dates to interpolate (must be within the
 interpolator date range). Default to NULL (all dates present in the
 interpolator object)}
+
+\item{verbose}{Logical indicating if the function must show messages and info.
+Default value checks \code{"meteoland_verbosity"} option and if not set, defaults
+to TRUE. It can be turned off for the function with FALSE, or session wide with
+\code{options(meteoland_verbosity = FALSE)}}
 }
 \value{
 an object with the same class and structure as the provided spatial

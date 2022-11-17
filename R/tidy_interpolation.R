@@ -66,7 +66,7 @@
   usethis::ui_info("Starting interpolation...")
   ## extraction and calculations
   # filtered interpolator, just once
-  filtered_interpolator <- interpolator |> dplyr::filter(date %in% dates)
+  filtered_interpolator <- interpolator |> dplyr::filter(as.Date(date) %in% as.Date(dates))
   tmin_interpolator <- t(filtered_interpolator[["MinTemperature"]])
   tmax_interpolator <- t(filtered_interpolator[["MaxTemperature"]])
 

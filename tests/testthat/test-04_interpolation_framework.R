@@ -82,22 +82,39 @@ test_that("interpolation process works as intended", {
   ## check all in (working), one out (warning), all out (error)
   ## check that in two first cases the interpolated data is only the dates included
   ##
-  # points
+  # date checks
+  dates_all_ok <- as.Date(c("2022-04-24", "2022-04-25", "2022-04-26"))
+  dates_some_ok <- c(dates_all_ok, "2022-05-13")
+  dates_none_ok <- as.Date(c("2022-05-01", "2022-05-02"))
   expect_s3_class(
     (points_res_dates <- interpolate_data(
-      points_to_interpolate_example, meteoland_interpolator_example, as.Date("2022-04-25")
+      points_to_interpolate_example, meteoland_interpolator_example, dates_all_ok
     )),
     'sf'
   )
-  # expect_identical(nrow(points_res), nrow(points_to_interpolate_example))
-  # expect_true(all(names(points_to_interpolate_example) %in% names(points_res)))
-  # expect_true("interpolated_data" %in% names(points_res))
-  # expect_true(all(
-  #   c(interpolation_var_names, "dates", "DOY") %in%
-  #     names(points_res |> tidyr::unnest(cols = c(interpolated_data)))
-  # ))
-  # expect_identical(sf::st_geometry(points_res), sf::st_geometry(points_to_interpolate_example))
-  # expect_identical(sf::st_crs(points_res), sf::st_crs(points_to_interpolate_example))
+  expect_warning(
+    interpolate_data(raster_to_interpolate_example, meteoland_interpolator_example, dates_some_ok),
+    "Some dates are outside the interpolator date range, only dates inside will be used"
+  )
+  expect_error(
+    interpolate_data(raster_to_interpolate_example, meteoland_interpolator_example, dates_none_ok),
+    "Dates supplied are outside the interpolator date range. No possible interpolation."
+  )
+  expect_identical(nrow(points_res_dates), nrow(points_to_interpolate_example))
+  expect_true(all(names(points_to_interpolate_example) %in% names(points_res_dates)))
+  expect_true("interpolated_data" %in% names(points_res_dates))
+  expect_true(all(
+    c(interpolation_var_names, "dates", "DOY") %in%
+      names(points_res_dates |> tidyr::unnest(cols = c(interpolated_data)))
+  ))
+  expect_identical(sf::st_geometry(points_res_dates), sf::st_geometry(points_to_interpolate_example))
+  expect_identical(sf::st_crs(points_res_dates), sf::st_crs(points_to_interpolate_example))
+  expect_identical(
+    nrow(points_res_dates[["interpolated_data"]][[1]]), 3L
+  )
+  expect_identical(
+    points_res_dates[["interpolated_data"]][[1]]$dates, dates_all_ok
+  )
 
 })
 

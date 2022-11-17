@@ -76,7 +76,7 @@ test_that("meteospain2meteoland works", {
     mean_relative_humidity = NA_real_,
     min_relative_humidity = NA_real_,
     max_relative_humidity = NA_real_,
-    radiation = NA_real_
+    global_solar_radiation = NA_real_
   )
 
   expect_s3_class(
@@ -93,21 +93,31 @@ test_that("meteospain2meteoland works", {
 
   # subdaily checks
   expect_warning(
-    (subdaily_fixed <- .fix_station_geometries(meteo_test_subdaily_with_errors)),
+    .reshape_meteo(meteo_test_subdaily_with_errors, .meteospain_variables_dictionary(TRUE), FALSE),
     "Choosing the most recent metadata"
   )
   expect_message(
-    (subdaily_aggregated <- .aggregate_subdaily_meteospain(subdaily_fixed)),
-    "Provided meteospain data seems to be in subdaily time steps"
+    suppressWarnings(
+      .reshape_meteo(meteo_test_subdaily_with_errors, .meteospain_variables_dictionary(TRUE), FALSE)
+    ),
+    "Provided meteo data seems to be in subdaily time steps"
   )
-  expect_true(nrow(subdaily_fixed) > nrow(subdaily_aggregated))
-  expect_identical(
-    sort(unique(subdaily_fixed$station_id)),
-    sort(unique(subdaily_aggregated$station_id))
-  )
+  # expect_warning(
+  #   (subdaily_fixed <- .fix_station_geometries(meteo_test_subdaily_with_errors)),
+  #   "Choosing the most recent metadata"
+  # )
+  # expect_message(
+  #   (subdaily_aggregated <- .aggregate_subdaily_meteospain(subdaily_fixed)),
+  #   "Provided meteospain data seems to be in subdaily time steps"
+  # )
+  # expect_true(nrow(subdaily_fixed) > nrow(subdaily_aggregated))
+  # expect_identical(
+  #   sort(unique(subdaily_fixed$station_id)),
+  #   sort(unique(subdaily_aggregated$station_id))
+  # )
 
-  # we expect no warning now
-  expect_warning(test_subdaily <- meteospain2meteoland(subdaily_fixed), NA)
+  # we expect a warning
+  expect_warning(test_subdaily <- meteospain2meteoland(meteo_test_subdaily_with_errors))
 
   expect_s3_class(test_subdaily, 'sf')
   expect_true(
@@ -120,7 +130,7 @@ test_that("meteospain2meteoland works", {
   )
 
   expect_s3_class(
-    (test_subdaily_complete <- meteospain2meteoland(subdaily_fixed, complete = TRUE)),
+    suppressWarnings(test_subdaily_complete <- meteospain2meteoland(meteo_test_subdaily_with_errors, complete = TRUE)),
     "sf"
   )
   expect_identical(nrow(test_subdaily_complete), nrow(test_subdaily))

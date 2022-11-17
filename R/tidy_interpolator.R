@@ -641,6 +641,10 @@ read_interpolator <- function(filename) {
 #' @param alpha_seq Numeric vector with \code{"alpha"}
 #' @param update_interpolation_params Logical indicating if the interpolator
 #' object must be updated with the calculated parameters. Default to FALSE
+#' @param verbose Logical indicating if the function must show messages and info.
+#' Default value checks \code{"meteoland_verbosity"} option and if not set, defaults
+#' to TRUE. It can be turned off for the function with FALSE, or session wide with
+#' \code{options(meteoland_verbosity = FALSE)}
 #' @return If \code{update_interpolation_params} is FALSE (default),
 #' \code{interpolator_calibration} returns a list with the following items
 #' \itemize{ \item{MAE: A numeric matrix with the mean absolute error values,
@@ -693,7 +697,8 @@ interpolator_calibration <- function(
       "Precipitation", "PrecipitationAmount", "PrecipitationEvent"
     ),
     N_seq = seq(5, 30, by = 5),
-    alpha_seq = seq(0.25, 10, by = 0.25)
+    alpha_seq = seq(0.25, 10, by = 0.25),
+    verbose = getOption("meteoland_verbosity", TRUE)
 ) {
 
   ### assertions
@@ -754,7 +759,10 @@ interpolator_calibration <- function(
   )
   smoothed_matrix <- t(interpolator[["SmoothedPrecipitation"]])
 
-  usethis::ui_info("Total number of stations: {nrow(variable_matrix)}")
+  .verbosity_control(
+    usethis::ui_info("Total number of stations: {nrow(variable_matrix)}"),
+    verbose
+  )
 
   stations_no_data <- rowSums(is.na(variable_matrix)) == ncol(variable_matrix)
   variable_matrix <- variable_matrix[!stations_no_data,]
@@ -763,25 +771,37 @@ interpolator_calibration <- function(
   selected_stations <- selected_stations[!stations_no_data]
   stations <- which(selected_stations)
 
-  usethis::ui_info("Number of stations with available data: {nrow(variable_matrix)}")
+  .verbosity_control(
+    usethis::ui_info("Number of stations with available data: {nrow(variable_matrix)}"),
+    verbose
+  )
 
   # MAE assesment
   selected_variable_matrix <- variable_matrix[stations,]
   selected_stations_coords <- stations_coords[stations,]
   selected_stations_elevation <- stations_elevation[stations]
 
-  usethis::ui_info("Number of stations used for MAE calculation: {length(stations)}")
+  .verbosity_control(
+    usethis::ui_info("Number of stations used for MAE calculation: {length(stations)}"),
+    verbose
+  )
 
-  usethis::ui_info(
-    "Number of parameters combinations to test: {ncol(mae_matrix)*nrow(mae_matrix)}"
+  .verbosity_control(
+    usethis::ui_info(
+      "Number of parameters combinations to test: {ncol(mae_matrix)*nrow(mae_matrix)}"
+    ),
+    verbose
   )
 
   min_mae <- 9999999.0
   min_i <- NA
   min_j <- NA
 
-  usethis::ui_info(
-    "Starting evaluation of parameter combinations for {variable}..."
+  .verbosity_control(
+    usethis::ui_info(
+      "Starting evaluation of parameter combinations for {variable}..."
+    ),
+    verbose
   )
 
   # super complicated triple loop. This could be improved but I don't know how??
@@ -792,7 +812,10 @@ interpolator_calibration <- function(
         matrix(0, nrow(selected_variable_matrix), ncol(selected_variable_matrix))
       dimnames(predicted_variable_matrix) <- dimnames(selected_variable_matrix)
 
-      usethis::ui_todo("Evaluating N: {i}, alpha: {j}...")
+      .verbosity_control(
+        usethis::ui_todo("Evaluating N: {i}, alpha: {j}..."),
+        verbose
+      )
 
       # and now loop for stations
       # We use 1:length(stations) instead of the stations numeric indexes, because
@@ -926,8 +949,11 @@ interpolator_calibration <- function(
     }
   }
 
-  usethis::ui_done(
-    "Minimum MAE: {min_mae}; N: {min_i}; alpha: {min_j}"
+  .verbosity_control(
+    usethis::ui_done(
+      "Minimum MAE: {min_mae}; N: {min_i}; alpha: {min_j}"
+    ),
+    verbose
   )
 
   res <- list(

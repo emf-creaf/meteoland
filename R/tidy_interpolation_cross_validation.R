@@ -310,7 +310,7 @@
 #' cv$r2
 #'
 #' @export
-interpolation_cross_validation <- function(interpolator, stations = NULL, verbose = getOption("meteoland_verbosity", "TRUE")) {
+interpolation_cross_validation <- function(interpolator, stations = NULL, verbose = getOption("meteoland_verbosity", TRUE)) {
 
   # debug
   # browser()

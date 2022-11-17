@@ -19,7 +19,8 @@ interpolator_calibration(
   variable = c("MinTemperature", "MaxTemperature", "DewTemperature", "Precipitation",
     "PrecipitationAmount", "PrecipitationEvent"),
   N_seq = seq(5, 30, by = 5),
-  alpha_seq = seq(0.25, 10, by = 0.25)
+  alpha_seq = seq(0.25, 10, by = 0.25),
+  verbose = getOption("meteoland_verbosity", TRUE)
 )
 }
 \arguments{
@@ -32,6 +33,11 @@ stations with data are included in the training set but predictive
 \code{"MAE"} are calculated for the stations subset indicated in
 \code{stations} param only. If \code{NULL} all stations are used in the
 predictive \code{"MAE"} calculation.}
+
+\item{verbose}{Logical indicating if the function must show messages and info.
+Default value checks \code{"meteoland_verbosity"} option and if not set, defaults
+to TRUE. It can be turned off for the function with FALSE, or session wide with
+\code{options(meteoland_verbosity = FALSE)}}
 
 \item{variable}{A string indicating the meteorological variable for which
 interpolation parameters \code{"N"} and \code{"alpha"} will be calibrated.

@@ -58,7 +58,7 @@
 
   # return the interpolation
   suppressMessages(suppressWarnings(
-    .interpolation_point(station_sf, interpolator_station_removed)
+    .interpolation_point(station_sf, interpolator_station_removed, verbose = verbose)
   ))[[1]] |>
     dplyr::mutate(
       RangeTemperature = MaxTemperature - MinTemperature,

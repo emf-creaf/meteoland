@@ -1,3 +1,42 @@
+#' Reshape meteo API
+#'
+#' Convert meteo to meteoland complying sf
+#'
+#' The logic of the API is simple. If we have a dictionary with the corresponding names
+#' we can just drop units (just in case, looking at you meteospain) and rename variables with the
+#' dictionary. Once we have renamed the variables, the rest of the logic is the same independently
+#' of the origin of the data:
+#'
+#' (I) Aggregate meteo if we detect subdaily, (II) fix possible mismatches between stations
+#' and coordinates (sometimes, coordinates get updated and you end with a station with two sets
+#' of coordinates, looking at you AEMET), and (III), if complete is TRUE, then complete the meteo
+#' vars if possible.
+#'
+#' @section dictionary:
+#' A dictionary is a named list, in which each element is the meteo object variable names. The list
+#' is named with the corresponding official meteoland meteo names. For example, for worldmet
+#' datasets, the \code{link{worldmet2meteoland}} function uses as dictionary the follwing list:
+#'
+#' \code{
+#'    list(
+#'      dates = "date",
+#'      stationID = "code",
+#'      elevation = "elev",
+#'      WindDirection = "wd",
+#'      WindSpeed = "ws",
+#'      Temperature = "air_temp",
+#'      RelativeHumidity = "RH",
+#'      Precipitation = "precip_6"
+#'    )
+#' }
+#'
+#' @param meteo Meteo sf object
+#' @param dictionary A dictionary (named list) with the names of the meteo object variables.
+#'   See details.
+#'
+#' @return A meteo sf object complying with meteoland \code{\link{with_meteo}} standard
+#'
+#' @noRd
 .reshape_meteo <- function(meteo, dictionary, complete) {
 
   # browser()
@@ -20,6 +59,16 @@
 
 }
 
+#' Rename meteo object variables
+#'
+#' Rename meteo object variables to \code{\link{with_meteo}} standard
+#'
+#' @param meteo meteo sf object, unitless
+#' @param dictionary A dictionary (named list) with the names of the meteo object variables.
+#'
+#' @return A meteo sf object compatible with \code{\link{with_meteo}}
+#'
+#' @noRd
 .rename_meteo_vars <- function(meteo, dictionary) {
 
   # copy the meteo
@@ -39,6 +88,12 @@
   return(meteo_res)
 }
 
+#' Worldmet subdaily dictionary
+#'
+#' Helper for creating the variable dictionary for \code{\link{worldmet2meteoland}}
+#'
+#' @return A dictionary (named list) with the worldmet and meteoland variables correspondences
+#' @noRd
 .worldmet_variables_dictionary <- function() {
   res <- list(
     dates = "date",
@@ -54,6 +109,15 @@
   return(res)
 }
 
+#' meteospain subdaily dictionary
+#'
+#' Helper for creating the variable dictionary for \code{\link{meteospain2meteoland}}
+#'
+#' @param subdaily Logical. If meteospain data is subdaily, should be set to TRUE. This is done
+#'   automatically if called from \code{\link{meteospain2meteoland}}
+#'
+#' @return A dictionary (named list) with the meteospain and meteoland variables correspondences
+#' @noRd
 .meteospain_variables_dictionary <- function(subdaily = TRUE) {
   # daily
   res <- list(
@@ -93,7 +157,18 @@
 
 }
 
-
+#' Aggregating subdaily meteo
+#'
+#' Aggregate subdaily meteo
+#'
+#' Function first check if data is subdaily by counting the ocurrences of station code in the same
+#' day. If more than one, aggregating is enabled. Each variable is aggregated with the corresponding
+#' function (\code{sum} for precipitation, \code{min} for minimums...)
+#'
+#' @param meteo meteo sf object with variables names already complying with \code{\link{with_meteo}}
+#'
+#' @return A daily aggregated meteo object ready to \code{\link{with_meteo}}
+#' @noRd
 .aggregate_subdaily_meteo <- function(meteo) {
 
   # browser()
@@ -154,6 +229,18 @@
 
 }
 
+#' Helper to fix geometries problems
+#'
+#' Get the latest geometry for the meteo station
+#'
+#' Sometimes (AEMET), coordinates get updated, and data ends having differents coordinates in
+#' different dates for the same station. This helper ensures to get the latest coordinates values
+#' for a station when more than one set of coordinates is found
+#'
+#' @param meteo A daily meteo object complying with \code{\link{with_meteo}}
+#'
+#' @return The same meteo object but with only one set of coordinates per station
+#' @noRd
 .fix_station_geometries <- function(meteo) {
   distinct_rows <- meteo |>
     dplyr::ungroup() |>
@@ -184,7 +271,14 @@
 
 }
 
-# summarise wind function
+#' Helper for summarizing wind direction
+#'
+#' Helper for summarizing wind direction
+#'
+#' @param wind_direction Vector with subdaily values of wind direction
+#'
+#' @returns The "average" wind direction for the vector provided
+#' @noRd
 .summarise_wind_direction <- function(wind_direction) {
   wind_direction <- as.numeric(wind_direction)
   y <- sum(cos(wind_direction * pi / 180), na.rm = TRUE) / length(wind_direction)
@@ -198,6 +292,20 @@
 }
 
 # na or fun, if all vector is NAs, return NAs, if not apply the function
+#' Helper for creating NA variables
+#'
+#' Helper for creating NA variables with double class instead of logical
+#'
+#' When applying a function to an all NA vector, things go bad. This helper ensures that the
+#' summarising funcion can be applied, and if all the vector is NA, then returns a NA_real_ to
+#' maintaing the vector class in the tibble.
+#'
+#' @param var Variable vector
+#' @param fun Function to apply
+#' @param ... Arguments for fun
+#'
+#' @return The result of fun(var) if possible, NA_real_ if not
+#' @noRd
 .is_na_or_fun <- function(var, fun, ...) {
   if (all(is.na(var))) {
     return(NA_real_)
@@ -206,6 +314,18 @@
 }
 
 # create missing vars
+
+#' Helper to create missing vars in meteo
+#'
+#' Helper to create missing vars in meteo
+#'
+#' If any variable needed for summarising is missing, errors ensue. So we made sure any needed
+#' variable is there
+#'
+#' @param meteo meteo sf object complying with \code{\link{with_meteo}}
+#'
+#' @return meteo sf object with missing empty variables (NA_real_)
+#' @noRd
 .create_missing_vars <- function(meteo) {
   meteo_names <- names(meteo)
   if (!"MinTemperature" %in% meteo_names) {
@@ -216,6 +336,9 @@
   }
   if (!"Radiation" %in% meteo_names) {
     meteo$Radiation <- NA_real_
+  }
+  if (!"Precipitation" %in% meteo_names) {
+    meteo$Precipitation <- NA_real_
   }
   return(meteo)
 }

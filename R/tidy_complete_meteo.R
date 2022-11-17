@@ -1,31 +1,3 @@
-worldmet2meteoland <- function(meteo, complete = FALSE) {
-  # assertions
-  assertthat::assert_that(
-    "date" %in% names(meteo),
-    msg = "Provided data has no date variable. Is this a worldmet dataset?"
-  )
-  assertthat::assert_that(
-    is.logical(complete) && !is.na(complete),
-    msg = "'complete' argument must be logical (FALSE or TRUE)"
-  )
-
-  # Renaming mandatory variables
-  meteo_temp <- meteo |>
-    # .fix_station_geometries() |>
-    # .aggregate_subdaily_worldmet() |>
-    dplyr::select(
-      dates = date, stationID = code,
-      elevation = elev,
-      WindDirection = wd, WindSpeed = ws,
-      MeanTemperature = mean_air_temp,
-      MinTemperature = min_air_temp, MaxTemperature = max_air_temp,
-      MeanRelativeHumidity = mean_RH,
-      MinRelativeHumidity = min_RH, MaxRelativeHumidity = max_RH,
-      Precipitation = precipitation,
-      everything()
-    )
-}
-
 #' From meteospain to meteoland meteo objects
 #'
 #' Adapting meteospain meteo objects to meteoland meteo objects
@@ -66,84 +38,6 @@ meteospain2meteoland <- function(meteo, complete = FALSE) {
     msg = "'complete' argument must be logical (FALSE or TRUE)"
   )
 
-  # # Renaming mandatory variables
-  # meteo_temp <- meteo |>
-  #   units::drop_units() |>
-  #   .fix_station_geometries() |>
-  #   .aggregate_subdaily_meteospain() |>
-  #   dplyr::select(
-  #     dates = timestamp, stationID = station_id,
-  #     elevation = altitude,
-  #     MinTemperature = min_temperature, MaxTemperature = max_temperature,
-  #     Precipitation = precipitation,
-  #     everything()
-  #   )
-  #
-  # # Renaming optional
-  # if ("mean_temperature" %in% names(meteo_temp)) {
-  #   meteo_temp <- meteo_temp |>
-  #     dplyr::rename(MeanTemperature = mean_temperature)
-  # }
-  #
-  # if ("mean_relative_humidity" %in% names(meteo_temp)) {
-  #   meteo_temp <- meteo_temp |>
-  #     dplyr::rename(RelativeHumidity = mean_relative_humidity)
-  # }
-  #
-  # if ("min_relative_humidity" %in% names(meteo_temp)) {
-  #   meteo_temp <- meteo_temp |>
-  #     dplyr::rename(MinRelativeHumidity = min_relative_humidity)
-  # }
-  #
-  # if ("max_relative_humidity" %in% names(meteo_temp)) {
-  #   meteo_temp <- meteo_temp |>
-  #     dplyr::rename(MaxRelativeHumidity = max_relative_humidity)
-  # }
-  #
-  # if ("mean_wind_speed" %in% names(meteo_temp)) {
-  #   meteo_temp <- meteo_temp |>
-  #     dplyr::rename(WindSpeed = mean_wind_speed)
-  # }
-  #
-  # if ("mean_wind_direction" %in% names(meteo_temp)) {
-  #   meteo_temp <- meteo_temp |>
-  #     dplyr::rename(WindDirection = mean_wind_direction)
-  # }
-  #
-  # # if ("radiation" %in% names(meteo_temp)) {
-  # #   meteo_temp <- meteo_temp |>
-  # #     dplyr::rename(Radiation = radiation)
-  # # }
-  #
-  # if ("solar_radiation" %in% names(meteo_temp)) {
-  #   meteo_temp <- meteo_temp |>
-  #     dplyr::rename(Radiation = solar_radiation)
-  # }
-  #
-  # if ("global_solar_radiation" %in% names(meteo_temp)) {
-  #   meteo_temp <- meteo_temp |>
-  #     dplyr::rename(Radiation = global_solar_radiation)
-  # }
-  #
-  # res <- meteo_temp |>
-  #   dplyr::select(dplyr::any_of(
-  #     c(
-  #       "dates", "stationID", "elevation", "aspect", "slope",
-  #       "MeanTemperature", "MinTemperature", "MaxTemperature",
-  #       "Precipitation",
-  #       "RelativeHumidity", "MinRelativeHumidity", "MaxRelativeHumidity",
-  #       "WindDirection", "WindSpeed",
-  #       "Radiation"
-  #     )
-  #   ))
-  #
-  # # complete step
-  # if (isTRUE(complete)) {
-  #   res <- complete_meteo(res)
-  # }
-  #
-  # return(res)
-
   # check dictionary
   dictionary <- .meteospain_variables_dictionary(TRUE)
   if ("mean_temperature" %in% names(meteo)) {
@@ -154,6 +48,36 @@ meteospain2meteoland <- function(meteo, complete = FALSE) {
 
 }
 
+#' From worldmet to meteoland meteo objects
+#'
+#' Adapting \code{\link[worldmet]{importNOAA}} meteo objects to meteoland meteo objects
+#'
+#' This function converts \code{\link[worldmet]{importNOAA}} meteo objects to
+#' compatible meteoland meteo objects by selecting the needed variables and
+#' adapting the names to comply with meteoland requirements. Also it aggregates
+#' subdaily data as well as complete missing variables if possible (setting
+#' \code{complete = TRUE})
+#'
+#' @param meteo worldmet meteo object.
+#' @param complete logical indicating if the meteo data missing variables
+#' should be calculated (if possible). Default to FALSE.
+#' @return a compatible meteo object to use with meteoland.
+#'
+#' @examples
+#'
+#' # meteospain data
+#' library(worldmet)
+#' worldmet_stations <- worldmet::getMeta(lat = 42, lon = 0, n = 2, plot = FALSE)
+#' worldmet_codes <- paste0(worldmet_stations$usaf, "-", worldmet_stations$wban)
+#' worldmet_subdaily_2022 <-
+#'   worldmet::importNOAA(worldmet_codes, year = 2022, hourly = TRUE)
+#'
+#' # just convert
+#' worldmet2meteoland(worldmet_subdaily_2022)
+#' # convert and complete
+#' worldmet2meteoland(worldmet_subdaily_2022, complete = TRUE)
+#'
+#' @export
 worldmet2meteoland <- function(meteo, complete = FALSE) {
 
   # assertions

@@ -4,10 +4,15 @@
 \alias{complete_meteo}
 \title{Complete missing meteo variables}
 \usage{
-complete_meteo(meteo)
+complete_meteo(meteo, verbose = getOption("meteoland_verbosity", TRUE))
 }
 \arguments{
 \item{meteo}{meteoland meteo data}
+
+\item{verbose}{Logical indicating if the function must show messages and info.
+Default value checks \code{"meteoland_verbosity"} option and if not set, defaults
+to TRUE. It can be turned off for the function with FALSE, or session wide with
+\code{options(meteoland_verbosity = FALSE)}}
 }
 \value{
 the same \code{meteo} data provided with the the variables completed

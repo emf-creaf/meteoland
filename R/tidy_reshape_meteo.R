@@ -299,7 +299,7 @@ worldmet2meteoland <- function(meteo, complete = FALSE) {
     return(meteo)
   }
 
-  usethis::ui_info(
+  usethis::ui_warn(
     "Provided meteo data seems to be in subdaily time steps, aggregating to daily scale"
   )
 
@@ -462,6 +462,10 @@ worldmet2meteoland <- function(meteo, complete = FALSE) {
 #' missing variable if it is possible
 #'
 #' @param meteo meteoland meteo data
+#' @param verbose Logical indicating if the function must show messages and info.
+#' Default value checks \code{"meteoland_verbosity"} option and if not set, defaults
+#' to TRUE. It can be turned off for the function with FALSE, or session wide with
+#' \code{options(meteoland_verbosity = FALSE)}
 #' @return the same \code{meteo} data provided with the the variables completed
 #'
 #' @examples
@@ -477,20 +481,26 @@ worldmet2meteoland <- function(meteo, complete = FALSE) {
 #' completed_meteo$MinRelativeHumidity
 #'
 #' @export complete_meteo
-complete_meteo <- function(meteo) {
+complete_meteo <- function(meteo, verbose = getOption("meteoland_verbosity", TRUE)) {
 
   # assertions
   assertthat::assert_that(has_meteo(meteo))
   assertthat::assert_that(has_topo(meteo))
 
-  usethis::ui_info(
-    "Completing missing variables if possible:"
+  .verbosity_control(
+    usethis::ui_info(
+      "Completing missing variables if possible:"
+    ),
+    verbose
   )
 
   # This no!!! We need a function for each row
-  .complete_relative_humidity <- function(RelativeHumidity, MinTemperature, MeanTemperature) {
+  .complete_relative_humidity <- function(RelativeHumidity, MinTemperature, MeanTemperature, verbose) {
 
-    usethis::ui_todo("RelativeHumidity")
+    .verbosity_control(
+      usethis::ui_todo("RelativeHumidity"),
+      verbose
+    )
 
     purrr::pmap_dbl(
       list(RelativeHumidity, MinTemperature, MeanTemperature),
@@ -502,8 +512,12 @@ complete_meteo <- function(meteo) {
     )
   }
 
-  .complete_min_relative_humidity <- function(MinRelativeHumidity, MinTemperature, MaxTemperature) {
-    usethis::ui_todo("MinRelativeHumidity")
+  .complete_min_relative_humidity <- function(MinRelativeHumidity, MinTemperature, MaxTemperature, verbose) {
+
+    .verbosity_control(
+      usethis::ui_todo("MinRelativeHumidity"),
+      verbose
+    )
 
     purrr::pmap_dbl(
       list(MinRelativeHumidity, MinTemperature, MaxTemperature),
@@ -515,8 +529,11 @@ complete_meteo <- function(meteo) {
     )
   }
 
-  .complete_max_relative_humidity <- function(MaxRelativeHumidity) {
-    usethis::ui_todo("MaxRelativeHumidity")
+  .complete_max_relative_humidity <- function(MaxRelativeHumidity, verbose) {
+    .verbosity_control(
+      usethis::ui_todo("MaxRelativeHumidity"),
+      verbose
+    )
 
     dplyr::if_else(
       is.na(MaxRelativeHumidity), 100, MaxRelativeHumidity
@@ -528,9 +545,12 @@ complete_meteo <- function(meteo) {
     MinRelativeHumidity, MaxRelativeHumidity,
     Precipitation,
     elevation, slope, aspect,
-    geometry
+    geometry, verbose
   ) {
-    usethis::ui_todo("Radiation")
+    .verbosity_control(
+      usethis::ui_todo("Radiation"),
+      verbose
+    )
 
     julian_day <- purrr::map_int(
       dates,
@@ -601,22 +621,25 @@ complete_meteo <- function(meteo) {
     # dplyr::as_tibble() |>
     dplyr::mutate(
       MeanRelativeHumidity = .complete_relative_humidity(
-        MeanRelativeHumidity, MinTemperature, MeanTemperature
+        MeanRelativeHumidity, MinTemperature, MeanTemperature, verbose
       ),
       MinRelativeHumidity = .complete_min_relative_humidity(
-        MinRelativeHumidity, MinTemperature, MaxTemperature
+        MinRelativeHumidity, MinTemperature, MaxTemperature, verbose
       ),
-      MaxRelativeHumidity = .complete_max_relative_humidity(MaxRelativeHumidity),
+      MaxRelativeHumidity = .complete_max_relative_humidity(MaxRelativeHumidity, verbose),
       Radiation = .complete_radiation(
         Radiation, dates, MinTemperature, MaxTemperature,
         MinRelativeHumidity, MaxRelativeHumidity,
         Precipitation,
         elevation, slope, aspect,
-        sf::st_geometry(meteo)
+        sf::st_geometry(meteo), verbose
       )
     )
 
-  usethis::ui_done("Done")
+  .verbosity_control(
+    usethis::ui_done("Done"),
+    verbose
+  )
 
   return(meteo_completed)
 }

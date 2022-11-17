@@ -340,5 +340,8 @@
   if (!"Precipitation" %in% meteo_names) {
     meteo$Precipitation <- NA_real_
   }
+  if (!"RelativeHumidity" %in% meteo_names) {
+    meteo$RelativeHumidity <- NA_real_
+  }
   return(meteo)
 }

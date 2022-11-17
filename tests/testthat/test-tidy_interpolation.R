@@ -21,6 +21,63 @@ meteo_test_subdaily_with_errors <- readRDS('subdaily_with_errors.rds') |>
 meteo_test_non_unique_ids <- meteo_test
 meteo_test_non_unique_ids$geometry[1] <- meteo_test_non_unique_ids$geometry[5000]
 
+# worldmet2meteoland
+test_that("worldmet2meteoland works", {
+
+  skip_on_cran()
+
+  # data
+  worldmet_stations <- worldmet::getMeta(lat = 42, lon = 0, n = 10, plot = FALSE)
+  worldmet_codes <- paste0(worldmet_stations$usaf, "-", worldmet_stations$wban)
+
+  worldmet_subdaily_2022 <-
+    worldmet::importNOAA(worldmet_codes, year = 2022, hourly = TRUE, n.cores = 6)
+
+
+  expect_s3_class(test_res <- worldmet2meteoland(worldmet_subdaily_2022), 'sf')
+  expect_true(
+    all(c(
+      "MeanTemperature", "MinTemperature", "MaxTemperature",
+      "Precipitation",
+      "MeanRelativeHumidity", "MinRelativeHumidity", "MaxRelativeHumidity",
+      "stationID", "dates", "elevation"
+    ) %in% names(test_res))
+  )
+
+  meteo_test_no_dates <- worldmet_subdaily_2022 |> dplyr::select(-date)
+  meteo_test_no_relative_humidity <- worldmet_subdaily_2022 |>
+    dplyr::select(-RH)
+
+  expect_error(
+    worldmet2meteoland(meteo_test_no_dates),
+    "Provided data has no date or code variables"
+  )
+
+  expect_s3_class(
+    test_res_norh <- worldmet2meteoland(meteo_test_no_relative_humidity),
+    "sf"
+  )
+  expect_true(
+    all(c(
+      "MinTemperature", "MaxTemperature", "Precipitation",
+      "stationID", "dates"
+    ) %in% names(test_res_norh))
+  )
+
+  expect_s3_class(
+    test_complete_no_changes <- worldmet2meteoland(worldmet_subdaily_2022, complete = TRUE),
+    "sf"
+  )
+  expect_identical(nrow(test_complete_no_changes), nrow(test_res))
+  expect_identical(names(test_complete_no_changes), c(names(test_res), 'aspect', 'slope'))
+  expect_identical(test_complete_no_changes$MinTemperature, test_res$MinTemperature)
+  expect_false(
+    identical(test_res$Radiation, test_complete_no_changes$Radiation)
+  )
+
+
+})
+
 test_that("meteospain2meteoland works", {
   # daily
   expect_s3_class(test_res <- meteospain2meteoland(meteo_test), 'sf')

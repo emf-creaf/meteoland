@@ -78,53 +78,53 @@ meteospain2meteoland <- function(meteo, complete = FALSE) {
   #     Precipitation = precipitation,
   #     everything()
   #   )
-  # 
+  #
   # # Renaming optional
   # if ("mean_temperature" %in% names(meteo_temp)) {
   #   meteo_temp <- meteo_temp |>
   #     dplyr::rename(MeanTemperature = mean_temperature)
   # }
-  # 
+  #
   # if ("mean_relative_humidity" %in% names(meteo_temp)) {
   #   meteo_temp <- meteo_temp |>
   #     dplyr::rename(RelativeHumidity = mean_relative_humidity)
   # }
-  # 
+  #
   # if ("min_relative_humidity" %in% names(meteo_temp)) {
   #   meteo_temp <- meteo_temp |>
   #     dplyr::rename(MinRelativeHumidity = min_relative_humidity)
   # }
-  # 
+  #
   # if ("max_relative_humidity" %in% names(meteo_temp)) {
   #   meteo_temp <- meteo_temp |>
   #     dplyr::rename(MaxRelativeHumidity = max_relative_humidity)
   # }
-  # 
+  #
   # if ("mean_wind_speed" %in% names(meteo_temp)) {
   #   meteo_temp <- meteo_temp |>
   #     dplyr::rename(WindSpeed = mean_wind_speed)
   # }
-  # 
+  #
   # if ("mean_wind_direction" %in% names(meteo_temp)) {
   #   meteo_temp <- meteo_temp |>
   #     dplyr::rename(WindDirection = mean_wind_direction)
   # }
-  # 
+  #
   # # if ("radiation" %in% names(meteo_temp)) {
   # #   meteo_temp <- meteo_temp |>
   # #     dplyr::rename(Radiation = radiation)
   # # }
-  # 
+  #
   # if ("solar_radiation" %in% names(meteo_temp)) {
   #   meteo_temp <- meteo_temp |>
   #     dplyr::rename(Radiation = solar_radiation)
   # }
-  # 
+  #
   # if ("global_solar_radiation" %in% names(meteo_temp)) {
   #   meteo_temp <- meteo_temp |>
   #     dplyr::rename(Radiation = global_solar_radiation)
   # }
-  # 
+  #
   # res <- meteo_temp |>
   #   dplyr::select(dplyr::any_of(
   #     c(
@@ -136,26 +136,53 @@ meteospain2meteoland <- function(meteo, complete = FALSE) {
   #       "Radiation"
   #     )
   #   ))
-  # 
+  #
   # # complete step
   # if (isTRUE(complete)) {
   #   res <- complete_meteo(res)
   # }
-  # 
+  #
   # return(res)
-  
+
   # check dictionary
   dictionary <- .meteospain_variables_dictionary(TRUE)
   if ("mean_temperature" %in% names(meteo)) {
     dictionary <- .meteospain_variables_dictionary(FALSE)
   }
-  
+
   .reshape_meteo(meteo, dictionary, complete)
-  
+
+}
+
+worldmet2meteoland <- function(meteo, complete = FALSE) {
+
+  # assertions
+  assertthat::assert_that(
+    all(c("date", "code") %in% names(meteo)),
+    msg = "Provided data has no date or code variables. Is this a worldmet dataset?"
+  )
+  assertthat::assert_that(
+    is.logical(complete) && !is.na(complete),
+    msg = "'complete' argument must be logical (FALSE or TRUE)"
+  )
+
+  meteo |>
+    # Sometimes, on worldmet, some points lack data (inclided spatial), so we remove those
+    dplyr::filter(!is.na(latitude)) |>
+    # We convert to sf
+    sf::st_as_sf(
+      coords = c("latitude", "longitude"), crs = sf::st_crs(4326)
+    ) |>
+    # And reshape
+    .reshape_meteo(
+      dictionary = .worldmet_variables_dictionary(),
+      complete = complete
+    )
+
 }
 
 # .aggregate_subdaily_meteospain <- function(meteo) {
-# 
+#
 #   # browser()
 #   # check if data is subdaily
 #   grouped_meteo <- meteo |>
@@ -164,31 +191,31 @@ meteospain2meteoland <- function(meteo, complete = FALSE) {
 #       timestamp = lubridate::floor_date(timestamp, unit = "day")
 #     ) |>
 #     dplyr::group_by(timestamp, station_id)
-# 
+#
 #   station_date_values <- grouped_meteo |>
 #     dplyr::count() |>
 #     dplyr::pull(n)
-# 
+#
 #   # if only one value per station and date exists for all combinations, no need of summarising
 #   if (!any(station_date_values > 1)) {
 #     return(meteo)
 #   }
-# 
+#
 #   usethis::ui_info("Provided meteospain data seems to be in subdaily time steps, aggregating to daily scale")
-# 
+#
 #   # summarise wind function
 #   .summarise_wind_direction <- function(wind_direction) {
 #     wind_direction <- as.numeric(wind_direction)
 #     y <- sum(cos(wind_direction * pi / 180), na.rm = TRUE) / length(wind_direction)
 #     x <- sum(sin(wind_direction * pi / 180), na.rm = TRUE) / length(wind_direction)
 #     dv <- (180 / pi) * atan2(x, y)
-# 
+#
 #     if (dv < 0) {
 #       dv <- dv + 360
 #     }
 #     return(dv)
 #   }
-# 
+#
 #   # na or fun, if all vector is NAs, return NAs, if not apply the function
 #   .is_na_or_fun <- function(var, fun, ...) {
 #     if (all(is.na(var))) {
@@ -196,7 +223,7 @@ meteospain2meteoland <- function(meteo, complete = FALSE) {
 #     }
 #     fun(var, ...)
 #   }
-# 
+#
 #   .create_missing_vars <- function(meteo) {
 #     meteo_names <- names(meteo)
 #     if (!"min_temperature" %in% meteo_names) {
@@ -210,7 +237,7 @@ meteospain2meteoland <- function(meteo, complete = FALSE) {
 #     }
 #     return(meteo)
 #   }
-# 
+#
 #   grouped_meteo |>
 #     .create_missing_vars() |>
 #     dplyr::mutate(

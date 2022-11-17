@@ -166,4 +166,11 @@
 # 1. Add vignette with the new logic and workflows
 # 1. Create and test examples for docs
 # 1. Implement worldmet2meteoland method
+#     - create a reshaping general framework DONE
+#     - document reshaping framework
+#     - test reshaping framework
+#     - create dictionary for meteospain DONE
+#     - update meteospain2meteoland DONE
+#     - create dictionary for worldmet
+#     - update/create worldmet2meteoland
 # 1. Update dependencies (usethis::use_package)

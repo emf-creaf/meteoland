@@ -1,7 +1,7 @@
 .reshape_meteo <- function(meteo, dictionary, complete) {
-  
+
   # browser()
-  
+
   processed_meteo <- meteo |>
     units::drop_units() |>
     # rename vars
@@ -10,21 +10,21 @@
     .aggregate_subdaily_meteo() |>
     # fix station geometries if needed (meteospain)
     .fix_station_geometries()
-  
+
   if (complete) {
     processed_meteo <- processed_meteo |>
       complete_meteo()
   }
-  
+
   return(processed_meteo)
-  
+
 }
 
 .rename_meteo_vars <- function(meteo, dictionary) {
-  
+
   # copy the meteo
   meteo_res <- meteo
-  
+
   # walk through the dictionary and update meteo copy
   purrr::iwalk(
     dictionary,
@@ -35,8 +35,23 @@
       }
     }
   )
-  
+
   return(meteo_res)
+}
+
+.worldmet_variables_dictionary <- function() {
+  res <- list(
+    dates = "date",
+    stationID = "code",
+    elevation = "elev",
+    WindDirection = "wd",
+    WindSpeed = "ws",
+    Temperature = "air_temp",
+    RelativeHumidity = "RH",
+    Precipitation = "precip_6"
+  )
+
+  return(res)
 }
 
 .meteospain_variables_dictionary <- function(subdaily = TRUE) {
@@ -56,7 +71,7 @@
     WindSpeed = "mean_wind_speed",
     Radiation = "global_solar_radiation"
   )
-  
+
   if (subdaily) {
     # subdaily
     res <- list(
@@ -73,17 +88,17 @@
       Radiation = "global_solar_radiation"
     )
   }
-  
+
   return(res)
-  
+
 }
 
 
 .aggregate_subdaily_meteo <- function(meteo) {
-  
+
   # browser()
   # check if data is subdaily
-  
+
   grouped_meteo <- meteo |>
     dplyr::as_tibble() |>
     dplyr::select(-geometry) |>
@@ -91,21 +106,21 @@
       dates = lubridate::floor_date(dates, unit = "day")
     ) |>
     dplyr::group_by(dates, stationID)
-  
+
   station_date_values <- grouped_meteo |>
     dplyr::count() |>
     dplyr::pull(n)
-  
+
   # if only one value per station and date exists for all combinations,
   # no need of summarising
   if (!any(station_date_values > 1)) {
     return(meteo)
   }
-  
+
   usethis::ui_info(
     "Provided meteo data seems to be in subdaily time steps, aggregating to daily scale"
   )
-  
+
   grouped_meteo |>
     .create_missing_vars() |>
     # ensure solar radiation is never negative
@@ -136,7 +151,7 @@
       by = c('stationID')
     ) |>
     sf::st_as_sf()
-  
+
 }
 
 .fix_station_geometries <- function(meteo) {
@@ -145,7 +160,7 @@
     dplyr::arrange(dates) |>
     dplyr::select(stationID, geometry) |>
     dplyr::distinct()
-  
+
   # If more geometries than station IDs, issue a warning and filter by the last
   # geometry to remove duplicates
   if (nrow(distinct_rows) != length(unique(distinct_rows[["stationID"]]))) {
@@ -153,20 +168,20 @@
       "Some stations have different metadata (elevation, coordinates...) for ",
       "different dates. Choosing the most recent metadata"
     ))
-    
+
     distinct_rows <- distinct_rows |>
       dplyr::group_by(stationID) |>
       dplyr::filter(as.character(geometry) == dplyr::last(as.character(geometry)))
-    
+
     meteo <- meteo |>
       dplyr::as_tibble() |>
       dplyr::select(-geometry) |>
       dplyr::left_join(distinct_rows, by = 'stationID') |>
       sf::st_as_sf()
   }
-  
+
   return(meteo)
-  
+
 }
 
 # summarise wind function
@@ -175,7 +190,7 @@
   y <- sum(cos(wind_direction * pi / 180), na.rm = TRUE) / length(wind_direction)
   x <- sum(sin(wind_direction * pi / 180), na.rm = TRUE) / length(wind_direction)
   dv <- (180 / pi) * atan2(x, y)
-  
+
   if (dv < 0) {
     dv <- dv + 360
   }

@@ -48,7 +48,8 @@ st_crs(temp_topo) <- st_crs(3043)
 # we reduce to 1000m pixel, warp to 4326 and select 10x10 raster (100 cells)
 raster_to_interpolate_example <- temp_topo |>
   st_warp(cellsize = 1000, crs = st_crs(temp_topo)) |>
-  st_warp(crs = st_crs(4326))
+  st_warp(crs = st_crs(4326)) |>
+  dplyr::rename(elevation = Elevation, aspect = Aspect, slope = Slope)
 raster_to_interpolate_example <-
   raster_to_interpolate_example[ , 155:165, 110:120]
 

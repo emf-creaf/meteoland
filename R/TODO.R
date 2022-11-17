@@ -157,6 +157,16 @@
 ###         - points DONE
 ###         - raster (stars) DONE
 ### 1. Create and test examples for docs DONE
+### 1. Implement worldmet2meteoland method
+###     - create a reshaping general framework DONE
+###     - document reshaping framework DONE
+###     - test reshaping framework DONE
+###     - create dictionary for meteospain DONE
+###     - update meteospain2meteoland DONE
+###     - create dictionary for worldmet DONE
+###     - update/create worldmet2meteoland DONE
+###     - test worldmet2meteoland DONE
+###     - clean and organize the reshape framework function in files DONE
 # 1. Ask Miquel
 #     - if interpolator.coverage must be implemented
 #     - if precipitation concentration is ok and then check the results with him
@@ -165,15 +175,13 @@
 #     - New functions (check existent tests)
 #     - Old functions no deprecated
 # 1. Add vignette with the new logic and workflows
-# 1. Implement worldmet2meteoland method
-#     - create a reshaping general framework DONE
-#     - document reshaping framework DONE
-#     - test reshaping framework DONE
-#     - create dictionary for meteospain DONE
-#     - update meteospain2meteoland DONE
-#     - create dictionary for worldmet DONE
-#     - update/create worldmet2meteoland DONE
-#     - test worldmet2meteoland
-#     - clean and organize the reshape framework function in files
 # 1. Update dependencies (usethis::use_package)
 # 1. Clean and organize tests in files
+#     - reorganize tests in files DONE
+#     - data for testing DONE
+#         - meteospain data for reshape framework tests DONE
+#         - worldmet data for reshape framework tests DONE
+#         - mixed data for meteo and topo, interpolator and interpolation tests DONE
+#     - test infra for testing both mixed and individual origin data
+#         - infra for both mixed DONE
+#     - add dates tests to interpolation

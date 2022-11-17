@@ -33,7 +33,8 @@
     dates <- stars::st_get_dimension_values(interpolator, 'date')
   } else {
     dates_ref <- stars::st_get_dimension_values(interpolator, 'date')
-    dates_inside <- dates[dates %in% dates_ref]
+    dates_index <- dplyr::between(dates, as.Date(min(dates_ref)), as.Date(max(dates_ref)))
+    dates_inside <- dates[dates_index]
 
     # No dates in range
     if (length(dates_inside) < 1) {

@@ -117,6 +117,19 @@ suppressWarnings(
   interpolator_test <- create_meteo_interpolator(meteo_test_correct)
 )
 
+test_that("defaultInterpolationParams work as expected", {
+  interpolation_param_names <- c(
+    "initial_Rp", "iterations", "alpha_MinTemperature", "alpha_MaxTemperature",
+    "alpha_DewTemperature", "alpha_PrecipitationEvent", "alpha_PrecipitationAmount",
+    "alpha_Wind", "N_MinTemperature", "N_MaxTemperature", "N_DewTemperature",
+    "N_PrecipitationEvent", "N_PrecipitationAmount", "N_Wind", "St_Precipitation",
+    "St_TemperatureRange", "pop_crit", "f_max", "wind_height", "debug"
+  )
+  expect_type(defaultInterpolationParams(), "list")
+  expect_length(defaultInterpolationParams(), length(interpolation_param_names))
+  expect_named(defaultInterpolationParams(), interpolation_param_names)
+})
+
 test_that("get and set params methods work as expected", {
 
   # get

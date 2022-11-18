@@ -26,13 +26,22 @@ Imports:
     meteospain,
     Rcpp,
     units,
-    lifecycle
+    lifecycle,
+    usethis,
+    dplyr,
+    tidyr,
+    assertthat,
+    purrr,
+    ncdfgeom,
+    ncmeta,
+    lubridate
 Suggests: 
     knitr,
     forecast,
     spacetime,
     rmarkdown,
-    testthat (>= 3.0.0)
+    testthat (>= 3.0.0),
+    worldmet
 LinkingTo: Rcpp
 Encoding: UTF-8
 NeedsCompilation: yes

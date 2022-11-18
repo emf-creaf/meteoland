@@ -181,6 +181,7 @@
 ###     - accept session option "meteoland_verbosity" DONE
 ###     - add verbosity checks to all usethis::ui_info, usethis::ui_todo... (NOT warnings or errors) DONE
 ###     - add tests for the verbosity control and workflows DONE
+### 1. Update dependencies (usethis::use_package) DONE (more will come with R CMD CHECK)
 # 1. Ask Miquel
 #     - if interpolator.coverage must be implemented
 #     - if precipitation concentration is ok and then check the results with him
@@ -189,4 +190,3 @@
 #     - New functions (check existent tests) DONE
 #     - Old functions no deprecated
 # 1. Add vignette with the new logic and workflows
-# 1. Update dependencies (usethis::use_package)

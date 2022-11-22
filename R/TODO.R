@@ -193,4 +193,7 @@
 #     - Old functions no deprecated
 #         - utils DONE
 #         - C functions
+#           - utils_* DONE
+#           - radiation_* DONE
+#           - interpolation_* ASK
 # 1. Add vignette with the new logic and workflows

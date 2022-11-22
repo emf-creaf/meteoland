@@ -186,7 +186,11 @@
 #     - if interpolator.coverage must be implemented
 #     - if precipitation concentration is ok and then check the results with him
 #     - if weathergeneration utils (dot knn and others) should be exported
+#     - if humidity_dewtemperature2relative doesnt throw error in non numeric arguments by design
+#     - which c exported methods must be maintained, which ones must be deprecated and which tested
 # 1. Add tests
 #     - New functions (check existent tests) DONE
 #     - Old functions no deprecated
+#         - utils DONE
+#         - C functions
 # 1. Add vignette with the new logic and workflows

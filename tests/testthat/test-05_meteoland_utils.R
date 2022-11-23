@@ -80,3 +80,51 @@ test_that("humidity_specific2relative works as expected", {
     humidity_specific2relative(letters, LETTERS)
   )
 })
+
+
+test_that("precipitation_rainfallErosivity works as expected", {
+  x_test <- meteoland_meteo_example |>
+    as.data.frame() |>
+    dplyr::filter(stationID == "VC") |>
+    magrittr::set_rownames(as.Date(unique(meteoland_meteo_example$dates))) |>
+    dplyr::select(-dates, -geometry, -stationID, -elevation, -aspect, -slope)
+  long_test <- -1
+  scale_test <- "month"
+  average_test <- TRUE
+  
+  expect_type(
+    (rainfallErosivity_monthly_test <- precipitation_rainfallErosivity(
+      x_test, long_test, scale_test, average_test
+    )),
+    'double'
+  )
+  expect_length(rainfallErosivity_monthly_test, 1)
+  expect_named(rainfallErosivity_monthly_test, '04')
+  
+  expect_type(
+    (rainfallErosivity_yearly_test <- precipitation_rainfallErosivity(
+      x_test, long_test, "year", average_test
+    )),
+    'double'
+  )
+  expect_length(rainfallErosivity_yearly_test, 1)
+  expect_null(names(rainfallErosivity_yearly_test))
+  expect_equal(rainfallErosivity_monthly_test[[1]], rainfallErosivity_yearly_test)
+  
+  # errors
+  expect_error(precipitation_rainfallErosivity(
+    "x_test", long_test, scale_test, average_test
+  ))
+  
+  expect_error(precipitation_rainfallErosivity(
+    x_test, "long_test", scale_test, average_test
+  ))
+  
+  expect_error(precipitation_rainfallErosivity(
+    x_test, long_test, "scale_test", average_test
+  ))
+  
+  expect_error(precipitation_rainfallErosivity(
+    x_test, long_test, scale_test, "average_test"
+  ))
+})

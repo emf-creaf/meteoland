@@ -182,12 +182,14 @@
 ###     - add verbosity checks to all usethis::ui_info, usethis::ui_todo... (NOT warnings or errors) DONE
 ###     - add tests for the verbosity control and workflows DONE
 ### 1. Update dependencies (usethis::use_package) DONE (more will come with R CMD CHECK)
-# 1. Ask Miquel
-#     - if interpolator.coverage must be implemented
-#     - if precipitation concentration is ok and then check the results with him
-#     - if weathergeneration utils (dot knn and others) should be exported
-#     - if humidity_dewtemperature2relative doesnt throw error in non numeric arguments by design
-#     - which c exported methods must be maintained, which ones must be deprecated and which tested
+### 1. Ask Miquel
+###     - if interpolator.coverage must be implemented NOPE
+###     - if precipitation concentration is ok and then check the results with him
+###         - precipitation_concentration deprecated
+###         - precipitation_rainfallErosivity maintain
+###     - if weathergeneration utils (dot knn and others) should be exported, NO, so is ok
+###     - if humidity_dewtemperature2relative doesnt throw error in non numeric arguments by design TO CHECK
+###     - which c exported methods must be maintained, which ones must be deprecated and which tested
 # 1. Add tests
 #     - New functions (check existent tests) DONE
 #     - Old functions no deprecated
@@ -195,5 +197,18 @@
 #         - C functions
 #           - utils_* DONE
 #           - radiation_* DONE
-#           - interpolation_* ASK
+#           - interpolation_*
+#               - tests for exported functions individually
+#               - tests for consistency between interpolation process and individual functions
 # 1. Add vignette with the new logic and workflows
+# 1. precipitation_rainfallErosivity
+#     - Separate docs from precipitation_concentration DONE
+#     - Deprecate precipitation_concentration DONE
+#     - Maintain precipitation_rainfallErosivity and add tests
+#         - Create methods for summarypoint and related functions (see own point)
+# 1. Create new methods for summarypoint and related due to it being need for precipitation_rainfallErosivity
+#     - summarypoint, summarypoints
+#     - summaryraster
+#     - summaryinterpolator
+# 1. Consistency between utils.R functions (all same errors and whatnot)
+# 1. Explore terra instead of stars/ncdfgeom/ncmeta for interpolators

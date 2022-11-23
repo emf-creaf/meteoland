@@ -18,7 +18,7 @@
 
 #' @describeIn summarypoints `r lifecycle::badge("deprecated")`
 #' @export
-summarypoint<-function(x, var, fun="mean", freq=NULL, dates = NULL, months= NULL, ...) {
+summarypoint <- function(x, var, fun="mean", freq=NULL, dates = NULL, months= NULL, ...) {
   
   # deprecation notice
   lifecycle::deprecate_warn(

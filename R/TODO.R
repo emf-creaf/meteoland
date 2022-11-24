@@ -207,8 +207,10 @@
 #     - Maintain precipitation_rainfallErosivity and add tests
 #         - Create methods for summarypoint and related functions (see own point)
 # 1. Create new methods for summarypoint and related due to it being need for precipitation_rainfallErosivity
-#     - summarypoint, summarypoints
-#     - summaryraster
-#     - summaryinterpolator
+#     - summarypoint, summarypoints DONE
+#     - summaryraster DONE
+#     - summaryinterpolator DONE
+#     - add tests
+#     - add function names in old summary functions deprecation notices
 # 1. Consistency between utils.R functions (all same errors and whatnot)
 # 1. Explore terra instead of stars/ncdfgeom/ncmeta for interpolators

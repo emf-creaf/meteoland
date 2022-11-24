@@ -117,9 +117,17 @@ get_interpolation_params <- function(interpolator) {
 #'
 #' @export set_interpolation_params
 set_interpolation_params <- function(interpolator, params = NULL, verbose = getOption("meteoland_verbosity", TRUE)) {
+  
+  # sometimes, the interpolator cab lost the params (aggregation, subsetting...),
+  # so in that case, we need to go for the default ones
+  ref_params <- get_interpolation_params(interpolator)
+  if (is.null(ref_params)) {
+    ref_params <- defaultInterpolationParams()
+  }
+  
   # ensure the params are correct and fill any lacking with the defaults
   safe_params <-
-    .safely_create_interpolation_params(params, get_interpolation_params(interpolator), verbose)
+    .safely_create_interpolation_params(params, ref_params, verbose)
   # remove any previous params
   attr(interpolator, "params") <- NULL
   # add new ones

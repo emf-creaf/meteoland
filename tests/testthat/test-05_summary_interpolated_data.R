@@ -1,13 +1,56 @@
-test_that(".summary_interpolated_sf works as expected", {
+test_that("summarise_interpolated_data for sf works as expected", {
   data_test <- interpolate_data(
     points_to_interpolate_example, meteoland_interpolator_example,
     verbose = FALSE
   )
-  
+
+  # errors
+  # summarise_interpolated_data arguments errors
+  expect_error(
+    summarise_interpolated_data(meteoland_topo_example),
+    "interpolated_data"
+  )
+  expect_error(
+    summarise_interpolated_data(25),
+    "provided is not"
+  )
+  expect_error(
+    summarise_interpolated_data(data_test, fun = 25),
+    "fun"
+  )
+  expect_error(
+    summarise_interpolated_data(data_test, fun = "tururu"),
+    "tururu"
+  )
+  expect_error(
+    summarise_interpolated_data(data_test, frequency = 25),
+    "frequency"
+  )
+  expect_error(
+    summarise_interpolated_data(data_test, frequency = "tururu"),
+    "should be one of"
+  )
+  expect_error(
+    summarise_interpolated_data(data_test, vars_to_summary = 25),
+    "vars_to_summary"
+  )
+  expect_error(
+    summarise_interpolated_data(data_test, vars_to_summary = "tururu"),
+    "vars_to_summary"
+  )
+  expect_error(
+    summarise_interpolated_data(data_test, dates_to_summary = 25),
+    "dates_to_summary"
+  )
+  expect_error(
+    summarise_interpolated_data(data_test, months_to_summary = "tururu"),
+    "months_to_summary"
+  )
+
   # nested sf
   # defaults
   expect_s3_class(
-    (res_nested_defaults_test <- .summary_interpolated_sf(data_test)),
+    (res_nested_defaults_test <- summarise_interpolated_data(data_test)),
     "sf"
   )
   expect_true("summary_data" %in% names(res_nested_defaults_test))
@@ -21,10 +64,15 @@ test_that(".summary_interpolated_sf works as expected", {
     )
   )
   expect_true(nrow(res_nested_defaults_test$summary_data[[5]]) == 1)
-  
+  # test for data summarised, not NA or NaN
+  expect_false(
+    is.na(res_nested_defaults_test$summary_data[[6]]$MeanTemperature) ||
+      is.nan(res_nested_defaults_test$summary_data[[6]]$MeanTemperature)
+  )
+
   # frequency
   expect_s3_class(
-    (res_nested_weekly_test <- .summary_interpolated_sf(data_test, frequency = "week")),
+    (res_nested_weekly_test <- summarise_interpolated_data(data_test, frequency = "week")),
     "sf"
   )
   expect_true("summary_data" %in% names(res_nested_weekly_test))
@@ -38,8 +86,270 @@ test_that(".summary_interpolated_sf works as expected", {
     )
   )
   expect_true(nrow(res_nested_weekly_test$summary_data[[5]]) == 6)
-  
+  # test for data summarised, not NA or NaN
+  expect_false(
+    all(is.na(res_nested_weekly_test$summary_data[[6]]$MeanTemperature)) ||
+      all(is.nan(res_nested_weekly_test$summary_data[[6]]$MeanTemperature))
+  )
+
   # dates to summary
-  
-  
+  dates_to_summary_test <- as.Date(unique(data_test$interpolated_data[[3]]$dates)[1:5])
+  expect_message(
+    (res_nested_dates_test <-
+       summarise_interpolated_data(data_test, dates_to_summary = dates_to_summary_test)),
+    "Filtering the desired dates"
+  )
+  expect_s3_class(res_nested_dates_test, "sf")
+  expect_true("summary_data" %in% names(res_nested_dates_test))
+  expect_s3_class(res_nested_dates_test$summary_data[[1]], "data.frame")
+  expect_named(
+    res_nested_dates_test$summary_data[[10]],
+    c(
+      "MeanTemperature", "MinTemperature","MaxTemperature",
+      "Precipitation", "MeanRelativeHumidity", "MinRelativeHumidity",
+      "MaxRelativeHumidity", "Radiation", "WindSpeed", "WindDirection", "PET"
+    )
+  )
+  expect_true(nrow(res_nested_dates_test$summary_data[[5]]) == 1)
+  # test for data summarised, not NA or NaN
+  expect_false(
+    is.na(res_nested_dates_test$summary_data[[6]]$MeanTemperature) ||
+      is.nan(res_nested_dates_test$summary_data[[6]]$MeanTemperature)
+  )
+
+  # What happens when the dates supplied are not in the data??
+  # TODO
+
+  # months_to_summary
+  months_to_summary_test <- 4
+  expect_s3_class(
+    (res_nested_months_test <- summarise_interpolated_data(data_test, months_to_summary = months_to_summary_test)),
+    "sf"
+  )
+  expect_true("summary_data" %in% names(res_nested_months_test))
+  expect_s3_class(res_nested_months_test$summary_data[[1]], "data.frame")
+  expect_named(
+    res_nested_months_test$summary_data[[10]],
+    c(
+      "MeanTemperature", "MinTemperature","MaxTemperature",
+      "Precipitation", "MeanRelativeHumidity", "MinRelativeHumidity",
+      "MaxRelativeHumidity", "Radiation", "WindSpeed", "WindDirection", "PET"
+    )
+  )
+  expect_true(nrow(res_nested_months_test$summary_data[[5]]) == 1)
+  # test for data summarised, not NA or NaN
+  expect_false(
+    is.na(res_nested_months_test$summary_data[[6]]$MeanTemperature) ||
+      is.nan(res_nested_months_test$summary_data[[6]]$MeanTemperature)
+  )
+
+  # as data is only april, this result should be identical to the base one
+  expect_identical(res_nested_months_test, res_nested_defaults_test)
+
+  # What happens when the months supplied are not in the data??
+  expect_s3_class(
+    suppressWarnings(
+      res_nested_months_bad_test <- summarise_interpolated_data(data_test, months_to_summary = 1:2)
+    ),
+    "sf"
+  )
+  # expecting NA or NaN
+  expect_true(
+    is.na(res_nested_months_bad_test$summary_data[[6]]$MeanTemperature) ||
+      is.nan(res_nested_months_bad_test$summary_data[[6]]$MeanTemperature)
+  )
+
+  # vars_to_summary
+  vars_to_summary_test <- c("Precipitation", "Radiation")
+  expect_s3_class(
+    (res_nested_vars_test <- summarise_interpolated_data(data_test, vars_to_summary = vars_to_summary_test)),
+    "sf"
+  )
+  expect_true("summary_data" %in% names(res_nested_vars_test))
+  expect_s3_class(res_nested_vars_test$summary_data[[1]], "data.frame")
+  expect_named(res_nested_vars_test$summary_data[[10]], c("Precipitation", "Radiation"))
+  expect_true(nrow(res_nested_vars_test$summary_data[[5]]) == 1)
+  # test for data summarised, not NA or NaN
+  expect_false(
+    is.na(res_nested_vars_test$summary_data[[6]]$Precipitation) ||
+      is.nan(res_nested_vars_test$summary_data[[6]]$Precipitation)
+  )
+
+  # integration tests
+  expect_s3_class(
+    (res_nested_integration_test <- summarise_interpolated_data(
+      data_test,
+      fun = "max",
+      frequency = "week",
+      vars_to_summary = c("Precipitation", "Radiation"),
+      dates_to_summary = as.Date(c("2022-04-01", "2022-04-02")),
+      months_to_summary = 4,
+      na.rm = TRUE,
+      verbose = FALSE
+    )),
+    "sf"
+  )
+  expect_true("summary_data" %in% names(res_nested_integration_test))
+  expect_s3_class(res_nested_integration_test$summary_data[[1]], "data.frame")
+  expect_named(
+    res_nested_integration_test$summary_data[[10]],
+    c("week", "year", "Precipitation", "Radiation")
+  )
+  expect_true(nrow(res_nested_integration_test$summary_data[[5]]) == 2)
+  # test for data summarised, not NA or NaN
+  expect_false(
+    all(is.na(res_nested_integration_test$summary_data[[6]]$Radiation)) ||
+      all(is.nan(res_nested_integration_test$summary_data[[6]]$Radiation))
+  )
+
+  # TODO
+  # tests for unnested
+  # test for individual data frames
+
+})
+
+test_that("summarise_interpolated_data for stars works as expected", {
+  data_test <- interpolate_data(
+    raster_to_interpolate_example, meteoland_interpolator_example,
+    verbose = FALSE
+  )
+
+  data_test_no_interpolation <- data_test[c("elevation", "slope", "aspect"),,,1]
+
+  # errors
+  expect_error(
+    summarise_interpolated_data(data_test_no_interpolation), "interpolated_data"
+  )
+
+  # defaults
+  expect_s3_class(
+    (res_defaults_test <- summarise_interpolated_data(data_test)),
+    "stars"
+  )
+  expect_named(
+    res_defaults_test,
+    c(
+      "MeanTemperature", "MinTemperature","MaxTemperature", "Precipitation",
+      "MeanRelativeHumidity", "MinRelativeHumidity", "MaxRelativeHumidity",
+      "Radiation", "WindSpeed", "WindDirection", "PET"
+    )
+  )
+  expect_length(stars::st_get_dimension_values(res_defaults_test, "time"), 1)
+  # test for data summarised, not NA or NaN
+  expect_false(
+    all(is.na(res_defaults_test$MeanTemperature)) ||
+      all(is.nan(res_defaults_test$MeanTemperature))
+  )
+
+  # frequency
+  expect_s3_class(
+    (res_frequency_test <- summarise_interpolated_data(data_test, frequency = "week")),
+    "stars"
+  )
+  expect_named(
+    res_frequency_test,
+    c(
+      "MeanTemperature", "MinTemperature","MaxTemperature", "Precipitation",
+      "MeanRelativeHumidity", "MinRelativeHumidity", "MaxRelativeHumidity",
+      "Radiation", "WindSpeed", "WindDirection", "PET"
+    )
+  )
+  expect_length(stars::st_get_dimension_values(res_frequency_test, "time"), 5)
+  # test for data summarised, not NA or NaN
+  expect_false(
+    all(is.na(res_frequency_test$MeanTemperature)) ||
+      all(is.nan(res_frequency_test$MeanTemperature))
+  )
+
+  # dates_to_summary
+  dates_to_summary_test <- as.Date(stars::st_get_dimension_values(data_test, "date")[1:5])
+  expect_message(
+    (res_dates_test <- summarise_interpolated_data(data_test, dates_to_summary = dates_to_summary_test)),
+    "Filtering the desired dates"
+  )
+  expect_s3_class(res_dates_test, "stars")
+  expect_named(
+    res_dates_test,
+    c(
+      "MeanTemperature", "MinTemperature","MaxTemperature", "Precipitation",
+      "MeanRelativeHumidity", "MinRelativeHumidity", "MaxRelativeHumidity",
+      "Radiation", "WindSpeed", "WindDirection", "PET"
+    )
+  )
+  expect_length(stars::st_get_dimension_values(res_dates_test, "time"), 1)
+  # test for data summarised, not NA or NaN
+  expect_false(
+    all(is.na(res_dates_test$MeanTemperature)) ||
+      all(is.nan(res_dates_test$MeanTemperature))
+  )
+
+  # What happens when the dates supplied are not in the data??
+  # TODO
+
+  # months_to_summary
+  months_to_summary_test <- 4
+  expect_s3_class(
+    (res_months_test <- summarise_interpolated_data(data_test, months_to_summary = months_to_summary_test)),
+    "stars"
+  )
+  expect_named(
+    res_months_test,
+    c(
+      "MeanTemperature", "MinTemperature","MaxTemperature", "Precipitation",
+      "MeanRelativeHumidity", "MinRelativeHumidity", "MaxRelativeHumidity",
+      "Radiation", "WindSpeed", "WindDirection", "PET"
+    )
+  )
+  expect_length(stars::st_get_dimension_values(res_months_test, "time"), 1)
+  # test for data summarised, not NA or NaN
+  expect_false(
+    all(is.na(res_months_test$MeanTemperature)) ||
+      all(is.nan(res_months_test$MeanTemperature))
+  )
+
+  # as data is only april, this result should be identical to the base one
+  expect_identical(res_months_test, res_defaults_test)
+
+  # What happens when the months supplied are not in the data??
+  expect_error(
+    summarise_interpolated_data(data_test, months_to_summary = 1:2),
+    "Selected months"
+  )
+
+  # vars_to_summary
+  vars_to_summary_test <- c("Precipitation", "Radiation")
+  expect_s3_class(
+    (res_vars_test <- summarise_interpolated_data(data_test, vars_to_summary = vars_to_summary_test)),
+    "stars"
+  )
+  expect_named(res_vars_test, c("Precipitation", "Radiation"))
+  expect_length(stars::st_get_dimension_values(res_vars_test, "time"), 1)
+  # test for data summarised, not NA or NaN
+  expect_false(
+    all(is.na(res_vars_test$Precipitation)) ||
+      all(is.nan(res_vars_test$Precipitation))
+  )
+
+  # integration tests
+  expect_s3_class(
+    (res_integration_test <- summarise_interpolated_data(
+      data_test,
+      fun = "max",
+      frequency = "week",
+      vars_to_summary = c("Precipitation", "Radiation"),
+      dates_to_summary = as.Date(c("2022-04-01", "2022-04-02")),
+      months_to_summary = 4,
+      na.rm = TRUE,
+      verbose = FALSE
+    )),
+    "stars"
+  )
+  expect_named(res_integration_test, c("Precipitation", "Radiation"))
+  expect_length(stars::st_get_dimension_values(res_integration_test, "time"), 1)
+  # test for data summarised, not NA or NaN
+  expect_false(
+    all(is.na(res_integration_test$Precipitation)) ||
+      all(is.nan(res_integration_test$Precipitation))
+  )
+
 })

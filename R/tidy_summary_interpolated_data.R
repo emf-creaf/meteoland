@@ -110,7 +110,9 @@
     # summarise by frequency
     dplyr::summarise(
       dplyr::across(.fns = parse(text = fun) |> eval(), ...)
-    )
+    ) |>
+    # ungroup any group left
+    dplyr::ungroup()
 }
 
 .summary_interpolated_sf <- function(
@@ -225,7 +227,7 @@
     # check the filtering return dates, if not trigger a warning
     .check_month_filtering(months_to_summary) |>
     # perform the aggregation
-    aggregate(by = frequency, FUN = fun)
+    aggregate(by = frequency, FUN = parse(text = fun) |> eval())
 }
 
 #' Summarise interpolated data by temporal dimension
@@ -233,8 +235,8 @@
 #' @description
 #' `r lifecycle::badge("experimental")`
 #'
-#' Summarises the meteorology in one or more locations in the desired temporal
-#' scale
+#' Summarises the interpolated meteorology in one or more locations by the desired
+#' temporal scale
 #'
 #' @details
 #' If \code{interpolated_data} is a nested interpolated data sf object, as
@@ -275,7 +277,17 @@
 #'
 #' @author \enc{Víctor}{Victor} Granda \enc{García}{Garcia}, CREAF
 #' @examples
-#' # TODO
+#' # points interpolation aggregation
+#' points_to_interpolate_example |>
+#'   interpolate_data(meteoland_interpolator_example, verbose = FALSE) |>
+#'   summarise_interpolated_data()
+#'
+#' # raster interpolation aggregation
+#' raster_to_interpolate_example |>
+#'   interpolate_data(meteoland_interpolator_example, verbose = FALSE) |>
+#'   summarise_interpolated_data()
+#'
+#' # TODO other examples
 #'
 #' @export
 summarise_interpolated_data <- function(
@@ -351,6 +363,34 @@ summarise_interpolated_data <- function(
   return(res)
 }
 
+#' Summarise interpolator objects by temporal dimension
+#'
+#' @description
+#' `r lifecycle::badge("experimental")`
+#'
+#' Summarises an interpolator object by the desired temporal scale.
+#'
+#' @inheritParams summarise_interpolated_data
+#' @param interpolator An interpolator object as created by \code{\link{create_meteo_interpolator}}.
+#'
+#' @return
+#' \code{summarise_interpolator} function returns the same interpolator object provided with the
+#' temporal dimension aggregated to desired frequency.
+#'
+#' @author \enc{Víctor}{Victor} Granda \enc{García}{Garcia}, CREAF
+#' @examples
+#' # example interpolator
+#' meteoland_interpolator_example
+#'
+#' # aggregate all dates in the interpolator, calculating the maximum values
+#' summarise_interpolator(meteoland_interpolator_example, fun = "max")
+#'
+#' # aggregate weekly, calculating mean values
+#' summarise_interpolator(meteoland_interpolator_example, frequency = "week")
+#'
+#' # TODO other examples
+#'
+#' @export
 summarise_interpolator <- function(
   interpolator,
   fun = "mean",
@@ -365,6 +405,12 @@ summarise_interpolator <- function(
   verbose = getOption("meteoland_verbosity", TRUE),
   ...
 ) {
+
+  # assertions
+  assertthat::assert_that(.is_interpolator(interpolator))
+
+  # summarising (using the .summary_interpolated_stars, because at the end,
+  # the interpolator object is a star object)
   .summary_interpolated_stars(
     interpolator,
     fun = fun,

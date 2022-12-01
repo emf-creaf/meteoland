@@ -69,6 +69,8 @@ test_that("summarise_interpolated_data for sf works as expected", {
     is.na(res_nested_defaults_test$summary_data[[6]]$MeanTemperature) ||
       is.nan(res_nested_defaults_test$summary_data[[6]]$MeanTemperature)
   )
+  # test that summary dfs are not grouped
+  expect_false(inherits(res_nested_defaults_test$summary_data[[8]], "grouped_df"))
 
   # frequency
   expect_s3_class(
@@ -91,6 +93,8 @@ test_that("summarise_interpolated_data for sf works as expected", {
     all(is.na(res_nested_weekly_test$summary_data[[6]]$MeanTemperature)) ||
       all(is.nan(res_nested_weekly_test$summary_data[[6]]$MeanTemperature))
   )
+  # test that summary dfs are not grouped
+  expect_false(inherits(res_nested_weekly_test$summary_data[[8]], "grouped_df"))
 
   # dates to summary
   dates_to_summary_test <- as.Date(unique(data_test$interpolated_data[[3]]$dates)[1:5])
@@ -116,6 +120,8 @@ test_that("summarise_interpolated_data for sf works as expected", {
     is.na(res_nested_dates_test$summary_data[[6]]$MeanTemperature) ||
       is.nan(res_nested_dates_test$summary_data[[6]]$MeanTemperature)
   )
+  # test that summary dfs are not grouped
+  expect_false(inherits(res_nested_dates_test$summary_data[[8]], "grouped_df"))
 
   # What happens when the dates supplied are not in the data??
   # TODO
@@ -158,6 +164,9 @@ test_that("summarise_interpolated_data for sf works as expected", {
     is.na(res_nested_months_bad_test$summary_data[[6]]$MeanTemperature) ||
       is.nan(res_nested_months_bad_test$summary_data[[6]]$MeanTemperature)
   )
+  # test that summary dfs are not grouped
+  expect_false(inherits(res_nested_months_test$summary_data[[8]], "grouped_df"))
+  expect_false(inherits(res_nested_months_bad_test$summary_data[[8]], "grouped_df"))
 
   # vars_to_summary
   vars_to_summary_test <- c("Precipitation", "Radiation")
@@ -174,6 +183,8 @@ test_that("summarise_interpolated_data for sf works as expected", {
     is.na(res_nested_vars_test$summary_data[[6]]$Precipitation) ||
       is.nan(res_nested_vars_test$summary_data[[6]]$Precipitation)
   )
+  # test that summary dfs are not grouped
+  expect_false(inherits(res_nested_vars_test$summary_data[[8]], "grouped_df"))
 
   # integration tests
   expect_s3_class(
@@ -201,6 +212,8 @@ test_that("summarise_interpolated_data for sf works as expected", {
     all(is.na(res_nested_integration_test$summary_data[[6]]$Radiation)) ||
       all(is.nan(res_nested_integration_test$summary_data[[6]]$Radiation))
   )
+  # test that summary dfs are not grouped
+  expect_false(inherits(res_nested_integration_test$summary_data[[8]], "grouped_df"))
 
   # TODO
   # tests for unnested
@@ -351,5 +364,85 @@ test_that("summarise_interpolated_data for stars works as expected", {
     all(is.na(res_integration_test$Precipitation)) ||
       all(is.nan(res_integration_test$Precipitation))
   )
+
+})
+
+
+test_that("summarise_interpolator works as expected", {
+
+  data_test <- meteoland_interpolator_example
+
+  # errors
+  # summarise_interpolator arguments errors
+  expect_error(
+    summarise_interpolator(meteoland_topo_example),
+    "interpolator"
+  )
+  expect_error(
+    summarise_interpolator(
+      interpolate_data(
+        raster_to_interpolate_example, meteoland_interpolator_example,
+        verbose = FALSE
+      )
+    ),
+    "interpolator"
+  )
+  expect_error(
+    summarise_interpolator(25),
+    "interpolator"
+  )
+  expect_error(
+    summarise_interpolator(data_test, fun = 25),
+    "fun"
+  )
+  expect_error(
+    summarise_interpolator(data_test, fun = "tururu"),
+    "tururu"
+  )
+  expect_error(
+    summarise_interpolator(data_test, frequency = 25),
+    "arg"
+  )
+  expect_error(
+    summarise_interpolator(data_test, frequency = "tururu"),
+    "should be one of"
+  )
+  expect_error(
+    summarise_interpolator(data_test, vars_to_summary = 25),
+    "vars_to_summary"
+  )
+  expect_error(
+    summarise_interpolator(data_test, vars_to_summary = "tururu"),
+    "vars_to_summary"
+  )
+  expect_error(
+    summarise_interpolator(data_test, dates_to_summary = 25),
+    "dates_to_summary"
+  )
+  expect_error(
+    summarise_interpolator(data_test, months_to_summary = "tururu"),
+    "months_to_summary"
+  )
+
+  # default tests
+  expect_s3_class(
+    (res_interp_defaults <- summarise_interpolator(data_test)),
+    "stars"
+  )
+  # result must be an interpolator
+  expect_true(.is_interpolator(res_interp_defaults))
+  # result must have the same names
+  expect_named(res_interp_defaults, names(data_test))
+  # result has to have a frequency dependent number of dates
+  expect_length(stars::st_get_dimension_values(res_interp_defaults, "date"), 1)
+  # result has to have the same stations
+  expect_identical(ncol(res_interp_defaults), ncol(data_test))
+  # result has to have values for the variables that had values in the interpolator
+  expect_false(all(is.na(res_interp_defaults[["MinTemperature"]])))
+  # result has not gaps in the topo info
+  expect_false(any(is.na(res_interp_defaults[["elevation"]])))
+  # result shouldn't have change the values for topo
+  expect_identical(res_interp_defaults[["elevation"]][,1], data_test[["elevation"]][,1])
+
 
 })

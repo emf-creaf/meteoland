@@ -62,9 +62,11 @@
 
     # if there is no frequency, means no frequency_fun, then return data as is
     if (is.null(frequency)) {
-      return(data |>
-               # and select the vars wanted
-               dplyr::select(dplyr::any_of(vars_to_summary)))
+      return(
+        data |>
+          # and select the vars wanted
+          dplyr::select(dplyr::any_of(vars_to_summary))
+      )
     }
 
     # match args
@@ -398,7 +400,9 @@ summarise_interpolator <- function(
   vars_to_summary = c(
     "MeanTemperature", "MinTemperature","MaxTemperature", "Precipitation",
     "MeanRelativeHumidity", "MinRelativeHumidity", "MaxRelativeHumidity",
-    "Radiation", "WindSpeed", "WindDirection", "PET"
+    "Radiation", "WindSpeed", "WindDirection", "PET",
+    "SmoothedPrecipitation", "SmoothedTemperatureRange",
+    "elevation", "slope", "aspect"
   ),
   dates_to_summary = NULL,
   months_to_summary = 1:12,
@@ -408,10 +412,38 @@ summarise_interpolator <- function(
 
   # assertions
   assertthat::assert_that(.is_interpolator(interpolator))
+  assertthat::assert_that(
+    is.character(fun), msg = "fun must be a character"
+  )
+  assertthat::assert_that(
+    (is.null(frequency)) || is.character(frequency),
+    msg = "frequency must be NULL or a character"
+  )
+  assertthat::assert_that(
+    is.character(vars_to_summary), msg = "vars_to_summary must be a character vector"
+  )
+  assertthat::assert_that(
+    any(vars_to_summary %in% c(
+      "MeanTemperature", "MinTemperature","MaxTemperature", "Precipitation",
+      "MeanRelativeHumidity", "MinRelativeHumidity", "MaxRelativeHumidity",
+      "Radiation", "WindSpeed", "WindDirection", "PET",
+      "SmoothedPrecipitation", "SmoothedTemperatureRange",
+      "elevation", "slope", "aspect"
+    )),
+    msg = "vars_to_summary must be one or more of
+    'MeanTemperature', 'MinTemperature','MaxTemperature', 'Precipitation',
+    'MeanRelativeHumidity', 'MinRelativeHumidity', 'MaxRelativeHumidity',
+    'Radiation', 'WindSpeed', 'WindDirection', 'PET',
+    'SmoothedPrecipitation', 'SmoothedTemperatureRange',
+    'elevation', 'aspect', 'slope'"
+  )
+  assertthat::assert_that(
+    is.numeric(months_to_summary), msg = "months_to_summary must be a numeric vector"
+  )
 
   # summarising (using the .summary_interpolated_stars, because at the end,
   # the interpolator object is a star object)
-  .summary_interpolated_stars(
+  res <- .summary_interpolated_stars(
     interpolator,
     fun = fun,
     frequency = frequency,
@@ -426,4 +458,11 @@ summarise_interpolator <- function(
       params = get_interpolation_params(interpolator),
       verbose = verbose
     )
+
+  # also, aggregating with aggregate.stars method rename the temporal dimension
+  # so we need to ensure to maintain the old ones
+  dimnames(res) <- dimnames(interpolator)
+
+  return(res)
+
 }

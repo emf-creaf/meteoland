@@ -401,7 +401,7 @@ test_that("summarise_interpolator works as expected", {
   )
   expect_error(
     summarise_interpolator(data_test, frequency = 25),
-    "arg"
+    "frequency"
   )
   expect_error(
     summarise_interpolator(data_test, frequency = "tururu"),

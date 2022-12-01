@@ -400,7 +400,7 @@ summarise_interpolator <- function(
   vars_to_summary = c(
     "MeanTemperature", "MinTemperature","MaxTemperature", "Precipitation",
     "MeanRelativeHumidity", "MinRelativeHumidity", "MaxRelativeHumidity",
-    "Radiation", "WindSpeed", "WindDirection", "PET",
+    "RelativeHumidity", "Radiation", "WindSpeed", "WindDirection", "PET",
     "SmoothedPrecipitation", "SmoothedTemperatureRange",
     "elevation", "slope", "aspect"
   ),
@@ -426,6 +426,7 @@ summarise_interpolator <- function(
     any(vars_to_summary %in% c(
       "MeanTemperature", "MinTemperature","MaxTemperature", "Precipitation",
       "MeanRelativeHumidity", "MinRelativeHumidity", "MaxRelativeHumidity",
+      "RelativeHumidity",
       "Radiation", "WindSpeed", "WindDirection", "PET",
       "SmoothedPrecipitation", "SmoothedTemperatureRange",
       "elevation", "slope", "aspect"
@@ -433,6 +434,7 @@ summarise_interpolator <- function(
     msg = "vars_to_summary must be one or more of
     'MeanTemperature', 'MinTemperature','MaxTemperature', 'Precipitation',
     'MeanRelativeHumidity', 'MinRelativeHumidity', 'MaxRelativeHumidity',
+    'RelativeHumidity',
     'Radiation', 'WindSpeed', 'WindDirection', 'PET',
     'SmoothedPrecipitation', 'SmoothedTemperatureRange',
     'elevation', 'aspect', 'slope'"

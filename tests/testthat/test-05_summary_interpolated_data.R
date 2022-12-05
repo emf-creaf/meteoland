@@ -432,7 +432,7 @@ test_that("summarise_interpolator works as expected", {
   # result must be an interpolator
   expect_true(.is_interpolator(res_interp_defaults))
   # result must have the same names
-  expect_named(res_interp_defaults, names(data_test))
+  expect_named(res_interp_defaults, names(data_test), ignore.order = TRUE)
   # result has to have a frequency dependent number of dates
   expect_length(stars::st_get_dimension_values(res_interp_defaults, "date"), 1)
   # result has to have the same stations
@@ -442,7 +442,7 @@ test_that("summarise_interpolator works as expected", {
   # result has not gaps in the topo info
   expect_false(any(is.na(res_interp_defaults[["elevation"]])))
   # result shouldn't have change the values for topo
-  expect_identical(res_interp_defaults[["elevation"]][,1], data_test[["elevation"]][,1])
+  expect_identical(res_interp_defaults[["elevation"]][1,], data_test[["elevation"]][1,])
 
 
 })

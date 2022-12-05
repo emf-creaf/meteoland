@@ -443,6 +443,13 @@ summarise_interpolator <- function(
     is.numeric(months_to_summary), msg = "months_to_summary must be a numeric vector"
   )
 
+  # helper function to put col and row names again after summarising
+  .apply_colrows <- function(x, column_names, row_names) {
+    colnames(x) <- column_names
+    rownames(x) <- row_names
+    return(x)
+  }
+
   # summarising (using the .summary_interpolated_stars, because at the end,
   # the interpolator object is a star object)
   res <- .summary_interpolated_stars(
@@ -459,6 +466,13 @@ summarise_interpolator <- function(
     set_interpolation_params(
       params = get_interpolation_params(interpolator),
       verbose = verbose
+    ) |>
+    # dont forget also to put again the names of the columns and rows in the
+    # interpolator data also
+    purrr::modify(
+      .f = .apply_colrows,
+      column_names = colnames(interpolator[["elevation"]]),
+      row_names = as.character(stars::st_get_dimension_values(.x, "date"))
     )
 
   # also, aggregating with aggregate.stars method rename the temporal dimension

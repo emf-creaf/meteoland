@@ -441,8 +441,142 @@ test_that("summarise_interpolator works as expected", {
   expect_false(all(is.na(res_interp_defaults[["MinTemperature"]])))
   # result has not gaps in the topo info
   expect_false(any(is.na(res_interp_defaults[["elevation"]])))
-  # result shouldn't have change the values for topo
+  # result shouldn't have change the values for topo, also, colrownames must be the same
   expect_identical(res_interp_defaults[["elevation"]][1,], data_test[["elevation"]][1,])
 
-
+  # frequency
+  expect_s3_class(
+    (res_interp_week <- summarise_interpolator(data_test, frequency = "week")),
+    'stars'
+  )
+  # result must be an interpolator
+  expect_true(.is_interpolator(res_interp_week))
+  # result must have the same names
+  expect_named(res_interp_week, names(data_test), ignore.order = TRUE)
+  # result has to have a frequency dependent number of dates
+  expect_length(stars::st_get_dimension_values(res_interp_week, "date"), 5)
+  # result has to have the same stations
+  expect_identical(ncol(res_interp_week), ncol(data_test))
+  # result has to have values for the variables that had values in the interpolator
+  expect_false(all(is.na(res_interp_week[["MinTemperature"]])))
+  # result has not gaps in the topo info
+  expect_false(any(is.na(res_interp_week[["elevation"]])))
+  # result shouldn't have change the values for topo, also, colrownames must be the same
+  expect_identical(res_interp_week[["elevation"]][1,], data_test[["elevation"]][1,])
+  
+  # dates_to_summary
+  dates_to_summary_test <-
+    as.Date(stars::st_get_dimension_values(data_test, "date")[1:5])
+  expect_s3_class(
+    (res_interp_dates <-
+       summarise_interpolator(data_test, dates_to_summary = dates_to_summary_test)),
+    'stars'
+  )
+  # result must be an interpolator
+  expect_true(.is_interpolator(res_interp_dates))
+  # result must have the same names
+  expect_named(res_interp_dates, names(data_test), ignore.order = TRUE)
+  # result has to have a frequency dependent number of dates
+  expect_length(stars::st_get_dimension_values(res_interp_dates, "date"), 1)
+  # result has to have the same stations
+  expect_identical(ncol(res_interp_dates), ncol(data_test))
+  # result has to have values for the variables that had values in the interpolator
+  expect_false(all(is.na(res_interp_dates[["MinTemperature"]])))
+  # result has not gaps in the topo info
+  expect_false(any(is.na(res_interp_dates[["elevation"]])))
+  # result shouldn't have change the values for topo, also, colrownames must be the same
+  expect_identical(res_interp_dates[["elevation"]][1,], data_test[["elevation"]][1,])
+  # result must be different from the default result, as we are only summarising some dates
+  expect_false(
+    identical(res_interp_dates[["MinTemperature"]], res_interp_defaults[["MinTemperature"]])
+  )
+  # What happens when the dates supplied are not in the data??
+  # TODO
+  
+  # months_to_summary
+  months_to_summary_test <- 4
+  expect_s3_class(
+    (res_interp_months <-
+       summarise_interpolator(data_test, months_to_summary = months_to_summary_test)),
+    'stars'
+  )
+  # result must be an interpolator
+  expect_true(.is_interpolator(res_interp_months))
+  # result must have the same names
+  expect_named(res_interp_months, names(data_test), ignore.order = TRUE)
+  # result has to have a frequency dependent number of dates
+  expect_length(stars::st_get_dimension_values(res_interp_months, "date"), 1)
+  # result has to have the same stations
+  expect_identical(ncol(res_interp_months), ncol(data_test))
+  # result has to have values for the variables that had values in the interpolator
+  expect_false(all(is.na(res_interp_months[["MinTemperature"]])))
+  # result has not gaps in the topo info
+  expect_false(any(is.na(res_interp_months[["elevation"]])))
+  # result shouldn't have change the values for topo, also, colrownames must be the same
+  expect_identical(res_interp_months[["elevation"]][1,], data_test[["elevation"]][1,])
+  # result must be equal from the default result, as we are summarising the only
+  # present month
+  expect_identical(
+    res_interp_months[["MinTemperature"]], res_interp_defaults[["MinTemperature"]]
+  )
+  # What happens when the months supplied are not in the data??
+  expect_error(
+    summarise_interpolator(data_test, months_to_summary = 1:2),
+    "Selected months"
+  )
+  
+  # vars_to_summary
+  vars_to_summary_test <- c("Precipitation", "Radiation")
+  expect_s3_class(
+    (res_interp_vars <-
+       summarise_interpolator(data_test, vars_to_summary = vars_to_summary_test)),
+    'stars'
+  )
+  # result must be an interpolator, but as we remove the mandatory variables, then
+  # is not
+  expect_error(.is_interpolator(res_interp_vars), "Names found")
+  # result must have the same names
+  expect_named(res_interp_vars, c("Precipitation", "Radiation"), ignore.order = TRUE)
+  # result has to have a frequency dependent number of dates
+  expect_length(stars::st_get_dimension_values(res_interp_vars, "date"), 1)
+  # result has to have the same stations
+  expect_identical(ncol(res_interp_vars), ncol(data_test))
+  # result has to have values for the variables that had values in the interpolator
+  expect_false(all(is.na(res_interp_vars[["Precipitation"]])))
+  # result must be equal from the default result, as we are summarising the only
+  # present month
+  expect_identical(
+    res_interp_vars[["Precipitation"]], res_interp_defaults[["Precipitation"]]
+  )
+  
+  # integration tests
+  expect_s3_class(
+    (res_interp_integration <- summarise_interpolator(
+      data_test,
+      fun = "max",
+      frequency = "week",
+      vars_to_summary = c("Precipitation", "Radiation"),
+      dates_to_summary = as.Date(c("2022-04-01", "2022-04-02")),
+      months_to_summary = 4,
+      na.rm = TRUE,
+      verbose = FALSE
+    )),
+    "stars"
+  )
+  # result must be an interpolator, but as we remove the mandatory variables, then
+  # is not
+  expect_error(.is_interpolator(res_interp_integration), "Names found")
+  # result must have the same names
+  expect_named(res_interp_integration, c("Precipitation", "Radiation"), ignore.order = TRUE)
+  # result has to have a frequency dependent number of dates
+  expect_length(stars::st_get_dimension_values(res_interp_integration, "date"), 1)
+  # result has to have the same stations
+  expect_identical(ncol(res_interp_integration), ncol(data_test))
+  # result has to have values for the variables that had values in the interpolator
+  expect_false(all(is.na(res_interp_integration[["Precipitation"]])))
+  # result must be different from the week result, as we are using only two dates
+  expect_false(
+    identical(res_interp_integration[["Precipitation"]], res_interp_week[["Precipitation"]])
+  )
+  
 })

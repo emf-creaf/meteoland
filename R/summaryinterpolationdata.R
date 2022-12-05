@@ -4,9 +4,9 @@ summaryinterpolationdata<-function(object, var, fun=mean, freq=NULL, dates = NUL
   
   # deprecation notice
   lifecycle::deprecate_warn(
-    when = "1.1.0", what = "summaryinterpolationdata()", with = NULL,
+    when = "1.1.0", what = "summaryinterpolationdata()", with = "summarise_interpolator()",
     details = "MeteorologyInterpolationData class is soft deprecated.
-    Interpolator objects are now stars data cube objects, and can be summarised with its own methods"
+    Interpolator objects are now stars data cube objects, and can be summarised with summarise_interpolator()"
   )
   
   if(!inherits(object,"MeteorologyInterpolationData")) stop("'object' has to be of class 'MeteorologyInterpolationData'.")

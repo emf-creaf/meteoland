@@ -89,9 +89,9 @@ summarypixels<-function(pixels, var, fun=mean, freq=NULL, dates = NULL, months =
   
   # deprecation notice
   lifecycle::deprecate_warn(
-    when = "1.1.0", what = "summarypixels()", with = NULL,
+    when = "1.1.0", what = "summarypixels()", with = "summarise_interpolated_data()",
     details = "Spatial_*_Meteorology classes are soft deprecated.
-    Interpolation results are now sf or stars objects and can be summarised in any usual mean for that kind of objects"
+    Interpolation results are now sf or stars objects and can be summarised with summarise_interpolated_data()"
   )
   
   if(!inherits(pixels,"SpatialPixelsMeteorology") && !inherits(pixels,"character")) stop("'pixels' has to be of class 'SpatialPixelsMeteorology' or a 'character'.")
@@ -103,9 +103,9 @@ summarygrid<-function(grid, var, fun=mean, freq=NULL, dates = NULL, months = NUL
   
   # deprecation notice
   lifecycle::deprecate_warn(
-    when = "1.1.0", what = "summarygrid()", with = NULL,
+    when = "1.1.0", what = "summarygrid()", with = "summarise_interpolated_data()",
     details = "Spatial_*_Meteorology classes are soft deprecated.
-    Interpolation results are now sf or stars objects and can be summarised in any usual mean for that kind of objects"
+    Interpolation results are now sf or stars objects and can be summarised with summarise_interpolated_data()"
   )
   
   if(!inherits(grid,"SpatialGridMeteorology") && !inherits(grid,"character")) stop("'grid' has to be of class 'SpatialPixelsMeteorology' or a 'character'.")

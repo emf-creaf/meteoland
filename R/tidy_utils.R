@@ -111,6 +111,16 @@ precipitation_rainfall_erosivity <- function(
 ) {
   
   # assertions
+  assertthat::assert_that(
+    assertthat::is.number(longitude), msg = "longitude must be numeric"
+  )
+  assertthat::assert_that(
+    assertthat::is.string(scale), length(scale) == 1,
+    msg = "scale must be a string of length 1"
+  )
+  assertthat::assert_that(
+    assertthat::is.flag(average), msg = "average must be a logical value"
+  )
   
   # match.arg
   scale <- match.arg(scale)

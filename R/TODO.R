@@ -211,6 +211,9 @@
 #     - Separate docs from precipitation_concentration DONE
 #     - Deprecate precipitation_concentration DONE
 #     - Maintain precipitation_rainfallErosivity and add tests
-#         - Create methods for summarypoint and related functions (see own point)
+#         - Create methods for summarypoint and related functions (see own point) DONE
+#     - in summarise methods, asserting for meteo names can generate problems when
+#       using summarise functions inside others like precipitation_rainfall_erosivity.
+#       It is better to check for names of variables to summarise in the data I think. Look at it!!
 # 1. Consistency between utils.R functions (all same errors and whatnot)
 # 1. Explore terra instead of stars/ncdfgeom/ncmeta for interpolators

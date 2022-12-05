@@ -49,3 +49,108 @@
 
   return(res)
 }
+
+#' Precipitation rainfall erosivity
+#' 
+#' @description
+#' `r lifecycle::badge("experimental")`
+#' 
+#' Function \code{precipitation_rainfall_erosivity()} calculates a multi-year
+#' average of monthly rainfall erosivity using the MedREM model proposed by
+#' Diodato and Bellochi (2010) for the Mediterranean area (see also Guerra et
+#' al. 2016).
+#' 
+#' @details 
+#' MedREM model is: Rm = b0·P·sqrt(d)·(alpha + b1*longitude), where P is
+#' accumulated precipitation and d is maximum daily precipitation. Parameters
+#' used for the MedREM model are b0 = 0.117, b1 = -0.015, alpha = 2. Note that
+#' there is a mistake in Guerra et al. (2016) regarding parameters b1 and a.
+#' 
+#' @param meteo_data A meteo tibble as with the dates and meteorological variables
+#'   as returned by \code{\link{interpolate_data}} in the "interpolated_data"
+#'   column.
+#' @param longitude Longitude in degrees.
+#' @param scale Character, either 'month' or 'year'. Default to 'month'
+#' @param average Boolean flag to calculate multi-year averages before applying
+#'   MedREM's formula.
+#' 
+#' @return A vector of values for each month (in MJ·mm·ha-1·h-1·month-1) or each
+#'   year (in MJ·mm·ha-1·h-1·yr-1), depending on the scale
+#'
+#' @author
+#'   Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF.
+#'   \enc{Víctor}{Victor} Granda \enc{García}{Garcia}, CREAF
+#'
+#' @references
+#' Diodato, N., Bellocchi, G., 2010. MedREM, a rainfall erosivity
+#' model for the Mediter-ranean region. J. Hydrol. 387, 119–127,
+#' doi:10.1016/j.jhydrol.2010.04.003.
+#' 
+#' Guerra CA, Maes J, Geijzendorffer I, Metzger MJ (2016) An assessment of soil
+#' erosion prevention by vegetation in Mediterranean Europe: Current trends of
+#' ecosystem service provision. Ecol Indic 60:213–222. doi:
+#' 10.1016/j.ecolind.2015.06.043.
+#' 
+#' @examples
+#' interpolated_example <-
+#'   interpolate_data(points_to_interpolate_example, meteoland_interpolator_example)
+#'
+#' precipitation_rainfall_erosivity(
+#'   meteo_data = interpolated_example$interpolated_data[[1]],
+#'   longitude = 2.32,
+#'   scale = "month",
+#'   average = TRUE
+#' )
+#' 
+#' @export
+precipitation_rainfall_erosivity <- function(
+  meteo_data,
+  longitude,
+  scale = c("month", "year"),
+  average = TRUE
+) {
+  
+  # assertions
+  
+  # match.arg
+  scale <- match.arg(scale)
+  
+  # constants
+  b0 <- 0.117
+  b1 <- -0.015
+  a <- 2.000
+  
+  precipitation_sum <- summarise_interpolated_data(
+    meteo_data, fun = 'sum', frequency = scale,
+    vars_to_summary = "Precipitation", na.rm = TRUE
+  )
+  
+  precipitation_max <- summarise_interpolated_data(
+    meteo_data, fun = 'max', frequency = scale,
+    vars_to_summary = "Precipitation", na.rm = TRUE
+  )
+  
+  if (isTRUE(average)) {
+    # average by scale
+    precipitation_sum <- dplyr::group_by(precipitation_sum, .data[[scale]]) |>
+      dplyr::summarise(p_s = mean(Precipitation, na.rm = TRUE))
+    precipitation_max <- dplyr::group_by(precipitation_max, .data[[scale]]) |>
+      dplyr::summarise(d_s = mean(Precipitation, na.rm = TRUE))
+  } else {
+    # no average, just rename the Precipitation var for the next steps
+    precipitation_sum <- dplyr::rename(precipitation_sum, p_s = Precipitation)
+    precipitation_max <- dplyr::rename(precipitation_max, d_s = Precipitation)
+  }
+  
+  p_s <- precipitation_sum |>
+    dplyr::pull(p_s) |>
+    purrr::set_names(unique(precipitation_sum[[scale]]))
+  
+  d_s <- precipitation_max |>
+    dplyr::pull(d_s) |>
+    purrr::set_names(unique(precipitation_max[[scale]]))
+  
+  # build the result with the formula and return it
+  res <- b0 * p_s * sqrt(d_s) * (a + b1 * longitude)
+  return(res)
+}

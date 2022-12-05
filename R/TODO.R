@@ -190,6 +190,12 @@
 ###     - if weathergeneration utils (dot knn and others) should be exported, NO, so is ok
 ###     - if humidity_dewtemperature2relative doesnt throw error in non numeric arguments by design TO CHECK
 ###     - which c exported methods must be maintained, which ones must be deprecated and which tested
+### 1. Create new methods for summarypoint and related due to it being need for precipitation_rainfallErosivity
+###     - summarypoint, summarypoints DONE
+###     - summaryraster DONE
+###     - summaryinterpolator DONE
+###     - add tests DONE
+###     - add function names in old summary functions deprecation notices DONE
 # 1. Add tests
 #     - New functions (check existent tests) DONE
 #     - Old functions no deprecated
@@ -206,11 +212,5 @@
 #     - Deprecate precipitation_concentration DONE
 #     - Maintain precipitation_rainfallErosivity and add tests
 #         - Create methods for summarypoint and related functions (see own point)
-# 1. Create new methods for summarypoint and related due to it being need for precipitation_rainfallErosivity
-#     - summarypoint, summarypoints DONE
-#     - summaryraster DONE
-#     - summaryinterpolator DONE
-#     - add tests
-#     - add function names in old summary functions deprecation notices
 # 1. Consistency between utils.R functions (all same errors and whatnot)
 # 1. Explore terra instead of stars/ncdfgeom/ncmeta for interpolators

@@ -452,7 +452,7 @@ summarise_interpolator <- function(
 
   # summarising (using the .summary_interpolated_stars, because at the end,
   # the interpolator object is a star object)
-  res <- .summary_interpolated_stars(
+  temp_res <- .summary_interpolated_stars(
     interpolator,
     fun = fun,
     frequency = frequency,
@@ -466,18 +466,21 @@ summarise_interpolator <- function(
     set_interpolation_params(
       params = get_interpolation_params(interpolator),
       verbose = verbose
-    ) |>
-    # dont forget also to put again the names of the columns and rows in the
-    # interpolator data also
+    )
+  
+  # also, aggregating with aggregate.stars method rename the temporal dimension
+  # so we need to ensure to maintain the old ones
+  dimnames(temp_res) <- dimnames(interpolator)
+  
+  # dont forget also to put again the names of the columns and rows in the
+  # interpolator data also
+  res <- temp_res |>
     purrr::modify(
       .f = .apply_colrows,
       column_names = colnames(interpolator[["elevation"]]),
-      row_names = as.character(stars::st_get_dimension_values(.x, "date"))
+      row_names = as.character(stars::st_get_dimension_values(temp_res, "date"))
     )
 
-  # also, aggregating with aggregate.stars method rename the temporal dimension
-  # so we need to ensure to maintain the old ones
-  dimnames(res) <- dimnames(interpolator)
 
   return(res)
 

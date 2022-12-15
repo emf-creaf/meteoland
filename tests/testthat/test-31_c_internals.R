@@ -4,7 +4,7 @@
 
 ## Radiation functions tests ####
 test_that("radiation c internals work as expected", {
-  
+
   # data for radiation test
   year_test <- 2022
   month_test <- 4
@@ -30,7 +30,7 @@ test_that("radiation c internals work as expected", {
   tmin_test <- 5
   tmax_test <- 5 + 16
   alpha_test <- 0.08
-  
+
   ## radiation_julianDay
   expect_type(
     (julianDay_test <- radiation_julianDay(year_test, month_test, day_test)),
@@ -39,7 +39,7 @@ test_that("radiation c internals work as expected", {
   expect_error(
     radiation_julianDay("2022", "April", "25")
   )
-  
+
   # radiation_dateStringToJulianDays
   expect_type(
     (dateStringToJulianDays_test <- radiation_dateStringToJulianDays(dateStrings_test)),
@@ -49,7 +49,7 @@ test_that("radiation c internals work as expected", {
     radiation_dateStringToJulianDays(C("tururu", "larara"))
   )
   expect_identical(julianDay_test, dateStringToJulianDays_test[1])
-  
+
   # radiation_solarDeclination
   expect_type(
     (solarDeclination_test <- radiation_solarDeclination(J_test)),
@@ -61,7 +61,7 @@ test_that("radiation c internals work as expected", {
   expect_error(
     radiation_solarDeclination(c(J_test, J_test + 1))
   )
-  
+
   # radiation_solarConstant
   expect_type(
     (solarConstant_test <- radiation_solarConstant(J_test)),
@@ -73,7 +73,7 @@ test_that("radiation c internals work as expected", {
   expect_error(
     radiation_solarConstant(c(J_test, J_test + 1))
   )
-  
+
   # radiation_sunRiseSet
   expect_type(
     (sunRiseSet_test <- radiation_sunRiseSet(latrad_test, slorad_test, asprad_test, delta_test)),
@@ -85,7 +85,7 @@ test_that("radiation c internals work as expected", {
   expect_error(
     radiation_sunRiseSet(c(latrad_test, latrad_test), slorad_test, asprad_test, delta_test)
   )
-  
+
   # radiation_solarElevation
   expect_type(
     (solarElevation_test <- radiation_solarElevation(latrad_test, delta_test, hrad_test)),
@@ -97,7 +97,7 @@ test_that("radiation c internals work as expected", {
   expect_error(
     radiation_solarElevation(c(latrad_test, latrad_test), delta_test, hrad_test)
   )
-  
+
   # radiation_daylength
   expect_type(
     (daylength_test <- radiation_daylength(latrad_test, slorad_test, asprad_test, delta_test)),
@@ -109,7 +109,7 @@ test_that("radiation c internals work as expected", {
   expect_error(
     radiation_daylength(c(latrad_test, latrad_test), slorad_test, asprad_test, delta_test)
   )
-  
+
   # radiation_daylengthseconds
   expect_type(
     (daylengthseconds_test <- radiation_daylengthseconds(latrad_test, slorad_test, asprad_test, delta_test)),
@@ -121,7 +121,7 @@ test_that("radiation c internals work as expected", {
   expect_error(
     radiation_daylengthseconds(c(latrad_test, latrad_test), slorad_test, asprad_test, delta_test)
   )
-  
+
   # radiation_potentialRadiation
   expect_type(
     (potentialRadiation_test <- radiation_potentialRadiation(
@@ -139,7 +139,7 @@ test_that("radiation c internals work as expected", {
       c(solarConstant_test, solarConstant_test), latrad_test, slorad_test, asprad_test, delta_test
     )
   )
-  
+
   # radiation_solarRadiation
   expect_type(
     (solarRadiation_test <- radiation_solarRadiation(
@@ -161,7 +161,7 @@ test_that("radiation c internals work as expected", {
       vpa_test, precipitation_test
     )
   )
-  
+
   # radiation_directDiffuseInstant
   expect_type(
     (directDiffuseInstant_test <- radiation_directDiffuseInstant(
@@ -187,7 +187,7 @@ test_that("radiation c internals work as expected", {
       delta_test, hrad_test, R_s_test, clearday_test
     )
   )
-  
+
   # radiation_directDiffuseDay
   expect_s3_class(
     (directDiffuseDay_test <- radiation_directDiffuseDay(
@@ -213,7 +213,7 @@ test_that("radiation c internals work as expected", {
       delta_test, R_s_test, clearday_test, nsteps_test
     )
   )
-  
+
   # radiation_skyLongwaveRadiation
   expect_type(
     (skyLongwaveRadiation_test <- radiation_skyLongwaveRadiation(Tair_test, vpa_test, c_test)),
@@ -225,7 +225,7 @@ test_that("radiation c internals work as expected", {
   expect_error(
     radiation_skyLongwaveRadiation(c(Tair_test, Tair_test), vpa_test, c_test)
   )
-  
+
   # radiation_outgoingLongwaveRadiation
   expect_type(
     (outgoingLongwaveRadiation_test <- radiation_outgoingLongwaveRadiation(
@@ -247,7 +247,7 @@ test_that("radiation c internals work as expected", {
       R_s_test
     )
   )
-  
+
   # radiation_netRadiation
   expect_type(
     (netRadiation_test <- radiation_netRadiation(
@@ -273,7 +273,7 @@ test_that("radiation c internals work as expected", {
 
 ## Utils functions tests ####
 test_that("utils c internals work as expected", {
-  
+
   # data for utils test
   temperature_test <- 25
   Tmin_test <- 5
@@ -282,7 +282,7 @@ test_that("utils c internals work as expected", {
   RHmax_test <- 99
   elevation_test <- 900
   Patm_test <- 100
-  
+
   # utils_saturationVP
   expect_type(
     (saturationVP_test <- utils_saturationVP(temperature_test)),
@@ -294,7 +294,7 @@ test_that("utils c internals work as expected", {
   expect_error(
     utils_saturationVP(c(temperature_test, temperature_test))
   )
-  
+
   # utils_averageDailyVP
   expect_type(
     (averageDailyVP_test <- utils_averageDailyVP(Tmin_test, Tmax_test, RHmin_test, RHmax_test)),
@@ -306,7 +306,7 @@ test_that("utils c internals work as expected", {
   expect_error(
     utils_averageDailyVP(c(Tmin_test, Tmin_test), Tmax_test, RHmin_test, RHmax_test)
   )
-  
+
   # utils_atmosphericPressure
   expect_type(
     (atmosphericPressure_test <- utils_atmosphericPressure(elevation_test)),
@@ -318,7 +318,7 @@ test_that("utils c internals work as expected", {
   expect_error(
     utils_atmosphericPressure(c(elevation_test, elevation_test))
   )
-  
+
   # utils_airDensity
   expect_type(
     (airDensity_test <- utils_airDensity(temperature_test, Patm_test)),
@@ -330,7 +330,7 @@ test_that("utils c internals work as expected", {
   expect_error(
     utils_airDensity(c(temperature_test, temperature_test), Patm_test)
   )
-  
+
   # utils_averageDaylightTemperature
   expect_type(
     (averageDaylightTemperature_test <- utils_averageDaylightTemperature(Tmin_test, Tmax_test)),
@@ -342,7 +342,7 @@ test_that("utils c internals work as expected", {
   expect_error(
     utils_averageDaylightTemperature(c(Tmin_test, Tmin_test), Tmax_test)
   )
-  
+
   # utils_latentHeatVaporisation
   expect_type(
     (latentHeatVaporisation_test <- utils_latentHeatVaporisation(temperature_test)),
@@ -354,7 +354,7 @@ test_that("utils c internals work as expected", {
   expect_error(
     utils_latentHeatVaporisation(c(temperature_test, temperature_test))
   )
-  
+
   # utils_latentHeatVaporisationMol
   expect_type(
     (latentHeatVaporisationMol_test <- utils_latentHeatVaporisationMol(temperature_test)),
@@ -366,7 +366,7 @@ test_that("utils c internals work as expected", {
   expect_error(
     utils_latentHeatVaporisationMol(c(temperature_test, temperature_test))
   )
-  
+
   # utils_psychrometricConstant
   expect_type(
     (psychrometricConstant_test <- utils_psychrometricConstant(temperature_test, Patm_test)),
@@ -378,7 +378,7 @@ test_that("utils c internals work as expected", {
   expect_error(
     utils_psychrometricConstant(c(temperature_test, temperature_test), Patm_test)
   )
-  
+
   # utils_saturationVaporPressureCurveSlope
   expect_type(
     (saturationVaporPressureCurveSlope_test <- utils_saturationVaporPressureCurveSlope(temperature_test)),
@@ -389,6 +389,97 @@ test_that("utils c internals work as expected", {
   )
   expect_error(
     utils_saturationVaporPressureCurveSlope(c(temperature_test, temperature_test))
+  )
+})
+
+## PET functions tests ####
+test_that("PET c internals work as expected", {
+
+  # data for PET test
+  latrad_test <- 42 * (pi / 180)
+  elevation_test <- 900
+  slorad_test <- 2 * (pi / 180)
+  asprad_test <- 270 * (pi / 180)
+  J_test <- 2459695
+  tmax_test <- 5 + 16
+  tmin_test <- 5
+  rhmin_test <- 10
+  rhmax_test <- 99
+  R_s_test <- 6
+  u_test <- 5
+  z_test <- 2
+  z0_test <- 0.001
+  alpha_test <- 0.08
+  windfun_test <- "1956"
+  rc_test <- 80
+  Rn_test <- 25
+
+  # penman
+  expect_type(
+    (penman_test <- penman(
+      latrad_test, elevation_test, slorad_test, asprad_test, J_test, tmin_test,
+      tmax_test, rhmin_test, rhmax_test, R_s_test, u_test, z_test, z0_test,
+      alpha_test, windfun_test
+    )),
+    "double"
+  )
+
+  expect_error(
+    penman(
+      "latrad_test", elevation_test, slorad_test, asprad_test, J_test, tmin_test,
+      tmax_test, rhmin_test, rhmax_test, R_s_test, u_test, z_test, z0_test,
+      alpha_test, windfun_test
+    )
+  )
+  expect_error(
+    penman(
+      c(latrad_test,latrad_test), elevation_test, slorad_test, asprad_test, J_test, tmin_test,
+      tmax_test, rhmin_test, rhmax_test, R_s_test, u_test, z_test, z0_test,
+      alpha_test, windfun_test
+    )
+  )
+  # expect_error(
+  #   penman(
+  #     latrad_test, elevation_test, slorad_test, asprad_test, J_test, tmin_test,
+  #     tmax_test, rhmin_test, rhmax_test, R_s_test, u_test, z_test, z0_test,
+  #     alpha_test, "2022"
+  #   )
+  # )
+  expect_error(
+    penman(
+      latrad_test, elevation_test, slorad_test, asprad_test, J_test, tmin_test,
+      tmax_test, "rhmin_test", rhmax_test, R_s_test, u_test, z_test, z0_test,
+      alpha_test, windfun_test
+    )
+  )
+  expect_error(
+    penman(
+      latrad_test, elevation_test, slorad_test, asprad_test, J_test, tmin_test,
+      tmax_test, c(rhmin_test, rhmin_test), rhmax_test, R_s_test, u_test, z_test, z0_test,
+      alpha_test, windfun_test
+    )
+  )
+
+  # penmanmonteith
+  expect_type(
+    (penmanmonteith_test <- penmanmonteith(
+      rc_test, elevation_test, tmin_test, tmax_test, rhmin_test,
+      rhmax_test, Rn_test, u_test
+    )),
+    "double"
+  )
+
+  expect_error(
+    penmanmonteith(
+      "rc_test", elevation_test, tmin_test, tmax_test, rhmin_test,
+      rhmax_test, Rn_test, u_test
+    )
+  )
+  expect_error(
+    penmanmonteith(
+      c(rc_test, rc_test), elevation_test, tmin_test, tmax_test, rhmin_test,
+      rhmax_test, Rn_test, u_test
+    )
   )
 })
 

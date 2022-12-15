@@ -2,7 +2,6 @@ temperature <- seq(5, 30, 5)
 relative_humidity <- seq(50, 100, 10)
 dew_temperature <- seq(6, 1, -1)
 specific_humidity <- seq(0.00266, 0.0266, length.out = 6)
-relative_humidity <- seq(30, 80, length.out = 6)
 
 test_that("humidity_relative2dewtemperature works as expected", {
 
@@ -24,7 +23,20 @@ test_that("humidity_relative2dewtemperature works as expected", {
 
   # error when no numbers
   expect_error(
-    humidity_relative2dewtemperature(letters, LETTERS)
+    humidity_relative2dewtemperature(letters, LETTERS),
+    "must be numeric vectors"
+  )
+  expect_error(
+    humidity_relative2dewtemperature(letters[1:6], relative_humidity),
+    "must be numeric vectors"
+  )
+  expect_error(
+    humidity_relative2dewtemperature(temperature, LETTERS[1:6]),
+    "must be numeric vectors"
+  )
+  expect_error(
+    humidity_relative2dewtemperature(temperature, c(relative_humidity, 100, 30)),
+    "must be the same length"
   )
 })
 
@@ -49,7 +61,24 @@ test_that("humidity_dewtemperature2relative works as expected", {
 
   # error when no numbers
   expect_error(
-    humidity_dewtemperature2relative(letters, LETTERS)
+    humidity_dewtemperature2relative(letters, LETTERS),
+    "must be numeric vectors"
+  )
+  expect_error(
+    humidity_dewtemperature2relative(letters[1:6], dew_temperature),
+    "must be numeric vectors"
+  )
+  expect_error(
+    humidity_dewtemperature2relative(temperature, LETTERS[1:6]),
+    "must be numeric vectors"
+  )
+  expect_error(
+    humidity_dewtemperature2relative(temperature, dew_temperature, "TRUE"),
+    "TRUE or FALSE"
+  )
+  expect_error(
+    humidity_dewtemperature2relative(temperature, c(dew_temperature, 3, 1)),
+    "must be the same length"
   )
 
 })
@@ -78,7 +107,24 @@ test_that("humidity_specific2relative works as expected", {
 
   # error when no numbers
   expect_error(
-    humidity_specific2relative(letters, LETTERS)
+    humidity_specific2relative(letters, LETTERS),
+    "must be numeric vectors"
+  )
+  expect_error(
+    humidity_specific2relative(letters[1:6], specific_humidity),
+    "must be numeric vectors"
+  )
+  expect_error(
+    humidity_specific2relative(temperature, LETTERS[1:6]),
+    "must be numeric vectors"
+  )
+  expect_error(
+    humidity_specific2relative(temperature, specific_humidity, "TRUE"),
+    "TRUE or FALSE"
+  )
+  expect_error(
+    humidity_specific2relative(temperature, c(specific_humidity, 0.003)),
+    "must be the same length"
   )
 })
 
@@ -102,7 +148,20 @@ test_that("humidity_relative2specific works as expected", {
 
   # error when no numbers
   expect_error(
-    humidity_relative2specific(letters, LETTERS)
+    humidity_relative2specific(letters, LETTERS),
+    "must be numeric vectors"
+  )
+  expect_error(
+    humidity_relative2specific(letters[1:6], relative_humidity),
+    "must be numeric vectors"
+  )
+  expect_error(
+    humidity_relative2specific(temperature, LETTERS[1:6]),
+    "must be numeric vectors"
+  )
+  expect_error(
+    humidity_specific2relative(temperature, c(relative_humidity, 30, 100)),
+    "must be the same length"
   )
 })
 

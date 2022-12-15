@@ -20,6 +20,16 @@
 #' @seealso \code{\link{meteocomplete}}
 #' @export
 humidity_relative2dewtemperature<-function(Tc, HR) {
+
+  # assertions
+  assertthat::assert_that(
+    is.numeric(Tc), is.numeric(HR),
+    msg = "Tc and HR must be numeric vectors"
+  )
+  assertthat::assert_that(
+    identical(length(Tc), length(HR)), msg = "Tc and HR must be the same length"
+  )
+
   if(is.data.frame(Tc)) Tc = as.matrix(Tc)
   if(is.data.frame(HR)) HR = as.matrix(HR)
   if(is.matrix(Tc) && is.matrix(HR)) {
@@ -33,6 +43,19 @@ humidity_relative2dewtemperature<-function(Tc, HR) {
 #' @describeIn humidity_relative2dewtemperature `r lifecycle::badge("deprecated")`
 #' @export
 humidity_dewtemperature2relative<-function(Tc, Td, allowSaturated = FALSE) {
+
+  # assertions
+  assertthat::assert_that(
+    is.numeric(Tc), is.numeric(Td),
+    msg = "Tc and Td must be numeric vectors"
+  )
+  assertthat::assert_that(
+    assertthat::is.flag(allowSaturated), msg = "allowSaturated must be TRUE or FALSE"
+  )
+  assertthat::assert_that(
+    identical(length(Tc), length(Td)), msg = "Tc and Td must be the same length"
+  )
+
   HR= as.vector(.relativeHumidityFromDewpointTemp(as.numeric(Tc),as.numeric(Td)))
   if(!allowSaturated) HR[HR>100]=100 # On ne passe pas audessus de 100
   return(HR)
@@ -41,8 +64,19 @@ humidity_dewtemperature2relative<-function(Tc, Td, allowSaturated = FALSE) {
 #Functions to switch from relative humidity to specific humidity
 #' @describeIn humidity_relative2dewtemperature `r lifecycle::badge("deprecated")`
 #' @export
-humidity_specific2relative<-function(Tc, HS, allowSaturated = FALSE){
+humidity_specific2relative <- function(Tc, HS, allowSaturated = FALSE) {
 
+  # assertions
+  assertthat::assert_that(
+    is.numeric(Tc), is.numeric(HS),
+    msg = "Tc and HS must be numeric vectors"
+  )
+  assertthat::assert_that(
+    assertthat::is.flag(allowSaturated), msg = "allowSaturated must be TRUE or FALSE"
+  )
+  assertthat::assert_that(
+    identical(length(Tc), length(HS)), msg = "Tc and HS must be the same length"
+  )
 
   #-------------------------------------------------------------
   #D?claration des constantes pour le calcul de l'HR et de la T en ?C
@@ -66,6 +100,15 @@ humidity_specific2relative<-function(Tc, HS, allowSaturated = FALSE){
 #' @describeIn humidity_relative2dewtemperature `r lifecycle::badge("deprecated")`
 #' @export
 humidity_relative2specific<-function(Tc, HR){
+
+  # assertions
+  assertthat::assert_that(
+    is.numeric(Tc), is.numeric(HR),
+    msg = "Tc and HR must be numeric vectors"
+  )
+  assertthat::assert_that(
+    identical(length(Tc), length(HR)), msg = "Tc and HR must be the same length"
+  )
 
   #-------------------------------------------------------------
   #D?claration des constantes pour le calcul de l'HR et de la T en ?C

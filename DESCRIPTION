@@ -46,7 +46,7 @@ LinkingTo: Rcpp
 Encoding: UTF-8
 NeedsCompilation: yes
 VignetteBuilder: utils, knitr
-RoxygenNote: 7.2.1
+RoxygenNote: 7.2.3
 Config/testthat/edition: 3
 Config/testthat/parallel: false
 Roxygen: list(markdown = TRUE)

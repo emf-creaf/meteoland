@@ -2,6 +2,7 @@ temperature <- seq(5, 30, 5)
 relative_humidity <- seq(50, 100, 10)
 dew_temperature <- seq(6, 1, -1)
 specific_humidity <- seq(0.00266, 0.0266, length.out = 6)
+relative_humidity <- seq(30, 80, length.out = 6)
 
 test_that("humidity_relative2dewtemperature works as expected", {
 
@@ -81,6 +82,29 @@ test_that("humidity_specific2relative works as expected", {
   )
 })
 
+test_that("humidity_relative2specific works as expected", {
+  # vector
+  expect_type(
+    (test_res <- humidity_relative2specific(temperature, relative_humidity)),
+    "double"
+  )
+  expect_length(test_res, length(temperature))
+
+  # matrix
+  temperature_matrix <- matrix(temperature, nrow = 2, ncol = 3)
+  relative_humidity_matrix <- matrix(relative_humidity, nrow = 2, ncol = 3)
+  expect_no_error(
+    (test_res_matrix <- humidity_relative2specific(temperature_matrix, relative_humidity_matrix))
+  )
+  expect_true(inherits(test_res_matrix, "matrix"))
+  expect_equal(dim(test_res_matrix), c(2,3))
+  expect_identical(test_res, as.vector(test_res_matrix))
+
+  # error when no numbers
+  expect_error(
+    humidity_relative2specific(letters, LETTERS)
+  )
+})
 
 test_that("precipitation_rainfall_erosivity works as expected", {
   meteo_data_test <- meteoland_meteo_example |>
@@ -91,7 +115,7 @@ test_that("precipitation_rainfall_erosivity works as expected", {
   long_test <- 0.43
   scale_test <- "month"
   average_test <- TRUE
-  
+
   expect_type(
     (rainfallErosivity_monthly_test <- precipitation_rainfall_erosivity(
       meteo_data_test, long_test, scale_test, average_test
@@ -100,7 +124,7 @@ test_that("precipitation_rainfall_erosivity works as expected", {
   )
   expect_length(rainfallErosivity_monthly_test, 1)
   expect_named(rainfallErosivity_monthly_test, '4')
-  
+
   expect_type(
     (rainfallErosivity_yearly_test <- precipitation_rainfall_erosivity(
       meteo_data_test, long_test, "year", average_test
@@ -110,24 +134,24 @@ test_that("precipitation_rainfall_erosivity works as expected", {
   expect_length(rainfallErosivity_yearly_test, 1)
   expect_named(rainfallErosivity_yearly_test, '2022')
   expect_equal(rainfallErosivity_monthly_test[[1]], rainfallErosivity_yearly_test[[1]])
-  
+
   # errors
   expect_error(precipitation_rainfall_erosivity(
     "meteo_data_test", long_test, scale_test, average_test
   ))
-  
+
   expect_error(precipitation_rainfall_erosivity(
     meteo_data_test, "long_test", scale_test, average_test
   ))
-  
+
   expect_error(precipitation_rainfall_erosivity(
     meteo_data_test, long_test, "scale_test", average_test
   ))
-  
+
   expect_error(precipitation_rainfall_erosivity(
     meteo_data_test, long_test, scale_test, "average_test"
   ))
-  
+
   # more than one
   meteo_data_months_test <- meteoland_meteo_example |>
     as.data.frame() |>
@@ -139,7 +163,7 @@ test_that("precipitation_rainfall_erosivity works as expected", {
       dates
     )) |>
     dplyr::select(-geometry, -stationID, -elevation, -aspect, -slope)
-  
+
   expect_type(
     (rainfallErosivity_monthly_months_test <- precipitation_rainfall_erosivity(
       meteo_data_months_test, long_test, scale_test, average_test
@@ -148,7 +172,7 @@ test_that("precipitation_rainfall_erosivity works as expected", {
   )
   expect_length(rainfallErosivity_monthly_months_test, 2)
   expect_named(rainfallErosivity_monthly_months_test, c('4', '5'))
-  
+
   expect_type(
     (rainfallErosivity_yearly_months_test <- precipitation_rainfall_erosivity(
       meteo_data_months_test, long_test, "year", average_test
@@ -157,6 +181,6 @@ test_that("precipitation_rainfall_erosivity works as expected", {
   )
   expect_length(rainfallErosivity_yearly_months_test, 1)
   expect_named(rainfallErosivity_yearly_months_test, '2022')
-  
+
   # TODO multiyear tests
 })

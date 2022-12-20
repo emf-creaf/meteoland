@@ -197,6 +197,21 @@
 ###     - add tests DONE
 ###     - add function names in old summary functions deprecation notices DONE
 ### 1. Consistency between utils.R functions (all same errors and whatnot) DONE
+### 1. Ask Miquel:
+###     - interpolate_* c exports doesn't make sense as it is, as expect vectors that user dont have
+###       anymore. Let's see options:
+###         - don't export them:
+###           - interpolate_data can be adapted to accept a variable argument that allows selecting only one
+###           - create wrapper functions and export this ones. The wrapper functions will adapt an sf and a
+###             interpolator object to build the inputs for the c function. I don't like this as is extra
+###             work as it is done already in interpolate_data
+###         - export them:
+###           - as is. The user will fight for build the inputs from its own data (ufff)
+###           - as is, but create helper functions to extract the inputs (meh, adapting
+###             interpolate_data is still better)
+###     ANSWER: Implement variable argument in interpolate_data, but maintain lowlevel exported with a
+###     big warning or message
+### 1. Explore terra instead of stars/ncdfgeom/ncmeta for interpolators NOPE
 # 1. Add tests
 #     - New functions (check existent tests) DONE
 #     - Old functions no deprecated
@@ -217,15 +232,7 @@
 #     - in summarise methods, asserting for meteo names can generate problems when
 #       using summarise functions inside others like precipitation_rainfall_erosivity.
 #       It is better to check for names of variables to summarise in the data I think. Look at it!!
-# 1. Explore terra instead of stars/ncdfgeom/ncmeta for interpolators
-# 1. Ask Miquel:
-#     - interpolate_* c exports doesn't make sense as it is, as expect vectors that user dont have
-#       anymore. Let's see options:
-#         - don't export them:
-#           - interpolate_data can be adapted to accept a variable argument that allows selecting only one
-#           - create wrapper functions and export this ones. The wrapper functions will adapt an sf and a
-#             interpolator object to build the inputs for the c function. I don't like this as is extra
-#             work as it is done already in interpolate_data
-#         - export them:
-#           - as is. The user will fight for build the inputs from its own data (ufff)
-#           - as is, but create helper functions to extract the inputs (meh, adapting interpolate_data is still better)
+# 1. Implement variable argument in interpolate_data
+#     - logic
+#     - tests
+# 1. Update docs for interpolation_* lowlevel functions

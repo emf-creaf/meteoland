@@ -8,6 +8,7 @@ interpolate_data(
   spatial_data,
   interpolator,
   dates = NULL,
+  variables = NULL,
   verbose = getOption("meteoland_verbosity", TRUE)
 )
 }
@@ -20,6 +21,10 @@ interpolate_data(
 \item{dates}{vector with dates to interpolate (must be within the
 interpolator date range). Default to NULL (all dates present in the
 interpolator object)}
+
+\item{variables}{vector with variable names to be interpolated. NULL (default),
+will interpolate all variables. Accepted names are "Temperature", "Precipitation",
+"RelativeHumidity", "Radiation" and "Wind"}
 
 \item{verbose}{Logical indicating if the function must show messages and info.
 Default value checks \code{"meteoland_verbosity"} option and if not set, defaults

@@ -45,6 +45,10 @@ test_that("interpolation process works as intended", {
     interpolate_data(raster_to_interpolate_example, meteoland_interpolator_example, dates = 'tururu'),
     "dates object provided"
   )
+  expect_error(
+    interpolate_data(raster_to_interpolate_example, meteoland_interpolator_example, variables = 'tururu'),
+    "variables argument must be"
+  )
   expect_error(interpolate_data(raster_to_interpolate_example, raster_to_interpolate_example), NULL)
   expect_warning(
     interpolate_data(dplyr::select(points_to_interpolate_example, -slope), meteoland_interpolator_example),
@@ -114,6 +118,105 @@ test_that("interpolation process works as intended", {
   )
   expect_identical(
     points_res_dates[["interpolated_data"]][[1]]$dates, dates_all_ok
+  )
+
+  ## TODO tests for variables argument
+  # variable argument points
+  expect_s3_class(
+    (points_radiation_res <-
+       interpolate_data(points_to_interpolate_example, meteoland_interpolator_example, variables = "Radiation")),
+    'sf'
+  )
+  expect_identical(
+    points_res$interpolated_data[[1]]$Radiation,
+    points_radiation_res$interpolated_data[[1]]$Radiation
+  )
+  expect_identical(
+    points_res$interpolated_data[[1]]$MinTemperature,
+    points_radiation_res$interpolated_data[[1]]$MinTemperature
+  )
+  expect_identical(
+    points_res$interpolated_data[[1]]$MeanRelativeHumidity,
+    points_radiation_res$interpolated_data[[1]]$MeanRelativeHumidity
+  )
+  expect_identical(
+    points_res$interpolated_data[[1]]$Precipitation,
+    points_radiation_res$interpolated_data[[1]]$Precipitation
+  )
+  expect_true(
+    all(is.na(points_radiation_res$interpolated_data[[1]]$WindDirection))
+  )
+
+  expect_s3_class(
+    (points_twovars_res <-
+       interpolate_data(points_to_interpolate_example, meteoland_interpolator_example, variables = c("Precipitation", "Wind"))),
+    'sf'
+  )
+  expect_identical(
+    points_res$interpolated_data[[1]]$Precipitation,
+    points_twovars_res$interpolated_data[[1]]$Precipitation
+  )
+  expect_identical(
+    points_res$interpolated_data[[1]]$WindDirection,
+    points_twovars_res$interpolated_data[[1]]$WindDirection
+  )
+  expect_true(
+    all(is.na(points_twovars_res$interpolated_data[[1]]$MinTemperature))
+  )
+  expect_true(
+    all(is.na(points_twovars_res$interpolated_data[[1]]$Radiation))
+  )
+  expect_true(
+    all(is.na(points_twovars_res$interpolated_data[[1]]$MeanRelativeHumidity))
+  )
+
+  # variables argument raster
+  expect_s3_class(
+    (raster_radiation_res <-
+       interpolate_data(raster_to_interpolate_example, meteoland_interpolator_example, variables = "Radiation")),
+    'stars'
+  )
+  expect_identical(
+    raster_res[["Radiation"]],
+    raster_radiation_res[["Radiation"]]
+  )
+  expect_identical(
+    raster_res[["MinTemperature"]],
+    raster_radiation_res[["MinTemperature"]]
+  )
+  expect_identical(
+    raster_res[["MeanRelativeHumidity"]],
+    raster_radiation_res[["MeanRelativeHumidity"]]
+  )
+  expect_identical(
+    raster_res[["Precipitation"]],
+    raster_radiation_res[["Precipitation"]]
+  )
+  expect_true(
+    all(is.na(raster_radiation_res[["WindDirection"]]))
+  )
+
+  expect_s3_class(
+    (raster_twovars_res <-
+       interpolate_data(raster_to_interpolate_example, meteoland_interpolator_example, variables = c("Precipitation", "Wind"))),
+    'stars'
+  )
+  expect_identical(
+    raster_res[["WindDirection"]],
+    raster_twovars_res[["WindDirection"]]
+  )
+  expect_identical(
+    raster_res[["Precipitation"]],
+    raster_twovars_res[["Precipitation"]]
+  )
+  expect_true(
+    all(is.na(raster_twovars_res[["MinTemperature"]]))
+  )
+  expect_true(
+    all(is.na(raster_twovars_res[["MeanRelativeHumidity"]]))
+  )
+  expect_true(
+    all(is.na(raster_twovars_res[["Radiation"]]))
   )
 
 })

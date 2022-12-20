@@ -10,6 +10,9 @@
 #' @param interpolator interpolator object
 #' @param dates vector with dates (dates must be inside the interpolator date
 #'   range)
+#' @param variables vector with variable names to be interpolated. NULL (default),
+#' will interpolate all variables. Accepted names are "Temperature", "Precipitation",
+#' "RelativeHumidity", "Radiation" and "Wind"
 #' @param verbose Logical indicating if the function must show messages and info.
 #' Default value checks \code{"meteoland_verbosity"} option and if not set, defaults
 #' to TRUE. It can be turned off for the function with FALSE, or session wide with
@@ -20,7 +23,7 @@
 #'   data as columns
 #'
 #' @noRd
-.interpolation_point <- function(sf, interpolator, dates = NULL, verbose) {
+.interpolation_point <- function(sf, interpolator, dates = NULL, variables = NULL, verbose) {
   ## debug
   # browser()
 
@@ -76,168 +79,217 @@
   filtered_interpolator <- interpolator |> dplyr::filter(as.Date(date) %in% as.Date(dates))
   tmin_interpolator <- t(filtered_interpolator[["MinTemperature"]])
   tmax_interpolator <- t(filtered_interpolator[["MaxTemperature"]])
-
-  .verbosity_control(
-    usethis::ui_todo("Interpolating temperature..."),
-    verbose
-  )
-  tmin <- .interpolateTemperatureSeriesPoints(
-    Xp = sf::st_coordinates(sf)[,1], Yp = sf::st_coordinates(sf)[,2],
-    Zp = sf$elevation,
-    X = sf::st_coordinates(stars::st_get_dimension_values(interpolator, "station"))[,1],
-    Y = sf::st_coordinates(stars::st_get_dimension_values(interpolator, "station"))[,2],
-    Z = interpolator$elevation[1,],
-    T = tmin_interpolator,
-    iniRp = get_interpolation_params(interpolator)$initial_Rp,
-    alpha = get_interpolation_params(interpolator)$alpha_MinTemperature,
-    N = get_interpolation_params(interpolator)$N_MinTemperature,
-    iterations = get_interpolation_params(interpolator)$iterations,
-    debug = get_interpolation_params(interpolator)$debug
-  )
-
-  tmax <- .interpolateTemperatureSeriesPoints(
-    Xp = sf::st_coordinates(sf)[,1], Yp = sf::st_coordinates(sf)[,2],
-    Zp = sf$elevation,
-    X = sf::st_coordinates(stars::st_get_dimension_values(interpolator, "station"))[,1],
-    Y = sf::st_coordinates(stars::st_get_dimension_values(interpolator, "station"))[,2],
-    Z = interpolator$elevation[1,],
-    T = tmax_interpolator,
-    iniRp = get_interpolation_params(interpolator)$initial_Rp,
-    alpha = get_interpolation_params(interpolator)$alpha_MaxTemperature,
-    N = get_interpolation_params(interpolator)$N_MaxTemperature,
-    iterations = get_interpolation_params(interpolator)$iterations,
-    debug = get_interpolation_params(interpolator)$debug
-  )
-
-  tmean <- 0.606*tmax+0.394*tmin
-
-  .verbosity_control(
-    usethis::ui_todo("Interpolating precipitation..."),
-    verbose
-  )
-  prec <- .interpolatePrecipitationSeriesPoints(
-    Xp = sf::st_coordinates(sf)[,1], Yp = sf::st_coordinates(sf)[,2],
-    Zp = sf$elevation,
-    X = sf::st_coordinates(stars::st_get_dimension_values(interpolator, "station"))[,1],
-    Y = sf::st_coordinates(stars::st_get_dimension_values(interpolator, "station"))[,2],
-    Z = interpolator$elevation[1,],
-    P = t(filtered_interpolator[["Precipitation"]]),
-    Psmooth = t(filtered_interpolator[["SmoothedPrecipitation"]]),
-    iniRp = get_interpolation_params(interpolator)$initial_Rp,
-    alpha_event = get_interpolation_params(interpolator)$alpha_PrecipitationEvent,
-    alpha_amount = get_interpolation_params(interpolator)$alpha_PrecipitationAmount,
-    N_event = get_interpolation_params(interpolator)$N_PrecipitationEvent,
-    N_amount = get_interpolation_params(interpolator)$N_PrecipitationAmount,
-    iterations = get_interpolation_params(interpolator)$iterations,
-    popcrit = get_interpolation_params(interpolator)$pop_crit,
-    fmax = get_interpolation_params(interpolator)$f_max,
-    debug = get_interpolation_params(interpolator)$debug
-  )
-
+  # constants and helpers
   DOY <- as.numeric(format(dates, "%j"))
   J <- radiation_dateStringToJulianDays(as.character(dates))
+  latrad <- sf::st_coordinates(sf::st_transform(sf, 4326))[,2] * (pi/180)
 
   .as_interpolator_res_array <- function(vector, ref_dim) {
     return(array(vector, dim = ref_dim))
   }
 
-  .verbosity_control(
-    usethis::ui_todo("Interpolating relative humidity..."),
-    verbose
-  )
-  # relative humidity, depends on if we have it or not
-  # If we dont, estimate VP assuming that dew-point temperature is equal to Tmin
-  if (all(is.na(filtered_interpolator[["RelativeHumidity"]]))) {
-    rhmean <- .relativeHumidityFromMinMaxTemp(tmin, tmax) |>
-      .as_interpolator_res_array(dim(tmin))
-    VP <- .temp2SVP(tmin) |> #kPA
-      .as_interpolator_res_array(dim(tmin))
-    rhmax <- rep(100, length(rhmean)) |>
-      .as_interpolator_res_array(dim(tmin))
-    rhmin <- pmax(0, .relativeHumidityFromDewpointTemp(tmax, tmin)) |>
-      .as_interpolator_res_array(dim(tmin))
-  } else {
-    TdewM <- .dewpointTemperatureFromRH(
-      0.606 * filtered_interpolator[["MaxTemperature"]] +
-        0.394 * filtered_interpolator[["MinTemperature"]],
-      filtered_interpolator[["RelativeHumidity"]]
-    )
+  # default NULL objects to substitute for calculations
+  tmean <- NULL
+  tmin <- NULL
+  tmax <- NULL
+  prec <- NULL
+  rhmean <- NULL
+  rhmin <- NULL
+  rhmax <- NULL
+  rad <- NULL
+  wind <- NULL
 
-    tdew <- .interpolateTdewSeriesPoints(
+  # temperature (needed also if interpolating relative humidity and radiation)
+  if (is_null_or_variable(variables, c("Temperature", "RelativeHumidity", "Radiation"))) {
+
+    if (is_null_or_variable(variables, c("RelativeHumidity", "Radiation"))) {
+      .verbosity_control(
+        usethis::ui_info("Temperature interpolation is needed also..."),
+        verbose
+      )
+    }
+
+    .verbosity_control(
+      usethis::ui_todo("Interpolating temperature..."),
+      verbose
+    )
+    tmin <- .interpolateTemperatureSeriesPoints(
       Xp = sf::st_coordinates(sf)[,1], Yp = sf::st_coordinates(sf)[,2],
       Zp = sf$elevation,
       X = sf::st_coordinates(stars::st_get_dimension_values(interpolator, "station"))[,1],
       Y = sf::st_coordinates(stars::st_get_dimension_values(interpolator, "station"))[,2],
       Z = interpolator$elevation[1,],
-      T = t(TdewM),
+      T = tmin_interpolator,
       iniRp = get_interpolation_params(interpolator)$initial_Rp,
-      alpha = get_interpolation_params(interpolator)$alpha_DewTemperature,
-      N = get_interpolation_params(interpolator)$N_DewTemperature,
+      alpha = get_interpolation_params(interpolator)$alpha_MinTemperature,
+      N = get_interpolation_params(interpolator)$N_MinTemperature,
       iterations = get_interpolation_params(interpolator)$iterations,
       debug = get_interpolation_params(interpolator)$debug
     )
 
-    rhmean <- .relativeHumidityFromDewpointTemp(tmean, tdew) |>
-      .as_interpolator_res_array(dim(tmin))
-    VP <- .temp2SVP(tdew) |>
-      .as_interpolator_res_array(dim(tmin)) #kPa
-    rhmax = pmin(100, .relativeHumidityFromDewpointTemp(tmin, tdew)) |>
-      .as_interpolator_res_array(dim(tmin))
-    rhmin = pmax(0, .relativeHumidityFromDewpointTemp(tmax, tdew)) |>
-      .as_interpolator_res_array(dim(tmin))
+    tmax <- .interpolateTemperatureSeriesPoints(
+      Xp = sf::st_coordinates(sf)[,1], Yp = sf::st_coordinates(sf)[,2],
+      Zp = sf$elevation,
+      X = sf::st_coordinates(stars::st_get_dimension_values(interpolator, "station"))[,1],
+      Y = sf::st_coordinates(stars::st_get_dimension_values(interpolator, "station"))[,2],
+      Z = interpolator$elevation[1,],
+      T = tmax_interpolator,
+      iniRp = get_interpolation_params(interpolator)$initial_Rp,
+      alpha = get_interpolation_params(interpolator)$alpha_MaxTemperature,
+      N = get_interpolation_params(interpolator)$N_MaxTemperature,
+      iterations = get_interpolation_params(interpolator)$iterations,
+      debug = get_interpolation_params(interpolator)$debug
+    )
+
+    tmean <- 0.606*tmax+0.394*tmin
   }
 
-  # radiation
-  .verbosity_control(
-    usethis::ui_todo("Interpolating radiation..."),
-    verbose
-  )
-  diffTemp <- abs(tmax - tmin)
-  diffTempMonth <- .interpolateTemperatureSeriesPoints(
-    Xp = sf::st_coordinates(sf)[,1], Yp = sf::st_coordinates(sf)[,2],
-    Zp = sf$elevation,
-    X = sf::st_coordinates(stars::st_get_dimension_values(interpolator, "station"))[,1],
-    Y = sf::st_coordinates(stars::st_get_dimension_values(interpolator, "station"))[,2],
-    Z = interpolator$elevation[1,],
-    T = abs(t(filtered_interpolator[["SmoothedTemperatureRange"]])),
-    iniRp = get_interpolation_params(interpolator)$initial_Rp,
-    alpha = get_interpolation_params(interpolator)$alpha_MinTemperature,
-    N = get_interpolation_params(interpolator)$N_MinTemperature,
-    iterations = get_interpolation_params(interpolator)$iterations,
-    debug = get_interpolation_params(interpolator)$debug
-  )
+  # precipitation (needed also if interpolating radiation)
+  if (is_null_or_variable(variables, c("Precipitation", "Radiation"))) {
+    if (is_null_or_variable(variables, c("Radiation"))) {
+      .verbosity_control(
+        usethis::ui_info("Precipitation interpolation is needed also..."),
+        verbose
+      )
+    }
 
-  latrad <- sf::st_coordinates(sf::st_transform(sf, 4326))[,2] * (pi/180)
-  slorad <- sf[["slope"]] * (pi/180)
-  asprad <- sf[["aspect"]] * (pi/180)
-  rad <- array(dim = dim(tmin))
-  for (i in 1:length(latrad)) {
-    rad[i,] <- .radiationSeries(
-      latrad[i], sf$elevation[i], slorad[i], asprad[i],
-      J,
-      diffTemp[i,], diffTempMonth[i,],
-      VP[i,], prec[i,]
+    .verbosity_control(
+      usethis::ui_todo("Interpolating precipitation..."),
+      verbose
+    )
+    prec <- .interpolatePrecipitationSeriesPoints(
+      Xp = sf::st_coordinates(sf)[,1], Yp = sf::st_coordinates(sf)[,2],
+      Zp = sf$elevation,
+      X = sf::st_coordinates(stars::st_get_dimension_values(interpolator, "station"))[,1],
+      Y = sf::st_coordinates(stars::st_get_dimension_values(interpolator, "station"))[,2],
+      Z = interpolator$elevation[1,],
+      P = t(filtered_interpolator[["Precipitation"]]),
+      Psmooth = t(filtered_interpolator[["SmoothedPrecipitation"]]),
+      iniRp = get_interpolation_params(interpolator)$initial_Rp,
+      alpha_event = get_interpolation_params(interpolator)$alpha_PrecipitationEvent,
+      alpha_amount = get_interpolation_params(interpolator)$alpha_PrecipitationAmount,
+      N_event = get_interpolation_params(interpolator)$N_PrecipitationEvent,
+      N_amount = get_interpolation_params(interpolator)$N_PrecipitationAmount,
+      iterations = get_interpolation_params(interpolator)$iterations,
+      popcrit = get_interpolation_params(interpolator)$pop_crit,
+      fmax = get_interpolation_params(interpolator)$f_max,
+      debug = get_interpolation_params(interpolator)$debug
     )
   }
 
+  # relative humidity (needed also if interpolating radiation)
+  if (is_null_or_variable(variables, c("RelativeHumidity", "Radiation"))) {
+    if (is_null_or_variable(variables, c("Radiation"))) {
+      .verbosity_control(
+        usethis::ui_info("Relative humidity interpolation is needed also..."),
+        verbose
+      )
+    }
+    .verbosity_control(
+      usethis::ui_todo("Interpolating relative humidity..."),
+      verbose
+    )
+    # relative humidity, depends on if we have it or not
+    # If we dont, estimate VP assuming that dew-point temperature is equal to Tmin
+    if (all(is.na(filtered_interpolator[["RelativeHumidity"]]))) {
+
+      rhmean <- .relativeHumidityFromMinMaxTemp(tmin, tmax) |>
+        .as_interpolator_res_array(dim(tmin))
+      VP <- .temp2SVP(tmin) |> #kPA
+        .as_interpolator_res_array(dim(tmin))
+      rhmax <- rep(100, length(rhmean)) |>
+        .as_interpolator_res_array(dim(tmin))
+      rhmin <- pmax(0, .relativeHumidityFromDewpointTemp(tmax, tmin)) |>
+        .as_interpolator_res_array(dim(tmin))
+
+    } else {
+
+      TdewM <- .dewpointTemperatureFromRH(
+        0.606 * filtered_interpolator[["MaxTemperature"]] +
+          0.394 * filtered_interpolator[["MinTemperature"]],
+        filtered_interpolator[["RelativeHumidity"]]
+      )
+
+      tdew <- .interpolateTdewSeriesPoints(
+        Xp = sf::st_coordinates(sf)[,1], Yp = sf::st_coordinates(sf)[,2],
+        Zp = sf$elevation,
+        X = sf::st_coordinates(stars::st_get_dimension_values(interpolator, "station"))[,1],
+        Y = sf::st_coordinates(stars::st_get_dimension_values(interpolator, "station"))[,2],
+        Z = interpolator$elevation[1,],
+        T = t(TdewM),
+        iniRp = get_interpolation_params(interpolator)$initial_Rp,
+        alpha = get_interpolation_params(interpolator)$alpha_DewTemperature,
+        N = get_interpolation_params(interpolator)$N_DewTemperature,
+        iterations = get_interpolation_params(interpolator)$iterations,
+        debug = get_interpolation_params(interpolator)$debug
+      )
+
+      rhmean <- .relativeHumidityFromDewpointTemp(tmean, tdew) |>
+        .as_interpolator_res_array(dim(tmin))
+      VP <- .temp2SVP(tdew) |>
+        .as_interpolator_res_array(dim(tmin)) #kPa
+      rhmax = pmin(100, .relativeHumidityFromDewpointTemp(tmin, tdew)) |>
+        .as_interpolator_res_array(dim(tmin))
+      rhmin = pmax(0, .relativeHumidityFromDewpointTemp(tmax, tdew)) |>
+        .as_interpolator_res_array(dim(tmin))
+    }
+  }
+
+  # radiation
+  if (is_null_or_variable(variables, "Radiation")) {
+    .verbosity_control(
+      usethis::ui_todo("Interpolating radiation..."),
+      verbose
+    )
+    diffTemp <- abs(tmax - tmin)
+    diffTempMonth <- .interpolateTemperatureSeriesPoints(
+      Xp = sf::st_coordinates(sf)[,1], Yp = sf::st_coordinates(sf)[,2],
+      Zp = sf$elevation,
+      X = sf::st_coordinates(stars::st_get_dimension_values(interpolator, "station"))[,1],
+      Y = sf::st_coordinates(stars::st_get_dimension_values(interpolator, "station"))[,2],
+      Z = interpolator$elevation[1,],
+      T = abs(t(filtered_interpolator[["SmoothedTemperatureRange"]])),
+      iniRp = get_interpolation_params(interpolator)$initial_Rp,
+      alpha = get_interpolation_params(interpolator)$alpha_MinTemperature,
+      N = get_interpolation_params(interpolator)$N_MinTemperature,
+      iterations = get_interpolation_params(interpolator)$iterations,
+      debug = get_interpolation_params(interpolator)$debug
+    )
+
+    slorad <- sf[["slope"]] * (pi/180)
+    asprad <- sf[["aspect"]] * (pi/180)
+    rad <- array(dim = dim(tmin))
+    for (i in 1:length(latrad)) {
+      rad[i,] <- .radiationSeries(
+        latrad[i], sf$elevation[i], slorad[i], asprad[i],
+        J,
+        diffTemp[i,], diffTempMonth[i,],
+        VP[i,], prec[i,]
+      )
+    }
+  }
+
   # Wind
-  .verbosity_control(
-    usethis::ui_todo("Interpolating wind..."),
-    verbose
-  )
-  wind <- .interpolateWindStationSeriesPoints(
-    Xp = sf::st_coordinates(sf)[,1], Yp = sf::st_coordinates(sf)[,2],
-    WS = t(filtered_interpolator[["WindSpeed"]]),
-    WD = t(filtered_interpolator[["WindDirection"]]),
-    X = sf::st_coordinates(stars::st_get_dimension_values(interpolator, "station"))[,1],
-    Y = sf::st_coordinates(stars::st_get_dimension_values(interpolator, "station"))[,2],
-    iniRp = get_interpolation_params(interpolator)$initial_Rp,
-    alpha = get_interpolation_params(interpolator)$alpha_Wind,
-    N = get_interpolation_params(interpolator)$N_Wind,
-    iterations = get_interpolation_params(interpolator)$iterations
-  )
+  if (is_null_or_variable(variables, "Wind")) {
+    .verbosity_control(
+      usethis::ui_todo("Interpolating wind..."),
+      verbose
+    )
+    wind <- .interpolateWindStationSeriesPoints(
+      Xp = sf::st_coordinates(sf)[,1], Yp = sf::st_coordinates(sf)[,2],
+      WS = t(filtered_interpolator[["WindSpeed"]]),
+      WD = t(filtered_interpolator[["WindDirection"]]),
+      X = sf::st_coordinates(stars::st_get_dimension_values(interpolator, "station"))[,1],
+      Y = sf::st_coordinates(stars::st_get_dimension_values(interpolator, "station"))[,2],
+      iniRp = get_interpolation_params(interpolator)$initial_Rp,
+      alpha = get_interpolation_params(interpolator)$alpha_Wind,
+      N = get_interpolation_params(interpolator)$N_Wind,
+      iterations = get_interpolation_params(interpolator)$iterations
+    )
+  }
 
   # PET, not sure if implement or not
+  pet <- NULL
 
   # return the res df
   res <- purrr::map(
@@ -245,17 +297,17 @@
     ~ dplyr::tibble(
       dates = dates,
       DOY = DOY,
-      MeanTemperature = as.vector(tmean[.x,]),
-      MinTemperature = as.vector(tmin[.x,]),
-      MaxTemperature = as.vector(tmax[.x,]),
-      Precipitation = as.vector(prec[.x,]),
-      MeanRelativeHumidity = rhmean[.x,],
-      MinRelativeHumidity = rhmin[.x,],
-      MaxRelativeHumidity = rhmax[.x,],
-      Radiation = rad[.x,],
-      WindSpeed = as.vector(wind$WS[.x,]),
-      WindDirection = as.vector(wind$WD[.x,]),
-      PET = NA
+      MeanTemperature = as.vector(null2na(tmean[.x,])),
+      MinTemperature = as.vector(null2na(tmin[.x,])),
+      MaxTemperature = as.vector(null2na(tmax[.x,])),
+      Precipitation = as.vector(null2na(prec[.x,])),
+      MeanRelativeHumidity = null2na(rhmean[.x,]),
+      MinRelativeHumidity = null2na(rhmin[.x,]),
+      MaxRelativeHumidity = null2na(rhmax[.x,]),
+      Radiation = null2na(rad[.x,]),
+      WindSpeed = as.vector(null2na(wind$WS[.x,])),
+      WindDirection = as.vector(null2na(wind$WD[.x,])),
+      PET = null2na(pet[.x,])
     )
   )
 
@@ -282,6 +334,9 @@
 #' @param dates vector with dates to interpolate (must be within the
 #'   interpolator date range). Default to NULL (all dates present in the
 #'   interpolator object)
+#' @param variables vector with variable names to be interpolated. NULL (default),
+#' will interpolate all variables. Accepted names are "Temperature", "Precipitation",
+#' "RelativeHumidity", "Radiation" and "Wind"
 #' @param verbose Logical indicating if the function must show messages and info.
 #' Default value checks \code{"meteoland_verbosity"} option and if not set, defaults
 #' to TRUE. It can be turned off for the function with FALSE, or session wide with
@@ -291,7 +346,7 @@
 #'
 #' @noRd
 .interpolation_spatial_dispatcher <- function(
-    spatial_data, interpolator, dates = NULL, verbose
+    spatial_data, interpolator, dates = NULL, variables = NULL, verbose
 ) {
 
   # sf
@@ -309,7 +364,7 @@
     return(
       spatial_data |>
         sf::st_transform(sf::st_crs(interpolator)) |>
-        .interpolation_point(interpolator, dates, verbose = verbose)
+        .interpolation_point(interpolator, dates, variables, verbose = verbose)
     )
 
   }
@@ -320,7 +375,7 @@
       spatial_data |>
         .stars2sf() |>
         sf::st_transform(sf::st_crs(interpolator)) |>
-        .interpolation_point(interpolator, dates, verbose = verbose)
+        .interpolation_point(interpolator, dates, variables, verbose = verbose)
     )
   }
 
@@ -479,6 +534,9 @@
 #' @param dates vector with dates to interpolate (must be within the
 #' interpolator date range). Default to NULL (all dates present in the
 #' interpolator object)
+#' @param variables vector with variable names to be interpolated. NULL (default),
+#' will interpolate all variables. Accepted names are "Temperature", "Precipitation",
+#' "RelativeHumidity", "Radiation" and "Wind"
 #' @param verbose Logical indicating if the function must show messages and info.
 #' Default value checks \code{"meteoland_verbosity"} option and if not set, defaults
 #' to TRUE. It can be turned off for the function with FALSE, or session wide with
@@ -517,7 +575,11 @@
 #' tidyr::unnest(res, cols = "interpolated_data")
 #'
 #' @export interpolate_data
-interpolate_data <- function(spatial_data, interpolator, dates = NULL, verbose = getOption("meteoland_verbosity", TRUE)) {
+interpolate_data <- function(
+    spatial_data, interpolator,
+    dates = NULL, variables = NULL,
+    verbose = getOption("meteoland_verbosity", TRUE)
+) {
   # debug
   # browser()
 
@@ -543,6 +605,14 @@ interpolate_data <- function(spatial_data, interpolator, dates = NULL, verbose =
     )
   }
 
+  # variables
+  if (!is.null(variables)) {
+    assertthat::assert_that(
+      all(variables %in% c("Temperature", "Precipitation", "RelativeHumidity", "Wind", "Radiation")),
+      msg = "variables argument must be NULL (all variables) or a character vector with one o more of the following: 'Temperture', 'Precipitation', 'RelativeHumidity', 'Wind', 'Radiation'"
+    )
+  }
+
   # interpolator
   assertthat::assert_that(.is_interpolator(interpolator))
 
@@ -557,7 +627,7 @@ interpolate_data <- function(spatial_data, interpolator, dates = NULL, verbose =
 
   # Interpolation
   res <-
-    .interpolation_spatial_dispatcher(spatial_data, interpolator, dates, verbose = verbose) |>
+    .interpolation_spatial_dispatcher(spatial_data, interpolator, dates, variables, verbose = verbose) |>
     # results binding
     .binding_interpolation_results(spatial_data, verbose = verbose)
 

@@ -212,16 +212,19 @@
 ###     ANSWER: Implement variable argument in interpolate_data, but maintain lowlevel exported with a
 ###     big warning or message
 ### 1. Explore terra instead of stars/ncdfgeom/ncmeta for interpolators NOPE
-# 1. Add tests
-#     - New functions (check existent tests) DONE
-#     - Old functions no deprecated
-#         - utils DONE
-#         - C functions
-#           - utils_* DONE
-#           - radiation_* DONE
-#           - interpolation_*
-#               - tests for exported functions individually
-#               - tests for consistency between interpolation process and individual functions
+### 1. Implement variable argument in interpolate_data
+###     - logic DONE
+###     - tests DONE
+### 1. Add tests
+###     - New functions (check existent tests) DONE
+###     - Old functions no deprecated
+###         - utils DONE
+###         - C functions
+###           - utils_* DONE
+###           - radiation_* DONE
+###           - interpolation_* DONE
+###               - tests for exported functions individually DONE
+###               - tests for consistency between interpolation process and individual functions DONE
 # 1. Add vignette with the new logic and workflows
 # 1. precipitation_rainfallErosivity
 #     - Separate docs from precipitation_concentration DONE
@@ -232,7 +235,4 @@
 #     - in summarise methods, asserting for meteo names can generate problems when
 #       using summarise functions inside others like precipitation_rainfall_erosivity.
 #       It is better to check for names of variables to summarise in the data I think. Look at it!!
-# 1. Implement variable argument in interpolate_data
-#     - logic
-#     - tests
 # 1. Update docs for interpolation_* lowlevel functions

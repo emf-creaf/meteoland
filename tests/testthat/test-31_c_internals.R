@@ -484,6 +484,87 @@ test_that("PET c internals work as expected", {
 })
 
 ## Interpolation functions tests ####
-test_that("interpolation c internals work as expected", {
-  skip("not implemented yet")
+test_that("interpolation c lowlevel internals work as expected", {
+
+  # data for testing
+  reference_data <-
+    interpolate_data(
+      points_to_interpolate_example, meteoland_interpolator_example,
+      dates = as.Date("2022-04-01"), verbose = FALSE
+    ) |>
+    tidyr::unnest(cols = "interpolated_data")
+  Xp <- as.numeric(sf::st_coordinates(points_to_interpolate_example)[,1])
+  Yp <- as.numeric(sf::st_coordinates(points_to_interpolate_example)[,2])
+  Zp <- points_to_interpolate_example$elevation
+  X <- as.numeric(
+    sf::st_coordinates(stars::st_get_dimension_values(meteoland_interpolator_example, "station"))[,1]
+  )
+  Y <- as.numeric(
+    sf::st_coordinates(stars::st_get_dimension_values(meteoland_interpolator_example, "station"))[,2]
+  )
+  Z <- as.numeric(meteoland_interpolator_example[["elevation"]][1,])
+  Temp <- as.numeric(meteoland_interpolator_example[["MinTemperature"]][1,])
+  P <- as.numeric(meteoland_interpolator_example[["Precipitation"]][1,])
+  Psmooth <- as.numeric(meteoland_interpolator_example[["SmoothedPrecipitation"]][1,])
+  WS <- as.numeric(meteoland_interpolator_example[["WindSpeed"]][1,])
+  WD <- as.numeric(meteoland_interpolator_example[["WindDirection"]][1,])
+  iniRp <- get_interpolation_params(meteoland_interpolator_example)$initial_Rp
+  alpha <- get_interpolation_params(meteoland_interpolator_example)$alpha_MinTemperature
+  N <- get_interpolation_params(meteoland_interpolator_example)$N_MinTemperature
+  alpha_event <- get_interpolation_params(meteoland_interpolator_example)$alpha_PrecipitationEvent
+  N_event <- get_interpolation_params(meteoland_interpolator_example)$N_PrecipitationEvent
+  alpha_amount <- get_interpolation_params(meteoland_interpolator_example)$alpha_PrecipitationAmount
+  N_amount <- get_interpolation_params(meteoland_interpolator_example)$N_PrecipitationAmount
+  alpha_wind <- get_interpolation_params(meteoland_interpolator_example)$alpha_Wind
+  N_wind <- get_interpolation_params(meteoland_interpolator_example)$N_Wind
+  iterations <- get_interpolation_params(meteoland_interpolator_example)$iterations
+  popcrit <- get_interpolation_params(meteoland_interpolator_example)$pop_crit
+  fmax <- get_interpolation_params(meteoland_interpolator_example)$f_max
+  debug <- get_interpolation_params(meteoland_interpolator_example)$debug
+
+  expect_type(
+    (res_temperature_test <- interpolation_temperature(
+      Xp, Yp, Zp,
+      X[!is.na(Temp)], Y[!is.na(Temp)], Z[!is.na(Temp)],
+      Temp[!is.na(Temp)],
+      iniRp, alpha, N, iterations, debug
+    )),
+    "double"
+  )
+  expect_identical(
+    res_temperature_test,
+    reference_data$MinTemperature
+  )
+
+  expect_type(
+    (res_precipitation_test <- interpolation_precipitation(
+      Xp, Yp, Zp,
+      X[!is.na(P)], Y[!is.na(P)], Z[!is.na(P)],
+      P[!is.na(P)], Psmooth[!is.na(P)],
+      iniRp, alpha_event, alpha_amount, N_event, N_amount,
+      iterations, popcrit, fmax, debug
+    )),
+    "double"
+  )
+  expect_identical(
+    res_precipitation_test,
+    reference_data$Precipitation
+  )
+
+  # Wind test
+  # directionsAvailable is FALSE because internally in .interpolateWindStationSeriesPoints, when
+  # there is more than one missing WD this argument is set to FALSE (wind.cpp, line 236)
+  expect_type(
+    (res_wind_test <- interpolation_wind(
+      Xp, Yp,
+      WS[!is.na(WD)], WD[!is.na(WD)],
+      X[!is.na(WD)], Y[!is.na(WD)],
+      iniRp, alpha_wind, N_wind, iterations, directionsAvailable = FALSE
+    )),
+    "double"
+  )
+  expect_equal(res_wind_test[,1], reference_data$WindSpeed, tolerance = 0.001)
+  expect_identical(res_wind_test[,2], reference_data$WindDirection)
+
+  # skip("not implemented yet")
 })

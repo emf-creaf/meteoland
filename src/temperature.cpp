@@ -3,8 +3,8 @@
 #include "interpolationutils.h"
 
 using namespace Rcpp;
-double interpolateTemperaturePoint(double xp, double yp, double zp, 
-                                   NumericVector X, NumericVector Y, NumericVector Z, NumericVector T, 
+double interpolateTemperaturePoint(double xp, double yp, double zp,
+                                   NumericVector X, NumericVector Y, NumericVector Z, NumericVector T,
                                    NumericVector zDif, NumericVector tDif,
                                    double iniRp = 140000, double alpha = 3.0, int N = 30, int iterations = 3,
                                    bool debug = false){
@@ -40,10 +40,20 @@ double interpolateTemperaturePoint(double xp, double yp, double zp,
 
 
 //' Low-level interpolation functions
-//' 
+//'
+//' @description
+//' `r lifecycle::badge("deprecated")`
+//'
 //' Low-level functions to interpolate meteorology (one day) on a set of points.
-//' 
-//' 
+//'
+//' @details
+//' This functions exposes internal low-level interpolation functions written in C++
+//' not intended to be used directly in any script or function. The are maintained for
+//' compatibility with older versions of the package and future versions of meteoland
+//' will remove this functions (they will be still accessible through the triple colon
+//' notation (\code{:::}), but their use is not recommended)
+//'
+//'
 //' @aliases interpolation_dewtemperature interpolation_temperature
 //' interpolation_precipitation interpolation_wind
 //' @param Xp,Yp,Zp Spatial coordinates and elevation (Zp; in m.a.s.l) of target
@@ -74,12 +84,12 @@ double interpolateTemperaturePoint(double xp, double yp, double zp,
 //' @references Thornton, P.E., Running, S.W., White, M. A., 1997. Generating
 //' surfaces of daily meteorological variables over large regions of complex
 //' terrain. J. Hydrol. 190, 214–251. doi:10.1016/S0022-1694(96)03128-9.
-//' 
+//'
 //' De Caceres M, Martin-StPaul N, Turco M, Cabon A, Granda V (2018) Estimating
 //' daily meteorological data and downscaling climate models over landscapes.
 //' Environmental Modelling and Software 108: 186-196.
 //' @examples
-//' 
+//'
 //' data("exampleinterpolationdata")
 //' mxt100 = exampleinterpolationdata@MaxTemperature[,100]
 //' Psmooth100 = exampleinterpolationdata@SmoothedPrecipitation[,100]
@@ -94,17 +104,17 @@ double interpolateTemperaturePoint(double xp, double yp, double zp,
 //' yp = 4640000
 //' xpv = rep(xp, 11)
 //' ypv = rep(yp, 11)
-//' 
-//' interpolation_temperature(xpv, ypv, Zpv, 
-//'                           X[!mismxt], Y[!mismxt], Z[!mismxt], 
+//'
+//' interpolation_temperature(xpv, ypv, Zpv,
+//'                           X[!mismxt], Y[!mismxt], Z[!mismxt],
 //'                           mxt100[!mismxt])
-//' interpolation_precipitation(xpv, ypv, Zpv, 
-//'                            X[!misP], Y[!misP], Z[!misP], 
+//' interpolation_precipitation(xpv, ypv, Zpv,
+//'                            X[!misP], Y[!misP], Z[!misP],
 //'                            P100[!misP], Psmooth100[!misP])
-//' 
+//'
 //' @export
 // [[Rcpp::export("interpolation_temperature")]]
-NumericVector interpolateTemperaturePoints(NumericVector Xp, NumericVector Yp, NumericVector Zp, NumericVector X, NumericVector Y, NumericVector Z, NumericVector T,  
+NumericVector interpolateTemperaturePoints(NumericVector Xp, NumericVector Yp, NumericVector Zp, NumericVector X, NumericVector Y, NumericVector Z, NumericVector T,
                                            double iniRp = 140000, double alpha = 3.0, int N = 30, int iterations = 3, bool debug = false){
   int npoints = Xp.size();
   int nstations = X.size();
@@ -120,15 +130,15 @@ NumericVector interpolateTemperaturePoints(NumericVector Xp, NumericVector Yp, N
     }
   }
   for(int i=0;i<npoints;i++) {
-    Tp[i] = interpolateTemperaturePoint(Xp[i], Yp[i], Zp[i], X,Y,Z,T, zDif, tDif, 
+    Tp[i] = interpolateTemperaturePoint(Xp[i], Yp[i], Zp[i], X,Y,Z,T, zDif, tDif,
                                         iniRp, alpha, N, iterations, debug);
   }
   return(Tp);
 }
 
 // [[Rcpp::export(".interpolateTemperatureSeriesPoints")]]
-NumericMatrix interpolateTemperatureSeriesPoints(NumericVector Xp, NumericVector Yp, NumericVector Zp, 
-                                                 NumericVector X, NumericVector Y, NumericVector Z, NumericMatrix T,  
+NumericMatrix interpolateTemperatureSeriesPoints(NumericVector Xp, NumericVector Yp, NumericVector Zp,
+                                                 NumericVector X, NumericVector Y, NumericVector Z, NumericMatrix T,
                                                  double iniRp = 140000, double alpha = 3.0, int N = 30, int iterations = 3, bool debug = false){
   int npoints = Xp.size();
   int nstations = X.size();
@@ -157,13 +167,13 @@ NumericMatrix interpolateTemperatureSeriesPoints(NumericVector Xp, NumericVector
         c++;
       }
     }
-    // Rcout<<"non-missing: "<<c; 
-    NumericVector Tpday = interpolateTemperaturePoints(Xp, Yp,Zp, 
+    // Rcout<<"non-missing: "<<c;
+    NumericVector Tpday = interpolateTemperaturePoints(Xp, Yp,Zp,
                                                        Xday, Yday, Zday, Tday,
                                                        iniRp, alpha, N, iterations, debug);
     for(int p=0;p<npoints;p++) {
       Tp(p,d) = Tpday[p];
-      // Rcout<<" value: "<<Tpday[p]<<"\n"; 
+      // Rcout<<" value: "<<Tpday[p]<<"\n";
     }
   }
   return(Tp);

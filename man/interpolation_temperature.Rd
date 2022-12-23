@@ -112,7 +112,16 @@ All functions return a vector with interpolated values for the
 target points.
 }
 \description{
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}
+
 Low-level functions to interpolate meteorology (one day) on a set of points.
+}
+\details{
+This functions exposes internal low-level interpolation functions written in C++
+not intended to be used directly in any script or function. The are maintained for
+compatibility with older versions of the package and future versions of meteoland
+will remove this functions (they will be still accessible through the triple colon
+notation (\code{:::}), but their use is not recommended)
 }
 \section{Functions}{
 \itemize{
@@ -140,11 +149,11 @@ yp = 4640000
 xpv = rep(xp, 11)
 ypv = rep(yp, 11)
 
-interpolation_temperature(xpv, ypv, Zpv, 
-                          X[!mismxt], Y[!mismxt], Z[!mismxt], 
+interpolation_temperature(xpv, ypv, Zpv,
+                          X[!mismxt], Y[!mismxt], Z[!mismxt],
                           mxt100[!mismxt])
-interpolation_precipitation(xpv, ypv, Zpv, 
-                           X[!misP], Y[!misP], Z[!misP], 
+interpolation_precipitation(xpv, ypv, Zpv,
+                           X[!misP], Y[!misP], Z[!misP],
                            P100[!misP], Psmooth100[!misP])
 
 }

@@ -320,6 +320,57 @@ interpolation_dewtemperature <- function(Xp, Yp, Zp, X, Y, Z, T, iniRp = 140000,
 #' Environmental Modelling and Software 108: 186-196.
 #' @examples
 #'
+#' Xp <- as.numeric(sf::st_coordinates(points_to_interpolate_example)[,1])
+#' Yp <- as.numeric(sf::st_coordinates(points_to_interpolate_example)[,2])
+#' Zp <- points_to_interpolate_example$elevation
+#' X <- as.numeric(
+#'   sf::st_coordinates(stars::st_get_dimension_values(meteoland_interpolator_example, "station"))[,1]
+#' )
+#' Y <- as.numeric(
+#'   sf::st_coordinates(stars::st_get_dimension_values(meteoland_interpolator_example, "station"))[,2]
+#' )
+#' Z <- as.numeric(meteoland_interpolator_example[["elevation"]][1,])
+#' Temp <- as.numeric(meteoland_interpolator_example[["MinTemperature"]][1,])
+#' P <- as.numeric(meteoland_interpolator_example[["Precipitation"]][1,])
+#' Psmooth <- as.numeric(meteoland_interpolator_example[["SmoothedPrecipitation"]][1,])
+#' WS <- as.numeric(meteoland_interpolator_example[["WindSpeed"]][1,])
+#' WD <- as.numeric(meteoland_interpolator_example[["WindDirection"]][1,])
+#' iniRp <- get_interpolation_params(meteoland_interpolator_example)$initial_Rp
+#' alpha <- get_interpolation_params(meteoland_interpolator_example)$alpha_MinTemperature
+#' N <- get_interpolation_params(meteoland_interpolator_example)$N_MinTemperature
+#' alpha_event <- get_interpolation_params(meteoland_interpolator_example)$alpha_PrecipitationEvent
+#' N_event <- get_interpolation_params(meteoland_interpolator_example)$N_PrecipitationEvent
+#' alpha_amount <- get_interpolation_params(meteoland_interpolator_example)$alpha_PrecipitationAmount
+#' N_amount <- get_interpolation_params(meteoland_interpolator_example)$N_PrecipitationAmount
+#' alpha_wind <- get_interpolation_params(meteoland_interpolator_example)$alpha_Wind
+#' N_wind <- get_interpolation_params(meteoland_interpolator_example)$N_Wind
+#' iterations <- get_interpolation_params(meteoland_interpolator_example)$iterations
+#' popcrit <- get_interpolation_params(meteoland_interpolator_example)$pop_crit
+#' fmax <- get_interpolation_params(meteoland_interpolator_example)$f_max
+#' debug <- get_interpolation_params(meteoland_interpolator_example)$debug
+#'
+#' interpolation_temperature(
+#'   Xp, Yp, Zp,
+#'   X[!is.na(Temp)], Y[!is.na(Temp)], Z[!is.na(Temp)],
+#'   Temp[!is.na(Temp)],
+#'   iniRp, alpha, N, iterations, debug
+#' )
+#'
+#' interpolation_wind(
+#'   Xp, Yp,
+#'   WS[!is.na(WD)], WD[!is.na(WD)],
+#'   X[!is.na(WD)], Y[!is.na(WD)],
+#'   iniRp, alpha_wind, N_wind, iterations, directionsAvailable = FALSE
+#' )
+#'
+#' interpolation_precipitation(
+#'   Xp, Yp, Zp,
+#'   X[!is.na(P)], Y[!is.na(P)], Z[!is.na(P)],
+#'   P[!is.na(P)], Psmooth[!is.na(P)],
+#'   iniRp, alpha_event, alpha_amount, N_event, N_amount,
+#'   iterations, popcrit, fmax, debug
+#' )
+#'
 #' data("exampleinterpolationdata")
 #' mxt100 = exampleinterpolationdata@MaxTemperature[,100]
 #' Psmooth100 = exampleinterpolationdata@SmoothedPrecipitation[,100]

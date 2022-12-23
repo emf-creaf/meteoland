@@ -236,3 +236,5 @@
 #       using summarise functions inside others like precipitation_rainfall_erosivity.
 #       It is better to check for names of variables to summarise in the data I think. Look at it!!
 # 1. Update docs for interpolation_* lowlevel functions
+#     - deprecation notice and details DONE
+#     - examples with the new system

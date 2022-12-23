@@ -141,6 +141,9 @@ precipitation_rainfall_erosivity <- function(
   )
 
   if (isTRUE(average)) {
+    ## TODO there is a problem in multiyear datasets and yearly scale, because in theory
+    ## in those situations all years must be summarised together, but that's not
+    ## happening with the actual code
     # average by scale
     precipitation_sum <- dplyr::group_by(precipitation_sum, .data[[scale]]) |>
       dplyr::summarise(p_s = mean(Precipitation, na.rm = TRUE))

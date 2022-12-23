@@ -225,6 +225,9 @@
 ###           - interpolation_* DONE
 ###               - tests for exported functions individually DONE
 ###               - tests for consistency between interpolation process and individual functions DONE
+### 1. Update docs for interpolation_* lowlevel functions DONE
+###     - deprecation notice and details DONE
+###     - examples with the new system DONE
 # 1. Add vignette with the new logic and workflows
 # 1. precipitation_rainfallErosivity
 #     - Separate docs from precipitation_concentration DONE
@@ -235,6 +238,3 @@
 #     - in summarise methods, asserting for meteo names can generate problems when
 #       using summarise functions inside others like precipitation_rainfall_erosivity.
 #       It is better to check for names of variables to summarise in the data I think. Look at it!!
-# 1. Update docs for interpolation_* lowlevel functions
-#     - deprecation notice and details DONE
-#     - examples with the new system

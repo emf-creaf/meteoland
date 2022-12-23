@@ -191,7 +191,7 @@ test_that("precipitation_rainfall_erosivity works as expected", {
     'double'
   )
   expect_length(rainfallErosivity_yearly_test, 1)
-  expect_named(rainfallErosivity_yearly_test, '2022')
+  expect_named(rainfallErosivity_yearly_test, NULL)
   expect_equal(rainfallErosivity_monthly_test[[1]], rainfallErosivity_yearly_test[[1]])
 
   # errors
@@ -239,9 +239,8 @@ test_that("precipitation_rainfall_erosivity works as expected", {
     'double'
   )
   expect_length(rainfallErosivity_yearly_months_test, 1)
-  expect_named(rainfallErosivity_yearly_months_test, '2022')
+  expect_named(rainfallErosivity_yearly_months_test, NULL)
 
-  # TODO multiyear tests
   # more than one year
   meteo_data_years_test <- meteoland_meteo_example |>
     as.data.frame() |>
@@ -279,7 +278,7 @@ test_that("precipitation_rainfall_erosivity works as expected", {
     'double'
   )
   expect_length(rainfallErosivity_yearly_years_test, 1)
-  expect_named(rainfallErosivity_yearly_years_test, c('2022'))
+  expect_named(rainfallErosivity_yearly_years_test, NULL)
 
   expect_type(
     (rainfallErosivity_yearly_years_noaverage_test <- precipitation_rainfall_erosivity(
@@ -290,4 +289,14 @@ test_that("precipitation_rainfall_erosivity works as expected", {
   expect_length(rainfallErosivity_yearly_years_noaverage_test, 2)
   expect_named(rainfallErosivity_yearly_years_noaverage_test, c('2022', '2023'))
 
+  # mutate (recursion) tests
+  expect_s3_class(
+    (recursion_test <- points_to_interpolate_example |>
+      interpolate_data(meteoland_interpolator_example, verbose = FALSE) |>
+      dplyr::mutate(erosivity = precipitation_rainfall_erosivity(
+        interpolated_data, sf::st_coordinates(geometry)[,1]
+      ))),
+    "tbl"
+  )
+  expect_true("erosivity" %in% names(recursion_test))
 })

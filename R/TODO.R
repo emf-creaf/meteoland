@@ -228,13 +228,18 @@
 ### 1. Update docs for interpolation_* lowlevel functions DONE
 ###     - deprecation notice and details DONE
 ###     - examples with the new system DONE
+### 1. precipitation_rainfallErosivity
+###     - Separate docs from precipitation_concentration DONE
+###     - Deprecate precipitation_concentration DONE
+###     - Maintain precipitation_rainfallErosivity and add tests
+###         - Create methods for summarypoint and related functions (see own point) DONE
+###         - Tests for summarising multiyear data (and also related functions) DONE
+###         - Add recursion for using it in tests dONE
+###     - in summarise methods, asserting for meteo names can generate problems when
+###       using summarise functions inside others like precipitation_rainfall_erosivity.
+###       It is better to check for names of variables to summarise in the data I think. Look at it!! DONE
 # 1. Add vignette with the new logic and workflows
-# 1. precipitation_rainfallErosivity
-#     - Separate docs from precipitation_concentration DONE
-#     - Deprecate precipitation_concentration DONE
-#     - Maintain precipitation_rainfallErosivity and add tests
-#         - Create methods for summarypoint and related functions (see own point) DONE
-#         - Tests for summarising multiyear data (and also related functions)
-#     - in summarise methods, asserting for meteo names can generate problems when
-#       using summarise functions inside others like precipitation_rainfall_erosivity.
-#       It is better to check for names of variables to summarise in the data I think. Look at it!!
+# 1. summarise_* methods
+#     - Add multiyear tests (or at least check)
+#     - Add recursion to be able to use the methods in mutate
+#     - Add tests for recursion

@@ -55,7 +55,7 @@ precipitation_rainfall_erosivity(
 }
 \references{
 Diodato, N., Bellocchi, G., 2010. MedREM, a rainfall erosivity
-model for the Mediter-ranean region. J. Hydrol. 387, 119–127,
+model for the Mediterranean region. J. Hydrol. 387, 119–127,
 doi:10.1016/j.jhydrol.2010.04.003.
 
 Guerra CA, Maes J, Geijzendorffer I, Metzger MJ (2016) An assessment of soil
@@ -65,5 +65,6 @@ ecosystem service provision. Ecol Indic 60:213–222. doi:
 }
 \author{
 Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF.
-\enc{Víctor}{Victor} Granda \enc{García}{Garcia}, CREAF
+
+\enc{Víctor}{Victor} Granda \enc{García}{Garcia}, CREAF.
 }

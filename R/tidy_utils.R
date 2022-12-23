@@ -79,11 +79,12 @@
 #'
 #' @author
 #'   Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF.
-#'   \enc{Víctor}{Victor} Granda \enc{García}{Garcia}, CREAF
+#'
+#'   \enc{Víctor}{Victor} Granda \enc{García}{Garcia}, CREAF.
 #'
 #' @references
 #' Diodato, N., Bellocchi, G., 2010. MedREM, a rainfall erosivity
-#' model for the Mediter-ranean region. J. Hydrol. 387, 119–127,
+#' model for the Mediterranean region. J. Hydrol. 387, 119–127,
 #' doi:10.1016/j.jhydrol.2010.04.003.
 #'
 #' Guerra CA, Maes J, Geijzendorffer I, Metzger MJ (2016) An assessment of soil
@@ -110,14 +111,26 @@ precipitation_rainfall_erosivity <- function(
   average = TRUE
 ) {
 
+  # recursive call to be able to call precipitation_rainfall_erosivity in mutates or
+  # with lists of meteo_data and longitudes
+  if ((!is.data.frame(meteo_data) & is.list(meteo_data)) && length(meteo_data) == length(longitude)) {
+    res <- purrr::map2(
+      .x = meteo_data, .y = longitude,
+      .f = precipitation_rainfall_erosivity,
+      scale = scale, average = average
+    )
+
+    return(res)
+  }
+
   # assertions
   assertthat::assert_that(
     assertthat::is.number(longitude), msg = "longitude must be numeric"
   )
-  assertthat::assert_that(
-    assertthat::is.string(scale), length(scale) == 1,
-    msg = "scale must be a string of length 1"
-  )
+  # assertthat::assert_that(
+  #   assertthat::is.string(scale), length(scale) == 1,
+  #   msg = "scale must be a string of length 1"
+  # )
   assertthat::assert_that(
     assertthat::is.flag(average), msg = "average must be a logical value"
   )
@@ -144,11 +157,23 @@ precipitation_rainfall_erosivity <- function(
     ## TODO there is a problem in multiyear datasets and yearly scale, because in theory
     ## in those situations all years must be summarised together, but that's not
     ## happening with the actual code
-    # average by scale
-    precipitation_sum <- dplyr::group_by(precipitation_sum, .data[[scale]]) |>
-      dplyr::summarise(p_s = mean(Precipitation, na.rm = TRUE))
-    precipitation_max <- dplyr::group_by(precipitation_max, .data[[scale]]) |>
-      dplyr::summarise(d_s = mean(Precipitation, na.rm = TRUE))
+
+    # average by scale.
+    # This depends on the scale and is done for compatibility with older versions of meteoland
+    # If monthly, group by month and average.
+    if (scale == 'month') {
+      precipitation_sum <- dplyr::group_by(precipitation_sum, .data[[scale]]) |>
+        dplyr::summarise(p_s = mean(Precipitation, na.rm = TRUE))
+      precipitation_max <- dplyr::group_by(precipitation_max, .data[[scale]]) |>
+        dplyr::summarise(d_s = mean(Precipitation, na.rm = TRUE))
+    } else {
+      # If yearly, average without grouping
+      precipitation_sum <- precipitation_sum |>
+        dplyr::summarise(p_s = mean(Precipitation, na.rm = TRUE))
+      precipitation_max <- precipitation_max |>
+        dplyr::summarise(d_s = mean(Precipitation, na.rm = TRUE))
+    }
+
   } else {
     # no average, just rename the Precipitation var for the next steps
     precipitation_sum <- dplyr::rename(precipitation_sum, p_s = Precipitation)

@@ -238,8 +238,10 @@
 ###     - in summarise methods, asserting for meteo names can generate problems when
 ###       using summarise functions inside others like precipitation_rainfall_erosivity.
 ###       It is better to check for names of variables to summarise in the data I think. Look at it!! DONE
+### 1. summarise_* methods DONE
+###     - Add multiyear tests (or at least check) NOPE, already done in rainfall
+###     - Add recursion to be able to use the methods in mutate NOPE, is better do it in the way is done now
+###     - Add tests for recursion NOPE see above (and tests already done for the actual logic)
 # 1. Add vignette with the new logic and workflows
-# 1. summarise_* methods
-#     - Add multiyear tests (or at least check)
-#     - Add recursion to be able to use the methods in mutate
-#     - Add tests for recursion
+#     - vignette with workflows
+#     - vignette with equivalences old-new

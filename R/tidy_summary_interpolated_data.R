@@ -59,6 +59,10 @@
   }
 
   .group_by_freq <- function(data, frequency) {
+    ## frequency alone, if data spans more than one year can group together data from different years
+    ## (in the original code it was a cut(dates, breaks = freq), so we have to imitate it)
+    ## Also, the frequency can be NULL, so, we have to take that into account. We create a helper to
+    ## do the mutate and group_by steps depending on the freq data
 
     # if there is no frequency, means no frequency_fun, then return data as is
     if (is.null(frequency)) {
@@ -98,10 +102,6 @@
       dplyr::select(dplyr::any_of(c(frequency, "year", vars_to_summary)))
   }
 
-  ## frequency alone, if data spans more than one year can group together data from different years
-  ## (in the original code it was a cut(dates, breaks = freq), so we have to imitate it)
-  ## Also, the frequency can be NULL, so, we have to take that into account. We create a helper to
-  ## do the mutate and group_by steps depending on the freq data
   meteo_interpolated |>
     # filtering the months to summary
     dplyr::filter(lubridate::month(dates) %in% months_to_summary) |>
@@ -467,11 +467,11 @@ summarise_interpolator <- function(
       params = get_interpolation_params(interpolator),
       verbose = verbose
     )
-  
+
   # also, aggregating with aggregate.stars method rename the temporal dimension
   # so we need to ensure to maintain the old ones
   dimnames(temp_res) <- dimnames(interpolator)
-  
+
   # dont forget also to put again the names of the columns and rows in the
   # interpolator data also
   res <- temp_res |>

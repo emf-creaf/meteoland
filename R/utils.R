@@ -1,8 +1,6 @@
 #' Humidity conversion tools
 #'
 #' @description
-#' `r lifecycle::badge("deprecated")`
-#'
 #' Functions to transform relative humidity to specific humidity or dew point
 #' temperature and viceversa.
 #'
@@ -40,7 +38,7 @@ humidity_relative2dewtemperature<-function(Tc, HR) {
   }
   return(Td)
 }
-#' @describeIn humidity_relative2dewtemperature `r lifecycle::badge("deprecated")`
+#' @describeIn humidity_relative2dewtemperature
 #' @export
 humidity_dewtemperature2relative<-function(Tc, Td, allowSaturated = FALSE) {
 
@@ -62,7 +60,7 @@ humidity_dewtemperature2relative<-function(Tc, Td, allowSaturated = FALSE) {
 }
 
 #Functions to switch from relative humidity to specific humidity
-#' @describeIn humidity_relative2dewtemperature `r lifecycle::badge("deprecated")`
+#' @describeIn humidity_relative2dewtemperature
 #' @export
 humidity_specific2relative <- function(Tc, HS, allowSaturated = FALSE) {
 
@@ -97,7 +95,7 @@ humidity_specific2relative <- function(Tc, HS, allowSaturated = FALSE) {
   if(!allowSaturated) HR[HR>100]=100 # On ne passe pas audessus de 100
   return(HR)
 }
-#' @describeIn humidity_relative2dewtemperature `r lifecycle::badge("deprecated")`
+#' @describeIn humidity_relative2dewtemperature
 #' @export
 humidity_relative2specific<-function(Tc, HR){
 
@@ -128,23 +126,4 @@ humidity_relative2specific<-function(Tc, HR){
   masshum=nhum*Mh2o # en mol.m-3
   HS=masshum/Dair
   return(HS)
-}
-
-#' Verbosity control
-#'
-#' Verbose check for meteoland messages
-#'
-#' Function print to console the usethis expression if the verbose control is TRUE. Always returns
-#' \code{invisible()}
-#'
-#' @param expr usethis expression to print if verbose is TRUE
-#' @param verbose verbosity user control
-#'
-#' @return invisible()
-#' @noRd
-.verbosity_control <- function(expr, verbose) {
-    if (verbose) {
-    expr
-  }
-  return(invisible())
 }

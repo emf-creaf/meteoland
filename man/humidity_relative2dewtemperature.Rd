@@ -8,42 +8,25 @@
 \title{Humidity conversion tools}
 \usage{
 humidity_relative2dewtemperature(Tc, HR)
-
-humidity_dewtemperature2relative(Tc, Td, allowSaturated = FALSE)
-
-humidity_specific2relative(Tc, HS, allowSaturated = FALSE)
-
-humidity_relative2specific(Tc, HR)
 }
 \arguments{
 \item{Tc}{A numeric vector of temperature in degrees Celsius.}
 
 \item{HR}{A numeric vector of relative Humidity (in \%).}
 
+\item{HS}{A numeric vector of specific humidity (unitless).}
+
 \item{Td}{A numeric vector of dew temperature in degrees Celsius.}
 
 \item{allowSaturated}{Logical flag to allow values over 100\%}
-
-\item{HS}{A numeric vector of specific humidity (unitless).}
 }
 \value{
 A numeric vector with specific or relative humidity.
 }
 \description{
-\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}
-
 Functions to transform relative humidity to specific humidity or dew point
 temperature and viceversa.
 }
-\section{Functions}{
-\itemize{
-\item \code{humidity_dewtemperature2relative()}: \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}
-
-\item \code{humidity_specific2relative()}: \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}
-
-\item \code{humidity_relative2specific()}: \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}
-
-}}
 \seealso{
 \code{\link{meteocomplete}}
 }

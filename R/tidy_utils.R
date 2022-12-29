@@ -207,3 +207,22 @@ null2na <- function(object) {
   }
   return(object)
 }
+
+#' Verbosity control
+#'
+#' Verbose check for meteoland messages
+#'
+#' Function print to console the usethis expression if the verbose control is TRUE. Always returns
+#' \code{invisible()}
+#'
+#' @param expr usethis expression to print if verbose is TRUE
+#' @param verbose verbosity user control
+#'
+#' @return invisible()
+#' @noRd
+.verbosity_control <- function(expr, verbose) {
+  if (verbose) {
+    expr
+  }
+  return(invisible())
+}

@@ -16,6 +16,8 @@ knitr::opts_chunk$set(
 
 ```{r setup}
 library(meteoland)
+library(stars)
+library(dplyr)
 ```
 
 ## A new way of working with `meteoland`
@@ -98,9 +100,8 @@ names(meteoland_meteo_example)
 The only mandatory variables are `MinTemperature` and `MaxTemperature`. Other variables
 (`Precipitation`, `WindSpeed`...), when present, allow for interpolating also those variables.
 
-
-**TODO**
-preparing meteo data for meteoland
+For more information on preparing meteorological data for `meteoland`, see
+`vignette("reshaping-meteo", package = "meteoland")`
 
 ### Quick interpolation (if everythig is ok)
 
@@ -224,7 +225,7 @@ function.
     interpolator. In this example we reduce the N and alpha test values for the process
     to be faster, but is recommended to explore a wider range of N and alpha values.
 
-```{r interpolator_calibration, cache=TRUE}
+```{r interpolator_calibration}
 # min temperature N and alpha before calibration
 get_interpolation_params(interpolator)$N_MinTemperature
 get_interpolation_params(interpolator)$alpha_MinTemperature
@@ -246,7 +247,7 @@ get_interpolation_params(interpolator)$alpha_MinTemperature
 One advantage of the new data flows in `meteoland` is that we can pipe the creation and the
 calibration of the interpolator, as well as the writing:
 
-```{r preparing_interpolator, cache=TRUE}
+```{r preparing_interpolator}
 interpolator <- with_meteo(meteoland_meteo_example) |>
   create_meteo_interpolator() |>
   interpolator_calibration(
@@ -283,7 +284,7 @@ The interpolation process can be cross validated. `meteoland` offers the possibi
 `interpolation_cross_validation()` function.
 This function takes an interpolator object and calculates different error measures.
 
-```{r cross_validation, cache=TRUE}
+```{r cross_validation}
 cross_validation <- interpolation_cross_validation(interpolator, verbose = FALSE)
 cross_validation$errors
 cross_validation$station_stats
@@ -327,7 +328,6 @@ precipitation_rainfall_erosivity(
 But also for all locations in the results obtained from `interpolate_data`:
 
 ```{r erosivity_mutate}
-library(dplyr)
 points_interpolated |>
   mutate(erosivity = precipitation_rainfall_erosivity(
     interpolated_data,
@@ -341,7 +341,7 @@ points_interpolated |>
 `meteoland` new data flows also allows for piping all processes:
 
 ```{r interpolation_piped}
-interpolated_points <- points_to_interpolate_example |>
+points_interpolated <- points_to_interpolate_example |>
   interpolate_data(interpolator) |>
   summarise_interpolated_data(
     fun = "mean",
@@ -359,6 +359,60 @@ interpolated_points <- points_to_interpolate_example |>
     )
   )
 
-interpolated_points
+points_interpolated
+```
+
+## Interpolation on raster data
+
+We can use `interpolate_data` in a raster type of data. All we need is the topology information
+in a `stars` object, with elevation, aspect and slope as raster attributes:
+
+```{r raster_to_interpolate}
+raster_to_interpolate_example
+```
+
+In this case, the raster is a 0.01 degree grid (10x10 cells) in central Catalonia. As the raster is
+inside the area covered by the interpolator object we created before, we will use it.
+
+```{r raster_interpolation}
+raster_interpolated <- raster_to_interpolate_example |>
+  interpolate_data(interpolator)
+
+raster_interpolated
+```
+
+As we can see, the returned object is the same `stars` raster provided to the function, with the
+interpolated meteorological variables as new attributes. Dimensions now include the date, besides
+latitude and longitude.
+
+### Temporal aggregation in raster
+
+As with the points example, interpolated data in raster format can also be aggregated temporaly.
+
+```{r raster_temporal_agg}
+summarise_interpolated_data(
+  raster_interpolated,
+  fun = "mean",
+  frequency = "week"
+)
+```
+
+In this case the result is the aggreagated variables as attributes, and the time dimension is aggregated in the desired frequency.
+
+### Piping raster interpolation
+
+As with points, raster interpolation and utilities can also be piped. This way, if we are only
+interested in the mean monthly temperature in our study area, we can do:
+
+```{r raster_piped}
+monthly_mean_temperature <- raster_to_interpolate_example |>
+  interpolate_data(interpolator, variables = "Temperature") |>
+  summarise_interpolated_data(
+    fun = "max",
+    frequency = "month",
+    variable = "MeanTemperature"
+  )
+
+plot(monthly_mean_temperature)
 ```
 

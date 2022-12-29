@@ -245,3 +245,7 @@
 # 1. Add vignette with the new logic and workflows
 #     - vignette with workflows
 #     - vignette with equivalences old-new
+#
+# 1. Names of generated columns in summarise_* functions
+#     - it should create names based on the frequency and the function, that way we can pipe more than one
+#     summarise step and create different summaries

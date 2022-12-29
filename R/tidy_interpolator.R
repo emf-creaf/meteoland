@@ -117,14 +117,14 @@ get_interpolation_params <- function(interpolator) {
 #'
 #' @export set_interpolation_params
 set_interpolation_params <- function(interpolator, params = NULL, verbose = getOption("meteoland_verbosity", TRUE)) {
-  
+
   # sometimes, the interpolator cab lost the params (aggregation, subsetting...),
   # so in that case, we need to go for the default ones
   ref_params <- get_interpolation_params(interpolator)
   if (is.null(ref_params)) {
     ref_params <- defaultInterpolationParams()
   }
-  
+
   # ensure the params are correct and fill any lacking with the defaults
   safe_params <-
     .safely_create_interpolation_params(params, ref_params, verbose)
@@ -405,7 +405,7 @@ create_meteo_interpolator <- function(meteo_with_topo, params = NULL, verbose = 
 }
 
 # write the interpolator in the NetCDF-CF standard
-# http://cfconventions.org/cf-conventions/cf-conventions.html
+# https://cfconventions.org/cf-conventions/cf-conventions.html
 #' Write the interpolator object
 #'
 #' Write the interpolator object to a file
@@ -413,7 +413,7 @@ create_meteo_interpolator <- function(meteo_with_topo, params = NULL, verbose = 
 #' This function writes the interpolator object created with
 #' \code{\link{create_meteoland_interpolator}} in a NetCDF-CF standard
 #' compliant format, as specified in
-#' http://cfconventions.org/cf-conventions/cf-conventions.html
+#' https://cfconventions.org/cf-conventions/cf-conventions.html
 #'
 #' @param interpolator meteoland interpolator object, as created by
 #' \code{\link{create_meteoland_interpolator}}
@@ -500,7 +500,7 @@ write_interpolator <- function(interpolator, filename, .overwrite = FALSE) {
 
   ## write logic
   usethis::ui_info("Creating nc file following the NetCDF-CF conventions:")
-  usethis::ui_line("http://cfconventions.org/cf-conventions/cf-conventions.html")
+  usethis::ui_line("https://cfconventions.org/cf-conventions/cf-conventions.html")
 
   ### TODO add correct units
   list(prepared_data_list, names(prepared_data_list), prepared_data_units) |>

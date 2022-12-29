@@ -26,7 +26,7 @@ Write the interpolator object to a file
 This function writes the interpolator object created with
 \code{\link{create_meteoland_interpolator}} in a NetCDF-CF standard
 compliant format, as specified in
-http://cfconventions.org/cf-conventions/cf-conventions.html
+https://cfconventions.org/cf-conventions/cf-conventions.html
 }
 \examples{
 

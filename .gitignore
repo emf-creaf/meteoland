@@ -12,3 +12,4 @@ vignettes/examples/*.vrt
 vignettes/examples/*.nc
 interpolator_test*
 *.nc
+inst/doc

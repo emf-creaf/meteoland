@@ -1,0 +1,364 @@
+---
+title: "Tidy meteoland"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Tidy meteoland}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(meteoland)
+```
+
+## A new way of working with `meteoland`
+
+With the [retirement](https://r-spatial.org/r/2022/04/12/evolution.html)
+of `rgdal`, `rgeos` and `maptools` R packages, and the strong dependency `meteoland` has
+with `sp` and `raster` R packages, a complete update of `meteoland` was necessary. This update
+has removed any dependency on the retired packages as well as `sp` and `raster`, and now uses
+`sf` and `stars` packages for working with simple features and raster data.
+
+As fundamental changes were required (`meteoland` classes were based on `sp` and ones), a
+decision to improve and make meteorological interpolation process simpler was taken. In this
+vignette we provide insights on the new ways of working with `meteoland`.
+
+If you are interested in the equivalences between older and newer functions of `meteoland`,
+please see `vignette("function-equivalences", package = 'meteoland')`.
+
+## Examples data
+
+`meteoland` now ships with new example objects, based on the `sf` and `stars` packages. The
+following table describe the new data examples:
+
+name | description
+-----|------------
+meteoland_interpolator_example | A meteoland interpolator object, with daily meteorological data in Catalonia (Spain) for April 2022.
+meteoland_meteo_example | Data from meteorological stations in Catalonia (Spain) for April 2022.
+meteoland_meteo_no_topo_example | Data from meteorological stations in Catalonia (Spain) for April 2022, without topological information.
+meteoland_topo_example | Topological information for meteorological stations in Catalonia (Spain).
+points_to_interpolate_example | Topological information for 15 plots located in Catalonia (Spain).
+raster_to_interpolate_example | Topological information for a 10x10 raster located in central Catalonia (Spain)
+
+## The new interpolation process
+
+For interpolating meteorological information we need mainly two things:
+
+  1. The **topological information** of the locations to interpolate. This includes elevation,
+  aspect and slope. Elevation is the only mandatory topology variable, but interpolation
+  results improve when also aspect and slope are provided.
+  
+  1. The reference **meteorological information** that we will use to build the interpolator
+  object. This information can come from meteorological stations in the area we are interested
+  on, or can be extracted from rasters with meteorological variables.
+
+### Topological information
+
+In order to interpolate, we need our locations in a format that `meteoland` can use. For
+points, this is a `sf` object, with the `elevation`, `slope` and `aspect` variables:
+
+```{r points_to_interpolate_example}
+points_to_interpolate_example
+```
+
+For continuous data (raster), we need it in a `stars` object, with `elevation`, `slope` and
+`aspect` as attributes:
+
+```{r raster_to_interpolate_example}
+raster_to_interpolate_example
+```
+
+Both, `sf` and `stars` R packages have the necessary functions to read most spatial formats,
+the only thing to consider is ensure that the topological variables has the mandatory names
+(`elevation`, `aspect`, `slope`).
+
+### Meteorological information
+
+For interpolating the meteorological variables in our locations (see above), we need a
+reference meteo data. This is a `sf` object with the reference locations, and the meteo
+variables needed to perform the interpolation:
+
+```{r meteoland_meteo_example}
+meteoland_meteo_example
+```
+
+`meteoland` expect names to be as indicated in the example:
+
+```{r meteo_names}
+names(meteoland_meteo_example)
+```
+
+The only mandatory variables are `MinTemperature` and `MaxTemperature`. Other variables
+(`Precipitation`, `WindSpeed`...), when present, allow for interpolating also those variables.
+
+
+**TODO**
+preparing meteo data for meteoland
+
+### Quick interpolation (if everythig is ok)
+
+With the necessary data in the correct form we can perform the interpolation right away:
+
+```{r quick_interpolation}
+# creating the interpolator object
+interpolator <- with_meteo(meteoland_meteo_example) |>
+  create_meteo_interpolator()
+
+# performing the interpolation
+points_interpolated <- points_to_interpolate_example |>
+  interpolate_data(interpolator)
+points_interpolated
+```
+
+Let's see this step by step.
+
+  - `with_meteo(...)` ensures that the provided meteo information is in the correct format
+  for using it with `meteoland`. It performs several checks and informs of any error found.
+  For example, if the meteo information doesn't have the mandatory variables, an informative
+  error is shown:
+  
+```{r non_mandatory_vars_in_meteo, error=TRUE}
+meteo_without_temp <- meteoland_meteo_example
+meteo_without_temp[["MinTemperature"]] <- NULL
+meteo_without_temp[["MaxTemperature"]] <- NULL
+with_meteo(meteo_without_temp)
+```
+  
+  - `create_meteo_interpolator(...)` creates the interpolator object from the meteo information.
+  This object stores not only the meteorological information, but also the interpolation
+  parameters that will be used in the interpolation.  
+  Parameters can be supplied as a list in the `params` argument from
+  `create_meteo_interpolator()` function. If not supplied, a default set of parameters is
+  used.
+  
+```{r interpolatior_params}
+# parameters
+get_interpolation_params(interpolator)
+```
+
+  - `interpolate_data(...)` performs the interpolation using the topology provided and the
+  interpolator object. If the topology information is in an sf object, as in the example,
+  `interpolate_data` returns the same `sf` object with a new column called
+  `interpolated_data`:
+  
+```{r interpolated_data}
+# interpolated meteo for the first location
+points_interpolated[["interpolated_data"]][1]
+```
+  
+## Interpolator object
+
+In older versions of meteoland, the interpolator object inherits the `MeteorologyInterpolationData` class (based on `sp` classes). Starting on `meteoland v2.0.0`
+the interpolator object created by `create_meteo_interpolator()` inherits directly from
+`stars` class.
+
+```{r interpolator_class}
+class(interpolator)
+```
+
+This object is a data cube, with meteo locations and dates as dimensions, and meteorological
+and topological variables as attributes.
+
+```{r interpolator_description}
+interpolator
+```
+
+It also contains the interpolation parameters as an attribute, that can be accessed with
+`get_interpolation_params`.
+
+```{r get_interpolation_params}
+get_interpolation_params(interpolator)
+```
+
+Parameters can also be changed with `set_interpolation_params`.
+
+```{r set_interpolation_params}
+# wind_height parameter
+get_interpolation_params(interpolator)$wind_height
+
+# set a new wind_height parameter and check
+interpolator <- set_interpolation_params(interpolator, params = list(wind_height = 5))
+get_interpolation_params(interpolator)$wind_height
+```
+
+### Writing and reading interpolator objects
+
+Interpolator objects can be reused for different interpolation in the same area covered
+by the interpolator. To allow interpolator objects to be shared between sessions,
+`meteoland` offers functions to write and read interpolator objects. The interpolator
+is saved in NetCDF-CF format (https://cfconventions.org/cf-conventions/cf-conventions.html)
+and can be opened with any GIS software that supports NetCDF-CF.
+
+```{r writing_interpolator}
+temporal_folder <- tempdir()
+write_interpolator(interpolator, file.path(temporal_folder, "interpolator.nc"))
+file.exists(file.path(temporal_folder, "interpolator.nc"))
+```
+
+For reading the interpolator in your session again, you can use the `read_interpolator`
+function.
+
+```{r reading_interpolator}
+file_interpolator <- read_interpolator(file.path(temporal_folder, "interpolator.nc"))
+# the read interpolator should be identical to the one we have already
+identical(file_interpolator, interpolator)
+```
+
+### Interpolator calibration
+
+Interpolation parameters can be calibrated for individual variables before performing the
+interpolation process. In fact, **is recommended** to calibrate the interpolator object
+before using it, as the default interpolation parameters can be not adequate for the
+studied area. `meteoland` offers a calibration process with the `interpolator_calibration`
+function.
+
+    **Important!** Calibration process for one variable can take a long time to finish,
+    as it performs a *leave-one-out* interpolation for all stations present in the
+    interpolator. In this example we reduce the N and alpha test values for the process
+    to be faster, but is recommended to explore a wider range of N and alpha values.
+
+```{r interpolator_calibration, cache=TRUE}
+# min temperature N and alpha before calibration
+get_interpolation_params(interpolator)$N_MinTemperature
+get_interpolation_params(interpolator)$alpha_MinTemperature
+
+# calibration
+interpolator <- interpolator_calibration(
+  interpolator,
+  variable = "MinTemperature",
+  N_seq = c(5, 20),
+  alpha_seq = c(1, 10),
+  update_interpolator_params = TRUE
+)
+
+# parameters after calibration
+get_interpolation_params(interpolator)$N_MinTemperature
+get_interpolation_params(interpolator)$alpha_MinTemperature
+```
+
+One advantage of the new data flows in `meteoland` is that we can pipe the creation and the
+calibration of the interpolator, as well as the writing:
+
+```{r preparing_interpolator, cache=TRUE}
+interpolator <- with_meteo(meteoland_meteo_example) |>
+  create_meteo_interpolator() |>
+  interpolator_calibration(
+    variable = "MinTemperature",
+    N_seq = c(5, 20),
+    alpha_seq = c(1, 10),
+    update_interpolator_params = TRUE
+  ) |>
+  
+  interpolator_calibration(
+    variable = "MaxTemperature",
+    N_seq = c(5, 20),
+    alpha_seq = c(1, 10),
+    update_interpolator_params = TRUE
+  ) |>
+  interpolator_calibration(
+    variable = "DewTemperature",
+    N_seq = c(5, 20),
+    alpha_seq = c(1, 10),
+    update_interpolator_params = TRUE
+  ) |>
+  write_interpolator(
+    filename = file.path(temporal_folder, "interpolator.nc"),
+    .overwrite = TRUE
+  )
+```
+
+This way we can create and calibrate the interpolator once, and using it in future
+sessions, avoiding the time consuming step of calibrating every time.
+
+## Interpolation validation
+
+The interpolation process can be cross validated. `meteoland` offers the possibility with the
+`interpolation_cross_validation()` function.
+This function takes an interpolator object and calculates different error measures.
+
+```{r cross_validation, cache=TRUE}
+cross_validation <- interpolation_cross_validation(interpolator, verbose = FALSE)
+cross_validation$errors
+cross_validation$station_stats
+cross_validation$dates_stats
+cross_validation$r2
+```
+
+## Interpolation utils
+
+`meteoland` also offers some utilities to work with the interpolated data.
+
+### Temporal summary of interpolated data
+
+`meteoland` works at the daily scale. But sometimes the data needs to be aggregated into
+bigger temporal scales (monthly, quarterly, yearly...). This can be done with the
+`summarise_interpolated_data()` function. This function takes the result of
+`interpolate_data` and summarise the interpolation in the desired frequency.  
+The function returns the same interpolated data, but with the weekly summary as a new column.
+
+```{r summarise_interpolated_data}
+summarise_interpolated_data(
+  points_interpolated,
+  fun = "mean",
+  frequency = "week"
+)
+```
+
+### Calculating rainfall erosivity
+
+`meteoland` also offers the possibility of calculating the rainfall erosivity value, with
+the `precipitation_rainfall_erosivity()` function. This can be used for individual locations:
+
+```{r erosivity_one_location}
+precipitation_rainfall_erosivity(
+  points_interpolated$interpolated_data[[1]],
+  longitude = sf::st_coordinates(points_interpolated$geometry[[1]])[,1],
+  scale = 'month'
+)
+```
+
+But also for all locations in the results obtained from `interpolate_data`:
+
+```{r erosivity_mutate}
+library(dplyr)
+points_interpolated |>
+  mutate(erosivity = precipitation_rainfall_erosivity(
+    interpolated_data,
+    longitude = sf::st_coordinates(geometry)[,1],
+    scale = 'month'
+  ))
+```
+
+### Piping all together
+
+`meteoland` new data flows also allows for piping all processes:
+
+```{r interpolation_piped}
+interpolated_points <- points_to_interpolate_example |>
+  interpolate_data(interpolator) |>
+  summarise_interpolated_data(
+    fun = "mean",
+    frequency = "week"
+  ) |>
+  summarise_interpolated_data(
+    fun = "max",
+    frequency = "month"
+  ) |>
+  mutate(
+    monthly_erosivity = precipitation_rainfall_erosivity(
+      interpolated_data,
+      longitude = sf::st_coordinates(geometry)[,1],
+      scale = 'month'
+    )
+  )
+
+interpolated_points
+```
+

@@ -48,7 +48,7 @@ to TRUE. It can be turned off for the function with FALSE, or session wide with
 }
 \value{
 For a nested interpolated data, the same sf object with a new column
-(\code{summary_data}) with the temporal summaries. For an unnested interpolated
+with the temporal summaries. For an unnested interpolated
 data, a data.frame with the summarised meteo variables. For an interpolated
 raster (stars object), the same raster with the temporal dimension aggregated
 as desired.

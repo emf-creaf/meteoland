@@ -117,6 +117,15 @@
     dplyr::ungroup()
 }
 
+.summary_col_name <- function(frequency, fun) {
+  freq_fixed <- paste0(frequency, 'ly')
+  if (is.null(frequency)) {
+    freq_fixed <- 'all'
+  }
+
+  return(paste0(c(freq_fixed, fun), collapse = '_'))
+}
+
 .summary_interpolated_sf <- function(
     meteo_interpolated,
     fun = "mean",
@@ -134,9 +143,11 @@
 
   ## sf nested
   if ("interpolated_data" %in% names(meteo_interpolated) & inherits(meteo_interpolated, "sf")) {
+
+    summary_name <- .summary_col_name(frequency, fun)
     res <- meteo_interpolated |>
       dplyr::mutate(
-        summary_data = purrr::map(
+        !!summary_name := purrr::map(
           interpolated_data, .f = .summary_by_date_and_var,
           fun = fun, frequency = frequency, vars_to_summary = vars_to_summary,
           dates_to_summary = dates_to_summary, months_to_summary = months_to_summary,
@@ -272,7 +283,7 @@
 #' @param ... Arguments needed for \code{fun}
 #'
 #' @return For a nested interpolated data, the same sf object with a new column
-#' (\code{summary_data}) with the temporal summaries. For an unnested interpolated
+#' with the temporal summaries. For an unnested interpolated
 #' data, a data.frame with the summarised meteo variables. For an interpolated
 #' raster (stars object), the same raster with the temporal dimension aggregated
 #' as desired.

@@ -53,48 +53,48 @@ test_that("summarise_interpolated_data for sf works as expected", {
     (res_nested_defaults_test <- summarise_interpolated_data(data_test)),
     "sf"
   )
-  expect_true("summary_data" %in% names(res_nested_defaults_test))
-  expect_s3_class(res_nested_defaults_test$summary_data[[1]], "data.frame")
+  expect_true("all_mean" %in% names(res_nested_defaults_test))
+  expect_s3_class(res_nested_defaults_test$all_mean[[1]], "data.frame")
   expect_named(
-    res_nested_defaults_test$summary_data[[10]],
+    res_nested_defaults_test$all_mean[[10]],
     c(
       "MeanTemperature", "MinTemperature","MaxTemperature", "Precipitation",
       "MeanRelativeHumidity", "MinRelativeHumidity", "MaxRelativeHumidity",
       "Radiation", "WindSpeed", "WindDirection", "PET"
     )
   )
-  expect_true(nrow(res_nested_defaults_test$summary_data[[5]]) == 1)
+  expect_true(nrow(res_nested_defaults_test$all_mean[[5]]) == 1)
   # test for data summarised, not NA or NaN
   expect_false(
-    is.na(res_nested_defaults_test$summary_data[[6]]$MeanTemperature) ||
-      is.nan(res_nested_defaults_test$summary_data[[6]]$MeanTemperature)
+    is.na(res_nested_defaults_test$all_mean[[6]]$MeanTemperature) ||
+      is.nan(res_nested_defaults_test$all_mean[[6]]$MeanTemperature)
   )
   # test that summary dfs are not grouped
-  expect_false(inherits(res_nested_defaults_test$summary_data[[8]], "grouped_df"))
+  expect_false(inherits(res_nested_defaults_test$all_mean[[8]], "grouped_df"))
 
   # frequency
   expect_s3_class(
     (res_nested_weekly_test <- summarise_interpolated_data(data_test, frequency = "week")),
     "sf"
   )
-  expect_true("summary_data" %in% names(res_nested_weekly_test))
-  expect_s3_class(res_nested_weekly_test$summary_data[[1]], "data.frame")
+  expect_true("weekly_mean" %in% names(res_nested_weekly_test))
+  expect_s3_class(res_nested_weekly_test$weekly_mean[[1]], "data.frame")
   expect_named(
-    res_nested_weekly_test$summary_data[[10]],
+    res_nested_weekly_test$weekly_mean[[10]],
     c(
       "week", "year", "MeanTemperature", "MinTemperature","MaxTemperature",
       "Precipitation", "MeanRelativeHumidity", "MinRelativeHumidity",
       "MaxRelativeHumidity", "Radiation", "WindSpeed", "WindDirection", "PET"
     )
   )
-  expect_true(nrow(res_nested_weekly_test$summary_data[[5]]) == 6)
+  expect_true(nrow(res_nested_weekly_test$weekly_mean[[5]]) == 6)
   # test for data summarised, not NA or NaN
   expect_false(
-    all(is.na(res_nested_weekly_test$summary_data[[6]]$MeanTemperature)) ||
-      all(is.nan(res_nested_weekly_test$summary_data[[6]]$MeanTemperature))
+    all(is.na(res_nested_weekly_test$weekly_mean[[6]]$MeanTemperature)) ||
+      all(is.nan(res_nested_weekly_test$weekly_mean[[6]]$MeanTemperature))
   )
   # test that summary dfs are not grouped
-  expect_false(inherits(res_nested_weekly_test$summary_data[[8]], "grouped_df"))
+  expect_false(inherits(res_nested_weekly_test$weekly_mean[[8]], "grouped_df"))
 
   # dates to summary
   dates_to_summary_test <- as.Date(unique(data_test$interpolated_data[[3]]$dates)[1:5])
@@ -104,24 +104,24 @@ test_that("summarise_interpolated_data for sf works as expected", {
     "Filtering the desired dates"
   )
   expect_s3_class(res_nested_dates_test, "sf")
-  expect_true("summary_data" %in% names(res_nested_dates_test))
-  expect_s3_class(res_nested_dates_test$summary_data[[1]], "data.frame")
+  expect_true("all_mean" %in% names(res_nested_dates_test))
+  expect_s3_class(res_nested_dates_test$all_mean[[1]], "data.frame")
   expect_named(
-    res_nested_dates_test$summary_data[[10]],
+    res_nested_dates_test$all_mean[[10]],
     c(
       "MeanTemperature", "MinTemperature","MaxTemperature",
       "Precipitation", "MeanRelativeHumidity", "MinRelativeHumidity",
       "MaxRelativeHumidity", "Radiation", "WindSpeed", "WindDirection", "PET"
     )
   )
-  expect_true(nrow(res_nested_dates_test$summary_data[[5]]) == 1)
+  expect_true(nrow(res_nested_dates_test$all_mean[[5]]) == 1)
   # test for data summarised, not NA or NaN
   expect_false(
-    is.na(res_nested_dates_test$summary_data[[6]]$MeanTemperature) ||
-      is.nan(res_nested_dates_test$summary_data[[6]]$MeanTemperature)
+    is.na(res_nested_dates_test$all_mean[[6]]$MeanTemperature) ||
+      is.nan(res_nested_dates_test$all_mean[[6]]$MeanTemperature)
   )
   # test that summary dfs are not grouped
-  expect_false(inherits(res_nested_dates_test$summary_data[[8]], "grouped_df"))
+  expect_false(inherits(res_nested_dates_test$all_mean[[8]], "grouped_df"))
 
   # What happens when the dates supplied are not in the data??
   # TODO
@@ -132,21 +132,21 @@ test_that("summarise_interpolated_data for sf works as expected", {
     (res_nested_months_test <- summarise_interpolated_data(data_test, months_to_summary = months_to_summary_test)),
     "sf"
   )
-  expect_true("summary_data" %in% names(res_nested_months_test))
-  expect_s3_class(res_nested_months_test$summary_data[[1]], "data.frame")
+  expect_true("all_mean" %in% names(res_nested_months_test))
+  expect_s3_class(res_nested_months_test$all_mean[[1]], "data.frame")
   expect_named(
-    res_nested_months_test$summary_data[[10]],
+    res_nested_months_test$all_mean[[10]],
     c(
       "MeanTemperature", "MinTemperature","MaxTemperature",
       "Precipitation", "MeanRelativeHumidity", "MinRelativeHumidity",
       "MaxRelativeHumidity", "Radiation", "WindSpeed", "WindDirection", "PET"
     )
   )
-  expect_true(nrow(res_nested_months_test$summary_data[[5]]) == 1)
+  expect_true(nrow(res_nested_months_test$all_mean[[5]]) == 1)
   # test for data summarised, not NA or NaN
   expect_false(
-    is.na(res_nested_months_test$summary_data[[6]]$MeanTemperature) ||
-      is.nan(res_nested_months_test$summary_data[[6]]$MeanTemperature)
+    is.na(res_nested_months_test$all_mean[[6]]$MeanTemperature) ||
+      is.nan(res_nested_months_test$all_mean[[6]]$MeanTemperature)
   )
 
   # as data is only april, this result should be identical to the base one
@@ -161,12 +161,12 @@ test_that("summarise_interpolated_data for sf works as expected", {
   )
   # expecting NA or NaN
   expect_true(
-    is.na(res_nested_months_bad_test$summary_data[[6]]$MeanTemperature) ||
-      is.nan(res_nested_months_bad_test$summary_data[[6]]$MeanTemperature)
+    is.na(res_nested_months_bad_test$all_mean[[6]]$MeanTemperature) ||
+      is.nan(res_nested_months_bad_test$all_mean[[6]]$MeanTemperature)
   )
   # test that summary dfs are not grouped
-  expect_false(inherits(res_nested_months_test$summary_data[[8]], "grouped_df"))
-  expect_false(inherits(res_nested_months_bad_test$summary_data[[8]], "grouped_df"))
+  expect_false(inherits(res_nested_months_test$all_mean[[8]], "grouped_df"))
+  expect_false(inherits(res_nested_months_bad_test$all_mean[[8]], "grouped_df"))
 
   # vars_to_summary
   vars_to_summary_test <- c("Precipitation", "Radiation")
@@ -174,17 +174,17 @@ test_that("summarise_interpolated_data for sf works as expected", {
     (res_nested_vars_test <- summarise_interpolated_data(data_test, vars_to_summary = vars_to_summary_test)),
     "sf"
   )
-  expect_true("summary_data" %in% names(res_nested_vars_test))
-  expect_s3_class(res_nested_vars_test$summary_data[[1]], "data.frame")
-  expect_named(res_nested_vars_test$summary_data[[10]], c("Precipitation", "Radiation"))
-  expect_true(nrow(res_nested_vars_test$summary_data[[5]]) == 1)
+  expect_true("all_mean" %in% names(res_nested_vars_test))
+  expect_s3_class(res_nested_vars_test$all_mean[[1]], "data.frame")
+  expect_named(res_nested_vars_test$all_mean[[10]], c("Precipitation", "Radiation"))
+  expect_true(nrow(res_nested_vars_test$all_mean[[5]]) == 1)
   # test for data summarised, not NA or NaN
   expect_false(
-    is.na(res_nested_vars_test$summary_data[[6]]$Precipitation) ||
-      is.nan(res_nested_vars_test$summary_data[[6]]$Precipitation)
+    is.na(res_nested_vars_test$all_mean[[6]]$Precipitation) ||
+      is.nan(res_nested_vars_test$all_mean[[6]]$Precipitation)
   )
   # test that summary dfs are not grouped
-  expect_false(inherits(res_nested_vars_test$summary_data[[8]], "grouped_df"))
+  expect_false(inherits(res_nested_vars_test$all_mean[[8]], "grouped_df"))
 
   # integration tests
   expect_s3_class(
@@ -200,20 +200,20 @@ test_that("summarise_interpolated_data for sf works as expected", {
     )),
     "sf"
   )
-  expect_true("summary_data" %in% names(res_nested_integration_test))
-  expect_s3_class(res_nested_integration_test$summary_data[[1]], "data.frame")
+  expect_true("weekly_max" %in% names(res_nested_integration_test))
+  expect_s3_class(res_nested_integration_test$weekly_max[[1]], "data.frame")
   expect_named(
-    res_nested_integration_test$summary_data[[10]],
+    res_nested_integration_test$weekly_max[[10]],
     c("week", "year", "Precipitation", "Radiation")
   )
-  expect_true(nrow(res_nested_integration_test$summary_data[[5]]) == 2)
+  expect_true(nrow(res_nested_integration_test$weekly_max[[5]]) == 2)
   # test for data summarised, not NA or NaN
   expect_false(
-    all(is.na(res_nested_integration_test$summary_data[[6]]$Radiation)) ||
-      all(is.nan(res_nested_integration_test$summary_data[[6]]$Radiation))
+    all(is.na(res_nested_integration_test$weekly_max[[6]]$Radiation)) ||
+      all(is.nan(res_nested_integration_test$weekly_max[[6]]$Radiation))
   )
   # test that summary dfs are not grouped
-  expect_false(inherits(res_nested_integration_test$summary_data[[8]], "grouped_df"))
+  expect_false(inherits(res_nested_integration_test$weekly_max[[8]], "grouped_df"))
 
   # TODO
   # tests for unnested
@@ -463,7 +463,7 @@ test_that("summarise_interpolator works as expected", {
   expect_false(any(is.na(res_interp_week[["elevation"]])))
   # result shouldn't have change the values for topo, also, colrownames must be the same
   expect_identical(res_interp_week[["elevation"]][1,], data_test[["elevation"]][1,])
-  
+
   # dates_to_summary
   dates_to_summary_test <-
     as.Date(stars::st_get_dimension_values(data_test, "date")[1:5])
@@ -492,7 +492,7 @@ test_that("summarise_interpolator works as expected", {
   )
   # What happens when the dates supplied are not in the data??
   # TODO
-  
+
   # months_to_summary
   months_to_summary_test <- 4
   expect_s3_class(
@@ -524,7 +524,7 @@ test_that("summarise_interpolator works as expected", {
     summarise_interpolator(data_test, months_to_summary = 1:2),
     "Selected months"
   )
-  
+
   # vars_to_summary
   vars_to_summary_test <- c("Precipitation", "Radiation")
   expect_s3_class(
@@ -548,7 +548,7 @@ test_that("summarise_interpolator works as expected", {
   expect_identical(
     res_interp_vars[["Precipitation"]], res_interp_defaults[["Precipitation"]]
   )
-  
+
   # integration tests
   expect_s3_class(
     (res_interp_integration <- summarise_interpolator(
@@ -578,5 +578,5 @@ test_that("summarise_interpolator works as expected", {
   expect_false(
     identical(res_interp_integration[["Precipitation"]], res_interp_week[["Precipitation"]])
   )
-  
+
 })

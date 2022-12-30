@@ -242,10 +242,13 @@
 ###     - Add multiyear tests (or at least check) NOPE, already done in rainfall
 ###     - Add recursion to be able to use the methods in mutate NOPE, is better do it in the way is done now
 ###     - Add tests for recursion NOPE see above (and tests already done for the actual logic)
+### 1. Names of generated columns in summarise_* functions DONE
+###     - it should create names based on the frequency and the function, that way we can pipe more than one
+###       summarise step and create different summaries DONE
+### 1. Units in example raster attributes DONE
 # 1. Add vignette with the new logic and workflows
-#     - vignette with workflows
-#     - vignette with equivalences old-new
-#
-# 1. Names of generated columns in summarise_* functions
-#     - it should create names based on the frequency and the function, that way we can pipe more than one
-#     summarise step and create different summaries
+#     - vignette with equivalences old-new DONE
+#     - vignette with workflows DONE
+#     - vignette with meteo acquisition, reshaping and completing
+# 1. Ask Miquel
+#     - The big question, topology or topography????

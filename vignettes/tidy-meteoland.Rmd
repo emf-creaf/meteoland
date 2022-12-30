@@ -3,8 +3,10 @@ title: "Tidy meteoland"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Tidy meteoland}
-  %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
+  %\VignetteEngine{knitr::rmarkdown}
+editor_options: 
+  chunk_output_type: console
 ---
 
 ```{r, include = FALSE}
@@ -23,12 +25,15 @@ library(dplyr)
 ## A new way of working with `meteoland`
 
 With the [retirement](https://r-spatial.org/r/2022/04/12/evolution.html)
-of `rgdal`, `rgeos` and `maptools` R packages, and the strong dependency `meteoland` has
-with `sp` and `raster` R packages, a complete update of `meteoland` was necessary. This update
-has removed any dependency on the retired packages as well as `sp` and `raster`, and now uses
-`sf` and `stars` packages for working with simple features and raster data.
+of `rgdal`, `rgeos` and `maptools` R packages, and the hard dependency `meteoland` has
+with `sp` and `raster` R packages, a complete update of `meteoland` was necessary. Starting with
+version 2.0.0 of `meteoland`, any hard dependency on retired packages as well as `sp` and `raster`
+has been removed, and now `sf` and `stars` packages are internally used for working with simple
+features and raster data.
+In future versions of `meteoland`, `sp` and `raster` packages will be removed from the dependency
+list.
 
-As fundamental changes were required (`meteoland` classes were based on `sp` and ones), a
+As fundamental changes were required (`meteoland` meteorology classes were based on `sp` ones), a
 decision to improve and make meteorological interpolation process simpler was taken. In this
 vignette we provide insights on the new ways of working with `meteoland`.
 
@@ -40,14 +45,14 @@ please see `vignette("function-equivalences", package = 'meteoland')`.
 `meteoland` now ships with new example objects, based on the `sf` and `stars` packages. The
 following table describe the new data examples:
 
-name | description
+Name | Description
 -----|------------
 meteoland_interpolator_example | A meteoland interpolator object, with daily meteorological data in Catalonia (Spain) for April 2022.
 meteoland_meteo_example | Data from meteorological stations in Catalonia (Spain) for April 2022.
 meteoland_meteo_no_topo_example | Data from meteorological stations in Catalonia (Spain) for April 2022, without topological information.
 meteoland_topo_example | Topological information for meteorological stations in Catalonia (Spain).
 points_to_interpolate_example | Topological information for 15 plots located in Catalonia (Spain).
-raster_to_interpolate_example | Topological information for a 10x10 raster located in central Catalonia (Spain)
+raster_to_interpolate_example | Topological information for a 0.01 degree grid (10x10 cells) raster located in central Catalonia (Spain)
 
 ## The new interpolation process
 
@@ -78,14 +83,14 @@ raster_to_interpolate_example
 ```
 
 Both, `sf` and `stars` R packages have the necessary functions to read most spatial formats,
-the only thing to consider is ensure that the topological variables has the mandatory names
+the only thing to consider is ensuring that the topological variables has the mandatory names
 (`elevation`, `aspect`, `slope`).
 
 ### Meteorological information
 
 For interpolating the meteorological variables in our locations (see above), we need a
-reference meteo data. This is a `sf` object with the reference locations, and the meteo
-variables needed to perform the interpolation:
+reference meteo data. This is a `sf` object with the reference locations, and daily values of the
+meteo variables needed to perform the interpolation:
 
 ```{r meteoland_meteo_example}
 meteoland_meteo_example
@@ -153,7 +158,15 @@ get_interpolation_params(interpolator)
 # interpolated meteo for the first location
 points_interpolated[["interpolated_data"]][1]
 ```
-  
+
+We can "unnest" the results to get the data in a *long* format (each combination of
+location and date in each row):
+
+```{r long}
+tidyr::unnest(points_interpolated, cols = "interpolated_data")
+```
+
+
 ## Interpolator object
 
 In older versions of meteoland, the interpolator object inherits the `MeteorologyInterpolationData` class (based on `sp` classes). Starting on `meteoland v2.0.0`
@@ -191,15 +204,16 @@ get_interpolation_params(interpolator)$wind_height
 
 ### Writing and reading interpolator objects
 
-Interpolator objects can be reused for different interpolation in the same area covered
+Interpolator objects can be reused for different interpolations in the same area covered
 by the interpolator. To allow interpolator objects to be shared between sessions,
-`meteoland` offers functions to write and read interpolator objects. The interpolator
+`meteoland` offers functions to write and read these objects. The interpolator
 is saved in NetCDF-CF format (https://cfconventions.org/cf-conventions/cf-conventions.html)
-and can be opened with any GIS software that supports NetCDF-CF.
+and can be also opened with any GIS software that supports NetCDF-CF.
 
 ```{r writing_interpolator}
 temporal_folder <- tempdir()
 write_interpolator(interpolator, file.path(temporal_folder, "interpolator.nc"))
+# file should exists now
 file.exists(file.path(temporal_folder, "interpolator.nc"))
 ```
 
@@ -215,15 +229,16 @@ identical(file_interpolator, interpolator)
 ### Interpolator calibration
 
 Interpolation parameters can be calibrated for individual variables before performing the
-interpolation process. In fact, **is recommended** to calibrate the interpolator object
+interpolation process. In fact, **it's recommended** to calibrate the interpolator object
 before using it, as the default interpolation parameters can be not adequate for the
 studied area. `meteoland` offers a calibration process with the `interpolator_calibration`
 function.
 
     **Important!** Calibration process for one variable can take a long time to finish,
     as it performs a *leave-one-out* interpolation for all stations present in the
-    interpolator. In this example we reduce the N and alpha test values for the process
-    to be faster, but is recommended to explore a wider range of N and alpha values.
+    interpolator and all combinations of N and alpha sequences provided. In this example
+    we reduce the N and alpha test values for the process to be faster, but is recommended
+    to explore a wider range of these values.
 
 ```{r interpolator_calibration}
 # min temperature N and alpha before calibration
@@ -256,7 +271,6 @@ interpolator <- with_meteo(meteoland_meteo_example) |>
     alpha_seq = c(1, 10),
     update_interpolator_params = TRUE
   ) |>
-  
   interpolator_calibration(
     variable = "MaxTemperature",
     N_seq = c(5, 20),

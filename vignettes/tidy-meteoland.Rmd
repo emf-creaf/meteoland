@@ -30,8 +30,8 @@ with `sp` and `raster` R packages, a complete update of `meteoland` was necessar
 version 2.0.0 of `meteoland`, any hard dependency on retired packages as well as `sp` and `raster`
 has been removed, and now `sf` and `stars` packages are internally used for working with simple
 features and raster data.
-In future versions of `meteoland`, `sp` and `raster` packages will be removed from the dependency
-list.
+In future versions of `meteoland`, `sp` and `raster` packages will be completely
+removed from the dependency list.
 
 As fundamental changes were required (`meteoland` meteorology classes were based on `sp` ones), a
 decision to improve and make meteorological interpolation process simpler was taken. In this
@@ -103,14 +103,15 @@ names(meteoland_meteo_example)
 ```
 
 The only mandatory variables are `MinTemperature` and `MaxTemperature`. Other variables
-(`Precipitation`, `WindSpeed`...), when present, allow for interpolating also those variables.
+(`Precipitation`, `WindSpeed`...), when present, allow for a more complete
+interpolation.
 
 For more information on preparing meteorological data for `meteoland`, see
 `vignette("reshaping-meteo", package = "meteoland")`
 
 ### Quick interpolation (if everythig is ok)
 
-With the necessary data in the correct form we can perform the interpolation right away:
+With the necessary data in the correct format we can perform the interpolation right away:
 
 ```{r quick_interpolation}
 # creating the interpolator object

@@ -1,0 +1,133 @@
+---
+title: "Reshaping meteo data for meteoland"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Reshaping meteo data for meteoland}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(meteoland)
+library(stars)
+library(dplyr)
+```
+
+```{r data_preparation, echo=FALSE}
+unformatted_meteo <- tibble(
+  date = rep(seq(from = as.Date("2022-12-01"), to = as.Date("2022-12-05"), by = 1), 3),
+  station = rep(letters[1:3], each = 5),
+  latitude = rep(c(41.35, 40.11, 42.00), each = 5),
+  longitude = rep(c(-0.33, 0.12, 1.12), each = 5),
+  min_temp = rnorm(15, 10, 6),
+  max_temp = min_temp + rnorm(15, 10, 3),
+  rh = rnorm(15, 50, 25)
+) |>
+  dplyr::mutate(
+    rh = dplyr::if_else(rh > 100, 100, rh),
+    rh = dplyr::if_else(rh < 20, 20, rh)
+  )
+```
+
+
+## Meteo data format
+
+For interpolating the meteorological variables in our locations, we need a
+reference meteo data. In `meteoland` this is a `sf` object with reference
+locations (usually meteorological stations) and daily values of the meteo
+variables needed to perform the interpolation, *i.e.*:
+
+```{r meteoland_meteo_example}
+meteoland_meteo_example
+```
+
+`meteoland` expect names to be as in the example:
+
+```{r meteo_names}
+names(meteoland_meteo_example)
+```
+
+The only mandatory variables are `MinTemperature` and `MaxTemperature`. Other variables
+(`Precipitation`, `WindSpeed`...), when present, allow for a more complete
+interpolation.
+
+## Converting meteo data to `meteoland` format
+
+Meteo data can come in many formats and with different names for the same
+variables. As we saw above, we need to convert it to a `meteoland` compliant
+format (`sf` object with correct names).
+
+### Converting from data frames
+
+If we have our meteo data in a data.frame (*i.e.* we obtained the meteo from
+our own meteo stations, or download it from other source in this format) we can
+just simply transform to the desired format:
+
+```{r unformatted_meteo}
+unformatted_meteo
+```
+
+```{r unformatted_transformation}
+ready_meteo <- unformatted_meteo |>
+  # convert names to correct ones
+  dplyr::mutate(
+    MinTemperature = min_temp,
+    MaxTemperature = max_temp,
+    MeanRelativeHumidity = rh
+  ) |>
+  # transform to sf (WGS84)
+  sf::st_as_sf(
+    coords = c("longitude", "latitude"),
+    crs = sf::st_crs(4326)
+  )
+
+ready_meteo
+```
+
+And *voilà*, we have our meteo data in the correct format
+
+### Meteo data from other R packages
+
+`meteoland` offers transformation functions for meteo data downloaded from the
+[`meteospain`](https://emf-creaf.github.io/meteospain/) and
+[`worldmet`](https://davidcarslaw.github.io/worldmet/) R packages.
+
+#### `meteospain` data
+
+For data coming from `meteospain` package we have the `meteospain2meteoland`
+function that transforming the data for us:
+
+```{r meteospain}
+library(meteospain)
+get_meteo_from(
+  "meteogalicia",
+  meteogalicia_options('daily', as.Date("2022-12-01"), as.Date("2022-12-05"))
+) |>
+  meteospain2meteoland()
+```
+
+#### `worldmet` data
+
+For data coming from `worldmet` package we have the `worldmet2meteoland`
+function that do the reshaping for us:
+
+```{r worldmet}
+library(worldmet)
+worldmet::importNOAA("081120-99999", year = 2022) |>
+  worldmet2meteoland()
+```
+
+### meteo data from raster sources
+
+As we have seen, we need the meteo reference data in a `sf` object (points).
+The easiest way of achieving this with meteo data in raster format is
+transforming the cells to points and get the values:
+
+TODO!!!

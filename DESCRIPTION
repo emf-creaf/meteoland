@@ -34,7 +34,8 @@ Imports:
     purrr,
     ncdfgeom,
     ncmeta,
-    lubridate
+    lubridate,
+    cubelyr
 Suggests: 
     knitr,
     forecast,

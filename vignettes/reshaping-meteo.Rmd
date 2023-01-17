@@ -127,7 +127,56 @@ worldmet::importNOAA("081120-99999", year = 2022) |>
 ### meteo data from raster sources
 
 As we have seen, we need the meteo reference data in a `sf` object (points).
-The easiest way of achieving this with meteo data in raster format is
-transforming the cells to points and get the values:
+To be able to create an interpolator from a raster, we need to transform the cell values to points
+(*i.e.* using the cell center coordinates) for each variable and day and use it to create the
+interpolator.
 
-TODO!!!
+So if we have a multilayered raster with several dates of meteorological data:
+
+    > Remember that the raster, besides the meteo data, needs to contain also the topographic
+    (elevation, aspect and slope) data for the interpolator to work.
+
+```{r raster_meteo_preparing, echo = FALSE}
+raster_meteo_reference <- interpolate_data(
+  raster_to_interpolate_example, meteoland_interpolator_example, verbose = FALSE
+)
+```
+
+```{r}
+raster_meteo_reference
+```
+
+we need to convert it to points:
+
+```{r raster_to_points}
+points_meteo_reference <- names(raster_meteo_reference) |>
+  # for each variable
+  purrr::map(
+    # take the variable raster
+    ~ raster_meteo_reference[.x] |>
+      # convert to sf
+      sf::st_as_sf(as_points = TRUE, na.rm = FALSE) |>
+      # pivot the data for dates to be in one column
+      tidyr::pivot_longer(cols = -geometry, names_to = "dates", values_to = .x) |>
+      # convert to tibble to fasten the process
+      dplyr::as_tibble() |>
+      # convert to date and create stationID
+      dplyr::mutate(
+        dates = as.Date(dates),
+        stationID = as.character(geometry)
+      )
+  ) |>
+  # join all variables
+  purrr::reduce(dplyr::left_join) |>
+  # create the points sf object
+  sf::st_as_sf()
+
+points_meteo_reference
+```
+
+And now we can use it:
+
+```{r raster_interpolator}
+with_meteo(points_meteo_reference) |>
+  create_meteo_interpolator()
+```

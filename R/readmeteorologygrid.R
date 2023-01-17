@@ -64,7 +64,7 @@ readmeteorologygrid<-function(files, format = "netCDF", varmapping = NULL,
   
   # deprecation notice
   lifecycle::deprecate_warn(
-    when = "1.1.0", what = "readmeteorologygrid()", with = NULL,
+    when = "2.0.0", what = "readmeteorologygrid()", with = NULL,
     details = "Spatial_*_Meteorology classes are soft deprecated.
     Read of meteorology source data must be done with the corresponding package (sf, terra, stars...)
     and meteorology data converted to a sf points object"
@@ -94,7 +94,7 @@ readmeteorologypixels<-function(files, format = "netCDF", varmapping = NULL,
                                 dates = NULL, bbox = NULL, offset = 0, verbose = FALSE) {
   # deprecation notice
   lifecycle::deprecate_warn(
-    when = "1.1.0", what = "readmeteorologypixels()", with = NULL,
+    when = "2.0.0", what = "readmeteorologypixels()", with = NULL,
     details = "Spatial_*_Meteorology classes are soft deprecated.
     Read of meteorology source data must be done with the corresponding package (sf, terra, stars...)
     and meteorology data converted to a sf points object"
@@ -125,7 +125,7 @@ readmeteorologygridpoints<-function(files, format = "netCDF", varmapping = NULL,
                                     relativehumidity = FALSE, verbose = FALSE) {
   # deprecation notice
   lifecycle::deprecate_warn(
-    when = "1.1.0", what = "readmeteorologygridpoints()", with = NULL,
+    when = "2.0.0", what = "readmeteorologygridpoints()", with = NULL,
     details = "Spatial_*_Meteorology classes are soft deprecated.
     Read of meteorology source data must be done with the corresponding package (sf, terra, stars...)
     and meteorology data converted to a sf points object"
@@ -222,14 +222,14 @@ readmeteorologygridpoints<-function(files, format = "netCDF", varmapping = NULL,
 #   y = NULL
 #   crs = CRS(as.character(NA))
 #   for(i in 1:nfiles) {
-#     ncin <- nc_open(files[i])
+#     ncin <- ncdf4::nc_open(files[i])
 #     if(is.null(crs)) {
-#       proj4string <- ncatt_get(ncin,0, "proj4string")$value
+#       proj4string <- ncdf4::ncatt_get(ncin,0, "proj4string")$value
 #       if(proj4string!="NA") crs = CRS(proj4string)
 #     }
 #     if(is.null(x) || is.null(y)) {
-#       dimX <- ncvar_get(ncin, "X")
-#       dimY <- ncvar_get(ncin, "Y")
+#       dimX <- ncdf4::ncvar_get(ncin, "X")
+#       dimY <- ncdf4::ncvar_get(ncin, "Y")
 #       nx = length(dimX)
 #       ny = length(dimY)
 #       cells.dim = c(nx, ny)
@@ -238,21 +238,21 @@ readmeteorologygridpoints<-function(files, format = "netCDF", varmapping = NULL,
 #       x = xy[cellIndices,1]
 #       y = xy[cellIndices,2]
 #     }
-#     dates[i] <- ncatt_get(ncin,0, "date")$value
+#     dates[i] <- ncdf4::ncatt_get(ncin,0, "date")$value
 #     for(c in 1:ncells) {
-#       l[[c]][i,1] = ncvar_get(ncin, "MeanTemperature",start=c(x[c],y[c]), count=c(1,1))
-#       l[[c]][i,2] = ncvar_get(ncin, "MinTemperature",start=c(x[c],y[c]), count=c(1,1))
-#       l[[c]][i,3] = ncvar_get(ncin, "MaxTemperature",start=c(x[c],y[c]), count=c(1,1))
-#       l[[c]][i,4] = ncvar_get(ncin, "Precipitation",start=c(x[c],y[c]), count=c(1,1))
-#       l[[c]][i,5] = ncvar_get(ncin, "MeanRelativeHumidity",start=c(x[c],y[c]), count=c(1,1))
-#       l[[c]][i,6] = ncvar_get(ncin, "MinRelativeHumidity",start=c(x[c],y[c]), count=c(1,1))
-#       l[[c]][i,7] = ncvar_get(ncin, "MaxRelativeHumidity",start=c(x[c],y[c]), count=c(1,1))
-#       l[[c]][i,8] = ncvar_get(ncin, "Radiation",start=c(x[c],y[c]), count=c(1,1))
-#       l[[c]][i,9] = ncvar_get(ncin, "WindSpeed",start=c(x[c],y[c]), count=c(1,1))
-#       l[[c]][i,10] = ncvar_get(ncin, "WindDirection",start=c(x[c],y[c]), count=c(1,1))
-#       l[[c]][i,11] = ncvar_get(ncin, "PET",start=c(x[c],y[c]), count=c(1,1))
+#       l[[c]][i,1] = ncdf4::ncvar_get(ncin, "MeanTemperature",start=c(x[c],y[c]), count=c(1,1))
+#       l[[c]][i,2] = ncdf4::ncvar_get(ncin, "MinTemperature",start=c(x[c],y[c]), count=c(1,1))
+#       l[[c]][i,3] = ncdf4::ncvar_get(ncin, "MaxTemperature",start=c(x[c],y[c]), count=c(1,1))
+#       l[[c]][i,4] = ncdf4::ncvar_get(ncin, "Precipitation",start=c(x[c],y[c]), count=c(1,1))
+#       l[[c]][i,5] = ncdf4::ncvar_get(ncin, "MeanRelativeHumidity",start=c(x[c],y[c]), count=c(1,1))
+#       l[[c]][i,6] = ncdf4::ncvar_get(ncin, "MinRelativeHumidity",start=c(x[c],y[c]), count=c(1,1))
+#       l[[c]][i,7] = ncdf4::ncvar_get(ncin, "MaxRelativeHumidity",start=c(x[c],y[c]), count=c(1,1))
+#       l[[c]][i,8] = ncdf4::ncvar_get(ncin, "Radiation",start=c(x[c],y[c]), count=c(1,1))
+#       l[[c]][i,9] = ncdf4::ncvar_get(ncin, "WindSpeed",start=c(x[c],y[c]), count=c(1,1))
+#       l[[c]][i,10] = ncdf4::ncvar_get(ncin, "WindDirection",start=c(x[c],y[c]), count=c(1,1))
+#       l[[c]][i,11] = ncdf4::ncvar_get(ncin, "PET",start=c(x[c],y[c]), count=c(1,1))
 #     }
-#     nc_close(ncin)
+#     ncdf4::nc_close(ncin)
 #   }
 #   for(i in 1:ncells) {
 #     l[[i]][is.na(l[[i]])] =NA

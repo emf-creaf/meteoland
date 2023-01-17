@@ -195,7 +195,7 @@ create_meteo_interpolator <- function(meteo_with_topo, params = NULL, verbose = 
   if (any(is.na(meteo_with_topo[["elevation"]]))) {
 
     meteo_with_topo <- meteo_with_topo |>
-      dplyr::filter(!is.na(elevation))
+      dplyr::filter(!is.na(.data$elevation))
 
     if (nrow(meteo_with_topo) < 1) {
       usethis::ui_stop("No elevation values for any station, stopping creation of the interpolator")
@@ -211,12 +211,12 @@ create_meteo_interpolator <- function(meteo_with_topo, params = NULL, verbose = 
   # helper to avoid NAs in elevation when completing cases
   .fill_elevation <- function(arranged_data) {
     arranged_data |>
-      dplyr::group_by(stationID) |>
+      dplyr::group_by(.data$stationID) |>
       dplyr::mutate(
         elevation = dplyr::if_else(
-          is.na(elevation),
-          unique(purrr::keep(elevation, ~!is.na(.x))),
-          elevation
+          is.na(.data$elevation),
+          unique(purrr::keep(.data$elevation, ~!is.na(.x))),
+          .data$elevation
         )
       ) |>
       dplyr::ungroup() |>
@@ -236,24 +236,24 @@ create_meteo_interpolator <- function(meteo_with_topo, params = NULL, verbose = 
     }
     # fill the variables
     arranged_data |>
-      dplyr::group_by(stationID) |>
+      dplyr::group_by(.data$stationID) |>
       dplyr::mutate(
         # fill elevation
         elevation = dplyr::if_else(
-          is.na(elevation),
-          unique(purrr::keep(elevation, ~!is.na(.x))),
-          elevation
+          is.na(.data$elevation),
+          unique(purrr::keep(.data$elevation, ~!is.na(.x))),
+          .data$elevation
         ),
         # fill slope and aspect
         slope = dplyr::if_else(
-          is.na(slope),
+          is.na(.data$slope),
           0,
-          slope
+          .data$slope
         ),
         aspect = dplyr::if_else(
-          is.na(aspect),
+          is.na(.data$aspect),
           0,
-          aspect
+          .data$aspect
         )
       ) |>
       dplyr::ungroup() |>
@@ -263,8 +263,8 @@ create_meteo_interpolator <- function(meteo_with_topo, params = NULL, verbose = 
   # data arranging
   meteo_arranged <- meteo_with_topo |>
     # very important step, as we need all combinations to fill the arrays
-    tidyr::complete(dates, stationID, explicit = FALSE) |>
-    dplyr::arrange(stationID, dates) |>
+    tidyr::complete(.data$dates, .data$stationID, explicit = FALSE) |>
+    dplyr::arrange("stationID", "dates") |>
     # .fill_elevation()
     .fill_topo()
 
@@ -273,7 +273,7 @@ create_meteo_interpolator <- function(meteo_with_topo, params = NULL, verbose = 
     dplyr::filter(
       !sf::st_is_empty(!!dplyr::sym(attr(meteo_arranged, "sf_column")))
     ) |>
-    dplyr::select(stationID) |>
+    dplyr::select("stationID") |>
     dplyr::distinct() |>
     sf::st_geometry()
   dates <- unique(meteo_arranged$dates)
@@ -308,7 +308,7 @@ create_meteo_interpolator <- function(meteo_with_topo, params = NULL, verbose = 
   # helper
   .interpolator_arrays_creator <- function(variable, arranged_data, dims) {
     col_names <- arranged_data |>
-      dplyr::pull(stationID) |>
+      dplyr::pull("stationID") |>
       unique()
 
     if (! variable %in% names(arranged_data)) {
@@ -411,12 +411,12 @@ create_meteo_interpolator <- function(meteo_with_topo, params = NULL, verbose = 
 #' Write the interpolator object to a file
 #'
 #' This function writes the interpolator object created with
-#' \code{\link{create_meteoland_interpolator}} in a NetCDF-CF standard
+#' \code{\link{create_meteo_interpolator}} in a NetCDF-CF standard
 #' compliant format, as specified in
 #' https://cfconventions.org/cf-conventions/cf-conventions.html
 #'
 #' @param interpolator meteoland interpolator object, as created by
-#' \code{\link{create_meteoland_interpolator}}
+#' \code{\link{create_meteo_interpolator}}
 #' @param filename file name for the interpolator nc file
 #' @param .overwrite logical indicating if the file should be overwrited if it
 #' already exists
@@ -438,7 +438,8 @@ create_meteo_interpolator <- function(meteo_with_topo, params = NULL, verbose = 
 #' # write interpolator
 #' write_interpolator(
 #'   meteoland_interpolator_example,
-#'   file.path(tmp_dir, "meteoland_interpolator_example.nc")
+#'   file.path(tmp_dir, "meteoland_interpolator_example.nc"),
+#'   .overwrite = TRUE
 #' )
 #'
 #' # check file exists
@@ -590,10 +591,10 @@ read_interpolator <- function(filename) {
   # get the attributes
   interpolation_attributes <- ncmeta::nc_meta(filename)$attribute |>
     dplyr::filter(
-      variable == "NC_GLOBAL",
-      name %in% names(defaultInterpolationParams())
+      .data$variable == "NC_GLOBAL",
+      .data$name %in% names(defaultInterpolationParams())
     ) |>
-    dplyr::pull(value)
+    dplyr::pull(.data$value)
 
   # Check if attributes exist, if not is not an interpolator
   if (length(interpolation_attributes) < 1) {
@@ -608,8 +609,8 @@ read_interpolator <- function(filename) {
 
   # get the geometries
   geom_crs <- ncmeta::nc_meta(filename)$attribute |>
-    dplyr::filter(variable == "NC_GLOBAL", name == 'crs') |>
-    dplyr::pull(value)
+    dplyr::filter(.data$variable == "NC_GLOBAL", .data$name == 'crs') |>
+    dplyr::pull(.data$value)
   geom_data <- ncdfgeom::read_geometry(filename) |>
     sf::st_transform(crs = as.numeric(gsub("^EPSG:", "", geom_crs)))
 
@@ -660,9 +661,8 @@ read_interpolator <- function(filename) {
 #' meteorological station are made using a \emph{leave-one-out} procedure (i.e.
 #' after exluding the station from the predictive set).
 #'
-#' @aliases interpolator_calibration interpolation_cross_validation
 #' @param interpolator A meteoland interpolator object, as created by
-#' \code{\link{create_meteoland_interpolator}}
+#' \code{\link{create_meteo_interpolator}}
 #' @param stations A vector with the stations (numeric for station indexes or
 #' character for stations id) to be used to calculate \code{"MAE"}. All
 #' stations with data are included in the training set but predictive

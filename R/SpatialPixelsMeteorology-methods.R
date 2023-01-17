@@ -29,7 +29,7 @@ SpatialPixelsMeteorology<-function(points, data, dates, tolerance = sqrt(.Machin
   
   # deprecation notice
   lifecycle::deprecate_warn(
-    when = "1.1.0", what = "SpatialPixelsMeteorology()", with = NULL,
+    when = "2.0.0", what = "SpatialPixelsMeteorology()", with = NULL,
     details = "Spatial_*_Meteorology classes are soft deprecated.
     Meteorology objects are now normal sf points objects"
   )

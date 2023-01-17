@@ -3,7 +3,7 @@
 extractvars<-function(object, vars, verbose = FALSE) {
   # deprecation warning
   lifecycle::deprecate_warn(
-    when = "1.1.0", what = "extractvars()", with = NULL,
+    when = "2.0.0", what = "extractvars()", with = NULL,
     details = "Spatial_*_Meteorology classes are soft deprecated.
     Extraction of variables or dates can be done as in a normal data.frame as the meteo objects are
     now sf objects"
@@ -122,7 +122,7 @@ extractvars<-function(object, vars, verbose = FALSE) {
 #' @export
 extractdates<-function(object, dates = NULL, verbose=FALSE) {
   lifecycle::deprecate_warn(
-    when = "1.1.0", what = "extractdates()", with = NULL,
+    when = "2.0.0", what = "extractdates()", with = NULL,
     details = "Spatial_*_Meteorology classes are soft deprecated.
     Extraction of variables or dates can be done as in a normal data.frame as the meteo objects are
     now sf objects"

@@ -4,7 +4,7 @@ reshapeweathercan<-function(hourly_data, daily_data = NULL, output="SpatialPoint
                             proj4string = NULL, complete=TRUE, verbose = TRUE) {
 
   lifecycle::deprecate_warn(
-    when = "1.1.0", what = "reshapeweathercan()", with = NULL,
+    when = "2.0.0", what = "reshapeweathercan()", with = NULL,
     details = "reshapeweathercan is deprecated and will dissapear from future versions of meteoland"
   )
 

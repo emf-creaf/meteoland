@@ -38,7 +38,7 @@ defaultCorrectionParams<-function() {
 
   # deprecation warning
   lifecycle::deprecate_warn(
-    when = "1.1.0", what = "defaultCorrectionParams()", with = NULL,
+    when = "2.0.0", what = "defaultCorrectionParams()", with = NULL,
     details = "Better correction methods are provided by other packages (see * and * for example)"
   )
 

@@ -42,7 +42,7 @@ averagearea<-function(object, na.rm=TRUE) {
 
   # deprecation warning
   lifecycle::deprecate_warn(
-    when = "1.1.0", what = "averagearea()", with = NULL,
+    when = "2.0.0", what = "averagearea()", with = NULL,
     details = "Spatial_*_Meteorology classes are soft deprecated. To average meteo data series is better to use the corresponding functions in the sf package"
   )
 

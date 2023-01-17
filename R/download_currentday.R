@@ -154,7 +154,7 @@ downloadAEMETcurrentday <- function(api, daily = TRUE, verbose=TRUE){
 
   # deprecation warning
   lifecycle::deprecate_warn(
-    when = "1.1.0", what = "downloadAEMETcurrentday()", with = "meteospain::get_meteo_from()",
+    when = "2.0.0", what = "downloadAEMETcurrentday()", with = "meteospain::get_meteo_from()",
     details = "This function is deprecated in favour of the meteospain package"
   )
 
@@ -238,7 +238,7 @@ downloadSMCcurrentday <- function(api, daily=TRUE, station_id=NULL,
 
   # deprecation warning
   lifecycle::deprecate_warn(
-    when = "1.1.0", what = "downloadSMCcurrentday()", with = "meteospain::get_meteo_from()",
+    when = "2.0.0", what = "downloadSMCcurrentday()", with = "meteospain::get_meteo_from()",
     details = "This function is deprecated in favour of the meteospain package"
   )
   api_options <- meteospain::meteocat_options(resolution = 'hourly', api_key = api,
@@ -296,7 +296,7 @@ downloadSMCcurrentday <- function(api, daily=TRUE, station_id=NULL,
 downloadMGcurrentday <- function(station_id=NULL, daily = TRUE, verbose = TRUE) {
   # deprecation warning
   lifecycle::deprecate_warn(
-    when = "1.1.0", what = "downloadMGcurrentday()", with = "meteospain::get_meteo_from()",
+    when = "2.0.0", what = "downloadMGcurrentday()", with = "meteospain::get_meteo_from()",
     details = "This function is deprecated in favour of the meteospain package"
   )
 
@@ -351,7 +351,7 @@ downloadMGcurrentday <- function(station_id=NULL, daily = TRUE, verbose = TRUE) 
 downloadMETEOCLIMATICcurrentday <- function(station_id = "ESCAT") {
   # deprecation warning
   lifecycle::deprecate_warn(
-    when = "1.1.0", what = "downloadMETEOCLIMATICcurrentday()", with = "meteospain::get_meteo_from()",
+    when = "2.0.0", what = "downloadMETEOCLIMATICcurrentday()", with = "meteospain::get_meteo_from()",
     details = "This function is deprecated in favour of the meteospain package"
   )
   api_options <- meteospain::meteoclimatic_options(stations = station_id, resolution = "current_day")

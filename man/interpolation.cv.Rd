@@ -6,8 +6,8 @@
 \alias{interpolation.calibration}
 \alias{interpolation.calibration.fmax}
 \alias{interpolation.cv}
-\alias{summary.interpolation.cv}
 \alias{plot.interpolation.cv}
+\alias{summary.interpolation.cv}
 \title{Calibration and validation of interpolation procedures}
 \usage{
 interpolation.calibration(
@@ -28,9 +28,9 @@ interpolation.calibration.fmax(
 
 interpolation.cv(object, stations = NULL, verbose = FALSE)
 
-\method{plot}{interpolation.cv}(x, type = "stations", ...)
+plot.interpolation.cv(x, type = "stations", ...)
 
-\method{summary}{interpolation.cv}(object, ...)
+summary.interpolation.cv(object, ...)
 }
 \arguments{
 \item{object}{In the case of function \code{interpolation.cv}, an object of
@@ -154,18 +154,15 @@ In both calibration and validation procedures, predictions for each weather
 station are made using a leave-one-out procedure (i.e. after excluding the
 station from the predictive set).
 }
-\section{Methods (by generic)}{
-\itemize{
-\item \code{plot(interpolation.cv)}: \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}
-
-\item \code{summary(interpolation.cv)}: \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}
-
-}}
 \section{Functions}{
 \itemize{
 \item \code{interpolation.calibration()}: \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}
 
 \item \code{interpolation.calibration.fmax()}: \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}
+
+\item \code{plot.interpolation.cv()}: \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}
+
+\item \code{summary.interpolation.cv()}: \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}
 
 }}
 \examples{

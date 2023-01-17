@@ -1,15 +1,15 @@
 #' meteoland: Landscape Meteorology Tools
-#' 
+#'
 #' Functions to estimate weather variables at any position of a landscape [De
 #' Caceres et al. (2018)](https://doi.org/10.1016/j.envsoft.2018.08.003).
-#' 
+#'
 #' @name meteoland-package
 #' @aliases meteoland meteoland-package
 #' @docType package
 #' @author \strong{Maintainer}: Miquel De Cáceres
 #' \email{miquelcaceres@@gmail.com}
 #' [ORCID](https://orcid.org/0000-0001-7132-2080)
-#' 
+#'
 #' Authors: \itemize{
 #' \item{ Nicolas Martin
 #' [ORCID](https://orcid.org/0000-0001-7574-0108)}
@@ -27,6 +27,15 @@
 #' @importFrom lifecycle deprecated
 #' @importFrom Rcpp evalCpp
 #' @importFrom Rcpp sourceCpp
+#' @importFrom cubelyr tbl_cube
+#' @importFrom stats aggregate lm complete.cases cor approx na.omit quantile sd dist var rlnorm
+#' @importFrom utils setTxtProgressBar txtProgressBar write.table read.table
+#' @importFrom methods as new is slot .valueClassTest
+#' @importFrom grDevices topo.colors colorRampPalette
+#' @importFrom graphics lines par hist abline
+#' @importFrom dplyr .data
+#' @importFrom rlang :=
 #' @useDynLib meteoland, .registration = TRUE
+#' @import sp stars sf
 ## usethis namespace: end
 NULL

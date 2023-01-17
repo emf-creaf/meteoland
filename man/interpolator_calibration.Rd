@@ -25,7 +25,7 @@ interpolator_calibration(
 }
 \arguments{
 \item{interpolator}{A meteoland interpolator object, as created by
-\code{\link{create_meteoland_interpolator}}}
+\code{\link{create_meteo_interpolator}}}
 
 \item{stations}{A vector with the stations (numeric for station indexes or
 character for stations id) to be used to calculate \code{"MAE"}. All

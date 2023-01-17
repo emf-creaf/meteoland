@@ -49,7 +49,7 @@ st_crs(temp_topo) <- st_crs(3043)
 raster_to_interpolate_example <- temp_topo |>
   st_warp(cellsize = 1000, crs = st_crs(temp_topo)) |>
   st_warp(crs = st_crs(4326)) |>
-  dplyr::rename(elevation = Elevation, aspect = Aspect, slope = Slope)
+  dplyr::rename(elevation = "Elevation", aspect = "Aspect", slope = "Slope")
 raster_to_interpolate_example[["aspect"]] <-
   units::set_units(raster_to_interpolate_example[["aspect"]], "degrees")
 raster_to_interpolate_example <-

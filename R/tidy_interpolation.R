@@ -330,7 +330,7 @@
 #'
 #' @param spatial_data stars or sf object with the spatial data
 #' @param interpolator meteoland interpolator object, as created by
-#'   \code{\link{create_meteoland_interpolator}}
+#'   \code{\link{create_meteo_interpolator}}
 #' @param dates vector with dates to interpolate (must be within the
 #'   interpolator date range). Default to NULL (all dates present in the
 #'   interpolator object)
@@ -524,13 +524,13 @@
 #' Interpolate spatial data to obtain downscaled meteorologic variables
 #'
 #' This function takes a spatial data object (sf or stars raster), an
-#' interpolator object (\code{\link{create_meteoland_interpolator}}) and a
+#' interpolator object (\code{\link{create_meteo_interpolator}}) and a
 #' vector of dates to perform the interpolation of the meteorologic variables
 #' for the spatial locations present in the \code{spatial_data} object.
 #'
 #' @param spatial_data An sf or stars raster object to interpolate
 #' @param interpolator A meteoland interpolator object, as created by
-#' \code{\link{create_meteoland_interpolator}}
+#' \code{\link{create_meteo_interpolator}}
 #' @param dates vector with dates to interpolate (must be within the
 #' interpolator date range). Default to NULL (all dates present in the
 #' interpolator object)

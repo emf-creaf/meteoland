@@ -18,7 +18,7 @@
 #     ))
 #
 #     distinct_rows <- distinct_rows |>
-#       dplyr::group_by(station_id) |>
+#       dplyr::group_by(.data$station_id) |>
 #       dplyr::filter(as.character(geometry) == dplyr::last(as.character(geometry)))
 #
 #     meteo <- meteo |>
@@ -163,29 +163,29 @@ precipitation_rainfall_erosivity <- function(
     # If monthly, group by month and average.
     if (scale == 'month') {
       precipitation_sum <- dplyr::group_by(precipitation_sum, .data[[scale]]) |>
-        dplyr::summarise(p_s = mean(Precipitation, na.rm = TRUE))
+        dplyr::summarise(p_s = mean(.data$Precipitation, na.rm = TRUE))
       precipitation_max <- dplyr::group_by(precipitation_max, .data[[scale]]) |>
-        dplyr::summarise(d_s = mean(Precipitation, na.rm = TRUE))
+        dplyr::summarise(d_s = mean(.data$Precipitation, na.rm = TRUE))
     } else {
       # If yearly, average without grouping
       precipitation_sum <- precipitation_sum |>
-        dplyr::summarise(p_s = mean(Precipitation, na.rm = TRUE))
+        dplyr::summarise(p_s = mean(.data$Precipitation, na.rm = TRUE))
       precipitation_max <- precipitation_max |>
-        dplyr::summarise(d_s = mean(Precipitation, na.rm = TRUE))
+        dplyr::summarise(d_s = mean(.data$Precipitation, na.rm = TRUE))
     }
 
   } else {
     # no average, just rename the Precipitation var for the next steps
-    precipitation_sum <- dplyr::rename(precipitation_sum, p_s = Precipitation)
-    precipitation_max <- dplyr::rename(precipitation_max, d_s = Precipitation)
+    precipitation_sum <- dplyr::rename(precipitation_sum, p_s = "Precipitation")
+    precipitation_max <- dplyr::rename(precipitation_max, d_s = "Precipitation")
   }
 
   p_s <- precipitation_sum |>
-    dplyr::pull(p_s) |>
+    dplyr::pull(.data$p_s) |>
     purrr::set_names(unique(precipitation_sum[[scale]]))
 
   d_s <- precipitation_max |>
-    dplyr::pull(d_s) |>
+    dplyr::pull(.data$d_s) |>
     purrr::set_names(unique(precipitation_max[[scale]]))
 
   # build the result with the formula and return it

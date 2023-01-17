@@ -6,7 +6,7 @@ downloadAEMEThistorical <- function(api, dates, station_id = NULL, export = FALS
                                 metadataFile = "MP.txt", verbose=TRUE){
   # deprecation warning
   lifecycle::deprecate_warn(
-    when = "1.1.0", what = "downloadAEMEThistorical()", with = "meteospain::get_meteo_from()",
+    when = "2.0.0", what = "downloadAEMEThistorical()", with = "meteospain::get_meteo_from()",
     details = "This function is deprecated in favour of the meteospain package"
   )
 
@@ -34,7 +34,7 @@ downloadSMChistorical <- function(api, date, station_id=NULL,
                                   verbose=TRUE){
   # deprecation warning
   lifecycle::deprecate_warn(
-    when = "1.1.0", what = "downloadSMChistorical()", with = "meteospain::get_meteo_from()",
+    when = "2.0.0", what = "downloadSMChistorical()", with = "meteospain::get_meteo_from()",
     details = "This function is deprecated in favour of the meteospain package"
   )
 
@@ -59,7 +59,7 @@ downloadSMChistorical <- function(api, date, station_id=NULL,
 downloadMGhistorical <- function(date_from, date_to, station_id = NULL, verbose=TRUE) {
   # deprecation warning
   lifecycle::deprecate_warn(
-    when = "1.1.0", what = "downloadMGhistorical()", with = "meteospain::get_meteo_from()",
+    when = "2.0.0", what = "downloadMGhistorical()", with = "meteospain::get_meteo_from()",
     details = "This function is deprecated in favour of the meteospain package"
   )
 

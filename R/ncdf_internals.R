@@ -20,10 +20,10 @@
 .putgridvardataday<-function(nc, var, datavec, day, index=NULL) {
   if("x" %in% names(nc$dim)) nx = nc$dim$x$len
   else nx = nc$dim$lon$len
-  
+
   if("y" %in% names(nc$dim)) ny = nc$dim$y$len
   else ny = nc$dim$lat$len
-  
+
   if(!is.null(index)) {
     datavecfull = rep(NA, ny*nx)
     datavecfull[index] = datavec
@@ -31,7 +31,7 @@
     datavecfull = datavec
   }
   # Assumes time dimension is the last
-  for(i in 1:ny) ncvar_put(nc, varid=var, vals=datavecfull[((i-1)*nx+1):(i*nx)], start=c(1,ny-i+1, day), count=c(nx,1,1))
+  for(i in 1:ny) ncdf4::ncvar_put(nc, varid=var, vals=datavecfull[((i-1)*nx+1):(i*nx)], start=c(1,ny-i+1, day), count=c(nx,1,1))
 }
 .putgridday<-function(nc, df, day, index=NULL) {
   if("MeanTemperature" %in% names(df)) .putgridvardataday(nc,"MeanTemperature", df$MeanTemperature,day, index)
@@ -50,13 +50,13 @@
 .putgridvardata<-function(nc, var, datavec) {
   nx = nc$dim$x$len
   ny = nc$dim$y$len
-  for(i in 1:ny) ncvar_put(nc, varid=var, vals=datavec[((i-1)*nx+1):(i*nx)], start=c(1,ny-i+1), count=c(nx,1))
+  for(i in 1:ny) ncdf4::ncvar_put(nc, varid=var, vals=datavec[((i-1)*nx+1):(i*nx)], start=c(1,ny-i+1), count=c(nx,1))
 }
 #writes data for a single pixel starting at time position t
 .putgridvardatapixel<-function(ncin, ny, varname, i, j, t, datavec) {
   nt = length(datavec)
   # Assumes time dimension is the last
-  return(ncvar_put(ncin, varname, vals = datavec, start=c(i,ny-j+1,t), count=c(1,1,nt)))
+  return(ncdf4::ncvar_put(ncin, varname, vals = datavec, start=c(i,ny-j+1,t), count=c(1,1,nt)))
 }
 .putgridpixel<-function(ncin, ny, i,j,t, df) {
   if("MeanTemperature" %in% names(df)) .putgridvardatapixel(ncin,ny,"MeanTemperature",  i,j,t, df$MeanTemperature)
@@ -75,12 +75,12 @@
 .openaddNetCDF<-function(file, verbose = FALSE) {
   if(!file.exists(file)) stop(paste0("File '", file, "' does not exist."))
   if(verbose) cat(paste0("Opening '", file,"' to add/replace data.\n"))
-  nc <- nc_open(file, write = T)
+  nc <- ncdf4::nc_open(file, write = T)
   return(nc)
 }
 #Opens/creates a NetCDF for writing grid data
-.openwritegridNetCDF<-function(grid, proj4string, dates, vars, file, 
-                               byPixel = FALSE, chunksizes = NA, 
+.openwritegridNetCDF<-function(grid, proj4string, dates, vars, file,
+                               byPixel = FALSE, chunksizes = NA,
                                add=FALSE, overwrite = FALSE, verbose = FALSE) {
   if(!add) {
     if(is.null(vars)) vars = .defaultVars()
@@ -90,136 +90,136 @@
     ny = grid@cells.dim[2]
     tunits = "days since 1970-01-01 00:00:00.0 -0:00"
     if(.isLongLat(proj4string)) {
-      dimX <- ncdim_def( "lon", "degrees_east", sort(unique(coordinates(grid)[,1])))
-      dimY <- ncdim_def( "lat", "degrees_north", sort(unique(coordinates(grid)[,2])))
+      dimX <- ncdf4::ncdim_def( "lon", "degrees_east", sort(unique(coordinates(grid)[,1])))
+      dimY <- ncdf4::ncdim_def( "lat", "degrees_north", sort(unique(coordinates(grid)[,2])))
     } else {
       pr_units = .projUnits(proj4string)
-      dimX <- ncdim_def( "x", pr_units, sort(unique(coordinates(grid)[,1])), longname = "x coordinate of projection")
-      dimY <- ncdim_def( "y", pr_units, sort(unique(coordinates(grid)[,2])), longname = "y coordinate of projection")
+      dimX <- ncdf4::ncdim_def( "x", pr_units, sort(unique(coordinates(grid)[,1])), longname = "x coordinate of projection")
+      dimY <- ncdf4::ncdim_def( "y", pr_units, sort(unique(coordinates(grid)[,2])), longname = "y coordinate of projection")
     }
-    time <- ncdim_def("time", tunits, as.double(as.Date(dates)), longname = "time of measurement",unlim = TRUE)
+    time <- ncdf4::ncdim_def("time", tunits, as.double(as.Date(dates)), longname = "time of measurement",unlim = TRUE)
     nt = length(dates)
     if(byPixel) {
       chunksizes = c(1,1,length(dates))
     }
     varlist = vector("list")
-    if("MeanTemperature" %in% vars) varlist[["varMeanTemp"]] = ncvar_def( "MeanTemperature", "Celsius", list(dimX,dimY,time), NULL, chunksizes = chunksizes)
-    if("MinTemperature" %in% vars) varlist[["varMinTemp"]] = ncvar_def( "MinTemperature", "Celsius", list(dimX,dimY,time), NULL, chunksizes = chunksizes)
-    if("MaxTemperature" %in% vars) varlist[["varMaxTemp"]] = ncvar_def( "MaxTemperature", "Celsius", list(dimX,dimY,time), NULL, chunksizes = chunksizes)
-    if("Precipitation" %in% vars) varlist[["varPrec"]] = ncvar_def( "Precipitation", "l m-2", list(dimX,dimY,time), NULL, chunksizes = chunksizes)
-    if("MeanRelativeHumidity" %in% vars) varlist[["varMeanRH"]] = ncvar_def( "MeanRelativeHumidity", "%", list(dimX,dimY,time), NULL, chunksizes = chunksizes)
-    if("MinRelativeHumidity" %in% vars) varlist[["varMinRH"]] =  ncvar_def( "MinRelativeHumidity", "%", list(dimX,dimY,time), NULL, chunksizes = chunksizes)
-    if("MaxRelativeHumidity" %in% vars) varlist[["varMaxRH"]] =  ncvar_def( "MaxRelativeHumidity", "%", list(dimX,dimY,time), NULL, chunksizes = chunksizes)
-    if("Radiation" %in% vars) varlist[["varRad"]] =  ncvar_def( "Radiation", "MJ m-2", list(dimX,dimY,time), NULL, chunksizes = chunksizes)
-    if("WindSpeed" %in% vars) varlist[["varWindSpeed"]] =  ncvar_def( "WindSpeed", "m s-1", list(dimX,dimY,time), NULL, chunksizes = chunksizes)
-    if("WindDirection" %in% vars) varlist[["varWindDirection"]] =  ncvar_def( "WindDirection", "degrees_north", list(dimX,dimY,time), NULL, chunksizes = chunksizes)
-    if("PET" %in% vars) varlist[["varPET"]] =  ncvar_def( "PET", "l m-2", list(dimX,dimY,time), NULL, chunksizes = chunksizes)
+    if("MeanTemperature" %in% vars) varlist[["varMeanTemp"]] = ncdf4::ncvar_def( "MeanTemperature", "Celsius", list(dimX,dimY,time), NULL, chunksizes = chunksizes)
+    if("MinTemperature" %in% vars) varlist[["varMinTemp"]] = ncdf4::ncvar_def( "MinTemperature", "Celsius", list(dimX,dimY,time), NULL, chunksizes = chunksizes)
+    if("MaxTemperature" %in% vars) varlist[["varMaxTemp"]] = ncdf4::ncvar_def( "MaxTemperature", "Celsius", list(dimX,dimY,time), NULL, chunksizes = chunksizes)
+    if("Precipitation" %in% vars) varlist[["varPrec"]] = ncdf4::ncvar_def( "Precipitation", "l m-2", list(dimX,dimY,time), NULL, chunksizes = chunksizes)
+    if("MeanRelativeHumidity" %in% vars) varlist[["varMeanRH"]] = ncdf4::ncvar_def( "MeanRelativeHumidity", "%", list(dimX,dimY,time), NULL, chunksizes = chunksizes)
+    if("MinRelativeHumidity" %in% vars) varlist[["varMinRH"]] =  ncdf4::ncvar_def( "MinRelativeHumidity", "%", list(dimX,dimY,time), NULL, chunksizes = chunksizes)
+    if("MaxRelativeHumidity" %in% vars) varlist[["varMaxRH"]] =  ncdf4::ncvar_def( "MaxRelativeHumidity", "%", list(dimX,dimY,time), NULL, chunksizes = chunksizes)
+    if("Radiation" %in% vars) varlist[["varRad"]] =  ncdf4::ncvar_def( "Radiation", "MJ m-2", list(dimX,dimY,time), NULL, chunksizes = chunksizes)
+    if("WindSpeed" %in% vars) varlist[["varWindSpeed"]] =  ncdf4::ncvar_def( "WindSpeed", "m s-1", list(dimX,dimY,time), NULL, chunksizes = chunksizes)
+    if("WindDirection" %in% vars) varlist[["varWindDirection"]] =  ncdf4::ncvar_def( "WindDirection", "degrees_north", list(dimX,dimY,time), NULL, chunksizes = chunksizes)
+    if("PET" %in% vars) varlist[["varPET"]] =  ncdf4::ncvar_def( "PET", "l m-2", list(dimX,dimY,time), NULL, chunksizes = chunksizes)
     if(.isLongLat(proj4string)) {
-      nc <- nc_create(file, varlist, force_v4 = T)
+      nc <- ncdf4::nc_create(file, varlist, force_v4 = T)
     } else {
       # Fill data for lon/lat variables
       if(!is.na(proj4string)) {
         #Define additional lon/lat variables
-        varLon <- ncvar_def( "lon", "degrees_east", list(dimX,dimY), missval = NULL, longname = "longitude")
-        varLat <- ncvar_def( "lat", "degrees_north", list(dimX,dimY), missval =NULL, longname = "latitude")
+        varLon <- ncdf4::ncvar_def( "lon", "degrees_east", list(dimX,dimY), missval = NULL, longname = "longitude")
+        varLat <- ncdf4::ncvar_def( "lat", "degrees_north", list(dimX,dimY), missval =NULL, longname = "latitude")
         varlist2 = list("varX" = varLon, "varY" = varLat)
         for(i in 1:length(varlist)) varlist2[[names(varlist)[i]]] = varlist[[i]]
-        nc <- nc_create(file, varlist2, force_v4 = T)
+        nc <- ncdf4::nc_create(file, varlist2, force_v4 = T)
         spt_lonlat = spTransform(SpatialPoints(coordinates(grid), CRS(proj4string)), CRS(SRS_string = "EPSG:4326"))
         lonlat = coordinates(spt_lonlat)
         .putgridvardata(nc, varLon, lonlat[,1])
         .putgridvardata(nc, varLat, lonlat[,2])
       } else {
-        nc <- nc_create(file, varlist, force_v4 = T)
+        nc <- ncdf4::nc_create(file, varlist, force_v4 = T)
       }
-      
+
       # Indicate axes
-      ncatt_put(nc, "x", "axis", "X")
-      ncatt_put(nc, "y", "axis", "Y")
+      ncdf4::ncatt_put(nc, "x", "axis", "X")
+      ncdf4::ncatt_put(nc, "y", "axis", "Y")
     }
-    ncatt_put(nc, 0, "proj4string", as.character(proj4string))
-    ncatt_put(nc, "time", "axis", "T")
-  } 
+    ncdf4::ncatt_put(nc, 0, "proj4string", as.character(proj4string))
+    ncdf4::ncatt_put(nc, "time", "axis", "T")
+  }
   else {
     return(.openaddNetCDF(file, verbose = verbose))
   }
   return(nc)
 }
 #Opens/creates a NetCDF for writing point data
-.openwritepointNetCDF<-function(coords, proj4string, dates, vars, 
+.openwritepointNetCDF<-function(coords, proj4string, dates, vars,
                                 file, overwrite = FALSE, verbose = FALSE) {
   if(is.null(vars)) vars = .defaultVars()
   if(file.exists(file) & !overwrite) stop(paste0("File '",file,"' already exist. Use 'overwrite = TRUE' to force overwriting or 'add = TRUE' to add/replace content."))
   if(verbose) cat(paste0("\nCreating '", file,"'.\n"))
   tunits = "days since 1970-01-01 00:00:00.0 -0:00"
-  time <- ncdim_def("time", tunits, as.double(as.Date(dates)), longname = "time of measurement")
+  time <- ncdf4::ncdim_def("time", tunits, as.double(as.Date(dates)), longname = "time of measurement")
   np = nrow(coords)
-  station <- ncdim_def("station", "", vals = 1:np, unlim = TRUE)
-  
-  
-  stationName = ncvar_def("station_name", "", list(station), missval = NULL, longname = "station name")
-  
+  station <- ncdf4::ncdim_def("station", "", vals = 1:np, unlim = TRUE)
+
+
+  stationName = ncdf4::ncvar_def("station_name", "", list(station), missval = NULL, longname = "station name")
+
   varlist = vector("list")
-  if("MeanTemperature" %in% vars) varlist[["varMeanTemp"]] = ncvar_def( "MeanTemperature", "Celsius", list(station, time), NULL)
-  if("MinTemperature" %in% vars) varlist[["varMinTemp"]] = ncvar_def( "MinTemperature", "Celsius", list(station, time), NULL)
-  if("MaxTemperature" %in% vars) varlist[["varMaxTemp"]] = ncvar_def( "MaxTemperature", "Celsius", list(station, time), NULL)
-  if("Precipitation" %in% vars) varlist[["varPrec"]] = ncvar_def( "Precipitation", "l m-2", list(station, time), NULL)
-  if("MeanRelativeHumidity" %in% vars) varlist[["varMeanRH"]] = ncvar_def( "MeanRelativeHumidity", "%", list(station, time), NULL)
-  if("MinRelativeHumidity" %in% vars) varlist[["varMinRH"]] = ncvar_def( "MinRelativeHumidity", "%", list(station, time), NULL)
-  if("MaxRelativeHumidity" %in% vars) varlist[["varMaxRH"]] = ncvar_def( "MaxRelativeHumidity", "%", list(station, time), NULL)
-  if("Radiation" %in% vars) varlist[["varRad"]] = ncvar_def( "Radiation", "MJ m-2", list(station, time), NULL)
-  if("WindSpeed" %in% vars) varlist[["varWindSpeed"]] = ncvar_def( "WindSpeed", "m s-1", list(station, time), NULL)
-  if("WindDirection" %in% vars) varlist[["varWindDirection"]] = ncvar_def( "WindDirection", "degrees_north", list(station, time), NULL)
-  if("PET" %in% vars) varlist[["varPET"]] = ncvar_def( "PET", "l m-2", list(station, time), NULL)
+  if("MeanTemperature" %in% vars) varlist[["varMeanTemp"]] = ncdf4::ncvar_def( "MeanTemperature", "Celsius", list(station, time), NULL)
+  if("MinTemperature" %in% vars) varlist[["varMinTemp"]] = ncdf4::ncvar_def( "MinTemperature", "Celsius", list(station, time), NULL)
+  if("MaxTemperature" %in% vars) varlist[["varMaxTemp"]] = ncdf4::ncvar_def( "MaxTemperature", "Celsius", list(station, time), NULL)
+  if("Precipitation" %in% vars) varlist[["varPrec"]] = ncdf4::ncvar_def( "Precipitation", "l m-2", list(station, time), NULL)
+  if("MeanRelativeHumidity" %in% vars) varlist[["varMeanRH"]] = ncdf4::ncvar_def( "MeanRelativeHumidity", "%", list(station, time), NULL)
+  if("MinRelativeHumidity" %in% vars) varlist[["varMinRH"]] = ncdf4::ncvar_def( "MinRelativeHumidity", "%", list(station, time), NULL)
+  if("MaxRelativeHumidity" %in% vars) varlist[["varMaxRH"]] = ncdf4::ncvar_def( "MaxRelativeHumidity", "%", list(station, time), NULL)
+  if("Radiation" %in% vars) varlist[["varRad"]] = ncdf4::ncvar_def( "Radiation", "MJ m-2", list(station, time), NULL)
+  if("WindSpeed" %in% vars) varlist[["varWindSpeed"]] = ncdf4::ncvar_def( "WindSpeed", "m s-1", list(station, time), NULL)
+  if("WindDirection" %in% vars) varlist[["varWindDirection"]] = ncdf4::ncvar_def( "WindDirection", "degrees_north", list(station, time), NULL)
+  if("PET" %in% vars) varlist[["varPET"]] = ncdf4::ncvar_def( "PET", "l m-2", list(station, time), NULL)
   if(.isLongLat(proj4string)) {
-    varX <- ncvar_def( "lon", "degrees_east", list(station), missval = NULL)
-    varY <- ncvar_def( "lat", "degrees_north", list(station), missval = NULL)
+    varX <- ncdf4::ncvar_def( "lon", "degrees_east", list(station), missval = NULL)
+    varY <- ncdf4::ncvar_def( "lat", "degrees_north", list(station), missval = NULL)
     varlist2 = list("stationName" = stationName, "varX" = varX, "varY" = varY)
     for(i in 1:length(varlist)) varlist2[[names(varlist)[i]]] = varlist[[i]]
-    nc <- nc_create(file, varlist2, force_v4 = T)
-    ncvar_put(nc, varid=varX, vals=coords[,1], start=c(1), count=c(np))
-    ncvar_put(nc, varid=varY, vals=coords[,2], start=c(1), count=c(np))
+    nc <- ncdf4::nc_create(file, varlist2, force_v4 = T)
+    ncdf4::ncvar_put(nc, varid=varX, vals=coords[,1], start=c(1), count=c(np))
+    ncdf4::ncvar_put(nc, varid=varY, vals=coords[,2], start=c(1), count=c(np))
   } else {
     pr_units = .projUnits(proj4string)
-    varX <- ncvar_def( "x", pr_units, list(station), missval = NULL, longname = "x coordinate of projection")
-    varY <- ncvar_def( "y", pr_units, list(station), missval = NULL, longname = "y coordinate of projection")
-    varLon <- ncvar_def( "lon", "degrees_east", list(station), missval = NULL)
-    varLat <- ncvar_def( "lat", "degrees_north", list(station), missval = NULL)
+    varX <- ncdf4::ncvar_def( "x", pr_units, list(station), missval = NULL, longname = "x coordinate of projection")
+    varY <- ncdf4::ncvar_def( "y", pr_units, list(station), missval = NULL, longname = "y coordinate of projection")
+    varLon <- ncdf4::ncvar_def( "lon", "degrees_east", list(station), missval = NULL)
+    varLat <- ncdf4::ncvar_def( "lat", "degrees_north", list(station), missval = NULL)
     varlist2 = list("stationName" = stationName, "varX" = varX, "varY" = varY, "varLon" = varLon, "varLat" = varLat)
     for(i in 1:length(varlist)) varlist2[[names(varlist)[i]]] = varlist[[i]]
-    nc <- nc_create(file, varlist2, force_v4 = T)
-    ncvar_put(nc, varid=varX, vals=coords[,1], start=c(1), count=c(np))
-    ncvar_put(nc, varid=varY, vals=coords[,2], start=c(1), count=c(np))
+    nc <- ncdf4::nc_create(file, varlist2, force_v4 = T)
+    ncdf4::ncvar_put(nc, varid=varX, vals=coords[,1], start=c(1), count=c(np))
+    ncdf4::ncvar_put(nc, varid=varY, vals=coords[,2], start=c(1), count=c(np))
     spt_lonlat = spTransform(SpatialPoints(coords, CRS(proj4string)), CRS(SRS_string = "EPSG:4326"))
     lonlat = coordinates(spt_lonlat)
-    ncvar_put(nc, varid=varLon, vals=lonlat[,1], start=c(1), count=c(np))
-    ncvar_put(nc, varid=varLat, vals=lonlat[,2], start=c(1), count=c(np))
+    ncdf4::ncvar_put(nc, varid=varLon, vals=lonlat[,1], start=c(1), count=c(np))
+    ncdf4::ncvar_put(nc, varid=varLat, vals=lonlat[,2], start=c(1), count=c(np))
   }
   rn = rownames(coords)
   if(is.null(rn)) rn = 1:nrow(coords)
-  ncvar_put(nc, varid=stationName, vals=rn, start=c(1), count=c(np))
-  
+  ncdf4::ncvar_put(nc, varid=stationName, vals=rn, start=c(1), count=c(np))
+
   # Indicate axes
-  ncatt_put(nc, stationName, "cf_role", "timeseries_id")
-  ncatt_put(nc, 0, "featureType", "timeSeries")
-  ncatt_put(nc, 0, "proj4string", as.character(proj4string))
-  ncatt_put(nc, "time", "axis", "T")
+  ncdf4::ncatt_put(nc, stationName, "cf_role", "timeseries_id")
+  ncdf4::ncatt_put(nc, 0, "featureType", "timeSeries")
+  ncdf4::ncatt_put(nc, 0, "proj4string", as.character(proj4string))
+  ncdf4::ncatt_put(nc, "time", "axis", "T")
   return(nc)
 }
 
 .writemeteorologypointNetCDF<-function(df, nc, i) {
   nt = nc$dim$time$len
-  if("MeanTemperature" %in% names(df)) ncvar_put(nc, varid=nc$var$MeanTemperature, vals=df$MeanTemperature, start=c(i,1), count=c(1,nt))
-  if("MinTemperature" %in% names(df)) ncvar_put(nc, varid=nc$var$MinTemperature, vals=df$MinTemperature, start=c(i,1), count=c(1,nt))
-  if("MaxTemperature" %in% names(df)) ncvar_put(nc, varid=nc$var$MaxTemperature, vals=df$MaxTemperature, start=c(i,1), count=c(1,nt))
-  if("Precipitation" %in% names(df)) ncvar_put(nc, varid=nc$var$Precipitation, vals=df$Precipitation, start=c(i,1), count=c(1,nt))
-  if("MeanRelativeHumidity" %in% names(df)) ncvar_put(nc, varid=nc$var$MeanRelativeHumidity, vals=df$MeanRelativeHumidity, start=c(i,1), count=c(1,nt))
-  if("MinRelativeHumidity" %in% names(df)) ncvar_put(nc, varid=nc$var$MinRelativeHumidity, vals=df$MinRelativeHumidity, start=c(i,1), count=c(1,nt))
-  if("MaxRelativeHumidity" %in% names(df)) ncvar_put(nc, varid=nc$var$MaxRelativeHumidity, vals=df$MaxRelativeHumidity, start=c(i,1), count=c(1,nt))
-  if("Radiation" %in% names(df)) ncvar_put(nc, varid=nc$var$Radiation, vals=df$Radiation, start=c(i,1), count=c(1,nt))
-  if("WindSpeed" %in% names(df)) ncvar_put(nc, varid=nc$var$WindSpeed, vals=df$WindSpeed, start=c(i,1), count=c(1,nt))
-  if("WindDirection" %in% names(df)) ncvar_put(nc, varid=nc$var$WindDirection, vals=df$WindDirection, start=c(i,1), count=c(1,nt))
-  if("PET" %in% names(df)) ncvar_put(nc, varid=nc$var$PET, vals=df$PET, start=c(i,1), count=c(1,nt))
+  if("MeanTemperature" %in% names(df)) ncdf4::ncvar_put(nc, varid=nc$var$MeanTemperature, vals=df$MeanTemperature, start=c(i,1), count=c(1,nt))
+  if("MinTemperature" %in% names(df)) ncdf4::ncvar_put(nc, varid=nc$var$MinTemperature, vals=df$MinTemperature, start=c(i,1), count=c(1,nt))
+  if("MaxTemperature" %in% names(df)) ncdf4::ncvar_put(nc, varid=nc$var$MaxTemperature, vals=df$MaxTemperature, start=c(i,1), count=c(1,nt))
+  if("Precipitation" %in% names(df)) ncdf4::ncvar_put(nc, varid=nc$var$Precipitation, vals=df$Precipitation, start=c(i,1), count=c(1,nt))
+  if("MeanRelativeHumidity" %in% names(df)) ncdf4::ncvar_put(nc, varid=nc$var$MeanRelativeHumidity, vals=df$MeanRelativeHumidity, start=c(i,1), count=c(1,nt))
+  if("MinRelativeHumidity" %in% names(df)) ncdf4::ncvar_put(nc, varid=nc$var$MinRelativeHumidity, vals=df$MinRelativeHumidity, start=c(i,1), count=c(1,nt))
+  if("MaxRelativeHumidity" %in% names(df)) ncdf4::ncvar_put(nc, varid=nc$var$MaxRelativeHumidity, vals=df$MaxRelativeHumidity, start=c(i,1), count=c(1,nt))
+  if("Radiation" %in% names(df)) ncdf4::ncvar_put(nc, varid=nc$var$Radiation, vals=df$Radiation, start=c(i,1), count=c(1,nt))
+  if("WindSpeed" %in% names(df)) ncdf4::ncvar_put(nc, varid=nc$var$WindSpeed, vals=df$WindSpeed, start=c(i,1), count=c(1,nt))
+  if("WindDirection" %in% names(df)) ncdf4::ncvar_put(nc, varid=nc$var$WindDirection, vals=df$WindDirection, start=c(i,1), count=c(1,nt))
+  if("PET" %in% names(df)) ncdf4::ncvar_put(nc, varid=nc$var$PET, vals=df$PET, start=c(i,1), count=c(1,nt))
 }
 #Writes full NetCDF points
 .writemeteorologypointsNetCDF<-function(data, nc, verbose = FALSE) {
@@ -228,7 +228,7 @@
   for(i in 1:np) {
     if(verbose) cat(paste0("Writing data for point '", names(data)[i], "'.\n"))
     .writemeteorologypointNetCDF(data[[i]], nc, i)
-    nc_sync(nc) # Flushes writing so that we avoid losing data if process crashes
+    ncdf4::nc_sync(nc) # Flushes writing so that we avoid losing data if process crashes
   }
 }
 #adds or replaces points to NetCDF
@@ -241,7 +241,7 @@
   coords <- object@coords
   spt_lonlat = spTransform(SpatialPoints(coords, crs), CRS(SRS_string = "EPSG:4326"))
   lonlat = coordinates(spt_lonlat)
-  IDs <- ncvar_get(nc, "station_name")
+  IDs <- ncdf4::ncvar_get(nc, "station_name")
   cnt = length(IDs)
   for(i in 1:length(data)) {
     stnamei = names(data)[i]
@@ -249,38 +249,38 @@
     if(length(index)==1) {
       if(verbose) cat(paste0("Replacing existing coordinates and data for point '", stnamei, "'.\n"))
       if(.isLongLat(crs)) {
-        ncvar_put(nc, varid="lon", vals=coords[i,1], start=index, count=1)
-        ncvar_put(nc, varid="lat", vals=coords[i,2], start=index, count=1)
+        ncdf4::ncvar_put(nc, varid="lon", vals=coords[i,1], start=index, count=1)
+        ncdf4::ncvar_put(nc, varid="lat", vals=coords[i,2], start=index, count=1)
       } else {
-        ncvar_put(nc, varid="x", vals=coords[i,1], start=index, count=1)
-        ncvar_put(nc, varid="y", vals=coords[i,2], start=index, count=1)
-        ncvar_put(nc, varid="lon", vals=lonlat[i,1], start=index, count=1)
-        ncvar_put(nc, varid="lat", vals=lonlat[i,2], start=index, count=1)
+        ncdf4::ncvar_put(nc, varid="x", vals=coords[i,1], start=index, count=1)
+        ncdf4::ncvar_put(nc, varid="y", vals=coords[i,2], start=index, count=1)
+        ncdf4::ncvar_put(nc, varid="lon", vals=lonlat[i,1], start=index, count=1)
+        ncdf4::ncvar_put(nc, varid="lat", vals=lonlat[i,2], start=index, count=1)
       }
       .writemeteorologypointNetCDF(data[[i]], nc, index)
-      nc_sync(nc) # Flushes writing so that we avoid losing data if process crashes
+      ncdf4::nc_sync(nc) # Flushes writing so that we avoid losing data if process crashes
     } else {
       cnt = cnt+1
       if(verbose) cat(paste0("Adding new coordinates and data for point '", stnamei, "'.\n"))
       if(.isLongLat(crs)) {
-        ncvar_put(nc, varid="lon", vals=coords[i,1], start=cnt, count=1)
-        ncvar_put(nc, varid="lat", vals=coords[i,2], start=cnt, count=1)
+        ncdf4::ncvar_put(nc, varid="lon", vals=coords[i,1], start=cnt, count=1)
+        ncdf4::ncvar_put(nc, varid="lat", vals=coords[i,2], start=cnt, count=1)
       } else {
-        ncvar_put(nc, varid="x", vals=coords[i,1], start=cnt, count=1)
-        ncvar_put(nc, varid="y", vals=coords[i,2], start=cnt, count=1)
-        ncvar_put(nc, varid="lon", vals=lonlat[i,1], start=cnt, count=1)
-        ncvar_put(nc, varid="lat", vals=lonlat[i,2], start=cnt, count=1)
+        ncdf4::ncvar_put(nc, varid="x", vals=coords[i,1], start=cnt, count=1)
+        ncdf4::ncvar_put(nc, varid="y", vals=coords[i,2], start=cnt, count=1)
+        ncdf4::ncvar_put(nc, varid="lon", vals=lonlat[i,1], start=cnt, count=1)
+        ncdf4::ncvar_put(nc, varid="lat", vals=lonlat[i,2], start=cnt, count=1)
       }
-      ncvar_put(nc, varid="station_name", vals=rownames(coords)[i], start=cnt, count=1)
+      ncdf4::ncvar_put(nc, varid="station_name", vals=rownames(coords)[i], start=cnt, count=1)
       .writemeteorologypointNetCDF(data[[i]], nc, cnt)
-      nc_sync(nc) # Flushes writing so that we avoid losing data if process crashes
+      ncdf4::nc_sync(nc) # Flushes writing so that we avoid losing data if process crashes
     }
   }
 }
 
 #Writes full NetCDF grids
-.writemeteorologygridNetCDF<-function(data, grid, proj4string, nc, 
-                                      index=NULL,  
+.writemeteorologygridNetCDF<-function(data, grid, proj4string, nc,
+                                      index=NULL,
                                       byPixel = FALSE, verbose = FALSE) {
   grid_nc = .readgridtopologyNetCDF(nc)
   nx = grid_nc@cells.dim[1]
@@ -290,13 +290,13 @@
   if(nx != grid@cells.dim[1]) stop("Number of x-axis values does not match X dimension in nc file")
   if(ny != grid@cells.dim[2]) stop("Number of y-axis values does not match Y dimension in nc file")
   dates_file = .readdatesNetCDF(nc)
-  
+
   w = which(!(dates %in% dates_file))
   if(length(w)>0) {
     if(verbose) cat(paste0("Adding new ", length(w), " dates.\n"))
     for(i in 1:length(w)) {
       if(as.Date(dates[w[i]])>dates_file[length(dates_file)]) {
-        ncvar_put(nc,"time", as.double(as.Date(dates[w[i]])), start= length(dates_file)+1, count = 1)
+        ncdf4::ncvar_put(nc,"time", as.double(as.Date(dates[w[i]])), start= length(dates_file)+1, count = 1)
       } else {
         stop(paste0("New date ", dates[w[i]]," is not later than the last date in nc file!"))
       }
@@ -308,9 +308,9 @@
       if(as.character(dates[j]) %in% names(data)) {
         day = which(dates_file==dates[j])
         if(verbose) cat(paste0("Writing data for day '", as.character(dates[j]), "' at time position [",day, "].\n"))
-        .putgridday(nc = nc, df = data[[as.character(dates[j])]], 
+        .putgridday(nc = nc, df = data[[as.character(dates[j])]],
                     day = day, index = index)
-        nc_sync(nc) # Flushes writing
+        ncdf4::nc_sync(nc) # Flushes writing
       }
     }
   } else {
@@ -333,9 +333,9 @@
   }
 }
 #Writes pixels in a NetCDF grid
-.writemeteorologypixelsNetCDF<-function(data, pixels, proj4string, nc, 
+.writemeteorologypixelsNetCDF<-function(data, pixels, proj4string, nc,
                                         byPixel, verbose = FALSE) {
-  .writemeteorologygridNetCDF(data, pixels@grid, proj4string, nc = nc, 
+  .writemeteorologygridNetCDF(data, pixels@grid, proj4string, nc = nc,
                               index=pixels@grid.index, byPixel = byPixel, verbose = verbose)
 }
 
@@ -343,21 +343,21 @@
 .openreadgridNetCDF<-function(file, verbose =FALSE) {
   if(!file.exists(file)) stop(paste0("File '", file, "' does not exist."))
   if(verbose) cat(paste0("\nOpening '", file,"' to read data.\n"))
-  nc = nc_open(file)
+  nc = ncdf4::nc_open(file)
   return(nc)
 }
 
 .openreadpointsNetCDF<-function(file, verbose =FALSE) {
   if(!file.exists(file)) stop(paste0("File '", file, "' does not exist."))
   if(verbose) cat(paste0("\nOpening '", file,"' to read data.\n"))
-  return(nc_open(file))
+  return(ncdf4::nc_open(file))
 }
 #Reads values of time dimension
 .readdatesNetCDF<-function(ncin) {
   tunits <- ncin$dim$time$units
   s <- strsplit(tunits, " ")[[1]]
   origin <- as.Date(s[3])
-  return(as.Date(ncvar_get(ncin,"time"), origin=origin))
+  return(as.Date(ncdf4::ncvar_get(ncin,"time"), origin=origin))
 }
 
 #Reads grid/pixels for a single variable and day
@@ -367,24 +367,24 @@
   #Reads rows in decreasing order
   if(timefirst) { # Time is first dimension
     for(i in 1:ny) {
-      v[((i-1)*nx+1):(i*nx)] = ncvar_get(ncin, varname,start=c(day,1,ny-i+1), count=c(1,nx,1))
+      v[((i-1)*nx+1):(i*nx)] = ncdf4::ncvar_get(ncin, varname,start=c(day,1,ny-i+1), count=c(1,nx,1))
     }
   } else {
     for(i in 1:ny) { # Time is last dimension
-      v[((i-1)*nx+1):(i*nx)] = ncvar_get(ncin, varname,start=c(1,ny-i+1,day), count=c(nx,1,1))
+      v[((i-1)*nx+1):(i*nx)] = ncdf4::ncvar_get(ncin, varname,start=c(1,ny-i+1,day), count=c(nx,1,1))
     }
   }
   if(!is.null(selection)) v = v[selection]
   return(v)
 }
-#Reads data for a single pixel and period 
+#Reads data for a single pixel and period
 .readgridvardatapixel<-function(ncin, ny, nt, varname, i, j) {
   if(varname %in% names(ncin$var)) {
     timefirst = (ncin$var[[varname]]$dim[[1]]$name=="time")
     if(timefirst) {
-      v = ncvar_get(ncin, varname,start=c(1,i,ny-j+1), count=c(nt,1,1))
+      v = ncdf4::ncvar_get(ncin, varname,start=c(1,i,ny-j+1), count=c(nt,1,1))
     } else {
-      v = ncvar_get(ncin, varname,start=c(i,ny-j+1,1), count=c(1,1,nt))
+      v = ncdf4::ncvar_get(ncin, varname,start=c(i,ny-j+1,1), count=c(1,1,nt))
     }
   } else {
     v = rep(NA, nt)
@@ -410,28 +410,28 @@
 #Closes NetCDF
 .closeNetCDF<-function(file,nc, verbose=FALSE) {
   if(verbose) cat(paste0("\nClosing '", file,"'.\n"))
-  nc_close(nc)
+  ncdf4::nc_close(nc)
 }
 #Reads NetCDF grid topology
 .readgridtopologyNetCDF<-function(ncin) {
   if(("X" %in% names(ncin$dim)) && ("Y" %in% names(ncin$dim))) {
-    dimX <- ncvar_get(ncin, "X")
-    dimY <- ncvar_get(ncin, "Y")
+    dimX <- ncdf4::ncvar_get(ncin, "X")
+    dimY <- ncdf4::ncvar_get(ncin, "Y")
     cellcentre.offset = c(X = min(dimX), Y = min(dimY))
   }
   else if(("x" %in% names(ncin$dim)) && ("y" %in% names(ncin$dim))) {
-    dimX <- ncvar_get(ncin, "x")
-    dimY <- ncvar_get(ncin, "y")
+    dimX <- ncdf4::ncvar_get(ncin, "x")
+    dimY <- ncdf4::ncvar_get(ncin, "y")
     cellcentre.offset = c(x = min(dimX), y = min(dimY))
   }
   else if(("lon" %in% names(ncin$dim)) && ("lat" %in% names(ncin$dim))) {
-    dimX <- ncvar_get(ncin, "lon")
-    dimY <- ncvar_get(ncin, "lat")
+    dimX <- ncdf4::ncvar_get(ncin, "lon")
+    dimY <- ncdf4::ncvar_get(ncin, "lat")
     cellcentre.offset = c(lon = min(dimX), lat = min(dimY))
   }
   else if(("rlon" %in% names(ncin$dim)) && ("rlat" %in% names(ncin$dim))) {
-    dimX <- ncvar_get(ncin, "rlon")
-    dimY <- ncvar_get(ncin, "rlat")
+    dimX <- ncdf4::ncvar_get(ncin, "rlon")
+    dimY <- ncdf4::ncvar_get(ncin, "rlat")
     cellcentre.offset = c(rlon = min(dimX), rlat = min(dimY))
   }
   cellsize = c(dimX[2]-dimX[1], dimY[2]-dimY[1])
@@ -443,7 +443,7 @@
 }
 .readCRSNetCDF<-function(ncin) {
   crs = CRS(as.character(NA))
-  patt <- ncatt_get(ncin,0, "proj4string")
+  patt <- ncdf4::ncatt_get(ncin,0, "proj4string")
   if(patt$hasatt) {
     proj4string = patt$value
     if(proj4string!="NA") crs = CRS(proj4string)
@@ -492,7 +492,7 @@
         df$Precipitation =  df$Precipitation*24*3600
       }
     }
-  } 
+  }
   if("Radiation" %in% names(varmapping)) {
     if(varmapping[["Radiation"]] %in% names(ncin$var)) {
       prunits = ncin$var[[varmapping[["Radiation"]]]]$units
@@ -528,8 +528,8 @@
   return(df)
 }
 #Reads NetCDF grid/pixels
-.readmeteorologygridNetCDF<-function(ncin, dates = NULL, pixels = FALSE, 
-                                 bbox = NULL, offset = 0, 
+.readmeteorologygridNetCDF<-function(ncin, dates = NULL, pixels = FALSE,
+                                 bbox = NULL, offset = 0,
                                  varmapping = NULL, verbose = FALSE) {
   crs <- .readCRSNetCDF(ncin)
   grid <- .readgridtopologyNetCDF(ncin)
@@ -575,7 +575,7 @@
   }
   sm = NULL
   if(!pixels) {
-    sm = SpatialGridMeteorology(grid, proj4string = crs, 
+    sm = SpatialGridMeteorology(grid, proj4string = crs,
                                  data = data, dates=as.Date(dates))
   } else {
     #Remove empty grid cells
@@ -585,7 +585,7 @@
     for(i in 1:length(data)) {
       data[[i]] = data[[i]][sel,, drop=FALSE]
     }
-    sm = SpatialPixelsMeteorology(pts, proj4string=crs, 
+    sm = SpatialPixelsMeteorology(pts, proj4string=crs,
                              data= data, dates= as.Date(dates),
                              grid = grid)
   }
@@ -623,13 +623,13 @@
       if(a$hasatt)
         return(a$value);
     }
-    
+
     ## Heuristic detection for broken files
     bnds.vars <- c(paste(x, "bnds", sep="_"), paste("bounds", x, sep="_"))
     bnds.present <- bnds.vars %in% names(f$var)
     if(any(bnds.present))
       return(bnds.vars[bnds.present])
-    
+
     return(NULL);
   } )))
 }
@@ -639,16 +639,16 @@
   bounds <- .nc_get_dimbounds_varlist(f)
   climatology.bounds <- .nc_get_climatologybounds_varlist(f)
   has.axis <- unlist(lapply(var.list, function(x) { a <- ncdf4::ncatt_get(f, x, "axis"); if(a$hasatt & nchar(a$value) == 1) return(x); return(NULL); } ))
-  
+
   ## When things get really broken, we'll need this...
   bnds.heuristic <- !grepl("_bnds", var.list)
-  
+
   var.mask <- bnds.heuristic & enough.dims & (!(var.list %in% c(bounds, has.axis, climatology.bounds, "lat", "lon") | unlist(lapply(f$var, function(x) { return(x$prec == "char" | x$ndims == 0) }))))
-  
+
   return(var.list[var.mask])
 }
-.readmeteorologygridpointsNetCDF<-function(ncin, dates = NULL, 
-                                           bbox = NULL, offset = 0, 
+.readmeteorologygridpointsNetCDF<-function(ncin, dates = NULL,
+                                           bbox = NULL, offset = 0,
                                            varmapping = NULL, verbose = FALSE) {
   dates_file <- .readdatesNetCDF(ncin)
   dates_file <- as.character(dates_file)
@@ -659,14 +659,14 @@
     dates = dates_file
   }
   if(is.null(varmapping)) varmapping = .defaultMapping()
-  
+
   crs <- .readCRSNetCDF(ncin)
   grid <- .readgridtopologyNetCDF(ncin) # Can be a rotated topology
   rotated = (names(grid@cellcentre.offset)[1] == "rlon")
   if(!rotated) {
     nx <- grid@cells.dim[1]
     ny <- grid@cells.dim[2]
-    
+
     sel <- rep(TRUE, nx*ny)
     if(!is.null(bbox)) {
       # print(grid)
@@ -676,10 +676,10 @@
       vec_y<-(cc[,cn[2]]+offset >=bbox[cn[2],1]) & (cc[,cn[2]] -offset <=bbox[cn[2],2])
       sel=vec_y & vec_x
     }
-    
+
   } else {
-    lat <- ncvar_get(ncin, "lat")
-    lon <- ncvar_get(ncin, "lon")
+    lat <- ncdf4::ncvar_get(ncin, "lat")
+    lon <- ncdf4::ncvar_get(ncin, "lon")
     nx = nrow(lat)
     ny = ncol(lat)
     sel = matrix(FALSE, nrow=nx, ncol=ny)
@@ -689,7 +689,7 @@
       sel=veclat & veclon
     }
   }
-  
+
   npts = sum(sel)
   nt = length(dates_file)
   data = vector("list", npts)
@@ -697,7 +697,7 @@
     cat(paste0("Defining ", npts," points:\n"))
     pb = txtProgressBar(0, npts, style=3)
   }
-  
+
   if(rotated) {
     cc = matrix(nrow=0, ncol=2)
     xy = matrix(nrow=0, ncol=2)
@@ -725,7 +725,7 @@
           pb = txtProgressBar(0, npts, style=3)
         }
         timefirst = (ncin$var[[varmapping[[var]]]]$dim[[1]]$name=="time")
-        values = ncvar_get(ncin, varmapping[[var]]) # read whole variable
+        values = ncdf4::ncvar_get(ncin, varmapping[[var]]) # read whole variable
         for(i in 1:nrow(xy)) {
           if(verbose) setTxtProgressBar(pb,i)
           df = data[[i]]
@@ -735,7 +735,7 @@
             df[[var]] = values[xy[i,1],xy[i,2],]
           }
           data[[i]] = df
-        }  
+        }
       }
     }
     for(i in 1:nrow(xy)) {
@@ -748,23 +748,23 @@
     }
   }
   rownames(cc)<-1:nrow(cc)
-  spm = SpatialPointsMeteorology(SpatialPoints(cc, proj4string = crs), 
+  spm = SpatialPointsMeteorology(SpatialPoints(cc, proj4string = crs),
                                 data = data, dates=as.Date(dates))
   return(spm)
 }
 
 .readpointcoordinatesNetCDF<-function(ncin, crs) {
   if(.isLongLat(crs)) {
-    x <- ncvar_get(ncin, "lon")
-    y <- ncvar_get(ncin, "lat")
+    x <- ncdf4::ncvar_get(ncin, "lon")
+    y <- ncdf4::ncvar_get(ncin, "lat")
     cc = cbind(x,y)
     colnames(cc)<-c("lon", "lat")
   } else {
-    x <- ncvar_get(ncin, "x")
-    y <- ncvar_get(ncin, "y")
+    x <- ncdf4::ncvar_get(ncin, "x")
+    y <- ncdf4::ncvar_get(ncin, "y")
     cc = cbind(x,y)
   }
-  ids <- ncvar_get(ncin, "station_name")
+  ids <- ncdf4::ncvar_get(ncin, "station_name")
   rownames(cc)<-ids
   return(cc)
 }
@@ -774,7 +774,7 @@
   df[,"DOY"] = as.POSIXlt(as.Date(dates_file))$yday+1
   for(var in names(varmapping)) {
     if(varmapping[[var]] %in% names(ncin$var)) {
-      df[[var]] = ncvar_get(ncin, varmapping[[var]], start=c(i,1), count=c(1,nt))
+      df[[var]] = ncdf4::ncvar_get(ncin, varmapping[[var]], start=c(i,1), count=c(1,nt))
     }
   }
   if(ncol(df)>0) {
@@ -794,7 +794,7 @@
     dates = dates_file
   }
   if(is.null(varmapping)) varmapping = .defaultMapping()
-  
+
   crs <- .readCRSNetCDF(ncin)
   cc <- .readpointcoordinatesNetCDF(ncin, crs)
   indices = 1:nrow(cc)
@@ -802,7 +802,7 @@
     ids = rownames(cc)
     if(inherits(stations, "character")) {
       if(sum(!(stations %in% ids))>0) {
-        nc_close(ncin)
+        ncdf4::nc_close(ncin)
         stop("Some station names are not recognized.")
       }
       indices = rep(NA, length(stations))
@@ -815,13 +815,13 @@
       }
       indices = stations
     }
-  } 
+  }
   cc =cc[indices, , drop=FALSE]
   npts = nrow(cc)
   nt = length(dates_file)
   data = vector("list", npts)
   names(data)<-rownames(cc)
-  
+
   if(verbose) pb = txtProgressBar(0, npts, style=3)
   for(i in 1:npts) {
     if(verbose) setTxtProgressBar(pb,i)
@@ -829,7 +829,7 @@
     df = df[as.character(dates),]
     data[[i]] = df
   }
-  spm = SpatialPointsMeteorology(SpatialPoints(cc, proj4string = crs), 
+  spm = SpatialPointsMeteorology(SpatialPoints(cc, proj4string = crs),
                                  data = data, dates=as.Date(dates))
   return(spm)
 }

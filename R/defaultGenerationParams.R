@@ -45,7 +45,7 @@
 defaultGenerationParams<-function() {
   # deprecation warning
   lifecycle::deprecate_warn(
-    when = "1.1.0", what = "correctionpoints.errors()", with = NULL,
+    when = "2.0.0", what = "correctionpoints.errors()", with = NULL,
     details = "Weather generation methods will dissapear in future versions of meteoland, as there
     are better alternatives (see * and *)"
   )

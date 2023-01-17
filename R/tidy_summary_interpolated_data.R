@@ -55,7 +55,7 @@
       verbose
     )
     meteo_interpolated <- meteo_interpolated |>
-      dplyr::filter(as.Date(dates) %in% dates_to_summary)
+      dplyr::filter(as.Date(.data$dates) %in% dates_to_summary)
   }
 
   .group_by_freq <- function(data, frequency) {
@@ -82,7 +82,7 @@
       yearly_case <- data |>
         # create and group by the frequency desired
         dplyr::mutate(
-          {{frequency}} := frequency_fun(dates)
+          {{frequency}} := frequency_fun(.data$dates)
         ) |>
         dplyr::group_by(.data[[frequency]]) |>
         # and select the vars wanted
@@ -94,17 +94,17 @@
     data |>
       # create and group by the frequency desired
       dplyr::mutate(
-        {{frequency}} := frequency_fun(dates),
-        year = lubridate::year(dates)
+        {{frequency}} := frequency_fun(.data$dates),
+        year = lubridate::year(.data$dates)
       ) |>
-      dplyr::group_by(.data[[frequency]], year) |>
+      dplyr::group_by(.data[[frequency]], .data$year) |>
       # and select the vars wanted
       dplyr::select(dplyr::any_of(c(frequency, "year", vars_to_summary)))
   }
 
   meteo_interpolated |>
     # filtering the months to summary
-    dplyr::filter(lubridate::month(dates) %in% months_to_summary) |>
+    dplyr::filter(lubridate::month(.data$dates) %in% months_to_summary) |>
     # check the filtering return rows, if not trigger a warning
     .check_month_filtering(months_to_summary) |>
     # group by desired frequency (if any)
@@ -148,7 +148,7 @@
     res <- meteo_interpolated |>
       dplyr::mutate(
         !!summary_name := purrr::map(
-          interpolated_data, .f = .summary_by_date_and_var,
+          .data$interpolated_data, .f = .summary_by_date_and_var,
           fun = fun, frequency = frequency, vars_to_summary = vars_to_summary,
           dates_to_summary = dates_to_summary, months_to_summary = months_to_summary,
           verbose = verbose, ...
@@ -165,7 +165,7 @@
     inherits(meteo_interpolated, "sf") &
     !"interpolated_data" %in% names(meteo_interpolated)
   ) {
-    usethis::ui_warning(
+    usethis::ui_warn(
       "meteo_interpolated object seen to have meteo variables and more than one
       location. All locations will be summarise together"
     )

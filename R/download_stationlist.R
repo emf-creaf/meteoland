@@ -5,7 +5,7 @@
 downloadAEMETstationlist <- function(api){
   # deprecation warning
   lifecycle::deprecate_warn(
-    when = "1.1.0", what = "downloadAEMETstationlist()", with = "meteospain::get_stations_info_from()",
+    when = "2.0.0", what = "downloadAEMETstationlist()", with = "meteospain::get_stations_info_from()",
     details = "This function is deprecated in favour of the meteospain package"
   )
   opt = meteospain::aemet_options(api_key = api)
@@ -26,7 +26,7 @@ downloadAEMETstationlist <- function(api){
 downloadSMCstationlist <- function(api, date = NULL){
   # deprecation warning
   lifecycle::deprecate_warn(
-    when = "1.1.0", what = "downloadSMCstationlist()", with = "meteospain::get_stations_info_from()",
+    when = "2.0.0", what = "downloadSMCstationlist()", with = "meteospain::get_stations_info_from()",
     details = "This function is deprecated in favour of the meteospain package"
   )
 
@@ -49,7 +49,7 @@ downloadSMCstationlist <- function(api, date = NULL){
 downloadMGstationlist <- function() {
   # deprecation warning
   lifecycle::deprecate_warn(
-    when = "1.1.0", what = "downloadMGstationlist()", with = "meteospain::get_stations_info_from()",
+    when = "2.0.0", what = "downloadMGstationlist()", with = "meteospain::get_stations_info_from()",
     details = "This function is deprecated in favour of the meteospain package"
   )
   opt = meteospain::meteogalicia_options()
@@ -69,7 +69,7 @@ downloadMGstationlist <- function() {
 downloadMETEOCLIMATICstationlist <- function(station_id = 'ESCAT') {
   # deprecation warning
   lifecycle::deprecate_warn(
-    when = "1.1.0", what = "downloadMETEOCLIMATICstationlist()", with = "meteospain::get_stations_info_from()",
+    when = "2.0.0", what = "downloadMETEOCLIMATICstationlist()", with = "meteospain::get_stations_info_from()",
     details = "This function is deprecated in favour of the meteospain package"
   )
 

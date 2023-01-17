@@ -61,7 +61,7 @@ extractNetCDF<-function(ncdf_files, bbox = NULL, offset = 0, cells = NULL, expor
                         exportDir = getwd(), exportFormat = "meteoland/txt", mpfilename = "MP.txt") {
 
   lifecycle::deprecate_warn(
-    when = "1.1.0", what = "extractNetCDF()", with = NULL,
+    when = "2.0.0", what = "extractNetCDF()", with = NULL,
     details = "???"
   )
 
@@ -70,9 +70,9 @@ extractNetCDF<-function(ncdf_files, bbox = NULL, offset = 0, cells = NULL, expor
 
   #Read spatial info from first file
   ncname<-ncdf_files[1]
-  ncin <- nc_open(ncname)
-  lat <- ncvar_get(ncin, "lat")
-  lon <- ncvar_get(ncin, "lon")
+  ncin <- ncdf4::nc_open(ncname)
+  lat <- ncdf4::ncvar_get(ncin, "lat")
+  lon <- ncdf4::ncvar_get(ncin, "lon")
   varlist <- .nc_get_varlist(ncin)
   nx = nrow(lat)
   ny = ncol(lat)
@@ -88,8 +88,8 @@ extractNetCDF<-function(ncdf_files, bbox = NULL, offset = 0, cells = NULL, expor
     }
     vertices = ("lat_vertices" %in% varlist) & ("lon_vertices" %in% varlist)
     if(vertices) {
-      lat_ver <- ncvar_get(ncin, "lat_vertices")
-      lon_ver <- ncvar_get(ncin, "lon_vertices")
+      lat_ver <- ncdf4::ncvar_get(ncin, "lat_vertices")
+      lon_ver <- ncdf4::ncvar_get(ncin, "lon_vertices")
       #Select target cells when at least one vertex falls in the boundary box
       for(v in 1:4) {
         sel1 = (lon_ver[v,,] +offset >= bbox[1,1]) &
@@ -120,7 +120,7 @@ extractNetCDF<-function(ncdf_files, bbox = NULL, offset = 0, cells = NULL, expor
   } else {
     cat("No user cell selection. All cells will be extracted.")
   }
-  nc_close(ncin)
+  ncdf4::nc_close(ncin)
 
   ncells = sum(sel)
   cat(paste("Cells to extract: ", ncells,"\n", sep=""))
@@ -129,11 +129,11 @@ extractNetCDF<-function(ncdf_files, bbox = NULL, offset = 0, cells = NULL, expor
   #Extract dates from all files
   dates = NULL
   for(filei in 1:nfiles) {
-    ncin <- nc_open(ncdf_files[filei])
-    t <- ncvar_get(ncin, "time")
+    ncin <- ncdf4::nc_open(ncdf_files[filei])
+    t <- ncdf4::ncvar_get(ncin, "time")
     nt = length(t)
-    tunits <- ncatt_get(ncin, "time", "units")
-    nc_close(ncin)
+    tunits <- ncdf4::ncatt_get(ncin, "time", "units")
+    ncdf4::nc_close(ncin)
     s = strsplit(tunits$value, " ")[[1]]
     s = s[3]
     t <- floor(t)
@@ -191,11 +191,11 @@ extractNetCDF<-function(ncdf_files, bbox = NULL, offset = 0, cells = NULL, expor
         pb = txtProgressBar(0, nfiles, 0, style = 3)
         for(filei in 1:nfiles) {
           setTxtProgressBar(pb, filei-1)
-          ncin <- nc_open(ncdf_files[filei])
+          ncin <- ncdf4::nc_open(ncdf_files[filei])
           #get dates
-          t <- ncvar_get(ncin, "time")
+          t <- ncdf4::ncvar_get(ncin, "time")
           nt = length(t)
-          tunits <- ncatt_get(ncin, "time", "units")
+          tunits <- ncdf4::ncatt_get(ncin, "time", "units")
           s = strsplit(tunits$value, " ")[[1]]
           s = s[3]
           t <- floor(t)
@@ -208,29 +208,29 @@ extractNetCDF<-function(ncdf_files, bbox = NULL, offset = 0, cells = NULL, expor
           varlist = .nc_get_varlist(ncin)
           for(var in varlist) {
             if(var=="huss") {
-              vec = ncvar_get(ncin,varid = var, start = c(xi, yi, 1), count=c(1,1,length(datesfile)))
+              vec = ncdf4::ncvar_get(ncin,varid = var, start = c(xi, yi, 1), count=c(1,1,length(datesfile)))
               df[datesfile,"SpecificHumidity"] = vec #kg/kg
             } else if(var=="tas")  {
-              vec = ncvar_get(ncin,varid = var, start = c(xi, yi, 1), count=c(1,1,length(datesfile)))
+              vec = ncdf4::ncvar_get(ncin,varid = var, start = c(xi, yi, 1), count=c(1,1,length(datesfile)))
               df[datesfile,"MeanTemperature"] = vec - 273.15 #From degrees K to degrees C
             } else if(var=="tasmin")  {
-              vec = ncvar_get(ncin,varid = var, start = c(xi, yi, 1), count=c(1,1,length(datesfile)))
+              vec = ncdf4::ncvar_get(ncin,varid = var, start = c(xi, yi, 1), count=c(1,1,length(datesfile)))
               df[datesfile,"MinTemperature"] = vec - 273.15 #From degrees K to degrees C
             } else if(var=="tasmax")  {
-              vec = ncvar_get(ncin,varid = var, start = c(xi, yi, 1), count=c(1,1,length(datesfile)))
+              vec = ncdf4::ncvar_get(ncin,varid = var, start = c(xi, yi, 1), count=c(1,1,length(datesfile)))
               df[datesfile,"MaxTemperature"] = vec - 273.15 #From degrees K to degrees C
             } else if(var=="pr")  {
-              vec = ncvar_get(ncin,varid = var, start = c(xi, yi, 1), count=c(1,1,length(datesfile)))
+              vec = ncdf4::ncvar_get(ncin,varid = var, start = c(xi, yi, 1), count=c(1,1,length(datesfile)))
               df[datesfile,"Precipitation"] = vec*3600*24 #From kg/m2/s to L/m2/day
             } else if(var=="rsds")  {
-              vec = ncvar_get(ncin,varid = var, start = c(xi, yi, 1), count=c(1,1,length(datesfile)))
+              vec = ncdf4::ncvar_get(ncin,varid = var, start = c(xi, yi, 1), count=c(1,1,length(datesfile)))
               df[datesfile,"Radiation"] = vec*3600*24/1000000 #From W/m2 to MJ/m2
             } else if(var=="sfcWind")  {
-              vec = ncvar_get(ncin,varid = var, start = c(xi, yi, 1), count=c(1,1,length(datesfile)))
+              vec = ncdf4::ncvar_get(ncin,varid = var, start = c(xi, yi, 1), count=c(1,1,length(datesfile)))
               df[datesfile,"WindSpeed"] = vec #in m/s
             }
           }
-          nc_close(ncin)
+          ncdf4::nc_close(ncin)
           cat("\n")
         }
         close(pb)

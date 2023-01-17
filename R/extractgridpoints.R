@@ -22,7 +22,7 @@
 #' @export
 extractgridindex<-function(grid, index) {
   lifecycle::deprecate_warn(
-    when = "1.1.0", what = "extractgridindex()", with = NULL,
+    when = "2.0.0", what = "extractgridindex()", with = NULL,
     details = "Spatial_*_Meteorology classes are soft deprecated.
     Extraction of indexes is not needed as the meteo objects are now sf objects"
   )
@@ -50,7 +50,7 @@ extractgridindex<-function(grid, index) {
 #' @export
 extractgridpoints<-function(grid, points, verbose = FALSE) {
   lifecycle::deprecate_warn(
-    when = "1.1.0", what = "extractgridpoints()", with = NULL,
+    when = "2.0.0", what = "extractgridpoints()", with = NULL,
     details = "Spatial_*_Meteorology classes are soft deprecated.
     Extraction of grid points is not needed as the meteo objects are now sf objects"
   )

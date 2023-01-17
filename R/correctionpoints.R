@@ -28,7 +28,7 @@
 correction_series<-function(obs, mod, proj = NULL, method = "unbias", isPrec=TRUE, qstep=0.01) {
   # deprecation warning
   lifecycle::deprecate_warn(
-    when = "1.1.0", what = "correction_series()", with = NULL,
+    when = "2.0.0", what = "correction_series()", with = NULL,
     details = "Better correction methods are provided by other packages (see * and * for example)"
   )
 
@@ -49,7 +49,7 @@ correctionpoint<-function(obs, mod, proj, dates = NULL, params = defaultCorrecti
 
   # deprecation warning
   lifecycle::deprecate_warn(
-    when = "1.1.0", what = "correctionpoint()", with = NULL,
+    when = "2.0.0", what = "correctionpoint()", with = NULL,
     details = "Better correction methods are provided by other packages (see * and * for example)"
   )
 
@@ -267,7 +267,7 @@ correctionpoints<-function(object, points, topodata = NULL, dates = NULL, export
 
   # deprecation warning
   lifecycle::deprecate_warn(
-    when = "1.1.0", what = "correctionpoints()", with = NULL,
+    when = "2.0.0", what = "correctionpoints()", with = NULL,
     details = "Better correction methods are provided by other packages (see * and * for example)"
   )
 

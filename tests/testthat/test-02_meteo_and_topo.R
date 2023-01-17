@@ -58,7 +58,7 @@ topo_test_sf <- meteo_test_correct |>
   dplyr::select(stationID, elevation) |>
   dplyr::mutate(aspect = NA_real_, slope = NA_real_)
 topo_test_no_names <- topo_test_correct |>
-  dplyr::rename(Elevation = elevation)
+  dplyr::rename(Elevation = "elevation")
 topo_test_no_id <- topo_test_correct |>
   dplyr::select(-stationID)
 topo_test_no_numeric <- topo_test_correct |>

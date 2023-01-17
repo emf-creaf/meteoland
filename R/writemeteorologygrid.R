@@ -50,7 +50,7 @@ writemeteorologygrid<-function(object, file, dates = NULL, format = "netCDF",
                                byPixel = FALSE, chunksizes = NA,
                                add=FALSE, overwrite = FALSE, verbose = FALSE) {
   lifecycle::deprecate_warn(
-    when = "1.1.0", what = "writemeteorologygrid()", with = NULL,
+    when = "2.0.0", what = "writemeteorologygrid()", with = NULL,
     details = "meteoland NetCDF utils are deprecated.
     NetCDF files can be managed with more recent and up to date R packages (ncmeta, stars...)"
   )
@@ -75,7 +75,7 @@ writemeteorologypixels<-function(object, file, dates = NULL, format = "netCDF",
                                  byPixel = FALSE, chunksizes = NA,
                                  add=FALSE, overwrite = FALSE, verbose = FALSE) {
   lifecycle::deprecate_warn(
-    when = "1.1.0", what = "writemeteorologypixels()", with = NULL,
+    when = "2.0.0", what = "writemeteorologypixels()", with = NULL,
     details = "meteoland NetCDF utils are deprecated.
     NetCDF files can be managed with more recent and up to date R packages (ncmeta, stars...)"
   )
@@ -96,7 +96,7 @@ writemeteorologypixels<-function(object, file, dates = NULL, format = "netCDF",
 #' @export
 writeemptymeteorologygrid<-function(file, grid, proj4string, dates, byPixel = FALSE, chunksizes = NA, overwrite = FALSE, verbose = FALSE) {
   lifecycle::deprecate_warn(
-    when = "1.1.0", what = "writeemptymeteorologygrid()", with = NULL,
+    when = "2.0.0", what = "writeemptymeteorologygrid()", with = NULL,
     details = "meteoland NetCDF utils are deprecated.
     NetCDF files can be managed with more recent and up to date R packages (ncmeta, stars...)"
   )
@@ -113,7 +113,7 @@ writeemptymeteorologygrid<-function(file, grid, proj4string, dates, byPixel = FA
 #' @export
 writemeteorologygridpixel<-function(file, index, data, verbose = FALSE) {
   lifecycle::deprecate_warn(
-    when = "1.1.0", what = "writemeteorologygridpixel()", with = NULL,
+    when = "2.0.0", what = "writemeteorologygridpixel()", with = NULL,
     details = "meteoland NetCDF utils are deprecated.
     NetCDF files can be managed with more recent and up to date R packages (ncmeta, stars...)"
   )

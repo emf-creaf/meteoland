@@ -76,7 +76,7 @@ SpatialGridTopography<-function(grid, elevation, slope = NULL, aspect = NULL, pr
   
   # deprecation notice
   lifecycle::deprecate_warn(
-    when = "1.1.0", what = "SpatialGridTopography()", with = NULL,
+    when = "2.0.0", what = "SpatialGridTopography()", with = NULL,
     details = "Spatial_*_Topography classes are soft deprecated.
     User topography now can be provided as sf or stars objects"
   )

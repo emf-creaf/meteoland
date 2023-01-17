@@ -122,7 +122,7 @@ correctionpoints.errors<-function(object, points, topodata = NULL,
 
   # deprecation warning
   lifecycle::deprecate_warn(
-    when = "1.1.0", what = "correctionpoints.errors()", with = NULL,
+    when = "2.0.0", what = "correctionpoints.errors()", with = NULL,
     details = "Better correction methods are provided by other packages (see * and * for example)"
   )
 

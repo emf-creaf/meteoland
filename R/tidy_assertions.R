@@ -78,7 +78,7 @@ assertthat::on_failure(has_topo_names) <- function(call, env) {
 #' @noRd
 has_unique_ids <- function(meteo) {
   distinct_rows <- meteo |>
-    dplyr::select(stationID) |>
+    dplyr::select("stationID") |>
     dplyr::distinct()
 
   nrow(distinct_rows) == length(unique(distinct_rows[["stationID"]]))
@@ -88,10 +88,10 @@ has_unique_ids <- function(meteo) {
 assertthat::on_failure(has_unique_ids) <- function(call, env) {
 
   duplicated_stations <- env$meteo |>
-    dplyr::select(stationID) |>
+    dplyr::select("stationID") |>
     dplyr::distinct() |>
-    dplyr::filter(duplicated(stationID)) |>
-    dplyr::pull(stationID)
+    dplyr::filter(duplicated(.data$stationID)) |>
+    dplyr::pull("stationID")
 
   paste0(
     "There are more geometries in the data than unique station IDs. ",
@@ -243,7 +243,7 @@ assertthat::on_failure(.is_raster) <- function(call, env) {
 #' object (dimensions, parameters, variables).
 #'
 #' @param interpolator meteoland interpolator object, as created by
-#'   \code{\link{create_meteoland_interpolator}}
+#'   \code{\link{create_meteo_interpolator}}
 #'
 #' @return invisible TRUE if the object is a meteoland complying interpolator,
 #'   an informative error otherwise

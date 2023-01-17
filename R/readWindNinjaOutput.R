@@ -45,7 +45,7 @@ readWindNinjaWindFields<-function(filebase, resolution = "100m",
                                   proj4string = CRS(as.character(NA))) {
 
   lifecycle::deprecate_warn(
-    when = "1.1.0", what = "readWindNinjaWindFields()", with = NULL,
+    when = "2.0.0", what = "readWindNinjaWindFields()", with = NULL,
     details = "readWindNinjaWindFields is deprecated and will dissapear from future versions of meteoland"
   )
 

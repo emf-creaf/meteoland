@@ -1,8 +1,8 @@
 #' Calibration and validation of interpolation procedures
-#' 
+#'
 #' @description
 #' `r lifecycle::badge("deprecated")`
-#' 
+#'
 #' Function \code{interpolation.calibration} determines optimal interpolation
 #' parameters 'N' and 'alpha' for a given meteorological variable. Optimization
 #' is done by minimizing mean absolute error (MAE) (Thornton et al. 1997).
@@ -14,11 +14,8 @@
 #' In both calibration and validation procedures, predictions for each weather
 #' station are made using a leave-one-out procedure (i.e. after excluding the
 #' station from the predictive set).
-#' 
-#' 
-#' @aliases interpolation.cv interpolation.calibration
-#' interpolation.calibration.fmax summary.interpolation.cv
-#' plot.interpolation.cv
+#'
+#'
 #' @param object In the case of function \code{interpolation.cv}, an object of
 #' class \code{\link{MeteorologyInterpolationData-class}}. In the case of
 #' function \code{summary}, an object of class \code{\link{interpolation.cv}}
@@ -79,7 +76,7 @@
 #' estimations in weather stations. \item\code{Radiation-MAE}: Mean absolute
 #' errors (in MJ/m2), averaged over the prediction period, of incoming
 #' radiation estimations in weather stations. }
-#' 
+#'
 #' \item\code{dates}: A data frame with as many rows as weather stations and
 #' the following columns: \itemize{ \item\code{MinTemperature-Bias}: Daily bias
 #' (in degrees), averaged over the stations, of minimum temperature
@@ -101,7 +98,7 @@
 #' stations, of incoming radiation estimations. \item\code{Radiation-MAE}:
 #' Daily mean absolute errors (in MJ/m2), averaged over the stations, of
 #' incoming radiation estimations. }
-#' 
+#'
 #' \item\code{MinTemperature}: A data frame with predicted minimum temperature
 #' values. \item\code{MinTemperatureError}: A matrix with predicted minimum
 #' temperature errors. \item\code{MaxTemperature}: A data frame with predicted
@@ -119,45 +116,45 @@
 #' estimating incident daily solar radiation from measurements of temperature,
 #' humidity, and precipitation. Agric. For. Meteorol. 93, 211–228.
 #' doi:10.1016/S0168-1923(98)00126-9.
-#' 
+#'
 #' De Caceres M, Martin-StPaul N, Turco M, Cabon A, Granda V (2018) Estimating
 #' daily meteorological data and downscaling climate models over landscapes.
 #' Environmental Modelling and Software 108: 186-196.
 #' @examples
-#' 
+#'
 #' data(exampleinterpolationdata)
-#' 
+#'
 #' #Calibration procedure
 #' precEv_cal = interpolation.calibration(exampleinterpolationdata, variable="PrecEvent",
 #'                                        stations = 1:5,
 #'                                        N_seq=c(5,10,15), alpha_seq=seq(0.25,1.0, by=0.25),
 #'                                        verbose = TRUE)
-#' 
+#'
 #' precAm_cal = interpolation.calibration(exampleinterpolationdata, variable="PrecAmount",
 #'                                        stations = 1:5,
 #'                                        N_seq=c(5,10,15), alpha_seq=seq(0.25,1.0, by=0.25),
 #'                                        verbose = TRUE)
-#' 
+#'
 #' #Set 'alpha' and 'N' parameters to values found in calibration
 #' exampleinterpolationdata@params$N_PrecipitationEvent = precEv_cal$N
 #' exampleinterpolationdata@params$alpha_PrecipitationEvent = precEv_cal$alpha
-#' 
+#'
 #' exampleinterpolationdata@params$N_PrecipitationAmount = precAm_cal$N
 #' exampleinterpolationdata@params$alpha_PrecipitationAmount = precAm_cal$alpha
-#' 
+#'
 #' #Run cross validation
 #' cv = interpolation.cv(exampleinterpolationdata, stations = 1:5, verbose = TRUE)
-#' 
+#'
 #' #Print cross validation summaries
 #' summary(cv)
-#' 
+#'
 #' #Plot results
 #' plot(cv)
-#' 
+#'
 #' @export
 interpolation.cv<-function(object, stations = NULL, verbose = FALSE) {
   lifecycle::deprecate_warn(
-    when = "1.1.0", what = "interpolation.cv()", with = "interpolation_cross_validation()",
+    when = "2.0.0", what = "interpolation.cv()", with = "interpolation_cross_validation()",
     details = "MeteorologyInterpolationData class is soft deprecated.
     Interpolator object should be created with create_meteo_interpolator() and the cross validation
     must be done with interpolation_cross_validation() "

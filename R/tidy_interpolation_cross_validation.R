@@ -37,7 +37,7 @@
   # messaging (not all, every 5 or 10 maybe?)
   if (station_index %% 5 == 0) {
     .verbosity_control(
-      usethis::ui_line("Processing station {station_index}....."),
+      usethis::ui_line("Processed {station_index} stations ....."),
       verbose
     )
   }
@@ -61,10 +61,10 @@
     .interpolation_point(station_sf, interpolator_station_removed, verbose = verbose)
   ))[[1]] |>
     dplyr::mutate(
-      RangeTemperature = MaxTemperature - MinTemperature,
+      RangeTemperature = .data$MaxTemperature - .data$MinTemperature,
       station = station_index
     ) |>
-    dplyr::rename(RelativeHumidity = MeanRelativeHumidity)
+    dplyr::rename(RelativeHumidity = "MeanRelativeHumidity")
 }
 
 #' Transform interpolator values to df
@@ -91,7 +91,7 @@
       }
       res |>
         dplyr::mutate(
-          RangeTemperature = MaxTemperature - MinTemperature,
+          RangeTemperature = .data$MaxTemperature - .data$MinTemperature,
           station = station_index,
           stationID = colnames(interpolator[[1]])[station_index]
         )
@@ -205,70 +205,70 @@
 
   # bias and mae for stations
   station_stats <- total_errors |>
-    dplyr::group_by(station) |>
+    dplyr::group_by(.data$station) |>
     dplyr::summarise(
-      stationID = dplyr::first(stationID),
-      MinTemperature_station_bias = mean(MinTemperature_error, na.rm = TRUE),
-      MaxTemperature_station_bias = mean(MaxTemperature_error, na.rm = TRUE),
-      RangeTemperature_station_bias = mean(RangeTemperature_error, na.rm = TRUE),
-      RelativeHumidity_station_bias = mean(RelativeHumidity_error, na.rm = TRUE),
-      Radiation_station_bias = mean(Radiation_error, na.rm = TRUE),
-      MinTemperature_station_mae = mean(abs(MinTemperature_error), na.rm = TRUE),
-      MaxTemperature_station_mae = mean(abs(MaxTemperature_error), na.rm = TRUE),
-      RangeTemperature_station_mae = mean(abs(RangeTemperature_error), na.rm = TRUE),
-      RelativeHumidity_station_mae = mean(abs(RelativeHumidity_error), na.rm = TRUE),
-      Radiation_station_mae = mean(abs(Radiation_error), na.rm = TRUE),
+      stationID = dplyr::first(.data$stationID),
+      MinTemperature_station_bias = mean(.data$MinTemperature_error, na.rm = TRUE),
+      MaxTemperature_station_bias = mean(.data$MaxTemperature_error, na.rm = TRUE),
+      RangeTemperature_station_bias = mean(.data$RangeTemperature_error, na.rm = TRUE),
+      RelativeHumidity_station_bias = mean(.data$RelativeHumidity_error, na.rm = TRUE),
+      Radiation_station_bias = mean(.data$Radiation_error, na.rm = TRUE),
+      MinTemperature_station_mae = mean(abs(.data$MinTemperature_error), na.rm = TRUE),
+      MaxTemperature_station_mae = mean(abs(.data$MaxTemperature_error), na.rm = TRUE),
+      RangeTemperature_station_mae = mean(abs(.data$RangeTemperature_error), na.rm = TRUE),
+      RelativeHumidity_station_mae = mean(abs(.data$RelativeHumidity_error), na.rm = TRUE),
+      Radiation_station_mae = mean(abs(.data$Radiation_error), na.rm = TRUE),
       TotalPrecipitation_station_bias =
-        sum(Precipitation_observed, na.rm = TRUE) -
-        sum(Precipitation_predicted, na.rm = TRUE),
+        sum(.data$Precipitation_observed, na.rm = TRUE) -
+        sum(.data$Precipitation_predicted, na.rm = TRUE),
       TotalPrecipitation_station_relative_bias = 100*(
-        sum(Precipitation_observed, na.rm = TRUE) -
-          sum(Precipitation_predicted, na.rm = TRUE)
-      ) / sum(Precipitation_observed, na.rm = TRUE),
+        sum(.data$Precipitation_observed, na.rm = TRUE) -
+          sum(.data$Precipitation_predicted, na.rm = TRUE)
+      ) / sum(.data$Precipitation_observed, na.rm = TRUE),
       DaysPrecipitation_station_bias =
-        sum(Precipitation_observed > 0, na.rm = TRUE) -
-        sum(Precipitation_predicted > 0, na.rm = TRUE),
+        sum(.data$Precipitation_observed > 0, na.rm = TRUE) -
+        sum(.data$Precipitation_predicted > 0, na.rm = TRUE),
       DaysPrecipitation_station_relative_bias = 100*(
-        sum(Precipitation_observed > 0, na.rm = TRUE) -
-          sum(Precipitation_predicted > 0, na.rm = TRUE)
-      ) / sum(Precipitation_observed > 0, na.rm = TRUE),
+        sum(.data$Precipitation_observed > 0, na.rm = TRUE) -
+          sum(.data$Precipitation_predicted > 0, na.rm = TRUE)
+      ) / sum(.data$Precipitation_observed > 0, na.rm = TRUE),
       FreqPrecipitation_station_observed =
-        mean(Precipitation_observed > 0, na.rm = TRUE),
+        mean(.data$Precipitation_observed > 0, na.rm = TRUE),
       FreqPrecipitation_station_predicted =
-        mean(Precipitation_predicted > 0, na.rm = TRUE)
+        mean(.data$Precipitation_predicted > 0, na.rm = TRUE)
     )
 
   dates_stats <- total_errors |>
-    dplyr::group_by(dates) |>
+    dplyr::group_by(.data$dates) |>
     dplyr::summarise(
-      MinTemperature_date_bias = mean(MinTemperature_error, na.rm = TRUE),
-      MaxTemperature_date_bias = mean(MaxTemperature_error, na.rm = TRUE),
-      RangeTemperature_date_bias = mean(RangeTemperature_error, na.rm = TRUE),
-      RelativeHumidity_date_bias = mean(RelativeHumidity_error, na.rm = TRUE),
-      Radiation_date_bias = mean(Radiation_error, na.rm = TRUE),
-      MinTemperature_date_mae = mean(abs(MinTemperature_error), na.rm = TRUE),
-      MaxTemperature_date_mae = mean(abs(MaxTemperature_error), na.rm = TRUE),
-      RangeTemperature_date_mae = mean(abs(RangeTemperature_error), na.rm = TRUE),
-      RelativeHumidity_date_mae = mean(abs(RelativeHumidity_error), na.rm = TRUE),
-      Radiation_date_mae = mean(abs(Radiation_error), na.rm = TRUE),
+      MinTemperature_date_bias = mean(.data$MinTemperature_error, na.rm = TRUE),
+      MaxTemperature_date_bias = mean(.data$MaxTemperature_error, na.rm = TRUE),
+      RangeTemperature_date_bias = mean(.data$RangeTemperature_error, na.rm = TRUE),
+      RelativeHumidity_date_bias = mean(.data$RelativeHumidity_error, na.rm = TRUE),
+      Radiation_date_bias = mean(.data$Radiation_error, na.rm = TRUE),
+      MinTemperature_date_mae = mean(abs(.data$MinTemperature_error), na.rm = TRUE),
+      MaxTemperature_date_mae = mean(abs(.data$MaxTemperature_error), na.rm = TRUE),
+      RangeTemperature_date_mae = mean(abs(.data$RangeTemperature_error), na.rm = TRUE),
+      RelativeHumidity_date_mae = mean(abs(.data$RelativeHumidity_error), na.rm = TRUE),
+      Radiation_date_mae = mean(abs(.data$Radiation_error), na.rm = TRUE),
       TotalPrecipitation_date_bias =
-        sum(Precipitation_observed, na.rm = TRUE) -
-        sum(Precipitation_predicted, na.rm = TRUE),
+        sum(.data$Precipitation_observed, na.rm = TRUE) -
+        sum(.data$Precipitation_predicted, na.rm = TRUE),
       TotalPrecipitation_date_relative_bias = 100*(
-        sum(Precipitation_observed, na.rm = TRUE) -
-          sum(Precipitation_predicted, na.rm = TRUE)
-      ) / sum(Precipitation_observed, na.rm = TRUE),
+        sum(.data$Precipitation_observed, na.rm = TRUE) -
+          sum(.data$Precipitation_predicted, na.rm = TRUE)
+      ) / sum(.data$Precipitation_observed, na.rm = TRUE),
       DaysPrecipitation_date_bias =
-        sum(Precipitation_observed > 0, na.rm = TRUE) -
-        sum(Precipitation_predicted > 0, na.rm = TRUE),
+        sum(.data$Precipitation_observed > 0, na.rm = TRUE) -
+        sum(.data$Precipitation_predicted > 0, na.rm = TRUE),
       DaysPrecipitation_date_relative_bias = 100*(
-        sum(Precipitation_observed > 0, na.rm = TRUE) -
-          sum(Precipitation_predicted > 0, na.rm = TRUE)
-      ) / sum(Precipitation_observed > 0, na.rm = TRUE),
+        sum(.data$Precipitation_observed > 0, na.rm = TRUE) -
+          sum(.data$Precipitation_predicted > 0, na.rm = TRUE)
+      ) / sum(.data$Precipitation_observed > 0, na.rm = TRUE),
       FreqPrecipitation_date_observed =
-        mean(Precipitation_observed > 0, na.rm = TRUE),
+        mean(.data$Precipitation_observed > 0, na.rm = TRUE),
       FreqPrecipitation_date_predicted =
-        mean(Precipitation_predicted > 0, na.rm = TRUE)
+        mean(.data$Precipitation_predicted > 0, na.rm = TRUE)
     )
 
   return(list(
@@ -332,7 +332,7 @@ interpolation_cross_validation <- function(interpolator, stations = NULL, verbos
   )
 
   observed_values <- .interpolator2tibble(interpolator) |>
-    dplyr::filter(station %in% stations)
+    dplyr::filter(.data$station %in% stations)
 
   .verbosity_control(
     usethis::ui_todo("interpolating stations..."),

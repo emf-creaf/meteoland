@@ -14,7 +14,7 @@
 #' 
 #' @aliases interpolator_calibration interpolation_cross_validation
 #' @param interpolator A meteoland interpolator object, as created by
-#' \code{\link{create_meteoland_interpolator}}
+#' \code{\link{create_meteo_interpolator}}
 #' @param stations A vector with the station indexes (numeric) to be used to
 #' calculate \code{"MAE"}. All stations with data are included in the training
 #' set but predictive \code{"MAE"} are calculated for the stations subset

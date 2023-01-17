@@ -81,7 +81,7 @@ MeteorologyInterpolationData<-function(points, elevation = NULL, slope = NULL, a
                                        params = defaultInterpolationParams()) {
   
   lifecycle::deprecate_warn(
-    when = "1.1.0", what = "MeteorologyInterpolationData()", with = "create_meteo_interpolator()",
+    when = "2.0.0", what = "MeteorologyInterpolationData()", with = "create_meteo_interpolator()",
     details = "MeteorologyInterpolationData class is soft deprecated.
     Interpolator object should be created with create_meteo_interpolator() which returns an star data cube object"
   )

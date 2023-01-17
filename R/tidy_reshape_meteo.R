@@ -92,7 +92,7 @@ worldmet2meteoland <- function(meteo, complete = FALSE) {
 
   meteo |>
     # Sometimes, on worldmet, some points lack data (inclided spatial), so we remove those
-    dplyr::filter(!is.na(latitude)) |>
+    dplyr::filter(!is.na(.data$latitude)) |>
     # We convert to sf
     sf::st_as_sf(
       coords = c("latitude", "longitude"), crs = sf::st_crs(4326)
@@ -283,15 +283,15 @@ worldmet2meteoland <- function(meteo, complete = FALSE) {
 
   grouped_meteo <- meteo |>
     dplyr::as_tibble() |>
-    dplyr::select(-geometry) |>
+    dplyr::select(-"geometry") |>
     dplyr::mutate(
-      dates = lubridate::floor_date(dates, unit = "day")
+      dates = lubridate::floor_date(.data$dates, unit = "day")
     ) |>
-    dplyr::group_by(dates, stationID)
+    dplyr::group_by(.data$dates, .data$stationID)
 
   station_date_values <- grouped_meteo |>
     dplyr::count() |>
-    dplyr::pull(n)
+    dplyr::pull("n")
 
   # if only one value per station and date exists for all combinations,
   # no need of summarising
@@ -307,28 +307,28 @@ worldmet2meteoland <- function(meteo, complete = FALSE) {
     .create_missing_vars() |>
     # ensure solar radiation is never negative
     dplyr::mutate(
-      Radiation = dplyr::if_else(Radiation < 0, 0, Radiation)
+      Radiation = dplyr::if_else(.data$Radiation < 0, 0, .data$Radiation)
     ) |>
     # summarise
     dplyr::summarise(
-      stationID = .is_na_or_fun(stationID, dplyr::first),
-      elevation = .is_na_or_fun(elevation, dplyr::first),
-      MeanTemperature = .is_na_or_fun(Temperature, mean, na.rm = TRUE),
-      MinTemperature = .is_na_or_fun(Temperature, min, MinTemperature, na.rm = TRUE),
-      MaxTemperature = .is_na_or_fun(Temperature, max, MaxTemperature, na.rm = TRUE),
-      MeanRelativeHumidity = .is_na_or_fun(RelativeHumidity, mean, na.rm = TRUE),
-      MinRelativeHumidity = .is_na_or_fun(RelativeHumidity, min, na.rm = TRUE),
-      MaxRelativeHumidity = .is_na_or_fun(RelativeHumidity, max, na.rm = TRUE),
-      Precipitation = .is_na_or_fun(Precipitation, sum, na.rm = TRUE),
-      WindSpeed = .is_na_or_fun(WindSpeed, mean, na.rm = TRUE),
-      WindDirection = .is_na_or_fun(WindDirection, .summarise_wind_direction),
-      Radiation = .is_na_or_fun(Radiation, sum, na.rm = TRUE)
+      stationID = .is_na_or_fun(.data$stationID, dplyr::first),
+      elevation = .is_na_or_fun(.data$elevation, dplyr::first),
+      MeanTemperature = .is_na_or_fun(.data$Temperature, mean, na.rm = TRUE),
+      MinTemperature = .is_na_or_fun(.data$Temperature, min, .data$MinTemperature, na.rm = TRUE),
+      MaxTemperature = .is_na_or_fun(.data$Temperature, max, .data$MaxTemperature, na.rm = TRUE),
+      MeanRelativeHumidity = .is_na_or_fun(.data$RelativeHumidity, mean, na.rm = TRUE),
+      MinRelativeHumidity = .is_na_or_fun(.data$RelativeHumidity, min, na.rm = TRUE),
+      MaxRelativeHumidity = .is_na_or_fun(.data$RelativeHumidity, max, na.rm = TRUE),
+      Precipitation = .is_na_or_fun(.data$Precipitation, sum, na.rm = TRUE),
+      WindSpeed = .is_na_or_fun(.data$WindSpeed, mean, na.rm = TRUE),
+      WindDirection = .is_na_or_fun(.data$WindDirection, .summarise_wind_direction),
+      Radiation = .is_na_or_fun(.data$Radiation, sum, na.rm = TRUE)
     ) |>
     dplyr::ungroup() |>
     dplyr::left_join(
       meteo |>
         dplyr::ungroup() |>
-        dplyr::select(stationID, geometry) |>
+        dplyr::select("stationID", "geometry") |>
         dplyr::distinct(),
       by = c('stationID')
     ) |>
@@ -351,8 +351,8 @@ worldmet2meteoland <- function(meteo, complete = FALSE) {
 .fix_station_geometries <- function(meteo) {
   distinct_rows <- meteo |>
     dplyr::ungroup() |>
-    dplyr::arrange(dates) |>
-    dplyr::select(stationID, geometry) |>
+    dplyr::arrange("dates") |>
+    dplyr::select("stationID", "geometry") |>
     dplyr::distinct()
 
   # If more geometries than station IDs, issue a warning and filter by the last
@@ -364,12 +364,12 @@ worldmet2meteoland <- function(meteo, complete = FALSE) {
     ))
 
     distinct_rows <- distinct_rows |>
-      dplyr::group_by(stationID) |>
-      dplyr::filter(as.character(geometry) == dplyr::last(as.character(geometry)))
+      dplyr::group_by(.data$stationID) |>
+      dplyr::filter(as.character(.data$geometry) == dplyr::last(as.character(.data$geometry)))
 
     meteo <- meteo |>
       dplyr::as_tibble() |>
-      dplyr::select(-geometry) |>
+      dplyr::select(-"geometry") |>
       dplyr::left_join(distinct_rows, by = 'stationID') |>
       sf::st_as_sf()
   }
@@ -621,17 +621,19 @@ complete_meteo <- function(meteo, verbose = getOption("meteoland_verbosity", TRU
     # dplyr::as_tibble() |>
     dplyr::mutate(
       MeanRelativeHumidity = .complete_relative_humidity(
-        MeanRelativeHumidity, MinTemperature, MeanTemperature, verbose
+        .data$MeanRelativeHumidity, .data$MinTemperature,
+        .data$MeanTemperature, verbose
       ),
       MinRelativeHumidity = .complete_min_relative_humidity(
-        MinRelativeHumidity, MinTemperature, MaxTemperature, verbose
+        .data$MinRelativeHumidity, .data$MinTemperature,
+        .data$MaxTemperature, verbose
       ),
-      MaxRelativeHumidity = .complete_max_relative_humidity(MaxRelativeHumidity, verbose),
+      MaxRelativeHumidity = .complete_max_relative_humidity(.data$MaxRelativeHumidity, verbose),
       Radiation = .complete_radiation(
-        Radiation, dates, MinTemperature, MaxTemperature,
-        MinRelativeHumidity, MaxRelativeHumidity,
-        Precipitation,
-        elevation, slope, aspect,
+        .data$Radiation, .data$dates, .data$MinTemperature, .data$MaxTemperature,
+        .data$MinRelativeHumidity, .data$MaxRelativeHumidity,
+        .data$Precipitation,
+        .data$elevation, .data$slope, .data$aspect,
         sf::st_geometry(meteo), verbose
       )
     )

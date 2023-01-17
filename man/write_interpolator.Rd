@@ -8,7 +8,7 @@ write_interpolator(interpolator, filename, .overwrite = FALSE)
 }
 \arguments{
 \item{interpolator}{meteoland interpolator object, as created by
-\code{\link{create_meteoland_interpolator}}}
+\code{\link{create_meteo_interpolator}}}
 
 \item{filename}{file name for the interpolator nc file}
 
@@ -24,7 +24,7 @@ Write the interpolator object to a file
 }
 \details{
 This function writes the interpolator object created with
-\code{\link{create_meteoland_interpolator}} in a NetCDF-CF standard
+\code{\link{create_meteo_interpolator}} in a NetCDF-CF standard
 compliant format, as specified in
 https://cfconventions.org/cf-conventions/cf-conventions.html
 }
@@ -39,7 +39,8 @@ tmp_dir <- tempdir()
 # write interpolator
 write_interpolator(
   meteoland_interpolator_example,
-  file.path(tmp_dir, "meteoland_interpolator_example.nc")
+  file.path(tmp_dir, "meteoland_interpolator_example.nc"),
+  .overwrite = TRUE
 )
 
 # check file exists

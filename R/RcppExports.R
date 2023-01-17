@@ -29,7 +29,7 @@
     .Call(`_meteoland_aspect`, data, nrows, ncols, cellWidth, cellHeight)
 }
 
-#' @describeIn interpolation_temperature Precipitation 
+#' @describeIn interpolation_temperature Precipitation
 #' @export
 interpolation_precipitation <- function(Xp, Yp, Zp, X, Y, Z, P, Psmooth, iniRp = 140000, alpha_event = 6.25, alpha_amount = 6.25, N_event = 20L, N_amount = 20L, iterations = 3L, popcrit = 0.5, fmax = 0.95, debug = FALSE) {
     .Call(`_meteoland_interpolatePrecipitationPoints`, Xp, Yp, Zp, X, Y, Z, P, Psmooth, iniRp, alpha_event, alpha_amount, N_event, N_amount, iterations, popcrit, fmax, debug)
@@ -48,11 +48,11 @@ interpolation_precipitation <- function(Xp, Yp, Zp, X, Y, Z, P, Psmooth, iniRp =
 }
 
 #' Solar radiation utility functions
-#' 
+#'
 #' Set of functions used in the calculation of incoming solar radiation and net
 #' radiation.
-#' 
-#' 
+#'
+#'
 #' @aliases radiation_dateStringToJulianDays radiation_daylength
 #' radiation_daylengthseconds radiation_directDiffuseInstant
 #' radiation_directDiffuseDay radiation_potentialRadiation radiation_julianDay
@@ -75,7 +75,7 @@ interpolation_precipitation <- function(Xp, Yp, Zp, X, Y, Z, P, Psmooth, iniRp =
 #' @param alpha Surface albedo (from 0 to 1).
 #' @param Tair Air temperature (in degrees Celsius).
 #' @param vpa Average daily vapor pressure (kPa).
-#' @param c Proportion of sky covered by clouds [0-1].
+#' @param c Proportion of sky covered by clouds (0-1).
 #' @param tmin,tmax Minimum and maximum daily temperature (ºC).
 #' @param elevation Elevation above sea level (in m).
 #' @param precipitation Precipitation (in mm).
@@ -112,20 +112,20 @@ interpolation_precipitation <- function(Xp, Yp, Zp, X, Y, Z, P, Psmooth, iniRp =
 #' @seealso \code{\link{interpolationpoints}}
 #' @references Danby, J. M. Eqn. 6.16.4 in Fundamentals of Celestial Mechanics,
 #' 2nd ed. Richmond, VA: Willmann-Bell, p. 207, 1988.
-#' 
+#'
 #' Garnier, B.J., Ohmura, A., 1968. A method of calculating the direct
 #' shortwave radiation income of slopes. J. Appl. Meteorol. 7: 796-800
-#' 
+#'
 #' McMahon, T. A., M. C. Peel, L. Lowe, R. Srikanthan, and T. R. McVicar. 2013.
 #' Estimating actual, potential, reference crop and pan evaporation using
 #' standard meteorological data: a pragmatic synthesis. Hydrology & Earth
 #' System Sciences 17:1331–1363. See also:
 #' http://www.fao.org/docrep/x0490e/x0490e06.htm.
-#' 
+#'
 #' Reda, I. and Andreas, A. 2003. Solar Position Algorithm for Solar Radiation
 #' Applications. 55 pp.; NREL Report No. TP-560-34302, Revised January 2008.
 #' http://www.nrel.gov/docs/fy08osti/34302.pdf
-#' 
+#'
 #' Spitters, C.J.T., Toussaint, H.A.J.M. and Goudriaan, J. (1986). Separating
 #' the diffuse and direct components of global radiation and its implications
 #' for modeling canopy photosynthesis. I. Components of incoming radiation.
@@ -259,7 +259,7 @@ radiation_netRadiation <- function(solarConstant, latrad, elevation, slorad, asp
     .Call(`_meteoland_relativeHumidityFromDewpointTemp`, T, TD)
 }
 
-#' @describeIn interpolation_temperature Dew temperature 
+#' @describeIn interpolation_temperature Dew temperature
 #' @export
 interpolation_dewtemperature <- function(Xp, Yp, Zp, X, Y, Z, T, iniRp = 140000, alpha = 3.0, N = 30L, iterations = 3L, debug = FALSE) {
     .Call(`_meteoland_interpolateTdewPoints`, Xp, Yp, Zp, X, Y, Z, T, iniRp, alpha, N, iterations, debug)
@@ -403,10 +403,10 @@ interpolation_temperature <- function(Xp, Yp, Zp, X, Y, Z, T, iniRp = 140000, al
 }
 
 #' Physical utility functions
-#' 
+#'
 #' Set of functions used in the calculation of physical variables.
-#' 
-#' 
+#'
+#'
 #' @aliases utils_airDensity utils_atmosphericPressure utils_averageDailyVP
 #' utils_averageDaylightTemperature utils_latentHeatVaporisation
 #' utils_latentHeatVaporisationMol utils_psychrometricConstant
@@ -432,7 +432,7 @@ interpolation_temperature <- function(Xp, Yp, Zp, X, Y, Z, T, iniRp = 140000, al
 #' @references McMurtrie, R. E., D. A. Rook, and F. M. Kelliher. 1990.
 #' Modelling the yield of Pinus radiata on a site limited by water and
 #' nitrogen. Forest Ecology and Management 30:381–413.
-#' 
+#'
 #' McMahon, T. A., M. C. Peel, L. Lowe, R. Srikanthan, and T. R. McVicar. 2013.
 #' Estimating actual, potential, reference crop and pan evaporation using
 #' standard meteorological data: a pragmatic synthesis. Hydrology & Earth
@@ -492,15 +492,15 @@ utils_saturationVaporPressureCurveSlope <- function(temperature) {
 }
 
 #' Potential evapotranspiration
-#' 
+#'
 #' Functions to calculate potential evapotranspiration using Penman or
 #' Penman-Monteith.
-#' 
+#'
 #' The code was adapted from package `Evapotranspiration', which follows
 #' McMahon et al. (2013). If wind speed is not available, an alternative
 #' formulation for potential evapotranspiration is used as an approximation
 #' (Valiantzas 2006)
-#' 
+#'
 #' @aliases penman penmanmonteith
 #' @param latrad Latitude in radians.
 #' @param elevation Elevation (in m).
@@ -525,10 +525,10 @@ utils_saturationVaporPressureCurveSlope <- function(temperature) {
 #' @references Penman, H. L. 1948. Natural evaporation from open water, bare
 #' soil and grass. Proceedings of the Royal Society of London. Series A.
 #' Mathematical and Physical Sciences, 193, 120-145.
-#' 
+#'
 #' Penman, H. L. 1956. Evaporation: An introductory survey. Netherlands Journal
 #' of Agricultural Science, 4, 9-29.
-#' 
+#'
 #' McMahon, T.A., Peel, M.C., Lowe, L., Srikanthan, R., McVicar, T.R. 2013.
 #' Estimating actual, potential, reference crop and pan evaporation using
 #' standard meteorological data: a pragmatic synthesis. Hydrology \& Earth
@@ -548,7 +548,7 @@ penmanmonteith <- function(rc, elevation, Tmin, Tmax, RHmin, RHmax, Rn, u = NA_r
     .Call(`_meteoland_getWindFieldIndexAndFactor`, windSpeed, windDirection, wfSpeed, wfDirection)
 }
 
-#' @describeIn interpolation_temperature Wind 
+#' @describeIn interpolation_temperature Wind
 #' @export
 interpolation_wind <- function(Xp, Yp, WS, WD, X, Y, iniRp = 140000, alpha = 2.0, N = 1L, iterations = 3L, directionsAvailable = TRUE) {
     .Call(`_meteoland_interpolateWindStationPoints`, Xp, Yp, WS, WD, X, Y, iniRp, alpha, N, iterations, directionsAvailable)

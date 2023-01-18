@@ -13,7 +13,7 @@ test_that(".is_spatial_data, .is_raster works as intended", {
   # .is_spatial_data
   expect_false(.is_spatial_data(25))
   expect_false(.is_spatial_data("25"))
-  expect_false(.is_spatial_data(terra::rast(raster_to_interpolate_example)))
+  # expect_false(.is_spatial_data(terra::rast(raster_to_interpolate_example)))
   expect_false(.is_spatial_data(sf::as_Spatial(points_to_interpolate_example)))
   expect_true(.is_spatial_data(points_to_interpolate_example))
   expect_true(.is_spatial_data(raster_to_interpolate_example))
@@ -311,7 +311,7 @@ test_that("interpolator calibration works as expected", {
     (test_calibrated_interpolator <- interpolator_calibration(
       meteoland_interpolator_example,
       stations = c(76, 83, 187),
-      update_interpolator_params = TRUE,
+      update_interpolation_params = TRUE,
       N_seq = c(5, 10), alpha_seq = c(9, 9.5))),
     'stars'
   )

@@ -3,9 +3,11 @@
 \docType{class}
 \name{SpatialPixelsMeteorology-class}
 \alias{SpatialPixelsMeteorology-class}
+\alias{[,SpatialPixelsMeteorology-method}
 \alias{[,SpatialPixelsMeteorology,ANY,ANY-method}
 \alias{[,SpatialPixelsMeteorology,ANY,ANY,ANY-method}
 \alias{show,SpatialPixelsMeteorology-method}
+\alias{print,SpatialPixelsMeteorology-method}
 \title{Class \code{"SpatialPixelsMeteorology"}}
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}

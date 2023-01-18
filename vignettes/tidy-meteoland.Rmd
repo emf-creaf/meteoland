@@ -252,7 +252,7 @@ interpolator <- interpolator_calibration(
   variable = "MinTemperature",
   N_seq = c(5, 20),
   alpha_seq = c(1, 10),
-  update_interpolator_params = TRUE
+  update_interpolation_params = TRUE
 )
 
 # parameters after calibration
@@ -270,19 +270,19 @@ interpolator <- with_meteo(meteoland_meteo_example) |>
     variable = "MinTemperature",
     N_seq = c(5, 20),
     alpha_seq = c(1, 10),
-    update_interpolator_params = TRUE
+    update_interpolation_params = TRUE
   ) |>
   interpolator_calibration(
     variable = "MaxTemperature",
     N_seq = c(5, 20),
     alpha_seq = c(1, 10),
-    update_interpolator_params = TRUE
+    update_interpolation_params = TRUE
   ) |>
   interpolator_calibration(
     variable = "DewTemperature",
     N_seq = c(5, 20),
     alpha_seq = c(1, 10),
-    update_interpolator_params = TRUE
+    update_interpolation_params = TRUE
   ) |>
   write_interpolator(
     filename = file.path(temporal_folder, "interpolator.nc"),

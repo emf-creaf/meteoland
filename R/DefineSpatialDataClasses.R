@@ -8,9 +8,13 @@
 #' 
 #' @name SpatialPointsMeteorology-class
 #' @aliases SpatialPointsMeteorology-class
+#' [,SpatialPointsMeteorology-method
 #' [,SpatialPointsMeteorology,ANY,ANY-method
 #' [,SpatialPointsMeteorology,ANY,ANY,ANY-method
 #' show,SpatialPointsMeteorology-method
+#' head,SpatialPointsMeteorology-method
+#' print,SpatialPointsMeteorology-method
+#' tail,SpatialPointsMeteorology-method
 #' @docType class
 #' @section Objects from the Class: Objects can be created by calls of the form
 #' \code{new("SpatialPointsMeteorology", ...)}, or by calls to the function
@@ -37,9 +41,14 @@ setClass("SpatialPointsMeteorology", slots = list(dates = "Date", data="vector")
 #' 
 #' @name SpatialPointsTopography-class
 #' @aliases SpatialPointsTopography-class
+#' [,SpatialPointsTopography-method
 #' [,SpatialPointsTopography,ANY,ANY-method
 #' [,SpatialPointsTopography,ANY,ANY,ANY-method
 #' show,SpatialPointsTopography-method
+#' head,SpatialPointsTopography-method
+#' print,SpatialPointsTopography-method
+#' spTransform,SpatialPointsTopography,CRS-method
+#' tail,SpatialPointsTopography-method
 #' @docType class
 #' @section Objects from the Class: Objects can be created by calls of the form
 #' \code{new("SpatialPointsTopography", ...)}, or by calls to the function
@@ -66,9 +75,11 @@ setClass("SpatialPointsTopography", contains="SpatialPointsDataFrame")
 #' 
 #' @name SpatialGridMeteorology-class
 #' @aliases SpatialGridMeteorology-class
+#' [,SpatialGridMeteorology-method
 #' [,SpatialGridMeteorology,ANY,ANY-method
 #' [,SpatialGridMeteorology,ANY,ANY,ANY-method
 #' show,SpatialGridMeteorology-method
+#' print,SpatialGridMeteorology-method
 #' @docType class
 #' @section Objects from the Class: Objects can be created by calls of the form
 #' \code{new("SpatialGridMeteorology", ...)}, or by calls to the function
@@ -94,8 +105,12 @@ setClass("SpatialGridMeteorology", slots = list(dates = "Date", data="vector"), 
 #' 
 #' 
 #' @name SpatialGridTopography-class
-#' @aliases SpatialGridTopography-class [,SpatialGridTopography,ANY,ANY-method
-#' [,SpatialGridTopography,ANY,ANY,ANY-method show,SpatialGridTopography-method
+#' @aliases SpatialGridTopography-class
+#' [,SpatialGridTopography-method
+#' [,SpatialGridTopography,ANY,ANY-method
+#' [,SpatialGridTopography,ANY,ANY,ANY-method
+#' show,SpatialGridTopography-method
+#' print,SpatialGridTopography-method
 #' @docType class
 #' @section Objects from the Class: Objects can be created by calls of the form
 #' \code{new("SpatialGridTopography", ...)}, or by calls to the function
@@ -123,9 +138,11 @@ setClass("SpatialGridTopography", contains="SpatialGridDataFrame")
 #' 
 #' @name SpatialPixelsMeteorology-class
 #' @aliases SpatialPixelsMeteorology-class
+#' [,SpatialPixelsMeteorology-method
 #' [,SpatialPixelsMeteorology,ANY,ANY-method
 #' [,SpatialPixelsMeteorology,ANY,ANY,ANY-method
 #' show,SpatialPixelsMeteorology-method
+#' print,SpatialPixelsMeteorology-method
 #' @docType class
 #' @section Objects from the Class: Objects can be created by calls of the form
 #' \code{new("SpatialPixelsMeteorology", ...)}, or by calls to the function
@@ -152,6 +169,7 @@ setClass("SpatialPixelsMeteorology", slots = list(dates = "Date", data="vector")
 #' 
 #' @name SpatialPixelsTopography-class
 #' @aliases SpatialPixelsTopography-class
+#' [,SpatialPixelsTopography-method
 #' [,SpatialPixelsTopography,ANY,ANY-method
 #' [,SpatialPixelsTopography,ANY,ANY,ANY-method
 #' show,SpatialPixelsTopography-method

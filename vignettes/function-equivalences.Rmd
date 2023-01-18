@@ -1,5 +1,5 @@
 ---
-title: "Function equivalences between older (< 2.0.0) and newer (=> 2.0.0) meteoland versions"
+title: "Function equivalences between older (< 2.0.0) and newer (>= 2.0.0) meteoland versions"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Function equivalences between older (< 2.0.0) and newer (>= 2.0.0) meteoland versions}

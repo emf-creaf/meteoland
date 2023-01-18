@@ -1,4 +1,5 @@
 #' @describeIn interpolation.cv `r lifecycle::badge("deprecated")`
+#' @method plot interpolation.cv
 #' @exportS3Method plot interpolation.cv
 plot.interpolation.cv<-function(x, type="stations",...) {
 

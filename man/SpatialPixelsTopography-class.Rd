@@ -3,6 +3,7 @@
 \docType{class}
 \name{SpatialPixelsTopography-class}
 \alias{SpatialPixelsTopography-class}
+\alias{[,SpatialPixelsTopography-method}
 \alias{[,SpatialPixelsTopography,ANY,ANY-method}
 \alias{[,SpatialPixelsTopography,ANY,ANY,ANY-method}
 \alias{show,SpatialPixelsTopography-method}

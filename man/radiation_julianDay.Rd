@@ -139,7 +139,7 @@ averaged over 30 days (ºC).}
 
 \item{Tair}{Air temperature (in degrees Celsius).}
 
-\item{c}{Proportion of sky covered by clouds \link{0-1}.}
+\item{c}{Proportion of sky covered by clouds (0-1).}
 
 \item{tmin, tmax}{Minimum and maximum daily temperature (ºC).}
 

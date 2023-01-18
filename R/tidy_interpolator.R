@@ -716,7 +716,7 @@ read_interpolator <- function(filename) {
 #' updated_interpolator <- interpolator_calibration(
 #'   meteoland_interpolator_example,
 #'   stations = 1:5,
-#'   update_interpolator_params = TRUE,
+#'   update_interpolation_params = TRUE,
 #'   variable = "MaxTemperature",
 #'   N_seq = seq(10, 20, by = 5),
 #'   alpha_seq = seq(8, 9, by = 0.25)
@@ -730,7 +730,7 @@ read_interpolator <- function(filename) {
 interpolator_calibration <- function(
     interpolator,
     stations = NULL,
-    update_interpolator_params = FALSE,
+    update_interpolation_params = FALSE,
     variable = c(
       "MinTemperature", "MaxTemperature", "DewTemperature",
       "Precipitation", "PrecipitationAmount", "PrecipitationEvent"
@@ -1002,7 +1002,7 @@ interpolator_calibration <- function(
     predicted = optimal_predicted
   )
 
-  if (isTRUE(update_interpolator_params)) {
+  if (isTRUE(update_interpolation_params)) {
     params_names <- c("alpha_", "N_") |>
       paste0(variable)
     interpolator_params <- get_interpolation_params(interpolator)

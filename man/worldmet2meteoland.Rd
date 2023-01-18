@@ -27,16 +27,18 @@ subdaily data as well as complete missing variables if possible (setting
 }
 \examples{
 
-# meteospain data
-library(worldmet)
-worldmet_stations <- worldmet::getMeta(lat = 42, lon = 0, n = 2, plot = FALSE)
-worldmet_codes <- paste0(worldmet_stations$usaf, "-", worldmet_stations$wban)
-worldmet_subdaily_2022 <-
-  worldmet::importNOAA(worldmet_codes, year = 2022, hourly = TRUE)
+if (interactive()) {
+  # worldmet data
+  library(worldmet)
+  worldmet_stations <- worldmet::getMeta(lat = 42, lon = 0, n = 2, plot = FALSE)
+  worldmet_subdaily_2022 <-
+    worldmet::importNOAA(worldmet_stations$code, year = 2022, hourly = TRUE)
+ 
+  # just convert
+  worldmet2meteoland(worldmet_subdaily_2022)
+  # convert and complete
+  worldmet2meteoland(worldmet_subdaily_2022, complete = TRUE)
 
-# just convert
-worldmet2meteoland(worldmet_subdaily_2022)
-# convert and complete
-worldmet2meteoland(worldmet_subdaily_2022, complete = TRUE)
+}
 
 }

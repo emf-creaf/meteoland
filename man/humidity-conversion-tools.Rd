@@ -2,9 +2,18 @@
 % Please edit documentation in R/utils.R
 \name{humidity_relative2dewtemperature}
 \alias{humidity_relative2dewtemperature}
+\alias{humidity_dewtemperature2relative}
+\alias{humidity_specific2relative}
+\alias{humidity_relative2specific}
 \title{Humidity conversion tools}
 \usage{
 humidity_relative2dewtemperature(Tc, HR)
+
+humidity_dewtemperature2relative(Tc, Td, allowSaturated = FALSE)
+
+humidity_specific2relative(Tc, HS, allowSaturated = FALSE)
+
+humidity_relative2specific(Tc, HR)
 }
 \arguments{
 \item{Tc}{A numeric vector of temperature in degrees Celsius.}
@@ -13,9 +22,9 @@ humidity_relative2dewtemperature(Tc, HR)
 
 \item{Td}{A numeric vector of dew temperature in degrees Celsius.}
 
-\item{HS}{A numeric vector of specific humidity (unitless).}
-
 \item{allowSaturated}{Logical flag to allow values over 100\%}
+
+\item{HS}{A numeric vector of specific humidity (unitless).}
 }
 \value{
 A numeric vector with specific or relative humidity.

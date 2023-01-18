@@ -13,17 +13,20 @@
 #'
 #' @examples
 #'
-#' # meteospain data
-#' library(meteospain)
-#' mg_april_2022_data <- get_meteo_from(
-#'   "meteogalicia",
-#'   meteogalicia_options("daily", as.Date("2022-04-01"), as.Date("2022-04-30"))
-#' )
-#'
-#' # just convert
-#' meteospain2meteoland(mg_april_2022_data)
-#' # convert and complete
-#' meteospain2meteoland(mg_april_2022_data, complete = TRUE)
+#' if (interactive()) {
+#'   # meteospain data
+#'   library(meteospain)
+#'   mg_april_2022_data <- get_meteo_from(
+#'     "meteogalicia",
+#'     meteogalicia_options("daily", as.Date("2022-04-01"), as.Date("2022-04-30"))
+#'   )
+#'  
+#'   # just convert
+#'   meteospain2meteoland(mg_april_2022_data)
+#'   # convert and complete
+#'   meteospain2meteoland(mg_april_2022_data, complete = TRUE)
+#' 
+#' }
 #'
 #' @export meteospain2meteoland
 meteospain2meteoland <- function(meteo, complete = FALSE) {
@@ -65,17 +68,19 @@ meteospain2meteoland <- function(meteo, complete = FALSE) {
 #'
 #' @examples
 #'
-#' # meteospain data
-#' library(worldmet)
-#' worldmet_stations <- worldmet::getMeta(lat = 42, lon = 0, n = 2, plot = FALSE)
-#' worldmet_codes <- paste0(worldmet_stations$usaf, "-", worldmet_stations$wban)
-#' worldmet_subdaily_2022 <-
-#'   worldmet::importNOAA(worldmet_codes, year = 2022, hourly = TRUE)
-#'
-#' # just convert
-#' worldmet2meteoland(worldmet_subdaily_2022)
-#' # convert and complete
-#' worldmet2meteoland(worldmet_subdaily_2022, complete = TRUE)
+#' if (interactive()) {
+#'   # worldmet data
+#'   library(worldmet)
+#'   worldmet_stations <- worldmet::getMeta(lat = 42, lon = 0, n = 2, plot = FALSE)
+#'   worldmet_subdaily_2022 <-
+#'     worldmet::importNOAA(worldmet_stations$code, year = 2022, hourly = TRUE)
+#'  
+#'   # just convert
+#'   worldmet2meteoland(worldmet_subdaily_2022)
+#'   # convert and complete
+#'   worldmet2meteoland(worldmet_subdaily_2022, complete = TRUE)
+#' 
+#' }
 #'
 #' @export
 worldmet2meteoland <- function(meteo, complete = FALSE) {

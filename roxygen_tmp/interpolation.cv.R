@@ -6,8 +6,8 @@
 #' Function \code{interpolation.cv} calculates average mean absolute errors
 #' (MAE) for the prediction period of an object of class
 #' '\code{MeteorologyInterpolationData}'.  Function
-#' \code{summary.interpolation.cv} returns a data.frame with cross-validation
-#' summaries and \code{plot.interpolation.cv} plots cross-validation results.
+#' \code{summary} returns a data.frame with cross-validation
+#' summaries and \code{plot} plots cross-validation results.
 #' In both calibration and validation procedures, predictions for each weather
 #' station are made using a leave-one-out procedure (i.e. after excluding the
 #' station from the predictive set).

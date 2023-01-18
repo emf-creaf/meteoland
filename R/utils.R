@@ -14,8 +14,9 @@
 #'
 #' Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF
 #' @seealso \code{\link{meteocomplete}}
+#' @rdname humidity-conversion-tools
 #' @export
-humidity_relative2dewtemperature<-function(Tc, HR) {
+humidity_relative2dewtemperature <- function(Tc, HR) {
 
   # assertions
   assertthat::assert_that(
@@ -36,7 +37,7 @@ humidity_relative2dewtemperature<-function(Tc, HR) {
   }
   return(Td)
 }
-#' @describeIn humidity_relative2dewtemperature
+#' @rdname humidity-conversion-tools
 #' @export
 humidity_dewtemperature2relative<-function(Tc, Td, allowSaturated = FALSE) {
 
@@ -58,7 +59,7 @@ humidity_dewtemperature2relative<-function(Tc, Td, allowSaturated = FALSE) {
 }
 
 #Functions to switch from relative humidity to specific humidity
-#' @describeIn humidity_relative2dewtemperature
+#' @rdname humidity-conversion-tools
 #' @export
 humidity_specific2relative <- function(Tc, HS, allowSaturated = FALSE) {
 
@@ -93,7 +94,7 @@ humidity_specific2relative <- function(Tc, HS, allowSaturated = FALSE) {
   if(!allowSaturated) HR[HR>100]=100 # On ne passe pas audessus de 100
   return(HR)
 }
-#' @describeIn humidity_relative2dewtemperature
+#' @rdname humidity-conversion-tools
 #' @export
 humidity_relative2specific<-function(Tc, HR){
 

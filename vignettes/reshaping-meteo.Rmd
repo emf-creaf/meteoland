@@ -104,7 +104,7 @@ And *voilà*, we have our meteo data in the correct format
 For data coming from `meteospain` package we have the `meteospain2meteoland`
 function that transforming the data for us:
 
-```{r meteospain}
+```{r meteospain, eval = FALSE}
 library(meteospain)
 get_meteo_from(
   "meteogalicia",
@@ -118,7 +118,7 @@ get_meteo_from(
 For data coming from `worldmet` package we have the `worldmet2meteoland`
 function that do the reshaping for us:
 
-```{r worldmet}
+```{r worldmet, eval = FALSE}
 library(worldmet)
 worldmet::importNOAA("081120-99999", year = 2022) |>
   worldmet2meteoland()

@@ -3,9 +3,11 @@
 \docType{class}
 \name{SpatialGridMeteorology-class}
 \alias{SpatialGridMeteorology-class}
+\alias{[,SpatialGridMeteorology-method}
 \alias{[,SpatialGridMeteorology,ANY,ANY-method}
 \alias{[,SpatialGridMeteorology,ANY,ANY,ANY-method}
 \alias{show,SpatialGridMeteorology-method}
+\alias{print,SpatialGridMeteorology-method}
 \title{Class \code{"SpatialGridMeteorology"}}
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}

@@ -15,7 +15,7 @@ interpolation_cross_validation(
 interpolator_calibration(
   interpolator,
   stations = NULL,
-  update_interpolator_params = FALSE,
+  update_interpolation_params = FALSE,
   variable = c("MinTemperature", "MaxTemperature", "DewTemperature", "Precipitation",
     "PrecipitationAmount", "PrecipitationEvent"),
   N_seq = seq(5, 30, by = 5),
@@ -39,6 +39,9 @@ Default value checks \code{"meteoland_verbosity"} option and if not set, default
 to TRUE. It can be turned off for the function with FALSE, or session wide with
 \code{options(meteoland_verbosity = FALSE)}}
 
+\item{update_interpolation_params}{Logical indicating if the interpolator
+object must be updated with the calculated parameters. Default to FALSE}
+
 \item{variable}{A string indicating the meteorological variable for which
 interpolation parameters \code{"N"} and \code{"alpha"} will be calibrated.
 Accepted values are \code{MinTemperature}, \code{MaxTemperature},
@@ -50,9 +53,6 @@ values for precipitation events an regression of precipitation amounts),
 \item{N_seq}{Numeric vector with \code{"N"} values to be tested}
 
 \item{alpha_seq}{Numeric vector with \code{"alpha"}}
-
-\item{update_interpolation_params}{Logical indicating if the interpolator
-object must be updated with the calculated parameters. Default to FALSE}
 }
 \value{
 \code{interpolation_cross_validation} returns a list with the
@@ -134,7 +134,7 @@ calibration <- interpolator_calibration(
 updated_interpolator <- interpolator_calibration(
   meteoland_interpolator_example,
   stations = 1:5,
-  update_interpolator_params = TRUE,
+  update_interpolation_params = TRUE,
   variable = "MaxTemperature",
   N_seq = seq(10, 20, by = 5),
   alpha_seq = seq(8, 9, by = 0.25)

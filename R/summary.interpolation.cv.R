@@ -1,4 +1,5 @@
 #' @describeIn interpolation.cv `r lifecycle::badge("deprecated")`
+#' @method summary interpolation.cv
 #' @exportS3Method summary interpolation.cv
 summary.interpolation.cv<-function(object,...) {
 

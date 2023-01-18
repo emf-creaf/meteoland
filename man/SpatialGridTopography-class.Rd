@@ -3,9 +3,11 @@
 \docType{class}
 \name{SpatialGridTopography-class}
 \alias{SpatialGridTopography-class}
+\alias{[,SpatialGridTopography-method}
 \alias{[,SpatialGridTopography,ANY,ANY-method}
 \alias{[,SpatialGridTopography,ANY,ANY,ANY-method}
 \alias{show,SpatialGridTopography-method}
+\alias{print,SpatialGridTopography-method}
 \title{Class \code{"SpatialGridTopography"}}
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}

@@ -43,7 +43,8 @@ Suggests:
     spacetime,
     rmarkdown,
     testthat (>= 3.0.0),
-    worldmet
+    worldmet,
+    rgdal
 LinkingTo: Rcpp
 Encoding: UTF-8
 NeedsCompilation: yes

@@ -486,14 +486,17 @@ summarise_interpolator <- function(
 
   # dont forget also to put again the names of the columns and rows in the
   # interpolator data also
-  res <- temp_res |>
-    purrr::modify(
+  attributes_with_rowcol_names <- temp_res |>
+    purrr::map(
       .f = .apply_colrows,
       column_names = colnames(interpolator[["elevation"]]),
       row_names = as.character(stars::st_get_dimension_values(temp_res, "date"))
     )
 
+  for (attribute in names(attributes_with_rowcol_names)) {
+    temp_res[[attribute]] <- attributes_with_rowcol_names[[attribute]]
+  }
 
-  return(res)
+  return(temp_res)
 
 }

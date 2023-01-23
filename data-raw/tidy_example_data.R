@@ -6,13 +6,16 @@ library(dplyr)
 library(lfcdata)
 
 # raw meteospain april 2022 data
-meteocat_april_2022 <- meteospain::get_meteo_from(
-  "meteocat",
-  meteospain::meteocat_options(
-    "daily", as.Date("2022-04-01"),
-    api_key = keyring::key_get('meteocat', keyring = "malditobarbudo")
-  )
-)
+# meteocat_april_2022 <- meteospain::get_meteo_from(
+#   "meteocat",
+#   meteospain::meteocat_options(
+#     "daily", as.Date("2022-04-01"),
+#     api_key = keyring::key_get('meteocat', keyring = "malditobarbudo")
+#   )
+# )
+#
+# sf::st_write(meteocat_april_2022, "data-raw/meteocat_april_2022.gpkg")
+meteocat_april_2022 <- sf::read_sf("data-raw/meteocat_april_2022.gpkg")
 
 # transform to meteoland meteo
 meteoland_meteo_example <- meteoland::meteospain2meteoland(
@@ -49,9 +52,10 @@ st_crs(temp_topo) <- st_crs(3043)
 raster_to_interpolate_example <- temp_topo |>
   st_warp(cellsize = 1000, crs = st_crs(temp_topo)) |>
   st_warp(crs = st_crs(4326)) |>
-  dplyr::rename(elevation = "Elevation", aspect = "Aspect", slope = "Slope")
-raster_to_interpolate_example[["aspect"]] <-
-  units::set_units(raster_to_interpolate_example[["aspect"]], "degrees")
+  dplyr::rename(elevation = "Elevation", aspect = "Aspect", slope = "Slope") |>
+  units::drop_units()
+# raster_to_interpolate_example[["aspect"]] <-
+#   units::set_units(raster_to_interpolate_example[["aspect"]], "degrees")
 raster_to_interpolate_example <-
   raster_to_interpolate_example[ , 155:165, 110:120]
 

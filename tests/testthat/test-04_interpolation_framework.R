@@ -239,7 +239,7 @@ test_that("interpolator calibration works as expected", {
     "missing the correct dimensions"
   )
   interpolator_no_meteo_names <- meteoland_interpolator_example
-  names(interpolator_no_meteo_names) <- c('tururu', names(interpolator_no_meteo_names)[-1])
+  names(interpolator_no_meteo_names) <- c('tururu', names(interpolator_no_meteo_names)[-2])
   expect_error(
     interpolator_calibration(interpolator_no_meteo_names),
     "Names found in interpolator don't comply with the required names"
@@ -267,7 +267,7 @@ test_that("interpolator calibration works as expected", {
   expect_false(is.null(dimnames(test_calibration$observed)[[2]]))
   expect_false(is.null(dimnames(test_calibration$predicted)[[1]]))
   expect_false(is.null(dimnames(test_calibration$predicted)[[2]]))
-  expect_true("2022-04-25" %in% dimnames(test_calibration$predicted)[[2]])
+  expect_true("2022-04-25 02:00:00" %in% dimnames(test_calibration$predicted)[[2]])
 
   # selecting stations
   expect_type(

@@ -226,3 +226,7 @@ null2na <- function(object) {
   }
   return(invisible())
 }
+
+.get_geometry_name <- function(sf_object) {
+  return(attr(sf_object, "sf_column"))
+}

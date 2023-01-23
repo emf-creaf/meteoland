@@ -409,9 +409,9 @@ summarise_interpolator <- function(
   fun = "mean",
   frequency = NULL,
   vars_to_summary = c(
-    "MeanTemperature", "MinTemperature","MaxTemperature", "Precipitation",
-    "MeanRelativeHumidity", "MinRelativeHumidity", "MaxRelativeHumidity",
-    "RelativeHumidity", "Radiation", "WindSpeed", "WindDirection", "PET",
+    "Temperature", "MinTemperature","MaxTemperature", "Precipitation",
+    "RelativeHumidity", "MinRelativeHumidity", "MaxRelativeHumidity",
+    "Radiation", "WindSpeed", "WindDirection", "PET",
     "SmoothedPrecipitation", "SmoothedTemperatureRange",
     "elevation", "slope", "aspect"
   ),
@@ -436,6 +436,7 @@ summarise_interpolator <- function(
   assertthat::assert_that(
     any(vars_to_summary %in% c(
       "MeanTemperature", "MinTemperature","MaxTemperature", "Precipitation",
+      "Temperature",
       "MeanRelativeHumidity", "MinRelativeHumidity", "MaxRelativeHumidity",
       "RelativeHumidity",
       "Radiation", "WindSpeed", "WindDirection", "PET",

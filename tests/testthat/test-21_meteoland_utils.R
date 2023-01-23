@@ -170,7 +170,7 @@ test_that("precipitation_rainfall_erosivity works as expected", {
     as.data.frame() |>
     dplyr::filter(stationID == "VC") |>
     # magrittr::set_rownames(as.Date(unique(meteoland_meteo_example$dates))) |>
-    dplyr::select(-geometry, -stationID, -elevation, -aspect, -slope)
+    dplyr::select(-!!attr(meteoland_meteo_example, "sf_column"), -stationID, -elevation, -aspect, -slope)
   long_test <- 0.43
   scale_test <- "month"
   average_test <- TRUE
@@ -221,7 +221,7 @@ test_that("precipitation_rainfall_erosivity works as expected", {
       dates + lubridate::dmonths(1),
       dates
     )) |>
-    dplyr::select(-geometry, -stationID, -elevation, -aspect, -slope)
+    dplyr::select(-!!attr(meteoland_meteo_example, "sf_column"), -stationID, -elevation, -aspect, -slope)
 
   expect_type(
     (rainfallErosivity_monthly_months_test <- precipitation_rainfall_erosivity(
@@ -251,7 +251,7 @@ test_that("precipitation_rainfall_erosivity works as expected", {
       dates + lubridate::dyears(1),
       dates
     )) |>
-    dplyr::select(-geometry, -stationID, -elevation, -aspect, -slope)
+    dplyr::select(-!!attr(meteoland_meteo_example, "sf_column"), -stationID, -elevation, -aspect, -slope)
 
   expect_type(
     (rainfallErosivity_monthly_years_test <- precipitation_rainfall_erosivity(

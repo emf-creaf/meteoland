@@ -33,7 +33,7 @@ if (interactive()) {
   worldmet_stations <- worldmet::getMeta(lat = 42, lon = 0, n = 2, plot = FALSE)
   worldmet_subdaily_2022 <-
     worldmet::importNOAA(worldmet_stations$code, year = 2022, hourly = TRUE)
- 
+
   # just convert
   worldmet2meteoland(worldmet_subdaily_2022)
   # convert and complete

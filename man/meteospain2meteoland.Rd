@@ -32,7 +32,7 @@ if (interactive()) {
     "meteogalicia",
     meteogalicia_options("daily", as.Date("2022-04-01"), as.Date("2022-04-30"))
   )
- 
+
   # just convert
   meteospain2meteoland(mg_april_2022_data)
   # convert and complete

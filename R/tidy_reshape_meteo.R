@@ -20,12 +20,12 @@
 #'     "meteogalicia",
 #'     meteogalicia_options("daily", as.Date("2022-04-01"), as.Date("2022-04-30"))
 #'   )
-#'  
+#'
 #'   # just convert
 #'   meteospain2meteoland(mg_april_2022_data)
 #'   # convert and complete
 #'   meteospain2meteoland(mg_april_2022_data, complete = TRUE)
-#' 
+#'
 #' }
 #'
 #' @export meteospain2meteoland
@@ -74,12 +74,12 @@ meteospain2meteoland <- function(meteo, complete = FALSE) {
 #'   worldmet_stations <- worldmet::getMeta(lat = 42, lon = 0, n = 2, plot = FALSE)
 #'   worldmet_subdaily_2022 <-
 #'     worldmet::importNOAA(worldmet_stations$code, year = 2022, hourly = TRUE)
-#'  
+#'
 #'   # just convert
 #'   worldmet2meteoland(worldmet_subdaily_2022)
 #'   # convert and complete
 #'   worldmet2meteoland(worldmet_subdaily_2022, complete = TRUE)
-#' 
+#'
 #' }
 #'
 #' @export
@@ -285,10 +285,11 @@ worldmet2meteoland <- function(meteo, complete = FALSE) {
 
   # browser()
   # check if data is subdaily
+  geometry_name <- .get_geometry_name(meteo)
 
   grouped_meteo <- meteo |>
     dplyr::as_tibble() |>
-    dplyr::select(-"geometry") |>
+    dplyr::select(-!!geometry_name) |>
     dplyr::mutate(
       dates = lubridate::floor_date(.data$dates, unit = "day")
     ) |>
@@ -333,7 +334,7 @@ worldmet2meteoland <- function(meteo, complete = FALSE) {
     dplyr::left_join(
       meteo |>
         dplyr::ungroup() |>
-        dplyr::select("stationID", "geometry") |>
+        dplyr::select("stationID", !!geometry_name) |>
         dplyr::distinct(),
       by = c('stationID')
     ) |>
@@ -354,10 +355,13 @@ worldmet2meteoland <- function(meteo, complete = FALSE) {
 #' @return The same meteo object but with only one set of coordinates per station
 #' @noRd
 .fix_station_geometries <- function(meteo) {
+
+  geometry_name <- .get_geometry_name(meteo)
+
   distinct_rows <- meteo |>
     dplyr::ungroup() |>
-    dplyr::arrange("dates") |>
-    dplyr::select("stationID", "geometry") |>
+    dplyr::arrange(.data$dates) |>
+    dplyr::select("stationID", !!geometry_name) |>
     dplyr::distinct()
 
   # If more geometries than station IDs, issue a warning and filter by the last
@@ -370,11 +374,11 @@ worldmet2meteoland <- function(meteo, complete = FALSE) {
 
     distinct_rows <- distinct_rows |>
       dplyr::group_by(.data$stationID) |>
-      dplyr::filter(as.character(.data$geometry) == dplyr::last(as.character(.data$geometry)))
+      dplyr::filter(as.character(.data[[geometry_name]]) == dplyr::last(as.character(.data[[geometry_name]])))
 
     meteo <- meteo |>
       dplyr::as_tibble() |>
-      dplyr::select(-"geometry") |>
+      dplyr::select(-!!geometry_name) |>
       dplyr::left_join(distinct_rows, by = 'stationID') |>
       sf::st_as_sf()
   }

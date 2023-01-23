@@ -75,6 +75,7 @@ worldmet_completed <- worldmet_test |>
 
 meteo_and_topo_test <- meteospain_completed |>
   dplyr::bind_rows(worldmet_completed) |>
-  dplyr::arrange(dates, stationID)
+  dplyr::arrange(dates, stationID) |>
+  sf::st_set_crs(sf::st_crs(sf::st_crs(meteo_and_topo_test)$wkt))
 
 saveRDS(meteo_and_topo_test, "tests/testthat/meteo_and_topo_test.rds")

@@ -264,7 +264,7 @@ create_meteo_interpolator <- function(meteo_with_topo, params = NULL, verbose = 
   meteo_arranged <- meteo_with_topo |>
     # very important step, as we need all combinations to fill the arrays
     tidyr::complete(.data$dates, .data$stationID, explicit = FALSE) |>
-    dplyr::arrange("stationID", "dates") |>
+    dplyr::arrange(.data$stationID, .data$dates) |>
     # .fill_elevation()
     .fill_topo()
 
@@ -332,9 +332,10 @@ create_meteo_interpolator <- function(meteo_with_topo, params = NULL, verbose = 
 
   stars_interpolator <-
     list(
+      Temperature = "MeanTemperature",
       MinTemperature = "MinTemperature",
       MaxTemperature = "MaxTemperature",
-      RelativeHumidity = "RelativeHumidity",
+      RelativeHumidity = "MeanRelativeHumidity",
       Precipitation = "Precipitation",
       Radiation = "Radiation",
       WindDirection = "WindDirection",
@@ -485,7 +486,7 @@ write_interpolator <- function(interpolator, filename, .overwrite = FALSE) {
   prepared_data_units <- names(prepared_data_list) |>
     purrr::map(~ switch(
       .x,
-      MinTemperature = 'celsius', MaxTemperature = 'celsius',
+      Temperature = 'celsius', MinTemperature = 'celsius', MaxTemperature = 'celsius',
       RelativeHumidity = 'percent', Precipitation = 'mm',
       Radiation = 'MJ/m2', WindDirection = 'degree', WindSpeed = 'm/s',
       elevation = 'm', aspect = 'degree', slope = 'degree',
@@ -530,7 +531,7 @@ write_interpolator <- function(interpolator, filename, .overwrite = FALSE) {
           list(
             title = "meteoland interpolator",
             provider_name = "meteoland R package",
-            crs = as.character(sf::st_crs(interpolator))[1]
+            crs = sf::st_crs(interpolator)$wkt
           )
         ),
         add_to_existing = TRUE
@@ -608,11 +609,12 @@ read_interpolator <- function(filename) {
   ts_data <- ncdfgeom::read_timeseries_dsg(filename)
 
   # get the geometries
-  geom_crs <- ncmeta::nc_meta(filename)$attribute |>
+  wkt_crs <- ncmeta::nc_meta(filename)$attribute |>
     dplyr::filter(.data$variable == "NC_GLOBAL", .data$name == 'crs') |>
-    dplyr::pull(.data$value)
+    dplyr::pull(.data$value) |>
+    as.character()
   geom_data <- ncdfgeom::read_geometry(filename) |>
-    sf::st_transform(crs = as.numeric(gsub("^EPSG:", "", geom_crs)))
+    sf::st_transform(crs = sf::st_crs(wkt_crs))
 
   # get the dates
   dates <- ts_data$time

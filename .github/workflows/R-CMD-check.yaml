@@ -4,11 +4,11 @@ on:
   push:
     branches:
       - main
-      - master
+      - spatial_refactor
   pull_request:
     branches:
       - main
-      - master
+      - spatial_refactor
 
 name: R-CMD-check
 
@@ -70,14 +70,14 @@ jobs:
           remotes::install_deps(dependencies = TRUE, type = "binary")
           remotes::install_cran("rcmdcheck")
         shell: Rscript {0}
-          
+
       - name: Install package dependencies other
         if: runner.os != 'macOS'
         run: |
           remotes::install_deps(dependencies = TRUE)
           remotes::install_cran("rcmdcheck")
         shell: Rscript {0}
-        
+
       - name: Check
         env:
           _R_CHECK_CRAN_INCOMING_REMOTE_: false

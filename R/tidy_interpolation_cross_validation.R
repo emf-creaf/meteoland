@@ -72,7 +72,7 @@
 #'
 #' @noRd
 .interpolator2tibble <- function(interpolator) {
-  purrr::map_dfr(
+  purrr::map(
     1:length(stars::st_get_dimension_values(interpolator, 'station')),
     function(station_index) {
       res <-
@@ -87,7 +87,8 @@
           stationID = colnames(interpolator[[1]])[station_index]
         )
     }
-  )
+  ) |>
+    purrr::list_rbind()
 }
 
 #' Helper to convert predicted values to NA
@@ -330,7 +331,6 @@ interpolation_cross_validation <- function(interpolator, stations = NULL, verbos
     verbose
   )
   predicted_values <-
-    # purrr::map_dfr(stations, .station_cross_validation, interpolator = interpolator, verbose = verbose) |>
     purrr::map(stations, .station_cross_validation, interpolator = interpolator, .progress = verbose) |>
     purrr::list_rbind() |>
     # set predicted to NA when observed is NA

@@ -69,7 +69,8 @@ identical(
 
 meteo_completed_old_joined <-
   purrr::imap(meteo_completed_old@data, ~ dplyr::mutate(.x, stationID = .y)) |>
-  purrr::map_dfr(tibble::rownames_to_column, var = 'dates')
+  purrr::map(tibble::rownames_to_column, var = 'dates') |>
+  purrr::list_rbind()
 nrow(meteo_completed_old_joined)
 nrow(meteo_completed_new)
 

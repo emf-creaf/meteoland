@@ -98,11 +98,11 @@ test_that("interpolation process works as intended", {
   )
   expect_warning(
     interpolate_data(raster_to_interpolate_example, meteoland_interpolator_example, dates_some_ok),
-    "Some dates are outside the interpolator date range, only dates inside will be used"
+    "Some `dates` are outside the `interpolator` date range, only dates inside will be used"
   )
   expect_error(
     interpolate_data(raster_to_interpolate_example, meteoland_interpolator_example, dates_none_ok),
-    "Dates supplied are outside the interpolator date range. No possible interpolation."
+    "`dates` supplied are outside the `interpolator` date range. No possible interpolation."
   )
   expect_identical(nrow(points_res_dates), nrow(points_to_interpolate_example))
   expect_true(all(names(points_to_interpolate_example) %in% names(points_res_dates)))

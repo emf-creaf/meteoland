@@ -24,12 +24,12 @@
 #' @export with_meteo
 with_meteo <- function(meteo, verbose = getOption("meteoland_verbosity", TRUE)) {
   .verbosity_control(
-    usethis::ui_info("Checking meteorology object..."),
+    cli::cli_alert_info("Checking meteorology object..."),
     verbose
   )
   assertthat::assert_that(has_meteo(meteo))
   .verbosity_control(
-    usethis::ui_done("meteorology object ok"),
+    cli::cli_alert_success("meteorology object ok"),
     verbose
   )
   return(invisible(meteo))
@@ -69,25 +69,26 @@ add_topo <- function(meteo, topo, verbose = getOption("meteoland_verbosity", TRU
 
   assertthat::assert_that(has_meteo(meteo))
   .verbosity_control(
-    usethis::ui_info("Checking topology object..."),
+    cli::cli_alert_info("Checking topology object..."),
     verbose
   )
   assertthat::assert_that(has_topo(topo))
   .verbosity_control(
-    usethis::ui_done("topology object ok"),
+    cli::cli_alert_success("topology object ok"),
     verbose
   )
 
   .verbosity_control(
-    usethis::ui_info("Adding topology to meteo (by station ID)..."),
+    cli::cli_alert_info("Adding topology to meteo (by station ID)..."),
     verbose
   )
 
   # check if meteo has topo already
   if (any(c("elevation", "aspect", "slope") %in% names(meteo))) {
-    usethis::ui_warn(
-      "Topology variables found in the meteo object.\nThey will be ignored as a new topology is provided."
-    )
+    cli::cli_warn(c(
+      "Topology variables found in the meteo object.",
+      "They will be ignored as a new topology is provided."
+    ))
     meteo <- meteo |>
       dplyr::select(!dplyr::any_of(c("elevation", "aspect", "slope")))
   }
@@ -106,7 +107,7 @@ add_topo <- function(meteo, topo, verbose = getOption("meteoland_verbosity", TRU
     sf::st_as_sf()
 
   .verbosity_control(
-    usethis::ui_done("topology added"),
+    cli::cli_alert_success("Topology added"),
     verbose
   )
 

@@ -45,16 +45,18 @@
 
     # No dates in range
     if (length(dates_inside) < 1) {
-      usethis::ui_stop(
-        "Dates supplied are outside the interpolator date range. No possible interpolation."
-      )
+      cli::cli_abort(c(
+        "{.arg dates} supplied are outside the {.arg interpolator} date range. No possible interpolation.",
+        "i" = "{.arg interpolator} date range is from {dates_ref[1]} to {dates_ref[length(dates_ref)]}"
+      ))
     }
 
     # some dates in range, not all
     if (length(dates_inside) < length(dates)) {
-      usethis::ui_warn(
-        "Some dates are outside the interpolator date range, only dates inside will be used"
-      )
+      cli::cli_warn(c(
+        "Some {.arg dates} are outside the {.arg interpolator} date range, only dates inside will be used",
+        "x" = "Used {.arg dates} {?is/are} {dates_inside}"
+      ))
     }
 
     # set correct dates
@@ -67,11 +69,11 @@
     sf::st_union() |>
     sf::st_convex_hull()
   if (any(!sf::st_contains(interpolator_convex_hull, sf, sparse = FALSE))) {
-    usethis::ui_warn("Some points are outside the convex hull of the interpolation object")
+    cli::cli_warn("Some points are outside the convex hull of the {.arg interpolator} object")
   }
 
   .verbosity_control(
-    usethis::ui_info("Starting interpolation..."),
+    cli::cli_alert_info("Starting interpolation..."),
     verbose
   )
   ## extraction and calculations
@@ -104,13 +106,13 @@
 
     if (is_null_or_variable(variables, c("RelativeHumidity", "Radiation"))) {
       .verbosity_control(
-        usethis::ui_info("Temperature interpolation is needed also..."),
+        cli::cli_alert_info("Temperature interpolation is needed also..."),
         verbose
       )
     }
 
     .verbosity_control(
-      usethis::ui_todo("Interpolating temperature..."),
+      cli::cli_ul("Interpolating temperature..."),
       verbose
     )
     tmin <- .interpolateTemperatureSeriesPoints(
@@ -148,13 +150,13 @@
   if (is_null_or_variable(variables, c("Precipitation", "Radiation"))) {
     if (is_null_or_variable(variables, c("Radiation"))) {
       .verbosity_control(
-        usethis::ui_info("Precipitation interpolation is needed also..."),
+        cli::cli_alert_info("Precipitation interpolation is needed also..."),
         verbose
       )
     }
 
     .verbosity_control(
-      usethis::ui_todo("Interpolating precipitation..."),
+      cli::cli_ul("Interpolating precipitation..."),
       verbose
     )
     prec <- .interpolatePrecipitationSeriesPoints(
@@ -181,12 +183,12 @@
   if (is_null_or_variable(variables, c("RelativeHumidity", "Radiation"))) {
     if (is_null_or_variable(variables, c("Radiation"))) {
       .verbosity_control(
-        usethis::ui_info("Relative humidity interpolation is needed also..."),
+        cli::cli_alert_info("Relative humidity interpolation is needed also..."),
         verbose
       )
     }
     .verbosity_control(
-      usethis::ui_todo("Interpolating relative humidity..."),
+      cli::cli_ul("Interpolating relative humidity..."),
       verbose
     )
     # relative humidity, depends on if we have it or not
@@ -238,7 +240,7 @@
   # radiation
   if (is_null_or_variable(variables, "Radiation")) {
     .verbosity_control(
-      usethis::ui_todo("Interpolating radiation..."),
+      cli::cli_ul("Interpolating radiation..."),
       verbose
     )
     diffTemp <- abs(tmax - tmin)
@@ -272,7 +274,7 @@
   # Wind
   if (is_null_or_variable(variables, "Wind")) {
     .verbosity_control(
-      usethis::ui_todo("Interpolating wind..."),
+      cli::cli_ul("Interpolating wind..."),
       verbose
     )
     wind <- .interpolateWindStationSeriesPoints(
@@ -312,7 +314,7 @@
   )
 
   .verbosity_control(
-    usethis::ui_done("Interpolation done..."),
+    cli::cli_alert_success("Interpolation done..."),
     verbose
   )
 
@@ -379,7 +381,10 @@
     )
   }
 
-  usethis::ui_stop("No compatible spatial data found. Spatial data must be an sf or a stars object")
+  cli::cli_abort(c(
+    "No compatible {.arg spatial_data} found.",
+    "x" = "{.arg spatial_data} must be an {.pkg sf} or a {.pkg stars} object"
+  ))
 }
 
 #' Binding interpolation results to spatial data provided
@@ -447,7 +452,7 @@
 
   # info
   .verbosity_control(
-    usethis::ui_info("Binding together interpolation results"),
+    cli::cli_alert_info("Binding together interpolation results"),
     verbose
   )
 
@@ -482,7 +487,7 @@
   binded_result[["aspect"]] <- spatial_data[["aspect"]]
 
   .verbosity_control(
-    usethis::ui_done("Interpolation process finished"),
+    cli::cli_alert_success("Interpolation process finished"),
     verbose
   )
   return(binded_result)
@@ -620,9 +625,9 @@ interpolate_data <- function(
   # before
   optional_topo_names <- c("slope", "aspect")
   if (!all(optional_topo_names %in% names(spatial_data))) {
-    usethis::ui_warn(
-      "'aspect' and 'slope' variables are not mandatory, but the interpolation will be less accurate without them"
-    )
+    cli::cli_warn(c(
+      "{.var aspect} and {.var slope} variables are not mandatory, but the interpolation will be less accurate without them"
+    ))
   }
 
   # Interpolation

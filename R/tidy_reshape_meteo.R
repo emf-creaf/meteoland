@@ -305,9 +305,9 @@ worldmet2meteoland <- function(meteo, complete = FALSE) {
     return(meteo)
   }
 
-  usethis::ui_warn(
+  cli::cli_warn(c(
     "Provided meteo data seems to be in subdaily time steps, aggregating to daily scale"
-  )
+  ))
 
   grouped_meteo |>
     .create_missing_vars() |>
@@ -367,9 +367,9 @@ worldmet2meteoland <- function(meteo, complete = FALSE) {
   # If more geometries than station IDs, issue a warning and filter by the last
   # geometry to remove duplicates
   if (nrow(distinct_rows) != length(unique(distinct_rows[["stationID"]]))) {
-    usethis::ui_warn(c(
-      "Some stations have different metadata (elevation, coordinates...) for ",
-      "different dates. Choosing the most recent metadata"
+    cli::cli_warn(c(
+      "Some stations have different metadata (elevation, coordinates...) for different dates.",
+      "i" = "Choosing the most recent metadata"
     ))
 
     distinct_rows <- distinct_rows |>
@@ -497,9 +497,7 @@ complete_meteo <- function(meteo, verbose = getOption("meteoland_verbosity", TRU
   assertthat::assert_that(has_topo(meteo))
 
   .verbosity_control(
-    usethis::ui_info(
-      "Completing missing variables if possible:"
-    ),
+    cli::cli_alert_info("Completing missing variables if possible:"),
     verbose
   )
 
@@ -507,7 +505,7 @@ complete_meteo <- function(meteo, verbose = getOption("meteoland_verbosity", TRU
   .complete_relative_humidity <- function(RelativeHumidity, MinTemperature, MeanTemperature, verbose) {
 
     .verbosity_control(
-      usethis::ui_todo("RelativeHumidity"),
+      cli::cli_ul("RelativeHumidity"),
       verbose
     )
 
@@ -524,7 +522,7 @@ complete_meteo <- function(meteo, verbose = getOption("meteoland_verbosity", TRU
   .complete_min_relative_humidity <- function(MinRelativeHumidity, MinTemperature, MaxTemperature, verbose) {
 
     .verbosity_control(
-      usethis::ui_todo("MinRelativeHumidity"),
+      cli::cli_ul("MinRelativeHumidity"),
       verbose
     )
 
@@ -540,7 +538,7 @@ complete_meteo <- function(meteo, verbose = getOption("meteoland_verbosity", TRU
 
   .complete_max_relative_humidity <- function(MaxRelativeHumidity, verbose) {
     .verbosity_control(
-      usethis::ui_todo("MaxRelativeHumidity"),
+      cli::cli_ul("MaxRelativeHumidity"),
       verbose
     )
 
@@ -557,7 +555,7 @@ complete_meteo <- function(meteo, verbose = getOption("meteoland_verbosity", TRU
     geometry, verbose
   ) {
     .verbosity_control(
-      usethis::ui_todo("Radiation"),
+      cli::cli_ul("Radiation"),
       verbose
     )
 
@@ -596,8 +594,6 @@ complete_meteo <- function(meteo, verbose = getOption("meteoland_verbosity", TRU
     )
   }
 
-  # browser()
-
   if (is.null(meteo[["MeanTemperature"]])) {
     meteo[["MeanTemperature"]] <- NA_real_
   }
@@ -627,7 +623,6 @@ complete_meteo <- function(meteo, verbose = getOption("meteoland_verbosity", TRU
   }
 
   meteo_completed <- meteo |>
-    # dplyr::as_tibble() |>
     dplyr::mutate(
       MeanRelativeHumidity = .complete_relative_humidity(
         .data$MeanRelativeHumidity, .data$MinTemperature,
@@ -648,7 +643,7 @@ complete_meteo <- function(meteo, verbose = getOption("meteoland_verbosity", TRU
     )
 
   .verbosity_control(
-    usethis::ui_done("Done"),
+    cli::cli_alert_success("Done"),
     verbose
   )
 

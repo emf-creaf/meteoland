@@ -32,16 +32,7 @@
 #' @return A list with the interpolation results for the desired station
 #'
 #' @noRd
-.station_cross_validation <- function(station_index, interpolator, verbose) {
-
-  # messaging (not all, every 5 or 10 maybe?)
-  if (station_index %% 5 == 0) {
-    .verbosity_control(
-      usethis::ui_line("Processed {station_index} stations ....."),
-      verbose
-    )
-  }
-
+.station_cross_validation <- function(station_index, interpolator) {
 
   # get the point sf with topology info
   station_sf <- dplyr::tibble(
@@ -58,7 +49,7 @@
 
   # return the interpolation
   suppressMessages(suppressWarnings(
-    .interpolation_point(station_sf, interpolator_station_removed, verbose = verbose)
+    .interpolation_point(station_sf, interpolator_station_removed, verbose = FALSE)
   ))[[1]] |>
     dplyr::mutate(
       RangeTemperature = .data$MaxTemperature - .data$MinTemperature,
@@ -327,7 +318,7 @@ interpolation_cross_validation <- function(interpolator, stations = NULL, verbos
   stations <- .station_indexes_converter(stations, interpolator)
 
   .verbosity_control(
-    usethis::ui_info("Starting Cross Validation process..."),
+    cli::cli_alert_info("Starting Cross Validation process..."),
     verbose
   )
 
@@ -335,17 +326,19 @@ interpolation_cross_validation <- function(interpolator, stations = NULL, verbos
     dplyr::filter(.data$station %in% stations)
 
   .verbosity_control(
-    usethis::ui_todo("interpolating stations..."),
+    cli::cli_ul("Interpolating stations..."),
     verbose
   )
   predicted_values <-
-    purrr::map_dfr(stations, .station_cross_validation, interpolator = interpolator, verbose = verbose) |>
+    # purrr::map_dfr(stations, .station_cross_validation, interpolator = interpolator, verbose = verbose) |>
+    purrr::map(stations, .station_cross_validation, interpolator = interpolator, .progress = verbose) |>
+    purrr::list_rbind() |>
     # set predicted to NA when observed is NA
     .set_predicted_nas(observed_values)
 
   ### Processing results
   .verbosity_control(
-    usethis::ui_todo("calculating R squared..."),
+    cli::cli_ul("Calculating R squared..."),
     verbose
   )
 
@@ -356,11 +349,12 @@ interpolation_cross_validation <- function(interpolator, stations = NULL, verbos
   ) |>
     purrr::map(
       .cv_correlation,
-      predicted_df = predicted_values, observed_df = observed_values
+      predicted_df = predicted_values, observed_df = observed_values,
+      .progress = verbose
     )
 
   .verbosity_control(
-    usethis::ui_todo("calculating errors, MAE and bias for interpolated variables..."),
+    cli::cli_ul("calculating errors, MAE and bias for interpolated variables..."),
     verbose
   )
 
@@ -369,7 +363,7 @@ interpolation_cross_validation <- function(interpolator, stations = NULL, verbos
   res$r2 <- r2_list
 
   .verbosity_control(
-    usethis::ui_done("Cross validation done."),
+    cli::cli_alert_success("Cross validation done."),
     verbose
   )
 

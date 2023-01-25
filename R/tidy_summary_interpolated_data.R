@@ -4,16 +4,16 @@
   # data.frame/sf
   if (inherits(data, "data.frame")) {
     if (nrow(data) < 1) {
-      usethis::ui_warn(
-        "Selected months ({paste0(months_to_summary, collapse = ', ')}) are not present in the data"
+      cli::cli_warn(
+        "Selected months ({.val {months_to_summary}}) are not present in the data"
       )
     }
   }
 
   if (inherits(data, "stars")) {
     if (length(stars::st_get_dimension_values(data, "date")) < 1) {
-      usethis::ui_stop(
-        "Selected months ({paste0(months_to_summary, collapse = ', ')}) are not present in the data"
+      cli::cli_abort(
+        "Selected months ({.val {months_to_summary}}) are not present in the data"
       )
     }
   }
@@ -36,7 +36,6 @@
   ...
 ) {
 
-  # browser()
   # assertions
   assertthat::assert_that(
     has_meteo_names(meteo_interpolated),
@@ -51,7 +50,7 @@
 
     # if not null, filter by the dates supplied
     .verbosity_control(
-      usethis::ui_info("Filtering the desired dates"),
+      cli::cli_alert_info("Filtering the desired dates"),
       verbose
     )
     meteo_interpolated <- meteo_interpolated |>
@@ -165,9 +164,8 @@
     inherits(meteo_interpolated, "sf") &
     !"interpolated_data" %in% names(meteo_interpolated)
   ) {
-    usethis::ui_warn(
-      "meteo_interpolated object seen to have meteo variables and more than one
-      location. All locations will be summarise together"
+    cli::cli_warn(
+      "meteo_interpolated object seen to have meteo variables and more than one location. All locations will be summarise together"
     )
   }
 
@@ -211,7 +209,7 @@
 
     # if not null, filter by the dates supplied
     .verbosity_control(
-      usethis::ui_info("Filtering the desired dates"),
+      cli::cli_alert_info("Filtering the desired dates"),
       verbose
     )
     meteo_interpolated <- meteo_interpolated |>
@@ -356,9 +354,8 @@ summarise_interpolated_data <- function(
   }
 
   if (is.null(summary_fun)) {
-    usethis::ui_stop(
-      "interpolated_data provided is not either a stars object or a sf/data.frame
-      object. Are you sure it comes from interpolate_data function?"
+    cli::cli_abort(
+      "interpolated_data provided is not either a stars object or a sf/data.frame object. Are you sure it comes from interpolate_data function?"
     )
   }
 

@@ -22,7 +22,10 @@
 #' @noRd
 .safely_create_interpolation_params <- function(params, ref = defaultInterpolationParams(), verbose = getOption("meteoland_verbosity", TRUE)) {
   if (is.null(params)) {
-    usethis::ui_warn("No interpolation parameters provided, using defaults")
+    cli::cli_warn(c(
+      "No interpolation parameters provided, using defaults",
+      "i" = "Set the {.arg params} argument to modify parameter default values"
+    ))
     return(defaultInterpolationParams())
   }
 
@@ -30,7 +33,7 @@
 
   if (length(user_params) < length(ref)) {
     .verbosity_control(
-      usethis::ui_info("Some interpolation parameters are missing, using default values for those"),
+      cli::cli_alert_info("Some interpolation parameters are missing, using default values for those"),
       verbose
     )
   }
@@ -39,10 +42,9 @@
     offending_params <- names(
       params[!names(params) %in% names(ref)]
     )
-    usethis::ui_warn(
-      "The following interpolation parameters were provided and will not be used:"
-    )
-    purrr::walk(offending_params, usethis::ui_todo)
+    cli::cli_warn(c(
+      "The following interpolation parameter{?s} {?was/were} provided and will not be used: {.val {offending_params}}"
+    ))
   }
 
   for (name in names(user_params)) {
@@ -182,7 +184,7 @@ create_meteo_interpolator <- function(meteo_with_topo, params = NULL, verbose = 
   )
 
   .verbosity_control(
-    usethis::ui_info("Creating interpolator..."),
+    cli::cli_alert_info("Creating interpolator..."),
     verbose
   )
 
@@ -198,14 +200,16 @@ create_meteo_interpolator <- function(meteo_with_topo, params = NULL, verbose = 
       dplyr::filter(!is.na(.data$elevation))
 
     if (nrow(meteo_with_topo) < 1) {
-      usethis::ui_stop("No elevation values for any station, stopping creation of the interpolator")
+      cli::cli_abort(c(
+        "No elevation values for any station, stopping creation of the interpolator"
+      ))
     }
 
     # warning here, because that way if there is no elevation whatsoever we get
     # only the error (as it should be), not the warning AND the error.
-    usethis::ui_warn(
+    cli::cli_warn(c(
       "Some meteo stations lack values for elevation, filtering those stations out"
-    )
+    ))
   }
 
   # helper to avoid NAs in elevation when completing cases
@@ -278,28 +282,6 @@ create_meteo_interpolator <- function(meteo_with_topo, params = NULL, verbose = 
     sf::st_geometry()
   dates <- unique(meteo_arranged$dates)
 
-  # check here if there is stations with more than one geometry
-  # (sadly it happens, for example for 2022-10-20 for "4220X", "4549Y", "4642E" aemet
-  # stations, which change within the same day).
-  # If this happens, stop and inform the user about the stations involved
-  # if (length(meteo_arranged$stationID |> unique()) != length(stations)) {
-  #   duplicated_stations <- meteo_arranged |>
-  #     dplyr::filter(
-  #       !sf::st_is_empty(!!dplyr::sym(attr(meteo_arranged, "sf_column")))
-  #     ) |>
-  #     dplyr::select(stationID) |>
-  #     dplyr::distinct() |>
-  #     dplyr::filter(duplicated(stationID)) |>
-  #     dplyr::pull(stationID)
-  #
-  #
-  #   usethis::ui_stop(c(
-  #     "There are more geometries in the data than unique station IDs. ",
-  #     "Duplicated stations IDs are:",
-  #     usethis::ui_todo(duplicated_stations)
-  #   ))
-  # }
-
   # dimensions
   interpolator_dims <- stars::st_dimensions(
     date = dates, station = stations
@@ -356,7 +338,7 @@ create_meteo_interpolator <- function(meteo_with_topo, params = NULL, verbose = 
 
   # add smoothed vars
   .verbosity_control(
-    usethis::ui_todo("Calculating smoothed variables..."),
+    cli::cli_ul("Calculating smoothed variables..."),
     verbose
   )
   stars_interpolator[["SmoothedPrecipitation"]] <-
@@ -383,7 +365,7 @@ create_meteo_interpolator <- function(meteo_with_topo, params = NULL, verbose = 
 
   # update initial Rp in params
   .verbosity_control(
-    usethis::ui_todo("Updating intial_Rp parameter with the actual stations mean distance..."),
+    cli::cli_ul("Updating intial_Rp parameter with the actual stations mean distance..."),
     verbose
   )
   params$initial_Rp <-
@@ -399,7 +381,7 @@ create_meteo_interpolator <- function(meteo_with_topo, params = NULL, verbose = 
 
   # return the interpolator
   .verbosity_control(
-    usethis::ui_done("Interpolator created."),
+    cli::cli_alert_success("Interpolator created."),
     verbose
   )
   return(stars_interpolator)
@@ -501,8 +483,8 @@ write_interpolator <- function(interpolator, filename, .overwrite = FALSE) {
     dplyr::if_else(interpolator_attributes[["debug"]], 1, 0)
 
   ## write logic
-  usethis::ui_info("Creating nc file following the NetCDF-CF conventions:")
-  usethis::ui_line("https://cfconventions.org/cf-conventions/cf-conventions.html")
+  cf_conventions_web <- "https://cfconventions.org/cf-conventions/cf-conventions.html"
+  cli::cli_alert_info("Creating nc file following the NetCDF-CF conventions {.url {cf_conventions_web}}")
 
   ### TODO add correct units
   list(prepared_data_list, names(prepared_data_list), prepared_data_units) |>
@@ -538,14 +520,14 @@ write_interpolator <- function(interpolator, filename, .overwrite = FALSE) {
       )
     )
 
-  usethis::ui_info("Adding spatial info to nc file")
+  cli::cli_alert_info("Adding spatial info to nc file")
   filename <- ncdfgeom::write_geometry(
     nc_file = filename,
     geom_data = sf::st_as_sf(stars::st_get_dimension_values(interpolator, "station")),
     variables = c("instance_name", "time", "lat", "lon", names(prepared_data_list))
   )
 
-  usethis::ui_done("Done")
+  cli::cli_alert_success("Done")
   return(invisible(interpolator))
 }
 
@@ -599,7 +581,10 @@ read_interpolator <- function(filename) {
 
   # Check if attributes exist, if not is not an interpolator
   if (length(interpolation_attributes) < 1) {
-    usethis::ui_stop("{filename} is not a meteoland interpolator file.")
+    cli::cli_abort(c(
+      "{.file {filename}} is not a meteoland interpolator file.",
+      "x" = "No interpolation params stored in the file"
+    ))
   }
 
   # remember to convert debug value to logical
@@ -801,7 +786,7 @@ interpolator_calibration <- function(
   smoothed_matrix <- t(interpolator[["SmoothedPrecipitation"]])
 
   .verbosity_control(
-    usethis::ui_info("Total number of stations: {nrow(variable_matrix)}"),
+    cli::cli_alert_info("Total number of stations: {.val {nrow(variable_matrix)}}"),
     verbose
   )
 
@@ -813,7 +798,7 @@ interpolator_calibration <- function(
   stations <- which(selected_stations)
 
   .verbosity_control(
-    usethis::ui_info("Number of stations with available data: {nrow(variable_matrix)}"),
+    cli::cli_alert_info("Number of stations with available data: {.val {nrow(variable_matrix)}}"),
     verbose
   )
 
@@ -823,14 +808,12 @@ interpolator_calibration <- function(
   selected_stations_elevation <- stations_elevation[stations]
 
   .verbosity_control(
-    usethis::ui_info("Number of stations used for MAE calculation: {length(stations)}"),
+    cli::cli_alert_info("Number of stations used for MAE calculation: {.val {length(stations)}}"),
     verbose
   )
 
   .verbosity_control(
-    usethis::ui_info(
-      "Number of parameters combinations to test: {ncol(mae_matrix)*nrow(mae_matrix)}"
-    ),
+    cli::cli_alert_info("Number of parameters combinations to test: {.val {ncol(mae_matrix)*nrow(mae_matrix)}}"),
     verbose
   )
 
@@ -839,8 +822,8 @@ interpolator_calibration <- function(
   min_j <- NA
 
   .verbosity_control(
-    usethis::ui_info(
-      "Starting evaluation of parameter combinations for {variable}..."
+    cli::cli_alert_info(
+      "Starting evaluation of parameter combinations for {.val {variable}}..."
     ),
     verbose
   )
@@ -854,7 +837,7 @@ interpolator_calibration <- function(
       dimnames(predicted_variable_matrix) <- dimnames(selected_variable_matrix)
 
       .verbosity_control(
-        usethis::ui_todo("Evaluating N: {i}, alpha: {j}..."),
+        cli::cli_ul("Evaluating N: {.val {i}}, alpha: {.val {j}}..."),
         verbose
       )
 
@@ -991,9 +974,7 @@ interpolator_calibration <- function(
   }
 
   .verbosity_control(
-    usethis::ui_done(
-      "Minimum MAE: {min_mae}; N: {min_i}; alpha: {min_j}"
-    ),
+    cli::cli_alert_success("Calibration done: Minimum MAE: {.val {min_mae}}; N: {.val {min_i}}; alpha: {.val {min_j}}"),
     verbose
   )
 

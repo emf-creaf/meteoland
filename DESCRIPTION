@@ -26,7 +26,7 @@ Imports:
     Rcpp,
     units,
     lifecycle,
-    usethis,
+    cli,
     dplyr,
     tidyr,
     rlang,

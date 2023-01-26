@@ -35,12 +35,12 @@ with_meteo <- function(meteo, verbose = getOption("meteoland_verbosity", TRUE)) 
   return(invisible(meteo))
 }
 
-#' Add topology data to meteo object
+#' Add topography data to meteo object
 #'
-#' Add topology data to meteo object
+#' Add topography data to meteo object
 #'
-#' When using meteo data without topology info to create an inteprolator,
-#' topology must be addded
+#' When using meteo data without topography info to create an inteprolator,
+#' topography must be addded
 #'
 #' @param meteo meteo object
 #' @param topo topo object
@@ -48,7 +48,7 @@ with_meteo <- function(meteo, verbose = getOption("meteoland_verbosity", TRUE)) 
 #' Default value checks \code{"meteoland_verbosity"} option and if not set, defaults
 #' to TRUE. It can be turned off for the function with FALSE, or session wide with
 #' \code{options(meteoland_verbosity = FALSE)}
-#' @return meteo with the topology info added
+#' @return meteo with the topography info added
 #' @seealso Other interpolator functions:
 #' \code{\link{create_meteo_interpolator}()},
 #' \code{\link{get_interpolation_params}()}, \code{\link{read_interpolator}()},
@@ -69,25 +69,25 @@ add_topo <- function(meteo, topo, verbose = getOption("meteoland_verbosity", TRU
 
   assertthat::assert_that(has_meteo(meteo))
   .verbosity_control(
-    cli::cli_alert_info("Checking topology object..."),
+    cli::cli_alert_info("Checking topography object..."),
     verbose
   )
   assertthat::assert_that(has_topo(topo))
   .verbosity_control(
-    cli::cli_alert_success("topology object ok"),
+    cli::cli_alert_success("topography object ok"),
     verbose
   )
 
   .verbosity_control(
-    cli::cli_alert_info("Adding topology to meteo (by station ID)..."),
+    cli::cli_alert_info("Adding topography to meteo (by station ID)..."),
     verbose
   )
 
   # check if meteo has topo already
   if (any(c("elevation", "aspect", "slope") %in% names(meteo))) {
     cli::cli_warn(c(
-      "Topology variables found in the meteo object.",
-      "They will be ignored as a new topology is provided."
+      "Topography variables found in the meteo object.",
+      "They will be ignored as a new topography is provided."
     ))
     meteo <- meteo |>
       dplyr::select(!dplyr::any_of(c("elevation", "aspect", "slope")))
@@ -107,7 +107,7 @@ add_topo <- function(meteo, topo, verbose = getOption("meteoland_verbosity", TRU
     sf::st_as_sf()
 
   .verbosity_control(
-    cli::cli_alert_success("Topology added"),
+    cli::cli_alert_success("Topography added"),
     verbose
   )
 

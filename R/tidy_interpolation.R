@@ -6,7 +6,7 @@
 #' and an optional vector of dates to perform the interpolation. It uses the
 #' vectorised C++ methods, so no need to loop through points or dates.
 #'
-#' @param sf sf object with the points topology
+#' @param sf sf object with the points topography
 #' @param interpolator interpolator object
 #' @param dates vector with dates (dates must be inside the interpolator date
 #'   range)
@@ -531,15 +531,15 @@
 
 }
 
-#' Topology raster (stars) cells to points
+#' Topography raster (stars) cells to points
 #'
-#' Converting stars cells to a topology point object compatible with
+#' Converting stars cells to a topography point object compatible with
 #' .interpolation_point
 #'
 #' This function takes on a stars raster and check for mandatory variables,
 #' returning an sf object
 #'
-#' @param stars topology stars object with at least elevation variable
+#' @param stars topography stars object with at least elevation variable
 #'
 #' @return a sf object with raster cells converted to points (taking the center
 #'   of the cell)

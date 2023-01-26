@@ -49,24 +49,24 @@ Name | Description
 -----|------------
 meteoland_interpolator_example | A meteoland interpolator object, with daily meteorological data in Catalonia (Spain) for April 2022.
 meteoland_meteo_example | Data from meteorological stations in Catalonia (Spain) for April 2022.
-meteoland_meteo_no_topo_example | Data from meteorological stations in Catalonia (Spain) for April 2022, without topological information.
-meteoland_topo_example | Topological information for meteorological stations in Catalonia (Spain).
-points_to_interpolate_example | Topological information for 15 plots located in Catalonia (Spain).
-raster_to_interpolate_example | Topological information for a 0.01 degree grid (10x10 cells) raster located in central Catalonia (Spain)
+meteoland_meteo_no_topo_example | Data from meteorological stations in Catalonia (Spain) for April 2022, without topographical information.
+meteoland_topo_example | Topographical information for meteorological stations in Catalonia (Spain).
+points_to_interpolate_example | Topographical information for 15 plots located in Catalonia (Spain).
+raster_to_interpolate_example | Topographical information for a 0.01 degree grid (10x10 cells) raster located in central Catalonia (Spain)
 
 ## The new interpolation process
 
 For interpolating meteorological information we need mainly two things:
 
-  1. The **topological information** of the locations to interpolate. This includes elevation,
-  aspect and slope. Elevation is the only mandatory topology variable, but interpolation
+  1. The **topographical information** of the locations to interpolate. This includes elevation,
+  aspect and slope. Elevation is the only mandatory topography variable, but interpolation
   results improve when also aspect and slope are provided.
   
   1. The reference **meteorological information** that we will use to build the interpolator
   object. This information can come from meteorological stations in the area we are interested
   on, or can be extracted from rasters with meteorological variables.
 
-### Topological information
+### Topographical information
 
 In order to interpolate, we need our locations in a format that `meteoland` can use. For
 points, this is a `sf` object, with the `elevation`, `slope` and `aspect` variables:
@@ -83,7 +83,7 @@ raster_to_interpolate_example
 ```
 
 Both, `sf` and `stars` R packages have the necessary functions to read most spatial formats,
-the only thing to consider is ensuring that the topological variables has the mandatory names
+the only thing to consider is ensuring that the topographical variables has the mandatory names
 (`elevation`, `aspect`, `slope`).
 
 ### Meteorological information
@@ -150,8 +150,8 @@ with_meteo(meteo_without_temp)
 get_interpolation_params(interpolator)
 ```
 
-  - `interpolate_data(...)` performs the interpolation using the topology provided and the
-  interpolator object. If the topology information is in an sf object, as in the example,
+  - `interpolate_data(...)` performs the interpolation using the topography provided and the
+  interpolator object. If the topography information is in an sf object, as in the example,
   `interpolate_data` returns the same `sf` object with a new column called
   `interpolated_data`:
   
@@ -179,7 +179,7 @@ class(interpolator)
 ```
 
 This object is a data cube, with meteo locations and dates as dimensions, and meteorological
-and topological variables as attributes.
+and topographical variables as attributes.
 
 ```{r interpolator_description}
 interpolator
@@ -379,7 +379,7 @@ points_interpolated
 
 ## Interpolation on raster data
 
-We can use `interpolate_data` in a raster type of data. All we need is the topology information
+We can use `interpolate_data` in a raster type of data. All we need is the topography information
 in a `stars` object, with elevation, aspect and slope as raster attributes:
 
 ```{r raster_to_interpolate}

@@ -31,11 +31,11 @@ assertthat::on_failure(has_meteo_names) <- function(call, env) {
   )
 }
 
-#' Check if meteo data has the mandatory topology variables
+#' Check if meteo data has the mandatory topography variables
 #'
-#' Check if meteo data has the mandatory topology variables
+#' Check if meteo data has the mandatory topography variables
 #'
-#' This function ensures that meteo object have the mandatory topology names,
+#' This function ensures that meteo object have the mandatory topography names,
 #' and is used in combination with \code{\link[assertthat]{on_failure}} to produce
 #' a meaningful and human readable error when no mandatory variables are present.
 #'
@@ -46,7 +46,7 @@ assertthat::on_failure(has_meteo_names) <- function(call, env) {
 #' @family Argument checks
 #' @noRd
 has_topo_names <- function(meteo) {
-  # topology names
+  # topography names
   mandatory_topo_names <- c("elevation")
   # check
   all(mandatory_topo_names %in% names(meteo))
@@ -56,7 +56,7 @@ assertthat::on_failure(has_topo_names) <- function(call, env) {
   paste0(
     "Names found in ", deparse(call$meteo), " don't comply with the required names:\n",
     deparse(call$meteo),
-    " should have the following topology variables:\n",
+    " should have the following topography variables:\n",
     "  - elevation ***\n",
     "  - aspect\n", "  - slope\n",
     "\n ***: mandatory variables\n"

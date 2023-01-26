@@ -34,7 +34,7 @@
 #' @noRd
 .station_cross_validation <- function(station_index, interpolator) {
 
-  # get the point sf with topology info
+  # get the point sf with topography info
   station_sf <- dplyr::tibble(
     elevation = interpolator[["elevation"]][1, station_index],
     aspect = interpolator[["aspect"]][1, station_index],

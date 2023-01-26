@@ -121,6 +121,6 @@ test_that("with_meteo add_topo combo works", {
   # meteo has already topo but we joined equally
   expect_warning(
     with_meteo(meteo_test_correct) |> add_topo(topo_test_correct),
-    "Topology variables found"
+    "Topography variables found"
   )
 })

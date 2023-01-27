@@ -7,6 +7,15 @@ test_that(".stars2sf works as intended", {
     as.integer(nrow(raster_to_interpolate_example) * ncol(raster_to_interpolate_example)),
     nrow(res)
   )
+  # geometries in both, stars and sf, must be the same
+  expect_identical(
+    as.numeric(sf::st_coordinates(res)[,1]),
+    as.numeric(sf::st_coordinates(raster_to_interpolate_example)[,1])
+  )
+  expect_identical(
+    as.numeric(sf::st_coordinates(res)[,2]),
+    as.numeric(sf::st_coordinates(raster_to_interpolate_example)[,2])
+  )
 })
 
 test_that(".is_spatial_data, .is_raster works as intended", {
@@ -80,12 +89,6 @@ test_that("interpolation process works as intended", {
   expect_true(all(interpolation_var_names %in% names(raster_res)))
   expect_identical(sf::st_crs(raster_res), sf::st_crs(raster_to_interpolate_example))
 
-  ## TODO
-  ## Add dates checks for interpolation
-  ##
-  ## check all in (working), one out (warning), all out (error)
-  ## check that in two first cases the interpolated data is only the dates included
-  ##
   # date checks
   dates_all_ok <- as.Date(c("2022-04-24", "2022-04-25", "2022-04-26"))
   dates_some_ok <- c(dates_all_ok, "2022-05-13")
@@ -120,7 +123,28 @@ test_that("interpolation process works as intended", {
     points_res_dates[["interpolated_data"]][[1]]$dates, dates_all_ok
   )
 
-  ## TODO tests for variables argument
+  points_all_ok <- points_to_interpolate_example
+  points_one_bad <- points_all_ok |>
+    dplyr::mutate(
+      geometry = points_all_ok$geometry + c(5, rep(0, length(points_all_ok$geometry) - 1))
+    ) |>
+    sf::st_set_crs(4326)
+  points_more_bad <- points_all_ok |>
+    dplyr::mutate(
+      geometry = points_all_ok$geometry + c(5, 5, 5, rep(0, length(points_all_ok$geometry) - 3))
+    ) |>
+    sf::st_set_crs(4326)
+
+  expect_s3_class(interpolate_data(points_all_ok, meteoland_interpolator_example),'sf')
+  expect_warning(
+    interpolate_data(points_one_bad, meteoland_interpolator_example),
+    'Some points are outside the convex hull'
+  )
+  expect_error(
+    interpolate_data(points_more_bad, meteoland_interpolator_example),
+    'More than 10% of the points'
+  )
+
   # variable argument points
   expect_s3_class(
     (points_radiation_res <-

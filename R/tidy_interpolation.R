@@ -17,13 +17,23 @@
 #' Default value checks \code{"meteoland_verbosity"} option and if not set, defaults
 #' to TRUE. It can be turned off for the function with FALSE, or session wide with
 #' \code{options(meteoland_verbosity = FALSE)}
+#' @param .ignore_convex_hull_check Logical indicating if convex hull check for points
+#' must be honoured. This is useful (and needed) for the
+#' \code{\link{interpolation_cross_validation}} function, because when removing stations
+#' from the vertices of the convex hull, the latter is reduced and the station removed can
+#' be outside the buffered convex hull, triggering an error (100 % of points lay outside
+#' the convex hull buffer). This parameter is only accesed internally, as the user can not
+#' set it in the \code{\link{interpolate_data}} call.
 #'
 #' @family interpolator functions
 #' @return A tibble for each point, with the dates as rows and the interpolated
 #'   data as columns
 #'
 #' @noRd
-.interpolation_point <- function(sf, interpolator, dates = NULL, variables = NULL, verbose) {
+.interpolation_point <- function(
+    sf, interpolator, dates = NULL, variables = NULL, verbose,
+    .ignore_convex_hull_check = FALSE
+) {
   ## debug
   # browser()
 
@@ -55,7 +65,7 @@
     if (length(dates_inside) < length(dates)) {
       cli::cli_warn(c(
         "Some {.arg dates} are outside the {.arg interpolator} date range, only dates inside will be used",
-        "x" = "Used {.arg dates} {?is/are} {dates_inside}"
+        "x" = "Used {.arg dates} {?is/are} {as.character(dates_inside)}"
       ))
     }
 
@@ -64,12 +74,39 @@
   }
 
   ## checks point
+  # we need to check if points are inside the convex hull. Some points outside is ok (convex hull
+  # can left some near border points outside), but a large proportion of points outside can be
+  # a sign of wrong interpolator or wrong points used, so:
+  #
+  #   - warning if some points are outside (< 10%)
+  #   - error if more points are outside (>= 10%)
+  #   - also, in any case, indicate the points inside and outside
+  #
+  # Buffer is done with `dist = 10000` for a 10km distance. This is because sf::st_buffer
+  # with dist without units, independently of the crs is taken as meters (due to s2 pacakge).
+  # As sf imports s2, both packages will be installed, so dist is always to be in meters.
   interpolator_convex_hull <-
     stars::st_get_dimension_values(interpolator, "station") |>
     sf::st_union() |>
-    sf::st_convex_hull()
-  if (any(!sf::st_contains(interpolator_convex_hull, sf, sparse = FALSE))) {
-    cli::cli_warn("Some points are outside the convex hull of the {.arg interpolator} object")
+    sf::st_convex_hull() |>
+    sf::st_buffer(dist = 10000)
+
+  sf_contained <- sf::st_contains(interpolator_convex_hull, sf, sparse = FALSE)
+  if (any(!sf_contained) & !.ignore_convex_hull_check) {
+
+    # if less than 10% go ahead
+    if (sum(!sf_contained)/length(sf_contained) < 0.1) {
+      cli::cli_warn(c(
+        "Some points are outside the convex hull of the {.arg interpolator} object.",
+        "x" = "Index{?es} of outside point{?s} {?is/are} {.val {as.character(which(!sf_contained))}}"
+      ))
+    } else {
+      cli::cli_abort(c(
+        "More than 10% of the points in {.arg spatial_data} fall outside the convex hull of the interpolator object.",
+        "x" = "Aborting interpolation",
+        "i" = "{.arg spatial_data} index{?es} outside {?is/are} {.val {as.character(which(!sf_contained))}}"
+      ))
+    }
   }
 
   .verbosity_control(

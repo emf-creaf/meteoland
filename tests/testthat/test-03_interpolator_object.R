@@ -175,6 +175,10 @@ test_that("write and read interpolators works as expected", {
     interpolator_read <- read_interpolator(tmp_file),
     interpolator_test
   )
+  expect_identical(
+    interpolator_read,
+    interpolator_write
+  )
   expect_error(
     read_interpolator(system.file("nc/reduced.nc", package = "stars")),
     "not a meteoland interpolator"

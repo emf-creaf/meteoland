@@ -16,6 +16,7 @@ library(lfcdata)
 #
 # sf::st_write(meteocat_april_2022, "data-raw/meteocat_april_2022.gpkg")
 meteocat_april_2022 <- sf::read_sf("data-raw/meteocat_april_2022.gpkg")
+meteocat_april_2022$timestamp <- lubridate::with_tz(meteocat_april_2022$timestamp, "UTC")
 
 # transform to meteoland meteo
 meteoland_meteo_example <- meteoland::meteospain2meteoland(

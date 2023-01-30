@@ -2,7 +2,7 @@
 % Please edit documentation in R/tidy_meteo_and_topo.R
 \name{add_topo}
 \alias{add_topo}
-\title{Add topology data to meteo object}
+\title{Add topography data to meteo object}
 \usage{
 add_topo(meteo, topo, verbose = getOption("meteoland_verbosity", TRUE))
 }
@@ -17,14 +17,14 @@ to TRUE. It can be turned off for the function with FALSE, or session wide with
 \code{options(meteoland_verbosity = FALSE)}}
 }
 \value{
-meteo with the topology info added
+meteo with the topography info added
 }
 \description{
-Add topology data to meteo object
+Add topography data to meteo object
 }
 \details{
-When using meteo data without topology info to create an inteprolator,
-topology must be addded
+When using meteo data without topography info to create an inteprolator,
+topography must be addded
 }
 \examples{
 # example meteo

@@ -5,7 +5,7 @@ meteo_cat <- get_meteo_from(
   meteocat_options(
     "daily",
     as.Date("2022-01-01"),
-    api_key = keyring::key_get('meteocat', keyring = "malditobarbudo")
+    api_key = keyring::key_get('meteocat')
   )
 )
 
@@ -14,7 +14,7 @@ meteo_aemet <- get_meteo_from(
   aemet_options(
     "daily",
     as.Date("2022-01-01"), as.Date("2022-01-31"),
-    api_key = keyring::key_get('aemet', keyring = "malditobarbudo")
+    api_key = keyring::key_get('aemet')
   )
 )
 

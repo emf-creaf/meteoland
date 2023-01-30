@@ -192,6 +192,9 @@ worldmet2meteoland <- function(meteo, complete = FALSE) {
     .f = function(var, name) {
       if (var %in% names(meteo)) {
         meteo_res <<- meteo_res |>
+          # seems like a recurrent error in sf that renaming variables leads to
+          # bad sf objects. With this we ensure a correct sf each loop.
+          sf::st_sf() |>
           dplyr::rename(!!name := !!var)
       }
     }

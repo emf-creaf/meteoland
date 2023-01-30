@@ -58,10 +58,10 @@ saveRDS(meteospain_subdaily_test, "tests/testthat/meteospain_subdaily_test.rds")
 
 # worldmet data
 worldmet_stations <- worldmet::getMeta(lat = 42, lon = 0, n = 20, plot = FALSE, country = "SP")
-worldmet_codes <- paste0(worldmet_stations$usaf, "-", worldmet_stations$wban)
+# worldmet_codes <- paste0(worldmet_stations$usaf, "-", worldmet_stations$wban)
 
 worldmet_test <-
-  worldmet::importNOAA(worldmet_codes, year = 2022, hourly = TRUE, n.cores = 6) |>
+  worldmet::importNOAA(worldmet_stations$code, year = 2022, hourly = TRUE, n.cores = 6) |>
   dplyr::filter(date < as.Date("2022-02-01"))
 
 saveRDS(worldmet_test, "tests/testthat/worldmet_test.rds")

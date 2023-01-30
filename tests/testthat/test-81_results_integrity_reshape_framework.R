@@ -4,30 +4,30 @@ skip_on_cran()
 
 # reshaping meteo ---------------------------------------------------------
 library(meteospain)
+meteocat_key <- Sys.getenv("meteocat")
+if (meteocat_key == "") {
+  meteocat_key <- keyring::key_get("meteocat", keyring = "malditobarbudo")
+}
+aemet_key <- Sys.getenv("aemet")
+if (aemet_key == "") {
+  aemet_key <- keyring::key_get("aemet", keyring = "malditobarbudo")
+}
 
 ## start testing
 test_that("reshaping and completing daily meteospain works the same", {
   # daily
   meteo_cat <- get_meteo_from(
     "meteocat",
-    meteocat_options(
-      "daily",
-      as.Date("2022-01-01"),
-      api_key = Sys.getenv('meteocat')
-    )
+    meteocat_options("daily", as.Date("2022-01-01"), api_key = meteocat_key)
   )
   meteo_aemet <- get_meteo_from(
     "aemet",
-    aemet_options(
-      "daily",
-      as.Date("2022-01-01"), as.Date("2022-01-31"),
-      api_key = Sys.getenv('aemet')
-    )
+    aemet_options("daily", as.Date("2022-01-01"), as.Date("2022-01-31"), api_key = aemet_key)
   )
   meteo_test <- meteo_cat |>
     dplyr::bind_rows(meteo_aemet) |>
     dplyr::arrange(timestamp)
-  
+
   # results are the expected classes for each, old and new
   expect_s4_class(
     (meteo_completed_old <- suppressWarnings(reshapemeteospain(meteo_test))),
@@ -37,7 +37,7 @@ test_that("reshaping and completing daily meteospain works the same", {
     (meteo_completed_new <- meteospain2meteoland(meteo_test, complete = TRUE)),
     "sf"
   )
-  
+
   # values are identical between old and new
   expect_identical(
     meteo_completed_old@data$ZD$MinTemperature,
@@ -69,7 +69,7 @@ test_that("reshaping and completing daily meteospain works the same", {
       dplyr::filter(stationID == "4244X") |>
       dplyr::pull(Radiation)
   )
-  
+
   meteo_completed_joined_old <-
     purrr::imap(meteo_completed_old@data, ~ dplyr::mutate(.x, stationID = .y)) |>
     purrr::map(tibble::rownames_to_column, var = 'dates') |>
@@ -77,7 +77,7 @@ test_that("reshaping and completing daily meteospain works the same", {
     # filter NAs in maxrelativehumidity, as they are missing dates already
     # filtered in the new workflow
     dplyr::filter(!is.na(MaxRelativeHumidity))
-  
+
   expect_identical(nrow(meteo_completed_joined_old), nrow(meteo_completed_new))
   expect_identical(
     meteo_completed_joined_old$dates |>
@@ -96,7 +96,7 @@ test_that("reshaping and completing daily meteospain works the same", {
       sort() |>
       as.character()
   )
-  
+
   suppressWarnings(
     meteo_completed_joined_old_simplified <- meteo_completed_joined_old |>
       dplyr::arrange(dates, stationID) |>
@@ -104,7 +104,7 @@ test_that("reshaping and completing daily meteospain works the same", {
       dplyr::mutate(dplyr::across(where(is.numeric), round, digits = 3)) |>
       dplyr::as_tibble()
   )
-  
+
   suppressWarnings(
     meteo_completed_new_simplified <- meteo_completed_new |>
       dplyr::as_tibble() |>
@@ -112,7 +112,7 @@ test_that("reshaping and completing daily meteospain works the same", {
       dplyr::select(dplyr::one_of(sort(names(meteo_completed_joined_old)))) |>
       dplyr::mutate(dplyr::across(where(is.numeric), round, digits = 3))
   )
-  
+
   expect_identical(
     names(meteo_completed_joined_old_simplified),
     names(meteo_completed_new_simplified)
@@ -152,23 +152,23 @@ test_that("reshaping and completing subdaily meteospain works the same", {
   # subdaily
   subdaily_meteo_cat <- get_meteo_from(
     "meteocat",
-    meteocat_options("hourly", api_key = Sys.getenv('meteocat'))
+    meteocat_options("hourly", api_key = meteocat_key)
   )
   subdaily_meteo_aemet <- get_meteo_from(
     "aemet",
-    aemet_options("current_day", api_key = Sys.getenv('aemet'))
+    aemet_options("current_day", api_key = aemet_key)
   )
   subdaily_test <- subdaily_meteo_cat |>
     dplyr::bind_rows(subdaily_meteo_aemet) |>
     dplyr::arrange(timestamp)
-  
+
   # results are the expected classes for each, old and new
   expect_s4_class(
     (meteo_completed_old <- suppressWarnings(reshapemeteospain(subdaily_test))),
     "SpatialPointsMeteorology"
   )
   expect_s3_class(
-    (meteo_completed_new <- meteospain2meteoland(subdaily_test, complete = TRUE)),
+    (meteo_completed_new <- suppressWarnings(meteospain2meteoland(subdaily_test, complete = TRUE))),
     "sf"
   )
   # Mean Temperature is a vector of 2 in the old, one as NA beacuse is not
@@ -208,7 +208,7 @@ test_that("reshaping and completing subdaily meteospain works the same", {
       dplyr::filter(stationID == "4244X") |>
       dplyr::pull(Radiation)
   )
-  
+
   meteo_completed_joined_old <-
     purrr::imap(meteo_completed_old@data, ~ dplyr::mutate(.x, stationID = .y)) |>
     purrr::map(tibble::rownames_to_column, var = 'dates') |>
@@ -216,7 +216,7 @@ test_that("reshaping and completing subdaily meteospain works the same", {
     # filter NAs in maxrelativehumidity, as they are missing dates already
     # filtered in the new workflow
     dplyr::filter(!is.na(MaxRelativeHumidity))
-  
+
   expect_identical(nrow(meteo_completed_joined_old), nrow(meteo_completed_new))
   expect_identical(
     meteo_completed_joined_old$dates |>
@@ -235,7 +235,7 @@ test_that("reshaping and completing subdaily meteospain works the same", {
       sort() |>
       as.character()
   )
-  
+
   suppressWarnings(
     meteo_completed_joined_old_simplified <- meteo_completed_joined_old |>
       dplyr::arrange(dates, stationID) |>
@@ -243,7 +243,7 @@ test_that("reshaping and completing subdaily meteospain works the same", {
       dplyr::mutate(dplyr::across(where(is.numeric), round, digits = 3)) |>
       dplyr::as_tibble()
   )
-  
+
   suppressWarnings(
     meteo_completed_new_simplified <- meteo_completed_new |>
       dplyr::as_tibble() |>
@@ -251,7 +251,7 @@ test_that("reshaping and completing subdaily meteospain works the same", {
       dplyr::select(dplyr::one_of(sort(names(meteo_completed_joined_old)))) |>
       dplyr::mutate(dplyr::across(where(is.numeric), round, digits = 3))
   )
-  
+
   expect_identical(
     names(meteo_completed_joined_old_simplified),
     names(meteo_completed_new_simplified)
@@ -266,11 +266,12 @@ test_that("reshaping and completing subdaily meteospain works the same", {
     meteo_completed_new_simplified["MeanTemperature"],
     ignore_attr = TRUE
   )
-  expect_identical(
-    meteo_completed_joined_old_simplified["Radiation"],
-    meteo_completed_new_simplified["Radiation"],
-    ignore_attr = TRUE
-  )
+  # radiation is calculated in the new workflow, not in the old
+  # expect_identical(
+  #   meteo_completed_joined_old_simplified["Radiation"],
+  #   meteo_completed_new_simplified["Radiation"],
+  #   ignore_attr = TRUE
+  # )
   expect_true(
     nrow(dplyr::filter(
       meteo_completed_joined_old_simplified,
@@ -289,21 +290,22 @@ test_that("reshaping and completing subdaily meteospain works the same", {
 
 test_that("reshaping and completing worldmet works the same", {
   # worldmet cat
-  worldmet_stations <- worldmet::getMeta(lat = 42, lon = 0, n = 20, plot = FALSE, country = "SP")
-  meteo_test <-
-    worldmet::importNOAA(worldmet_stations$code, year = 2022, hourly = TRUE, n.cores = 6) |>
-    dplyr::filter(date < as.Date("2022-02-01"))
-  
+  # worldmet_stations <- worldmet::getMeta(lat = 42, lon = 0, n = 20, plot = FALSE, country = "SP")
+  # meteo_test <-
+  #   worldmet::importNOAA(worldmet_stations$code, year = 2022, hourly = TRUE, n.cores = 6) |>
+  #   dplyr::filter(date < as.Date("2022-02-01"))
+  meteo_test <- readRDS("worldmet_test.rds")
+
   # results are the expected classes for each, old and new
   expect_s4_class(
     (meteo_completed_old <- suppressWarnings(reshapeworldmet(meteo_test))),
     "SpatialPointsMeteorology"
   )
   expect_s3_class(
-    (meteo_completed_new <- worldmet2meteoland(meteo_test, complete = TRUE)),
+    (meteo_completed_new <- suppressWarnings(worldmet2meteoland(meteo_test, complete = TRUE))),
     "sf"
   )
-  
+
   # values are identical between old and new
   expect_identical(
     meteo_completed_old@data$`089220-99999`$MinTemperature,
@@ -329,13 +331,15 @@ test_that("reshaping and completing worldmet works the same", {
       dplyr::filter(stationID == "081120-99999") |>
       dplyr::pull(MaxRelativeHumidity)
   )
+  # error seems to be that latitude rad is calculate differently, and slope_rad and aspect_rad
+  # get as 0 in new and as NA in old????
   expect_identical(
     meteo_completed_old@data$`081120-99999`$Radiation,
     meteo_completed_new |>
       dplyr::filter(stationID == "081120-99999") |>
       dplyr::pull(Radiation)
   )
-  
+
   meteo_completed_joined_old <-
     purrr::imap(meteo_completed_old@data, ~ dplyr::mutate(.x, stationID = .y)) |>
     purrr::map(tibble::rownames_to_column, var = 'dates') |>
@@ -343,7 +347,7 @@ test_that("reshaping and completing worldmet works the same", {
     # filter NAs in maxrelativehumidity, as they are missing dates already
     # filtered in the new workflow
     dplyr::filter(!is.na(MaxRelativeHumidity))
-  
+
   expect_identical(nrow(meteo_completed_joined_old), nrow(meteo_completed_new))
   expect_identical(
     meteo_completed_joined_old$dates |>
@@ -362,7 +366,7 @@ test_that("reshaping and completing worldmet works the same", {
       sort() |>
       as.character()
   )
-  
+
   suppressWarnings(
     meteo_completed_joined_old_simplified <- meteo_completed_joined_old |>
       dplyr::arrange(dates, stationID) |>
@@ -370,7 +374,7 @@ test_that("reshaping and completing worldmet works the same", {
       dplyr::mutate(dplyr::across(where(is.numeric), round, digits = 3)) |>
       dplyr::as_tibble()
   )
-  
+
   suppressWarnings(
     meteo_completed_new_simplified <- meteo_completed_new |>
       dplyr::as_tibble() |>
@@ -378,7 +382,7 @@ test_that("reshaping and completing worldmet works the same", {
       dplyr::select(dplyr::one_of(sort(names(meteo_completed_joined_old)))) |>
       dplyr::mutate(dplyr::across(where(is.numeric), round, digits = 3))
   )
-  
+
   expect_identical(
     names(meteo_completed_joined_old_simplified),
     names(meteo_completed_new_simplified)

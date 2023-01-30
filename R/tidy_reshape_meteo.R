@@ -100,7 +100,7 @@ worldmet2meteoland <- function(meteo, complete = FALSE) {
     dplyr::filter(!is.na(.data$latitude)) |>
     # We convert to sf
     sf::st_as_sf(
-      coords = c("latitude", "longitude"), crs = sf::st_crs(4326)
+      coords = c("longitude", "latitude"), crs = sf::st_crs(4326)
     ) |>
     # And reshape
     .reshape_meteo(

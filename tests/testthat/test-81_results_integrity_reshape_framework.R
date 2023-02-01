@@ -6,28 +6,55 @@ skip_on_cran()
 library(meteospain)
 meteocat_key <- Sys.getenv("meteocat")
 if (meteocat_key == "") {
-  meteocat_key <- keyring::key_get("meteocat", keyring = "malditobarbudo")
+  meteocat_key <- try(keyring::key_get("meteocat", keyring = "malditobarbudo"))
 }
 aemet_key <- Sys.getenv("aemet")
 if (aemet_key == "") {
-  aemet_key <- keyring::key_get("aemet", keyring = "malditobarbudo")
+  aemet_key <- try(keyring::key_get("aemet", keyring = "malditobarbudo"))
 }
+
+# skip if no keys are found
+if (any(c(inherits(meteocat_key, 'try-error'), inherits(aemet_key, 'try-error')))) {
+  skip()
+}
+
+# daily
+meteo_cat <- get_meteo_from(
+  "meteocat",
+  meteocat_options("daily", as.Date("2022-01-01"), api_key = meteocat_key)
+)
+meteo_aemet <- get_meteo_from(
+  "aemet",
+  aemet_options("daily", as.Date("2022-01-01"), as.Date("2022-01-31"), api_key = aemet_key)
+)
+meteo_test <- meteo_cat |>
+  dplyr::bind_rows(meteo_aemet) |>
+  dplyr::arrange(timestamp)
+
+# subdaily
+subdaily_meteo_cat <- get_meteo_from(
+  "meteocat",
+  meteocat_options("hourly", api_key = meteocat_key)
+)
+subdaily_meteo_aemet <- get_meteo_from(
+  "aemet",
+  aemet_options("current_day", api_key = aemet_key)
+)
+subdaily_test <- subdaily_meteo_cat |>
+  dplyr::bind_rows(subdaily_meteo_aemet) |>
+  dplyr::arrange(timestamp)
+
+# worldmet cat
+# worldmet_stations <- worldmet::getMeta(lat = 42, lon = 0, n = 20, plot = FALSE, country = "SP")
+# meteo_test <-
+#   worldmet::importNOAA(worldmet_stations$code, year = 2022, hourly = TRUE, n.cores = 6) |>
+#   dplyr::filter(date < as.Date("2022-02-01"))
+meteo_test <- readRDS("worldmet_test.rds")
+
 
 ## start testing
 test_that("reshaping and completing daily meteospain works the same", {
-  # daily
-  meteo_cat <- get_meteo_from(
-    "meteocat",
-    meteocat_options("daily", as.Date("2022-01-01"), api_key = meteocat_key)
-  )
-  meteo_aemet <- get_meteo_from(
-    "aemet",
-    aemet_options("daily", as.Date("2022-01-01"), as.Date("2022-01-31"), api_key = aemet_key)
-  )
-  meteo_test <- meteo_cat |>
-    dplyr::bind_rows(meteo_aemet) |>
-    dplyr::arrange(timestamp)
-
+  
   # results are the expected classes for each, old and new
   expect_s4_class(
     (meteo_completed_old <- suppressWarnings(reshapemeteospain(meteo_test))),
@@ -149,19 +176,7 @@ test_that("reshaping and completing daily meteospain works the same", {
 })
 
 test_that("reshaping and completing subdaily meteospain works the same", {
-  # subdaily
-  subdaily_meteo_cat <- get_meteo_from(
-    "meteocat",
-    meteocat_options("hourly", api_key = meteocat_key)
-  )
-  subdaily_meteo_aemet <- get_meteo_from(
-    "aemet",
-    aemet_options("current_day", api_key = aemet_key)
-  )
-  subdaily_test <- subdaily_meteo_cat |>
-    dplyr::bind_rows(subdaily_meteo_aemet) |>
-    dplyr::arrange(timestamp)
-
+  
   # results are the expected classes for each, old and new
   expect_s4_class(
     (meteo_completed_old <- suppressWarnings(reshapemeteospain(subdaily_test))),
@@ -289,13 +304,7 @@ test_that("reshaping and completing subdaily meteospain works the same", {
 })
 
 test_that("reshaping and completing worldmet works the same", {
-  # worldmet cat
-  # worldmet_stations <- worldmet::getMeta(lat = 42, lon = 0, n = 20, plot = FALSE, country = "SP")
-  # meteo_test <-
-  #   worldmet::importNOAA(worldmet_stations$code, year = 2022, hourly = TRUE, n.cores = 6) |>
-  #   dplyr::filter(date < as.Date("2022-02-01"))
-  meteo_test <- readRDS("worldmet_test.rds")
-
+  
   # results are the expected classes for each, old and new
   expect_s4_class(
     (meteo_completed_old <- suppressWarnings(reshapeworldmet(meteo_test))),
@@ -343,7 +352,7 @@ test_that("reshaping and completing worldmet works the same", {
     purrr::map(tibble::rownames_to_column, var = 'dates') |>
     purrr::list_rbind() |>
     # filter NAs in minrelativehumidity, as they are missing dates already
-    # filtered in the new workflow (ot using maxRH because has been completed with 100)
+    # filtered in the new workflow (not using maxRH because has been completed with 100)
     dplyr::filter(!is.na(MinRelativeHumidity))
 
   expect_identical(nrow(meteo_completed_joined_old), nrow(meteo_completed_new))
@@ -409,10 +418,43 @@ test_that("reshaping and completing worldmet works the same", {
   )
   # antijoin between both should be no rows!!
   expect_true(
-    nrow(dplyr::anti_join(
-      dplyr::select(meteo_completed_joined_old_simplified, dates, stationID) |> dplyr::mutate(dates = as.Date(dates)),
-      dplyr::select(meteo_completed_new_simplified, dates, stationID),
-    ) |>
-      dplyr::left_join(meteo_completed_joined_old_simplified |> dplyr::mutate(dates = as.Date(dates)))) < 1
+    nrow(
+      dplyr::anti_join(
+        dplyr::select(meteo_completed_joined_old_simplified, dates, stationID) |>
+          dplyr::mutate(dates = as.Date(dates)),
+        dplyr::select(meteo_completed_new_simplified, dates, stationID),
+      ) |>
+        dplyr::left_join(
+          meteo_completed_joined_old_simplified |>
+            dplyr::mutate(dates = as.Date(dates))
+        )
+    ) < 1
   )
 })
+
+# interpolation framework -------------------------------------------------
+# meteo_completed_old <- suppressWarnings(reshapemeteospain(meteo_test))
+# meteo_completed_new <- meteospain2meteoland(meteo_test, complete = TRUE)
+# 
+# elevation <- meteo_test |>
+#   dplyr::group_by(.data$station_id) |>
+#   dplyr::summarise(elevation = mean(altitude))
+# 
+# sum(names(meteo_completed_old@data) != elevation$station_id)
+# 
+# interpolator_old <- MeteorologyInterpolationData(
+#     points = meteo_completed_old,
+#     elevation = as.numeric(elevation$elevation)
+#   )
+# 
+# interpolator_new <- with_meteo(meteo_completed_new) |>
+#   create_meteo_interpolator()
+# 
+# points_old <- as(points_to_interpolate_example, "Spatial")
+# points_topography <- SpatialPointsTopography(
+#   as(points_old,"SpatialPoints"), elevation = points_old$elevation,
+#   slope = points_old$slope, aspect = points_old$aspect
+# )
+# 
+# interpolated_data_old <- interpolationpoints(interpolator_old, points_topography)
+# interpolated_data_new <- interpolate_data(points_to_interpolate_example, interpolator_new)

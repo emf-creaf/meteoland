@@ -15,7 +15,7 @@ if (aemet_key == "") {
 
 # skip if no keys are found
 if (any(c(inherits(meteocat_key, 'try-error'), inherits(aemet_key, 'try-error')))) {
-  skip()
+  skip("No keys for aemet and/or meteocat")
 }
 
 # daily
@@ -49,12 +49,12 @@ subdaily_test <- subdaily_meteo_cat |>
 # meteo_test <-
 #   worldmet::importNOAA(worldmet_stations$code, year = 2022, hourly = TRUE, n.cores = 6) |>
 #   dplyr::filter(date < as.Date("2022-02-01"))
-meteo_test <- readRDS("worldmet_test.rds")
+meteo_worldmet_test <- readRDS("worldmet_test.rds")
 
 
 ## start testing
 test_that("reshaping and completing daily meteospain works the same", {
-  
+
   # results are the expected classes for each, old and new
   expect_s4_class(
     (meteo_completed_old <- suppressWarnings(reshapemeteospain(meteo_test))),
@@ -176,7 +176,7 @@ test_that("reshaping and completing daily meteospain works the same", {
 })
 
 test_that("reshaping and completing subdaily meteospain works the same", {
-  
+
   # results are the expected classes for each, old and new
   expect_s4_class(
     (meteo_completed_old <- suppressWarnings(reshapemeteospain(subdaily_test))),
@@ -304,14 +304,14 @@ test_that("reshaping and completing subdaily meteospain works the same", {
 })
 
 test_that("reshaping and completing worldmet works the same", {
-  
+
   # results are the expected classes for each, old and new
   expect_s4_class(
-    (meteo_completed_old <- suppressWarnings(reshapeworldmet(meteo_test))),
+    (meteo_completed_old <- suppressWarnings(reshapeworldmet(meteo_worldmet_test))),
     "SpatialPointsMeteorology"
   )
   expect_s3_class(
-    (meteo_completed_new <- suppressWarnings(worldmet2meteoland(meteo_test, complete = TRUE))),
+    (meteo_completed_new <- suppressWarnings(worldmet2meteoland(meteo_worldmet_test, complete = TRUE))),
     "sf"
   )
 
@@ -431,30 +431,3 @@ test_that("reshaping and completing worldmet works the same", {
     ) < 1
   )
 })
-
-# interpolation framework -------------------------------------------------
-# meteo_completed_old <- suppressWarnings(reshapemeteospain(meteo_test))
-# meteo_completed_new <- meteospain2meteoland(meteo_test, complete = TRUE)
-# 
-# elevation <- meteo_test |>
-#   dplyr::group_by(.data$station_id) |>
-#   dplyr::summarise(elevation = mean(altitude))
-# 
-# sum(names(meteo_completed_old@data) != elevation$station_id)
-# 
-# interpolator_old <- MeteorologyInterpolationData(
-#     points = meteo_completed_old,
-#     elevation = as.numeric(elevation$elevation)
-#   )
-# 
-# interpolator_new <- with_meteo(meteo_completed_new) |>
-#   create_meteo_interpolator()
-# 
-# points_old <- as(points_to_interpolate_example, "Spatial")
-# points_topography <- SpatialPointsTopography(
-#   as(points_old,"SpatialPoints"), elevation = points_old$elevation,
-#   slope = points_old$slope, aspect = points_old$aspect
-# )
-# 
-# interpolated_data_old <- interpolationpoints(interpolator_old, points_topography)
-# interpolated_data_new <- interpolate_data(points_to_interpolate_example, interpolator_new)

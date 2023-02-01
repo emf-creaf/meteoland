@@ -331,8 +331,6 @@ test_that("reshaping and completing worldmet works the same", {
       dplyr::filter(stationID == "081120-99999") |>
       dplyr::pull(MaxRelativeHumidity)
   )
-  # error seems to be that latitude rad is calculate differently, and slope_rad and aspect_rad
-  # get as 0 in new and as NA in old????
   expect_identical(
     meteo_completed_old@data$`081120-99999`$Radiation,
     meteo_completed_new |>
@@ -344,9 +342,9 @@ test_that("reshaping and completing worldmet works the same", {
     purrr::imap(meteo_completed_old@data, ~ dplyr::mutate(.x, stationID = .y)) |>
     purrr::map(tibble::rownames_to_column, var = 'dates') |>
     purrr::list_rbind() |>
-    # filter NAs in maxrelativehumidity, as they are missing dates already
-    # filtered in the new workflow
-    dplyr::filter(!is.na(MaxRelativeHumidity))
+    # filter NAs in minrelativehumidity, as they are missing dates already
+    # filtered in the new workflow (ot using maxRH because has been completed with 100)
+    dplyr::filter(!is.na(MinRelativeHumidity))
 
   expect_identical(nrow(meteo_completed_joined_old), nrow(meteo_completed_new))
   expect_identical(
@@ -387,6 +385,7 @@ test_that("reshaping and completing worldmet works the same", {
     names(meteo_completed_joined_old_simplified),
     names(meteo_completed_new_simplified)
   )
+  # errors here seems to be because stationID is a factor
   expect_identical(
     meteo_completed_joined_old_simplified["MinRelativeHumidity"],
     meteo_completed_new_simplified["MinRelativeHumidity"],

@@ -157,6 +157,8 @@ worldmet2meteoland <- function(meteo, complete = FALSE) {
     units::drop_units() |>
     # rename vars
     .rename_meteo_vars(dictionary) |>
+    # before anything else, we need to convert stationID to character (worldmet returns a factor)
+    dplyr::mutate(stationID = as.character(.data$stationID)) |>
     # aggregate subdaily if needed
     .aggregate_subdaily_meteo() |>
     # fix station geometries if needed (meteospain)

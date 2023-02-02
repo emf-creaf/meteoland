@@ -420,13 +420,86 @@ test_that("interpolation cross validation results are the same", {
     })
 
   # station stats
-  names(interpolation_cv_new$station_stats)
-  interpolation_cv_new$station_stats |> dplyr::pull(MinTemperature_station_bias)
-  interpolation_cv_old$stations |> dplyr::as_tibble() |> dplyr::pull(MinTemperature.Bias)
-  # expect_identical(names(interpolation_cv_old), names(interpolation_cv_new))
-  # expect_equal(interpolation_cv_old$r2, interpolation_cv_new$r2)
+  names(interpolation_cv_new$station_stats)[-c(1:2)] |>
+    purrr::set_names(c(
+      "MinTemperature.Bias", "MaxTemperature.Bias", "TemperatureRange.Bias", "RelativeHumidity.Bias",
+      "Radiation.Bias",
+      "MinTemperature.MAE", "MaxTemperature.MAE", "TemperatureRange.MAE", "RelativeHumidity.MAE",
+      "Radiation.MAE",
+      "TotalPrec.Obs", "TotalPrec.Pred", "TotalPrec.Bias", "TotalPrec.RelBias",
+      "PrecDays.Bias", "PrecDays.RelBias", "PrecFreq.Obs", "PrecFreq.Pred"
+    )) |>
+    purrr::iwalk(
+      .f = function(variable_new, variable_old) {
+        if (variable_new %in% c("Radiation_station_bias", "Radiation_station_mae")) {
+          expect_equal(
+            interpolation_cv_old$stations[[variable_old]],
+            interpolation_cv_new$station_stats[[variable_new]],
+            tolerance = 0.2
+          )
+        } else {
+          expect_equal(
+            interpolation_cv_old$stations[[variable_old]],
+            interpolation_cv_new$station_stats[[variable_new]]
+          )
+        }
+      }
+    )
 
+  names(interpolation_cv_new$dates_stats)[-1] |>
+    purrr::set_names(c(
+      "MinTemperature.Bias", "MaxTemperature.Bias", "TemperatureRange.Bias", "RelativeHumidity.Bias",
+      "Radiation.Bias",
+      "MinTemperature.MAE", "MaxTemperature.MAE", "TemperatureRange.MAE", "RelativeHumidity.MAE",
+      "Radiation.MAE",
+      "TotalPrec.Obs", "TotalPrec.Pred", "TotalPrec.Bias", "TotalPrec.RelBias",
+      "PrecStations.Bias", "PrecStations.RelBias", "PrecFreq.Obs", "PrecFreq.Pred"
+    )) |>
+    purrr::iwalk(
+      .f = function(variable_new, variable_old) {
+        if (variable_new %in% c("Radiation_date_bias", "Radiation_date_mae")) {
+          expect_equal(
+            interpolation_cv_old$dates[[variable_old]],
+            interpolation_cv_new$dates_stats[[variable_new]],
+            tolerance = 0.2
+          )
+        } else {
+          expect_equal(
+            interpolation_cv_old$dates[[variable_old]],
+            interpolation_cv_new$dates_stats[[variable_new]]
+          )
+        }
+      }
+    )
 
-
-
+  names(interpolation_cv_new$errors)[-c(1:3, 16:21)] |>
+    purrr::set_names(c(
+      "MinTemperatureError", "MaxTemperatureError", "TemperatureRangeError", "RelativeHumidityError",
+      "RadiationError", "PrecipitationError",
+      "MinTemperature", "MaxTemperature", "TemperatureRange", "RelativeHumidity",
+      "Radiation", "Precipitation"
+    )) |>
+    purrr::iwalk(
+      .f = function(variable_new, variable_old) {
+        # random date for each variable and each test, all dates will be tested at some point
+        random_date <- sample(interpolation_cv_new$errors$dates |> unique() |> as.character(), 1)
+        if (variable_new %in% c("Radiation_error", "Radiation_predicted")) {
+          expect_equal(
+            interpolation_cv_old[[variable_old]][,random_date] |> as.numeric(),
+            dplyr::filter(interpolation_cv_new$errors, as.character(dates) == random_date) |>
+              dplyr::pull(variable_new) |>
+              as.numeric(),
+            tolerance = 0.1
+          )
+        } else {
+          expect_identical(
+            interpolation_cv_old[[variable_old]][,random_date] |> as.numeric(),
+            dplyr::filter(interpolation_cv_new$errors, as.character(dates) == random_date) |>
+              dplyr::pull(variable_new) |>
+              as.numeric()
+          )
+        }
+      }
+    )
 })
+

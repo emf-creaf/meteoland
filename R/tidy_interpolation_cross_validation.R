@@ -216,23 +216,37 @@
       TotalPrecipitation_station_observed = sum(.data$Precipitation_observed, na.rm = TRUE),
       TotalPrecipitation_station_predicted = sum(.data$Precipitation_predicted, na.rm = TRUE),
       TotalPrecipitation_station_bias =
-        sum(.data$Precipitation_observed, na.rm = TRUE) -
-        sum(.data$Precipitation_predicted, na.rm = TRUE),
+        sum(.data$Precipitation_predicted, na.rm = TRUE) -
+        sum(.data$Precipitation_observed, na.rm = TRUE),
       TotalPrecipitation_station_relative_bias = 100*(
-        sum(.data$Precipitation_observed, na.rm = TRUE) -
-          sum(.data$Precipitation_predicted, na.rm = TRUE)
+        sum(.data$Precipitation_predicted, na.rm = TRUE) -
+          sum(.data$Precipitation_observed, na.rm = TRUE)
       ) / sum(.data$Precipitation_observed, na.rm = TRUE),
       DaysPrecipitation_station_bias =
-        sum(.data$Precipitation_observed > 0, na.rm = TRUE) -
-        sum(.data$Precipitation_predicted > 0, na.rm = TRUE),
+        sum(.data$Precipitation_predicted > 0, na.rm = TRUE) -
+        sum(.data$Precipitation_observed > 0, na.rm = TRUE),
       DaysPrecipitation_station_relative_bias = 100*(
-        sum(.data$Precipitation_observed > 0, na.rm = TRUE) -
-          sum(.data$Precipitation_predicted > 0, na.rm = TRUE)
+        sum(.data$Precipitation_predicted > 0, na.rm = TRUE) -
+          sum(.data$Precipitation_observed > 0, na.rm = TRUE)
       ) / sum(.data$Precipitation_observed > 0, na.rm = TRUE),
       FreqPrecipitation_station_observed =
         mean(.data$Precipitation_observed > 0, na.rm = TRUE),
       FreqPrecipitation_station_predicted =
         mean(.data$Precipitation_predicted > 0, na.rm = TRUE)
+    ) |>
+    dplyr::mutate(
+      TotalPrecipitation_station_observed = dplyr::if_else(
+        TotalPrecipitation_station_observed == 0, NA_real_, TotalPrecipitation_station_observed
+      ),
+      TotalPrecipitation_station_predicted = dplyr::if_else(
+        TotalPrecipitation_station_predicted == 0, NA_real_, TotalPrecipitation_station_predicted
+      ),
+      TotalPrecipitation_station_bias = dplyr::if_else(
+        TotalPrecipitation_station_bias == 0, NA_real_, TotalPrecipitation_station_bias
+      ),
+      TotalPrecipitation_station_relative_bias = dplyr::if_else(
+        TotalPrecipitation_station_relative_bias == 0, NA_real_, TotalPrecipitation_station_relative_bias
+      )
     )
 
   dates_stats <- total_errors |>
@@ -251,23 +265,37 @@
       TotalPrecipitation_date_observed = sum(.data$Precipitation_observed, na.rm = TRUE),
       TotalPrecipitation_date_predicted = sum(.data$Precipitation_predicted, na.rm = TRUE),
       TotalPrecipitation_date_bias =
-        sum(.data$Precipitation_observed, na.rm = TRUE) -
-        sum(.data$Precipitation_predicted, na.rm = TRUE),
+        sum(.data$Precipitation_predicted, na.rm = TRUE) -
+        sum(.data$Precipitation_observed, na.rm = TRUE),
       TotalPrecipitation_date_relative_bias = 100*(
-        sum(.data$Precipitation_observed, na.rm = TRUE) -
-          sum(.data$Precipitation_predicted, na.rm = TRUE)
+        sum(.data$Precipitation_predicted, na.rm = TRUE) -
+          sum(.data$Precipitation_observed, na.rm = TRUE)
       ) / sum(.data$Precipitation_observed, na.rm = TRUE),
-      DaysPrecipitation_date_bias =
-        sum(.data$Precipitation_observed > 0, na.rm = TRUE) -
-        sum(.data$Precipitation_predicted > 0, na.rm = TRUE),
-      DaysPrecipitation_date_relative_bias = 100*(
-        sum(.data$Precipitation_observed > 0, na.rm = TRUE) -
-          sum(.data$Precipitation_predicted > 0, na.rm = TRUE)
+      StationsPrecipitation_date_bias =
+        sum(.data$Precipitation_predicted > 0, na.rm = TRUE) -
+        sum(.data$Precipitation_observed > 0, na.rm = TRUE),
+      StationsPrecipitation_date_relative_bias = 100*(
+        sum(.data$Precipitation_predicted > 0, na.rm = TRUE) -
+          sum(.data$Precipitation_observed > 0, na.rm = TRUE)
       ) / sum(.data$Precipitation_observed > 0, na.rm = TRUE),
       FreqPrecipitation_date_observed =
         mean(.data$Precipitation_observed > 0, na.rm = TRUE),
       FreqPrecipitation_date_predicted =
         mean(.data$Precipitation_predicted > 0, na.rm = TRUE)
+    ) |>
+    dplyr::mutate(
+      TotalPrecipitation_date_observed = dplyr::if_else(
+        TotalPrecipitation_date_observed == 0, NA_real_, TotalPrecipitation_date_observed
+      ),
+      TotalPrecipitation_date_predicted = dplyr::if_else(
+        TotalPrecipitation_date_predicted == 0, NA_real_, TotalPrecipitation_date_predicted
+      ),
+      TotalPrecipitation_date_bias = dplyr::if_else(
+        TotalPrecipitation_date_bias == 0, NA_real_, TotalPrecipitation_date_bias
+      ),
+      TotalPrecipitation_date_relative_bias = dplyr::if_else(
+        TotalPrecipitation_date_relative_bias == 0, NA_real_, TotalPrecipitation_date_relative_bias
+      )
     )
 
   return(list(

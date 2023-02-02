@@ -34,61 +34,360 @@ meteo_test <- meteo_cat |>
 meteo_completed_old <- suppressWarnings(reshapemeteospain(meteo_test))
 meteo_completed_new <- meteospain2meteoland(meteo_test, complete = TRUE)
 
+elevation <- meteo_test |>
+  dplyr::group_by(.data$station_id) |>
+  dplyr::summarise(elevation = mean(altitude))
+
+suppressWarnings(interpolator_old <- MeteorologyInterpolationData(
+  points = meteo_completed_old,
+  elevation = as.numeric(elevation$elevation)
+))
+
+suppressWarnings(interpolator_new <- with_meteo(meteo_completed_new) |>
+                   create_meteo_interpolator())
+
 # interpolation framework -------------------------------------------------
 test_that("interpolator object has the same data", {
-  elevation <- meteo_test |>
-    dplyr::group_by(.data$station_id) |>
-    dplyr::summarise(elevation = mean(altitude))
 
   expect_true(sum(names(meteo_completed_old@data) != elevation$station_id) < 1)
   expect_s4_class(
-    suppressWarnings(interpolator_old <- MeteorologyInterpolationData(
-      points = meteo_completed_old,
-      elevation = as.numeric(elevation$elevation)
-    )), "MeteorologyInterpolationData"
+    interpolator_old, "MeteorologyInterpolationData"
   )
   expect_s3_class(
-    suppressWarnings(interpolator_new <- with_meteo(meteo_completed_new) |>
-      create_meteo_interpolator()), "stars"
+    interpolator_new, "stars"
   )
 
+  # expect all variables in both interpolators are the same values
+  names(interpolator_new) |>
+    # topography is not checked here.
+    # Also, Temperature is a new addition in the new workflow, so is not present in the old
+    # interpolator.
+    # Also WindDirection is wrongly calculated in the old workflow.
+    purrr::walk(.f = function(variable) {
+      if (variable %in% c('elevation', 'aspect', 'slope', 'Temperature', "WindDirection")) {
+        return(invisible(TRUE))
+      }
+      expect_true(
+        abs(sum(t(slot(interpolator_old, variable)) - interpolator_new[[variable]], na.rm = TRUE)) == 0
+      )
+      # print(variable)
+      # print(sum(t(slot(interpolator_old, variable)) - interpolator_new[[variable]], na.rm = TRUE))
+    })
 
+  expect_identical(
+    interpolator_old@dates |> as.character(),
+    stars::st_get_dimension_values(interpolator_new, "date") |> as.character()
+  )
 
+  names(attributes(interpolator_old)$params) |>
+    purrr::walk(.f = function(param) {
+      if (param != "initial_Rp") {
+        expect_true(
+          attributes(interpolator_old)$params[[param]] == attributes(interpolator_new)$params[[param]]
+        )
+      } else {
+        # Due to implementation differences, initial_Rp is different, so we expect it to be different
+        expect_false(
+          attributes(interpolator_old)$params[[param]] == attributes(interpolator_new)$params[[param]]
+        )
+      }
+      # print(param)
+      # print(attributes(interpolator_old)$params[[param]] == attributes(interpolator_new)$params[[param]])
+    })
 
-  ## Interpolator data
-  # names(interpolator_new)[!names(interpolator_new) %in% c('elevation', 'aspect', 'slope', 'Temperature')] |>
-  #   purrr::walk(.f = function(variable) {
-  #     print(variable)
-  #     print(sum(t(slot(interpolator_old, variable)) - interpolator_new[[variable]], na.rm = TRUE))
-  #   })
-  # ## Interpolator dates
-  # all.equal(interpolator_old@dates |> as.POSIXct(), stars::st_get_dimension_values(interpolator_new, "date"))
-  # ## Interpolator stations
-  # all.equal(interpolator_old@coords, stars::st_get_dimension_values(interpolator_new, 'station') |> sf::st_coordinates())
-  # ## Interpolator params
-  # names(attributes(interpolator_old)$params) |>
-  #   purrr::walk(.f = function(param) {
-  #     print(param)
-  #     print(attributes(interpolator_old)$params[[param]] == attributes(interpolator_new)$params[[param]])
-  #   })
-  # attributes(interpolator_old)$params[["initial_Rp"]]
-  # attributes(interpolator_new)$params[["initial_Rp"]]
-
-
-
-
+  # expect coordinates are the same. We convert a numeric to avoid differences in names
+  expect_identical(
+    as.numeric(c(interpolator_old@coords[,1], interpolator_old@coords[,2])),
+    as.numeric(c(
+      sf::st_coordinates(stars::st_get_dimension_values(interpolator_new, 'station'))[,1],
+      sf::st_coordinates(stars::st_get_dimension_values(interpolator_new, 'station'))[,2]
+    ))
+  )
 })
 
-
-
-
-
-
-points_old <- as(points_to_interpolate_example, "Spatial")
-points_topography <- SpatialPointsTopography(
-  as(points_old,"SpatialPoints"), elevation = points_old$elevation,
-  slope = points_old$slope, aspect = points_old$aspect
+# To check results, we need to modify initial_Rp for both interpolators have the same data
+interpolator_new <- set_interpolation_params(
+  interpolator_new,
+  list(initial_Rp = attr(interpolator_old, "params")$initial_Rp),
+  verbose = FALSE
 )
 
-interpolated_data_old <- interpolationpoints(interpolator_old, points_topography)
-interpolated_data_new <- interpolate_data(points_to_interpolate_example, interpolator_new)
+test_that("interpolation results are the same", {
+
+  # interpolation process for both
+  points_old <- as(points_to_interpolate_example, "Spatial")
+  points_topography <- suppressWarnings(
+    SpatialPointsTopography(
+      as(points_old,"SpatialPoints"), elevation = points_old$elevation,
+      slope = points_old$slope, aspect = points_old$aspect
+    )
+  )
+
+  interpolated_data_old <- suppressWarnings(
+    interpolationpoints(interpolator_old, points_topography, verbose = FALSE)
+  )
+  interpolated_data_new <- suppressWarnings(
+    interpolate_data(points_to_interpolate_example, interpolator_new, verbose = FALSE)
+  )
+
+  # testing differences in the interpolated data for each variable
+  names(interpolated_data_old@data[[1]]) |>
+    purrr::walk(.f = function(variable) {
+      # No PET in the new workflow, and WindDirection is not corectly calculated in the old workflow
+      if (variable %in% c('PET', "WindDirection")) {
+        return(invisible(TRUE))
+      }
+      expect_true(
+        mean(
+          interpolated_data_old@data[[1]][[variable]] -
+            (interpolated_data_new |>
+               dplyr::slice(1) |>
+               tidyr::unnest(cols = interpolated_data))[[variable]],
+          na.rm = TRUE
+        ) == 0
+      )
+      expect_true(
+        sd(
+          interpolated_data_old@data[[1]][[variable]] -
+            (interpolated_data_new |>
+               dplyr::slice(1) |>
+               tidyr::unnest(cols = interpolated_data))[[variable]],
+          na.rm = TRUE
+        ) == 0
+      )
+      # print(variable)
+      # print(mean(
+      #   interpolated_data_old@data[[1]][[variable]] - (interpolated_data_new |> dplyr::slice(1) |> tidyr::unnest(cols = interpolated_data))[[variable]],
+      #   na.rm = TRUE
+      # ))
+      # print(sd(
+      #   interpolated_data_old@data[[1]][[variable]] - (interpolated_data_new |> dplyr::slice(1) |> tidyr::unnest(cols = interpolated_data))[[variable]],
+      #   na.rm = TRUE
+      # ))
+    })
+})
+
+test_that("interpolator calibration returns same parameters", {
+
+  calibration_min_temperature_new <- interpolator_calibration(
+    interpolator_new, variable = "MinTemperature",
+    N_seq = c(10, 15),
+    alpha_seq = c(5, 6),
+    verbose = FALSE
+  )
+
+  calibration_min_temperature_old <- suppressWarnings(
+    interpolation.calibration(
+      interpolator_old, variable = "Tmin",
+      N_seq = c(10, 15),
+      alpha_seq = c(5, 6),
+      verbose = FALSE
+    )
+  )
+  expect_type(calibration_min_temperature_old, "list")
+  expect_type(calibration_min_temperature_new, "list")
+  expect_identical(
+    tolower(names(calibration_min_temperature_old)),
+    tolower(names(calibration_min_temperature_new))
+  )
+  expect_identical(
+    calibration_min_temperature_old$minMAE, calibration_min_temperature_new$minMAE,
+  )
+  expect_identical(
+    calibration_min_temperature_old$N, calibration_min_temperature_new$N,
+  )
+  expect_identical(
+    calibration_min_temperature_old$alpha, calibration_min_temperature_new$alpha,
+  )
+  expect_identical(
+    calibration_min_temperature_old$Observed, calibration_min_temperature_new$observed,
+  )
+  expect_identical(
+    calibration_min_temperature_old$Predicted, calibration_min_temperature_new$predicted,
+  )
+
+  calibration_max_temperature_new <- interpolator_calibration(
+    interpolator_new, variable = "MaxTemperature",
+    N_seq = c(10, 15),
+    alpha_seq = c(5, 6),
+    verbose = FALSE
+  )
+
+  calibration_max_temperature_old <- suppressWarnings(
+    interpolation.calibration(
+      interpolator_old, variable = "Tmax",
+      N_seq = c(10, 15),
+      alpha_seq = c(5, 6),
+      verbose = FALSE
+    )
+  )
+  expect_type(calibration_max_temperature_old, "list")
+  expect_type(calibration_max_temperature_new, "list")
+  expect_identical(
+    tolower(names(calibration_max_temperature_old)),
+    tolower(names(calibration_max_temperature_new))
+  )
+  expect_identical(
+    calibration_max_temperature_old$minMAE, calibration_max_temperature_new$minMAE,
+  )
+  expect_identical(
+    calibration_max_temperature_old$N, calibration_max_temperature_new$N,
+  )
+  expect_identical(
+    calibration_max_temperature_old$alpha, calibration_max_temperature_new$alpha,
+  )
+  expect_identical(
+    calibration_max_temperature_old$Observed, calibration_max_temperature_new$observed,
+  )
+  expect_identical(
+    calibration_max_temperature_old$Predicted, calibration_max_temperature_new$predicted,
+  )
+
+  calibration_dew_temperature_new <- interpolator_calibration(
+    interpolator_new, variable = "DewTemperature",
+    N_seq = c(10, 15),
+    alpha_seq = c(5, 6),
+    verbose = FALSE
+  )
+
+  calibration_dew_temperature_old <- suppressWarnings(
+    interpolation.calibration(
+      interpolator_old, variable = "Tdew",
+      N_seq = c(10, 15),
+      alpha_seq = c(5, 6),
+      verbose = FALSE
+    )
+  )
+  expect_type(calibration_dew_temperature_old, "list")
+  expect_type(calibration_dew_temperature_new, "list")
+  expect_identical(
+    tolower(names(calibration_dew_temperature_old)),
+    tolower(names(calibration_dew_temperature_new))
+  )
+  expect_identical(
+    calibration_dew_temperature_old$minMAE, calibration_dew_temperature_new$minMAE,
+  )
+  expect_identical(
+    calibration_dew_temperature_old$N, calibration_dew_temperature_new$N,
+  )
+  expect_identical(
+    calibration_dew_temperature_old$alpha, calibration_dew_temperature_new$alpha,
+  )
+  expect_identical(
+    calibration_dew_temperature_old$Observed, calibration_dew_temperature_new$observed,
+  )
+  expect_identical(
+    calibration_dew_temperature_old$Predicted, calibration_dew_temperature_new$predicted,
+  )
+
+  calibration_precipitation_new <- interpolator_calibration(
+    interpolator_new, variable = "Precipitation",
+    N_seq = c(10, 15),
+    alpha_seq = c(5, 6),
+    verbose = FALSE
+  )
+
+  calibration_precipitation_old <- suppressWarnings(
+    interpolation.calibration(
+      interpolator_old, variable = "Prec",
+      N_seq = c(10, 15),
+      alpha_seq = c(5, 6),
+      verbose = FALSE
+    )
+  )
+  expect_type(calibration_precipitation_old, "list")
+  expect_type(calibration_precipitation_new, "list")
+  expect_identical(
+    tolower(names(calibration_precipitation_old)),
+    tolower(names(calibration_precipitation_new))
+  )
+  expect_identical(
+    calibration_precipitation_old$minMAE, calibration_precipitation_new$minMAE,
+  )
+  expect_identical(
+    calibration_precipitation_old$N, calibration_precipitation_new$N,
+  )
+  expect_identical(
+    calibration_precipitation_old$alpha, calibration_precipitation_new$alpha,
+  )
+  expect_identical(
+    calibration_precipitation_old$Observed, calibration_precipitation_new$observed,
+  )
+  expect_identical(
+    calibration_precipitation_old$Predicted, calibration_precipitation_new$predicted,
+  )
+
+  calibration_precip_event_new <- interpolator_calibration(
+    interpolator_new, variable = "PrecipitationEvent",
+    N_seq = c(10, 15),
+    alpha_seq = c(5, 6),
+    verbose = FALSE
+  )
+
+  calibration_precip_event_old <- suppressWarnings(
+    interpolation.calibration(
+      interpolator_old, variable = "PrecEvent",
+      N_seq = c(10, 15),
+      alpha_seq = c(5, 6),
+      verbose = FALSE
+    )
+  )
+  expect_type(calibration_precip_event_old, "list")
+  expect_type(calibration_precip_event_new, "list")
+  expect_identical(
+    tolower(names(calibration_precip_event_old)),
+    tolower(names(calibration_precip_event_new))
+  )
+  expect_identical(
+    calibration_precip_event_old$minMAE, calibration_precip_event_new$minMAE,
+  )
+  expect_identical(
+    calibration_precip_event_old$N, calibration_precip_event_new$N,
+  )
+  expect_identical(
+    calibration_precip_event_old$alpha, calibration_precip_event_new$alpha,
+  )
+  expect_identical(
+    calibration_precip_event_old$Observed, calibration_precip_event_new$observed,
+  )
+  expect_identical(
+    calibration_precip_event_old$Predicted, calibration_precip_event_new$predicted,
+  )
+
+  calibration_precip_amount_new <- interpolator_calibration(
+    interpolator_new, variable = "PrecipitationAmount",
+    N_seq = c(10, 15),
+    alpha_seq = c(5, 6),
+    verbose = FALSE
+  )
+
+  calibration_precip_amount_old <- suppressWarnings(
+    interpolation.calibration(
+      interpolator_old, variable = "PrecAmount",
+      N_seq = c(10, 15),
+      alpha_seq = c(5, 6),
+      verbose = FALSE
+    )
+  )
+  expect_type(calibration_precip_amount_old, "list")
+  expect_type(calibration_precip_amount_new, "list")
+  expect_identical(
+    tolower(names(calibration_precip_amount_old)),
+    tolower(names(calibration_precip_amount_new))
+  )
+  expect_identical(
+    calibration_precip_amount_old$minMAE, calibration_precip_amount_new$minMAE,
+  )
+  expect_identical(
+    calibration_precip_amount_old$N, calibration_precip_amount_new$N,
+  )
+  expect_identical(
+    calibration_precip_amount_old$alpha, calibration_precip_amount_new$alpha,
+  )
+  expect_identical(
+    calibration_precip_amount_old$Observed, calibration_precip_amount_new$observed,
+  )
+  expect_identical(
+    calibration_precip_amount_old$Predicted, calibration_precip_amount_new$predicted,
+  )
+})

@@ -391,3 +391,42 @@ test_that("interpolator calibration returns same parameters", {
     calibration_precip_amount_old$Predicted, calibration_precip_amount_new$predicted,
   )
 })
+
+test_that("interpolation cross validation results are the same", {
+
+  interpolation_cv_old <- suppressWarnings(
+    interpolation.cv(interpolator_old, verbose = FALSE)
+  )
+  interpolation_cv_new <- suppressWarnings(
+    interpolation_cross_validation(interpolator_new, verbose = FALSE)
+  )
+
+  # r2 slot
+  names(interpolation_cv_new$r2) |>
+    purrr::walk(.f = function(variable) {
+      if (variable == "RangeTemperature") {
+        expect_equal(interpolation_cv_old$r2$TemperatureRange, interpolation_cv_new$r2$RangeTemperature)
+      } else {
+        if (variable == "Radiation") {
+          # radiation, due to different calculations shows a bigger difference
+          expect_equal(
+            interpolation_cv_old$r2$Radiation, interpolation_cv_new$r2$Radiation,
+            tolerance = 0.1
+          )
+        } else {
+          expect_equal(interpolation_cv_old$r2[[variable]], interpolation_cv_new$r2[[variable]])
+        }
+      }
+    })
+
+  # station stats
+  names(interpolation_cv_new$station_stats)
+  interpolation_cv_new$station_stats |> dplyr::pull(MinTemperature_station_bias)
+  interpolation_cv_old$stations |> dplyr::as_tibble() |> dplyr::pull(MinTemperature.Bias)
+  # expect_identical(names(interpolation_cv_old), names(interpolation_cv_new))
+  # expect_equal(interpolation_cv_old$r2, interpolation_cv_new$r2)
+
+
+
+
+})

@@ -246,6 +246,24 @@
       ),
       TotalPrecipitation_station_relative_bias = dplyr::if_else(
         TotalPrecipitation_station_relative_bias == 0, NA_real_, TotalPrecipitation_station_relative_bias
+      ),
+      TotalPrecipitation_station_bias = dplyr::if_else(
+        is.na(TotalPrecipitation_station_predicted), NA_real_, TotalPrecipitation_station_bias
+      ),
+      TotalPrecipitation_station_relative_bias = dplyr::if_else(
+        is.na(TotalPrecipitation_station_predicted), NA_real_, TotalPrecipitation_station_relative_bias
+      ),
+      DaysPrecipitation_station_bias = dplyr::if_else(
+        is.na(TotalPrecipitation_station_predicted), NA_integer_, DaysPrecipitation_station_bias
+      ),
+      DaysPrecipitation_station_relative_bias = dplyr::if_else(
+        is.na(TotalPrecipitation_station_predicted), NA_real_, DaysPrecipitation_station_relative_bias
+      ),
+      FreqPrecipitation_station_observed = dplyr::if_else(
+        is.na(TotalPrecipitation_station_observed), NA_real_, FreqPrecipitation_station_observed
+      ),
+      FreqPrecipitation_station_predicted = dplyr::if_else(
+        is.na(TotalPrecipitation_station_predicted), NA_real_, FreqPrecipitation_station_predicted
       )
     )
 
@@ -295,6 +313,24 @@
       ),
       TotalPrecipitation_date_relative_bias = dplyr::if_else(
         TotalPrecipitation_date_relative_bias == 0, NA_real_, TotalPrecipitation_date_relative_bias
+      ),
+      TotalPrecipitation_date_bias = dplyr::if_else(
+        is.na(TotalPrecipitation_date_predicted), NA_real_, TotalPrecipitation_date_bias
+      ),
+      TotalPrecipitation_date_relative_bias = dplyr::if_else(
+        is.na(TotalPrecipitation_date_predicted), NA_real_, TotalPrecipitation_date_relative_bias
+      ),
+      StationsPrecipitation_date_bias = dplyr::if_else(
+        is.na(TotalPrecipitation_date_predicted), NA_integer_, StationsPrecipitation_date_bias
+      ),
+      StationsPrecipitation_date_relative_bias = dplyr::if_else(
+        is.na(TotalPrecipitation_date_predicted), NA_real_, StationsPrecipitation_date_relative_bias
+      ),
+      FreqPrecipitation_date_observed = dplyr::if_else(
+        is.na(TotalPrecipitation_date_observed), NA_real_, FreqPrecipitation_date_observed
+      ),
+      FreqPrecipitation_date_predicted = dplyr::if_else(
+        is.na(TotalPrecipitation_date_predicted), NA_real_, FreqPrecipitation_date_predicted
       )
     )
 

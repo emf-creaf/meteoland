@@ -47,7 +47,6 @@ Suggests:
     rgdal,
     keyring,
     tibble
-    
 LinkingTo: Rcpp
 Encoding: UTF-8
 NeedsCompilation: yes

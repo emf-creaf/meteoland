@@ -446,6 +446,7 @@ test_that("interpolation cross validation results are the same", {
       }
     )
 
+  # dates stats
   names(interpolation_cv_new$dates_stats)[-1] |>
     purrr::set_names(c(
       "MinTemperature.Bias", "MaxTemperature.Bias", "TemperatureRange.Bias", "RelativeHumidity.Bias",
@@ -472,6 +473,7 @@ test_that("interpolation cross validation results are the same", {
       }
     )
 
+  # errors
   names(interpolation_cv_new$errors)[-c(1:3, 16:21)] |>
     purrr::set_names(c(
       "MinTemperatureError", "MaxTemperatureError", "TemperatureRangeError", "RelativeHumidityError",

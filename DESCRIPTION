@@ -44,7 +44,10 @@ Suggests:
     rmarkdown,
     testthat (>= 3.0.0),
     worldmet,
-    rgdal
+    rgdal,
+    keyring,
+    tibble
+    
 LinkingTo: Rcpp
 Encoding: UTF-8
 NeedsCompilation: yes

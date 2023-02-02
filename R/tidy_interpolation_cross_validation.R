@@ -213,6 +213,8 @@
       RangeTemperature_station_mae = mean(abs(.data$RangeTemperature_error), na.rm = TRUE),
       RelativeHumidity_station_mae = mean(abs(.data$RelativeHumidity_error), na.rm = TRUE),
       Radiation_station_mae = mean(abs(.data$Radiation_error), na.rm = TRUE),
+      TotalPrecipitation_station_observed = sum(.data$Precipitation_observed, na.rm = TRUE),
+      TotalPrecipitation_station_predicted = sum(.data$Precipitation_predicted, na.rm = TRUE),
       TotalPrecipitation_station_bias =
         sum(.data$Precipitation_observed, na.rm = TRUE) -
         sum(.data$Precipitation_predicted, na.rm = TRUE),
@@ -246,6 +248,8 @@
       RangeTemperature_date_mae = mean(abs(.data$RangeTemperature_error), na.rm = TRUE),
       RelativeHumidity_date_mae = mean(abs(.data$RelativeHumidity_error), na.rm = TRUE),
       Radiation_date_mae = mean(abs(.data$Radiation_error), na.rm = TRUE),
+      TotalPrecipitation_date_observed = sum(.data$Precipitation_observed, na.rm = TRUE),
+      TotalPrecipitation_date_predicted = sum(.data$Precipitation_predicted, na.rm = TRUE),
       TotalPrecipitation_date_bias =
         sum(.data$Precipitation_observed, na.rm = TRUE) -
         sum(.data$Precipitation_predicted, na.rm = TRUE),

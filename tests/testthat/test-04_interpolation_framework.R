@@ -418,7 +418,8 @@ test_that("interpolation cross validation works as expected", {
         c("TotalPrecipitation", "DaysPrecipitation"),
         "_station_relative_bias"
       ),
-      paste0("FreqPrecipitation", c("_station_observed", "_station_predicted"))
+      paste0("FreqPrecipitation", c("_station_observed", "_station_predicted")),
+      paste0("TotalPrecipitation", c("_station_observed", "_station_predicted"))
     ),
     ignore.order = TRUE
   )
@@ -438,7 +439,8 @@ test_that("interpolation cross validation works as expected", {
         c("TotalPrecipitation", "DaysPrecipitation"),
         "_date_relative_bias"
       ),
-      paste0("FreqPrecipitation", c("_date_observed", "_date_predicted"))
+      paste0("FreqPrecipitation", c("_date_observed", "_date_predicted")),
+      paste0("TotalPrecipitation", c("_date_observed", "_date_predicted"))
     ),
     ignore.order = TRUE
   )

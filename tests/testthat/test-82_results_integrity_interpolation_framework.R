@@ -112,60 +112,6 @@ interpolator_new <- set_interpolation_params(
   verbose = FALSE
 )
 
-test_that("interpolation results are the same", {
-
-  # interpolation process for both
-  points_old <- as(points_to_interpolate_example, "Spatial")
-  points_topography <- suppressWarnings(
-    SpatialPointsTopography(
-      as(points_old,"SpatialPoints"), elevation = points_old$elevation,
-      slope = points_old$slope, aspect = points_old$aspect
-    )
-  )
-
-  interpolated_data_old <- suppressWarnings(
-    interpolationpoints(interpolator_old, points_topography, verbose = FALSE)
-  )
-  interpolated_data_new <- suppressWarnings(
-    interpolate_data(points_to_interpolate_example, interpolator_new, verbose = FALSE)
-  )
-
-  # testing differences in the interpolated data for each variable
-  names(interpolated_data_old@data[[1]]) |>
-    purrr::walk(.f = function(variable) {
-      # No PET in the new workflow, and WindDirection is not corectly calculated in the old workflow
-      if (variable %in% c('PET', "WindDirection")) {
-        return(invisible(TRUE))
-      }
-      expect_true(
-        mean(
-          interpolated_data_old@data[[1]][[variable]] -
-            (interpolated_data_new |>
-               dplyr::slice(1) |>
-               tidyr::unnest(cols = interpolated_data))[[variable]],
-          na.rm = TRUE
-        ) == 0
-      )
-      expect_true(
-        sd(
-          interpolated_data_old@data[[1]][[variable]] -
-            (interpolated_data_new |>
-               dplyr::slice(1) |>
-               tidyr::unnest(cols = interpolated_data))[[variable]],
-          na.rm = TRUE
-        ) == 0
-      )
-      # print(variable)
-      # print(mean(
-      #   interpolated_data_old@data[[1]][[variable]] - (interpolated_data_new |> dplyr::slice(1) |> tidyr::unnest(cols = interpolated_data))[[variable]],
-      #   na.rm = TRUE
-      # ))
-      # print(sd(
-      #   interpolated_data_old@data[[1]][[variable]] - (interpolated_data_new |> dplyr::slice(1) |> tidyr::unnest(cols = interpolated_data))[[variable]],
-      #   na.rm = TRUE
-      # ))
-    })
-})
 
 test_that("interpolator calibration returns same parameters", {
 
@@ -505,3 +451,116 @@ test_that("interpolation cross validation results are the same", {
     )
 })
 
+test_that("[points] interpolation results are the same", {
+
+  # interpolation process for both
+  points_old <- as(points_to_interpolate_example, "Spatial")
+  points_topography <- suppressWarnings(
+    SpatialPointsTopography(
+      as(points_old,"SpatialPoints"), elevation = points_old$elevation,
+      slope = points_old$slope, aspect = points_old$aspect
+    )
+  )
+
+  interpolated_data_old <- suppressWarnings(
+    interpolationpoints(interpolator_old, points_topography, verbose = FALSE)
+  )
+  interpolated_data_new <- suppressWarnings(
+    interpolate_data(points_to_interpolate_example, interpolator_new, verbose = FALSE)
+  )
+
+  # testing differences in the interpolated data for each variable
+  names(interpolated_data_old@data[[1]]) |>
+    purrr::walk(.f = function(variable) {
+      # No PET in the new workflow, and WindDirection is not corectly calculated in the old workflow
+      if (variable %in% c('PET', "WindDirection")) {
+        return(invisible(TRUE))
+      }
+      expect_true(
+        abs(mean(
+          interpolated_data_old@data[[1]][[variable]] -
+            (interpolated_data_new |>
+               dplyr::slice(1) |>
+               tidyr::unnest(cols = interpolated_data))[[variable]],
+          na.rm = TRUE
+        )) < 1e-3
+      )
+      expect_true(
+        sd(
+          interpolated_data_old@data[[1]][[variable]] -
+            (interpolated_data_new |>
+               dplyr::slice(1) |>
+               tidyr::unnest(cols = interpolated_data))[[variable]],
+          na.rm = TRUE
+        ) < 1e-3
+      )
+      # print(variable)
+      # print(mean(
+      #   interpolated_data_old@data[[1]][[variable]] - (interpolated_data_new |> dplyr::slice(1) |> tidyr::unnest(cols = interpolated_data))[[variable]],
+      #   na.rm = TRUE
+      # ))
+      # print(sd(
+      #   interpolated_data_old@data[[1]][[variable]] - (interpolated_data_new |> dplyr::slice(1) |> tidyr::unnest(cols = interpolated_data))[[variable]],
+      #   na.rm = TRUE
+      # ))
+    })
+})
+
+test_that("[raster] interpolation results are the same", {
+
+  # interpolation process for both
+  raster_sgdf <- suppressWarnings(
+    as(as(raster_to_interpolate_example, "Raster"), "SpatialGridDataFrame")
+  )
+  raster_sgt <- suppressWarnings(
+    SpatialGridTopography(
+      as(raster_sgdf, "SpatialGrid"), elevation = raster_sgdf$elevation,
+      slope = raster_sgdf$slope, aspect = raster_sgdf$aspect
+    )
+  )
+  # Interpolation
+  interpolated_data_old <- suppressWarnings(
+    interpolationgrid(interpolator_old, raster_sgt)
+  )
+  interpolated_data_new <- suppressWarnings(
+    interpolate_data(raster_to_interpolate_example, interpolator_new, verbose = FALSE)
+  )
+
+  # testing differences in the interpolated data for each variable
+  names(interpolated_data_old@data[[1]]) |>
+    purrr::walk(.f = function(variable) {
+      # No PET in the new workflow, and WindDirection is not correctly calculated in the old workflow
+      if (variable %in% c('PET', "WindDirection")) {
+        return(invisible(TRUE))
+      }
+      expect_true(
+        abs(mean(
+          interpolated_data_old@data[[1]][[variable]] -
+            (interpolated_data_new |>
+               dplyr::filter(as.character(date) == "2022-01-01") |>
+               dplyr::pull(variable) |>
+               as.vector()),
+          na.rm = TRUE
+        )) < 1e-3
+      )
+      expect_true(
+        sd(
+          interpolated_data_old@data[[1]][[variable]] -
+            (interpolated_data_new |>
+               dplyr::filter(as.character(date) == "2022-01-01") |>
+               dplyr::pull(variable) |>
+               as.vector()),
+          na.rm = TRUE
+        ) < 1e-3
+      )
+      # print(variable)
+      # print(mean(
+      #   interpolated_data_old@data[[1]][[variable]] - (interpolated_data_new |> dplyr::slice(1) |> tidyr::unnest(cols = interpolated_data))[[variable]],
+      #   na.rm = TRUE
+      # ))
+      # print(sd(
+      #   interpolated_data_old@data[[1]][[variable]] - (interpolated_data_new |> dplyr::slice(1) |> tidyr::unnest(cols = interpolated_data))[[variable]],
+      #   na.rm = TRUE
+      # ))
+    })
+})

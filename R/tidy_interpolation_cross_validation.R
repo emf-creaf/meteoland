@@ -20,7 +20,7 @@
 
 #' Cross validation process for a single station
 #'
-#' Cross validation process for a singel station
+#' Cross validation process for a single station
 #'
 #' This function performs the cross validation process for a single stations,
 #' removing the station from the interpolator and using the spatial station
@@ -236,34 +236,34 @@
     ) |>
     dplyr::mutate(
       TotalPrecipitation_station_observed = dplyr::if_else(
-        TotalPrecipitation_station_observed == 0, NA_real_, TotalPrecipitation_station_observed
+        .data$TotalPrecipitation_station_observed == 0, NA_real_, .data$TotalPrecipitation_station_observed
       ),
       TotalPrecipitation_station_predicted = dplyr::if_else(
-        TotalPrecipitation_station_predicted == 0, NA_real_, TotalPrecipitation_station_predicted
+        .data$TotalPrecipitation_station_predicted == 0, NA_real_, .data$TotalPrecipitation_station_predicted
       ),
       TotalPrecipitation_station_bias = dplyr::if_else(
-        TotalPrecipitation_station_bias == 0, NA_real_, TotalPrecipitation_station_bias
+        .data$TotalPrecipitation_station_bias == 0, NA_real_, .data$TotalPrecipitation_station_bias
       ),
       TotalPrecipitation_station_relative_bias = dplyr::if_else(
-        TotalPrecipitation_station_relative_bias == 0, NA_real_, TotalPrecipitation_station_relative_bias
+        .data$TotalPrecipitation_station_relative_bias == 0, NA_real_, .data$TotalPrecipitation_station_relative_bias
       ),
       TotalPrecipitation_station_bias = dplyr::if_else(
-        is.na(TotalPrecipitation_station_predicted), NA_real_, TotalPrecipitation_station_bias
+        is.na(.data$TotalPrecipitation_station_predicted), NA_real_, .data$TotalPrecipitation_station_bias
       ),
       TotalPrecipitation_station_relative_bias = dplyr::if_else(
-        is.na(TotalPrecipitation_station_predicted), NA_real_, TotalPrecipitation_station_relative_bias
+        is.na(.data$TotalPrecipitation_station_predicted), NA_real_, .data$TotalPrecipitation_station_relative_bias
       ),
       DaysPrecipitation_station_bias = dplyr::if_else(
-        is.na(TotalPrecipitation_station_predicted), NA_integer_, DaysPrecipitation_station_bias
+        is.na(.data$TotalPrecipitation_station_predicted), NA_integer_, .data$DaysPrecipitation_station_bias
       ),
       DaysPrecipitation_station_relative_bias = dplyr::if_else(
-        is.na(TotalPrecipitation_station_predicted), NA_real_, DaysPrecipitation_station_relative_bias
+        is.na(.data$TotalPrecipitation_station_predicted), NA_real_, .data$DaysPrecipitation_station_relative_bias
       ),
       FreqPrecipitation_station_observed = dplyr::if_else(
-        is.na(TotalPrecipitation_station_observed), NA_real_, FreqPrecipitation_station_observed
+        is.na(.data$TotalPrecipitation_station_observed), NA_real_, .data$FreqPrecipitation_station_observed
       ),
       FreqPrecipitation_station_predicted = dplyr::if_else(
-        is.na(TotalPrecipitation_station_predicted), NA_real_, FreqPrecipitation_station_predicted
+        is.na(.data$TotalPrecipitation_station_predicted), NA_real_, .data$FreqPrecipitation_station_predicted
       )
     )
 
@@ -303,34 +303,34 @@
     ) |>
     dplyr::mutate(
       TotalPrecipitation_date_observed = dplyr::if_else(
-        TotalPrecipitation_date_observed == 0, NA_real_, TotalPrecipitation_date_observed
+        .data$TotalPrecipitation_date_observed == 0, NA_real_, .data$TotalPrecipitation_date_observed
       ),
       TotalPrecipitation_date_predicted = dplyr::if_else(
-        TotalPrecipitation_date_predicted == 0, NA_real_, TotalPrecipitation_date_predicted
+        .data$TotalPrecipitation_date_predicted == 0, NA_real_, .data$TotalPrecipitation_date_predicted
       ),
       TotalPrecipitation_date_bias = dplyr::if_else(
-        TotalPrecipitation_date_bias == 0, NA_real_, TotalPrecipitation_date_bias
+        .data$TotalPrecipitation_date_bias == 0, NA_real_, .data$TotalPrecipitation_date_bias
       ),
       TotalPrecipitation_date_relative_bias = dplyr::if_else(
-        TotalPrecipitation_date_relative_bias == 0, NA_real_, TotalPrecipitation_date_relative_bias
+        .data$TotalPrecipitation_date_relative_bias == 0, NA_real_, .data$TotalPrecipitation_date_relative_bias
       ),
       TotalPrecipitation_date_bias = dplyr::if_else(
-        is.na(TotalPrecipitation_date_predicted), NA_real_, TotalPrecipitation_date_bias
+        is.na(.data$TotalPrecipitation_date_predicted), NA_real_, .data$TotalPrecipitation_date_bias
       ),
       TotalPrecipitation_date_relative_bias = dplyr::if_else(
-        is.na(TotalPrecipitation_date_predicted), NA_real_, TotalPrecipitation_date_relative_bias
+        is.na(.data$TotalPrecipitation_date_predicted), NA_real_, .data$TotalPrecipitation_date_relative_bias
       ),
       StationsPrecipitation_date_bias = dplyr::if_else(
-        is.na(TotalPrecipitation_date_predicted), NA_integer_, StationsPrecipitation_date_bias
+        is.na(.data$TotalPrecipitation_date_predicted), NA_integer_, .data$StationsPrecipitation_date_bias
       ),
       StationsPrecipitation_date_relative_bias = dplyr::if_else(
-        is.na(TotalPrecipitation_date_predicted), NA_real_, StationsPrecipitation_date_relative_bias
+        is.na(.data$TotalPrecipitation_date_predicted), NA_real_, .data$StationsPrecipitation_date_relative_bias
       ),
       FreqPrecipitation_date_observed = dplyr::if_else(
-        is.na(TotalPrecipitation_date_observed), NA_real_, FreqPrecipitation_date_observed
+        is.na(.data$TotalPrecipitation_date_observed), NA_real_, .data$FreqPrecipitation_date_observed
       ),
       FreqPrecipitation_date_predicted = dplyr::if_else(
-        is.na(TotalPrecipitation_date_predicted), NA_real_, FreqPrecipitation_date_predicted
+        is.na(.data$TotalPrecipitation_date_predicted), NA_real_, .data$FreqPrecipitation_date_predicted
       )
     )
 

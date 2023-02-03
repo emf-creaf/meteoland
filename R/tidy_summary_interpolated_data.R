@@ -110,7 +110,11 @@
     .group_by_freq(frequency) |>
     # summarise by frequency
     dplyr::summarise(
-      dplyr::across(.fns = parse(text = fun) |> eval(), ...)
+      dplyr::across(
+        .cols = dplyr::everything(),
+        .fns = parse(text = fun) |> eval(),
+        ...
+      )
     ) |>
     # ungroup any group left
     dplyr::ungroup()

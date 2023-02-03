@@ -105,7 +105,8 @@ test_that("interpolator object has the same data", {
   )
 })
 
-# To check results, we need to modify initial_Rp for both interpolators have the same data
+# To check calibration, cross-validation and results, we need to modify initial_Rp for both
+# interpolators have the same data:
 interpolator_new <- set_interpolation_params(
   interpolator_new,
   list(initial_Rp = attr(interpolator_old, "params")$initial_Rp),
@@ -354,7 +355,13 @@ test_that("interpolation cross validation results are the same", {
         expect_equal(interpolation_cv_old$r2$TemperatureRange, interpolation_cv_new$r2$RangeTemperature)
       } else {
         if (variable == "Radiation") {
-          # radiation, due to different calculations shows a bigger difference
+          # radiation, due to different calculations shows a bigger difference.
+          # Why is that?? because in the old workflow, smoothedTemperatureRange from the station
+          # cross validated is never removed (like temp, prec, radiation...) so is used in the
+          # calculation of diffTemp matrix. This matrix is only used in the radiation interpolation,
+          # hence the same results in the other variables. Also, this only happens in the cross
+          # validation, when removing one station from the interpolator and not in the normal
+          # interpolation, so thats why in the other tests radiation works as the old workflow
           expect_equal(
             interpolation_cv_old$r2$Radiation, interpolation_cv_new$r2$Radiation,
             tolerance = 0.1
@@ -483,7 +490,7 @@ test_that("[points] interpolation results are the same", {
                dplyr::slice(1) |>
                tidyr::unnest(cols = interpolated_data))[[variable]],
           na.rm = TRUE
-        )) < 1e-3
+        )) < testthat_tolerance()
       )
       expect_true(
         sd(
@@ -492,7 +499,7 @@ test_that("[points] interpolation results are the same", {
                dplyr::slice(1) |>
                tidyr::unnest(cols = interpolated_data))[[variable]],
           na.rm = TRUE
-        ) < 1e-3
+        ) < testthat_tolerance()
       )
       # print(variable)
       # print(mean(
@@ -541,7 +548,7 @@ test_that("[raster] interpolation results are the same", {
                dplyr::pull(variable) |>
                as.vector()),
           na.rm = TRUE
-        )) < 1e-3
+        )) < testthat_tolerance()
       )
       expect_true(
         sd(
@@ -551,7 +558,7 @@ test_that("[raster] interpolation results are the same", {
                dplyr::pull(variable) |>
                as.vector()),
           na.rm = TRUE
-        ) < 1e-3
+        ) < testthat_tolerance()
       )
       # print(variable)
       # print(mean(
@@ -563,4 +570,12 @@ test_that("[raster] interpolation results are the same", {
       #   na.rm = TRUE
       # ))
     })
+})
+
+# summarise_framework -------------------------------------------------------------------------
+
+test_that("[points] summarise interpolated data results are the same", {
+
+
+
 })

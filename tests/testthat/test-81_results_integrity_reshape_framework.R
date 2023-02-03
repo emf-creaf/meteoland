@@ -128,7 +128,7 @@ test_that("reshaping and completing daily meteospain works the same", {
     meteo_completed_joined_old_simplified <- meteo_completed_joined_old |>
       dplyr::arrange(dates, stationID) |>
       dplyr::select(dplyr::one_of(sort(names(meteo_completed_new)))) |>
-      dplyr::mutate(dplyr::across(where(is.numeric), round, digits = 3)) |>
+      dplyr::mutate(dplyr::across(where(is.numeric), \(x) round(x, digits = 3))) |>
       dplyr::as_tibble()
   )
 
@@ -137,7 +137,7 @@ test_that("reshaping and completing daily meteospain works the same", {
       dplyr::as_tibble() |>
       dplyr::arrange(dates, stationID) |>
       dplyr::select(dplyr::one_of(sort(names(meteo_completed_joined_old)))) |>
-      dplyr::mutate(dplyr::across(where(is.numeric), round, digits = 3))
+      dplyr::mutate(dplyr::across(where(is.numeric), \(x) round(x, digits = 3)))
   )
 
   expect_identical(
@@ -255,7 +255,7 @@ test_that("reshaping and completing subdaily meteospain works the same", {
     meteo_completed_joined_old_simplified <- meteo_completed_joined_old |>
       dplyr::arrange(dates, stationID) |>
       dplyr::select(dplyr::one_of(sort(names(meteo_completed_new)))) |>
-      dplyr::mutate(dplyr::across(where(is.numeric), round, digits = 3)) |>
+      dplyr::mutate(dplyr::across(where(is.numeric), \(x) round(x, digits = 3))) |>
       dplyr::as_tibble()
   )
 
@@ -264,7 +264,7 @@ test_that("reshaping and completing subdaily meteospain works the same", {
       dplyr::as_tibble() |>
       dplyr::arrange(dates, stationID) |>
       dplyr::select(dplyr::one_of(sort(names(meteo_completed_joined_old)))) |>
-      dplyr::mutate(dplyr::across(where(is.numeric), round, digits = 3))
+      dplyr::mutate(dplyr::across(where(is.numeric), \(x) round(x, digits = 3)))
   )
 
   expect_identical(
@@ -378,7 +378,7 @@ test_that("reshaping and completing worldmet works the same", {
     meteo_completed_joined_old_simplified <- meteo_completed_joined_old |>
       dplyr::arrange(dates, stationID) |>
       dplyr::select(dplyr::one_of(sort(names(meteo_completed_new)))) |>
-      dplyr::mutate(dplyr::across(where(is.numeric), round, digits = 3)) |>
+      dplyr::mutate(dplyr::across(where(is.numeric), \(x) round(x, digits = 3))) |>
       dplyr::as_tibble()
   )
 
@@ -387,7 +387,7 @@ test_that("reshaping and completing worldmet works the same", {
       dplyr::as_tibble() |>
       dplyr::arrange(dates, stationID) |>
       dplyr::select(dplyr::one_of(sort(names(meteo_completed_joined_old)))) |>
-      dplyr::mutate(dplyr::across(where(is.numeric), round, digits = 3))
+      dplyr::mutate(dplyr::across(where(is.numeric), \(x) round(x, digits = 3)))
   )
 
   expect_identical(

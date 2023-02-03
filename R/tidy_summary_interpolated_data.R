@@ -100,7 +100,7 @@
       # and select the vars wanted
       dplyr::select(dplyr::any_of(c(frequency, "year", vars_to_summary)))
   }
-
+  
   meteo_interpolated |>
     # filtering the months to summary
     dplyr::filter(lubridate::month(.data$dates) %in% months_to_summary) |>
@@ -112,8 +112,10 @@
     dplyr::summarise(
       dplyr::across(
         .cols = dplyr::everything(),
-        .fns = parse(text = fun) |> eval(),
-        ...
+        .fns = \(column) {
+          fun_to_apply <- parse(text = fun) |> eval()
+          fun_to_apply(column, ...)
+        }
       )
     ) |>
     # ungroup any group left

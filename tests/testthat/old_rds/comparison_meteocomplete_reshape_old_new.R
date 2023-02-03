@@ -84,12 +84,12 @@ meteo_completed_new$dates |>
 old_joined_simplified <- meteo_completed_old_joined |>
   dplyr::arrange(dates, stationID) |>
   dplyr::select(dplyr::one_of(sort(names(meteo_completed_new)))) |>
-  dplyr::mutate(dplyr::across(where(is.numeric), round, digits = 3))
+  dplyr::mutate(dplyr::across(where(is.numeric), \(x) round(x, digits = 3)))
 new_simplified <- meteo_completed_new |>
   dplyr::as_tibble() |>
   dplyr::arrange(dates, stationID) |>
   dplyr::select(dplyr::one_of(sort(names(meteo_completed_old_joined)))) |>
-  dplyr::mutate(dplyr::across(where(is.numeric), round, digits = 3))
+  dplyr::mutate(dplyr::across(where(is.numeric), \(x) round(x, digits = 3)))
 
 old_joined_simplified[1, "MinTemperature"]
 as.vector(new_simplified[1, "MinTemperature"])

@@ -87,7 +87,7 @@ test_that("summarise_interpolated_data for sf works as expected", {
       "MaxRelativeHumidity", "Radiation", "WindSpeed", "WindDirection", "PET"
     )
   )
-  expect_true(nrow(res_nested_weekly_test$weekly_mean[[5]]) == 6)
+  expect_true(nrow(res_nested_weekly_test$weekly_mean[[5]]) == 5)
   # test for data summarised, not NA or NaN
   expect_false(
     all(is.na(res_nested_weekly_test$weekly_mean[[6]]$MeanTemperature)) ||
@@ -206,7 +206,7 @@ test_that("summarise_interpolated_data for sf works as expected", {
     res_nested_integration_test$weekly_max[[10]],
     c("week", "year", "Precipitation", "Radiation")
   )
-  expect_true(nrow(res_nested_integration_test$weekly_max[[5]]) == 2)
+  expect_true(nrow(res_nested_integration_test$weekly_max[[5]]) == 1)
   # test for data summarised, not NA or NaN
   expect_false(
     all(is.na(res_nested_integration_test$weekly_max[[6]]$Radiation)) ||

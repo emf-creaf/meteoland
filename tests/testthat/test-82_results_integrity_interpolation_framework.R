@@ -583,31 +583,107 @@ test_that("[points] summarise interpolated data results are the same", {
       slope = points_old$slope, aspect = points_old$aspect
     )
   )
-  
+
   interpolated_data_old <- suppressWarnings(
     interpolationpoints(interpolator_old, points_topography, verbose = FALSE)
   )
   interpolated_data_new <- suppressWarnings(
     interpolate_data(points_to_interpolate_example, interpolator_new, verbose = FALSE)
   )
-  
+
   # correct objects
-  # weekly there are differences because the way the week is calculated, monthly
-  # and yearly is the same. No freq doesn't work due to bug in old meteoland with
-  # all variables, so i go for month.
   expect_s3_class(
     (summarised_data_new <-
-       summarise_interpolated_data(interpolated_data_new, freq = 'week')),
-    "tbl"
+       summarise_interpolated_data(interpolated_data_new, freq = 'week', verbose = FALSE)),
+  "tbl"
   )
-  expect_s4_class(
-    suppressWarnings(summarised_data_old <-
-       summarypoints(interpolated_data_old, var = "ALL", freq = "week")),
-    "SpatialPointsMeteorology"
-  )
-  
-  # summarised_data_old@data[[1]] # |> dplyr::as_tibble()
-  # summarised_data_new$weekly_mean[[1]] #|> dplyr::select(-month, -year)
 
+  # For each variable (except winddirection, pet and the week and year)
+  names(summarised_data_new$weekly_mean[[1]])[-c(1:2, 12:13)] |>
+    purrr::set_names(names(summarised_data_new$weekly_mean[[1]])[-c(1:2, 12:13)]) |>
+    purrr::walk(
+      .f = \(var) {
+        # correct object
+        expect_s4_class(
+          suppressWarnings(
+            summarised_data_old <-
+              summarypoints(interpolated_data_old, var = var, freq = "week")
+          ),
+          "Spatial"
+        )
+
+        # For each station, lets check all results are ok
+        1:nrow(summarised_data_old@data) |>
+          purrr::walk(
+            .f = \(station) {
+              expect_equal(
+                summarised_data_old@data[station,] |>
+                  as.numeric(),
+                summarised_data_new$weekly_mean[[station]] |>
+                  dplyr::arrange(year, week) |>
+                  dplyr::pull(var) |>
+                  as.numeric()
+              )
+            }
+          )
+      }
+    )
+})
+
+test_that("[raster]  summarise interpolated data results are the same", {
+  # interpolation process for both
+  raster_sgdf <- suppressWarnings(
+    as(as(raster_to_interpolate_example, "Raster"), "SpatialGridDataFrame")
+  )
+  raster_sgt <- suppressWarnings(
+    SpatialGridTopography(
+      as(raster_sgdf, "SpatialGrid"), elevation = raster_sgdf$elevation,
+      slope = raster_sgdf$slope, aspect = raster_sgdf$aspect
+    )
+  )
+  # Interpolation
+  interpolated_data_old <- suppressWarnings(
+    interpolationgrid(interpolator_old, raster_sgt, verbose = FALSE)
+  )
+  interpolated_data_new <- suppressWarnings(
+    interpolate_data(raster_to_interpolate_example, interpolator_new, verbose = FALSE)
+  )
+
+  # correct objects
+  expect_s3_class(
+    (summarised_data_new <-
+       summarise_interpolated_data(interpolated_data_new, freq = 'week', verbose = FALSE)),
+    "stars"
+  )
+
+  # For each variable (except winddirection, pet and the week and year)
+  names(summarised_data_new)[-c(10:11)] |>
+    purrr::set_names(names(summarised_data_new)[-c(10:11)]) |>
+    purrr::walk(
+      .f = \(var) {
+        # correct object
+        expect_s4_class(
+          suppressWarnings(
+            summarised_data_old <-
+              summarygrid(interpolated_data_old, var = var, freq = "week")
+          ),
+          "Spatial"
+        )
+
+        # For each station, lets check all results are ok
+        1:length(summarised_data_old@data) |>
+          purrr::set_names(names(summarised_data_old@data)) |>
+          purrr::walk(
+            .f = \(date) {
+              expect_equal(
+                summarised_data_old@data[[date]] |>
+                  as.numeric(),
+                summarised_data_new[var, date,,][[1]] |>
+                  as.numeric()
+              )
+            }
+          )
+      }
+    )
 
 })

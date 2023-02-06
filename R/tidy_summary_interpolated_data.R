@@ -76,13 +76,13 @@
     frequency <- match.arg(frequency, c("month", "week", "quarter", "year"))
     # lubridate frequency function
     frequency_fun <- parse(text = paste0("lubridate::", frequency)) |> eval()
-    
+
     # weekly is fu**ed. If we use lubridate::week, the week number is not
     # the standard ISO. If we use lubridate::isoweek, the week number is
     # the correct iso one, but in fringe cases (first days of the year) when
     # adding also the year, the week number corresponds to the previous year, not
     # the date one. To see this in action:
-    # 
+    #
     # dates <- seq(as.Date("2021-12-26"), as.Date("2022-01-31"), 1)
     # tururu <- dplyr::tibble(dates = dates)
     # tururu |>
@@ -93,7 +93,7 @@
     #     year_wtf = lubridate::year(.data$dates),
     #     year_ok = dplyr::if_else(.data$week - .data$isoweek < 0, lubridate::year(.data$dates) - 1, lubridate::year(.data$dates))
     #   )
-    # 
+    #
     # But we cannot use the fixing if_else for all frequencies, as the month
     # column indicates. We need to apply it only in week frequency, hence the
     # block for itself
@@ -112,6 +112,8 @@
         dplyr::group_by(.data[[frequency]], .data$year) |>
         # and select the vars wanted
         dplyr::select(dplyr::any_of(c(frequency, "year", vars_to_summary)))
+
+      return(weekly_case)
     }
 
     # year is another fringe case, as the year var is already created, not like
@@ -139,7 +141,7 @@
       dplyr::group_by(.data[[frequency]], .data$year) |>
       dplyr::select(dplyr::any_of(c(frequency, "year", vars_to_summary)))
   }
-  
+
   meteo_interpolated |>
     # filtering the months to summary
     dplyr::filter(lubridate::month(.data$dates) %in% months_to_summary) |>

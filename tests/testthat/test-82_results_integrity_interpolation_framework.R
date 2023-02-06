@@ -575,7 +575,39 @@ test_that("[raster] interpolation results are the same", {
 # summarise_framework -------------------------------------------------------------------------
 
 test_that("[points] summarise interpolated data results are the same", {
-
+  # interpolated data (checked before for integrity)
+  points_old <- as(points_to_interpolate_example, "Spatial")
+  points_topography <- suppressWarnings(
+    SpatialPointsTopography(
+      as(points_old,"SpatialPoints"), elevation = points_old$elevation,
+      slope = points_old$slope, aspect = points_old$aspect
+    )
+  )
+  
+  interpolated_data_old <- suppressWarnings(
+    interpolationpoints(interpolator_old, points_topography, verbose = FALSE)
+  )
+  interpolated_data_new <- suppressWarnings(
+    interpolate_data(points_to_interpolate_example, interpolator_new, verbose = FALSE)
+  )
+  
+  # correct objects
+  # weekly there are differences because the way the week is calculated, monthly
+  # and yearly is the same. No freq doesn't work due to bug in old meteoland with
+  # all variables, so i go for month.
+  expect_s3_class(
+    (summarised_data_new <-
+       summarise_interpolated_data(interpolated_data_new, freq = 'week')),
+    "tbl"
+  )
+  expect_s4_class(
+    suppressWarnings(summarised_data_old <-
+       summarypoints(interpolated_data_old, var = "ALL", freq = "week")),
+    "SpatialPointsMeteorology"
+  )
+  
+  # summarised_data_old@data[[1]] # |> dplyr::as_tibble()
+  # summarised_data_new$weekly_mean[[1]] #|> dplyr::select(-month, -year)
 
 
 })

@@ -478,42 +478,46 @@ test_that("[points] interpolation results are the same", {
 
   # testing differences in the interpolated data for each variable
   names(interpolated_data_old@data[[1]]) |>
+    purrr::set_names(names(interpolated_data_old@data[[1]])) |>
     purrr::walk(.f = function(variable) {
       # No PET in the new workflow, and WindDirection is not corectly calculated in the old workflow
       if (variable %in% c('PET', "WindDirection")) {
         return(invisible(TRUE))
       }
-      expect_true(
-        abs(mean(
-          interpolated_data_old@data[[1]][[variable]] -
-            (interpolated_data_new |>
-               dplyr::slice(1) |>
-               tidyr::unnest(cols = interpolated_data))[[variable]],
-          na.rm = TRUE
-        )) < testthat_tolerance()
-      )
-      expect_true(
-        sd(
-          interpolated_data_old@data[[1]][[variable]] -
-            (interpolated_data_new |>
-               dplyr::slice(1) |>
-               tidyr::unnest(cols = interpolated_data))[[variable]],
-          na.rm = TRUE
-        ) < testthat_tolerance()
-      )
-      # print(variable)
-      # print(mean(
-      #   interpolated_data_old@data[[1]][[variable]] - (interpolated_data_new |> dplyr::slice(1) |> tidyr::unnest(cols = interpolated_data))[[variable]],
-      #   na.rm = TRUE
-      # ))
-      # print(sd(
-      #   interpolated_data_old@data[[1]][[variable]] - (interpolated_data_new |> dplyr::slice(1) |> tidyr::unnest(cols = interpolated_data))[[variable]],
-      #   na.rm = TRUE
-      # ))
+
+      1:length(interpolated_data_old@data) |>
+        purrr::walk(
+          .f = \(station_index) {
+            expect_true(
+              abs(mean(
+                interpolated_data_old@data[[station_index]][[variable]] -
+                  (interpolated_data_new |>
+                     dplyr::slice(station_index) |>
+                     tidyr::unnest(cols = interpolated_data))[[variable]],
+                na.rm = TRUE
+              )) < testthat_tolerance()
+            )
+            expect_true(
+              sd(
+                interpolated_data_old@data[[station_index]][[variable]] -
+                  (interpolated_data_new |>
+                     dplyr::slice(station_index) |>
+                     tidyr::unnest(cols = interpolated_data))[[variable]],
+                na.rm = TRUE
+              ) < testthat_tolerance()
+            )
+          }
+        )
     })
 })
 
 test_that("[raster] interpolation results are the same", {
+
+  skip("bug in old meteoland makes this untestable for now")
+
+  # results from interpolationpoints and interpolationgrid are not the same for the same set of
+  # coordinates. This makes the tests of integrity in interpolated rasters fail, in Humidity
+  # related vars and Radiation. So for now we skip this tests
 
   # interpolation process for both
   raster_sgdf <- suppressWarnings(
@@ -535,40 +539,39 @@ test_that("[raster] interpolation results are the same", {
 
   # testing differences in the interpolated data for each variable
   names(interpolated_data_old@data[[1]]) |>
+    purrr::set_names(names(interpolated_data_old@data[[1]])) |>
     purrr::walk(.f = function(variable) {
       # No PET in the new workflow, and WindDirection is not correctly calculated in the old workflow
-      if (variable %in% c('PET', "WindDirection")) {
+      if (variable %in% c('PET', "WindDirection", "MeanRelativeHumidity", "MinRelativeHumidity", "MaxRelativeHumidity", "Radiation")) {
         return(invisible(TRUE))
       }
-      expect_true(
-        abs(mean(
-          interpolated_data_old@data[[1]][[variable]] -
-            (interpolated_data_new |>
-               dplyr::filter(as.character(date) == "2022-01-01") |>
-               dplyr::pull(variable) |>
-               as.vector()),
-          na.rm = TRUE
-        )) < testthat_tolerance()
-      )
-      expect_true(
-        sd(
-          interpolated_data_old@data[[1]][[variable]] -
-            (interpolated_data_new |>
-               dplyr::filter(as.character(date) == "2022-01-01") |>
-               dplyr::pull(variable) |>
-               as.vector()),
-          na.rm = TRUE
-        ) < testthat_tolerance()
-      )
-      # print(variable)
-      # print(mean(
-      #   interpolated_data_old@data[[1]][[variable]] - (interpolated_data_new |> dplyr::slice(1) |> tidyr::unnest(cols = interpolated_data))[[variable]],
-      #   na.rm = TRUE
-      # ))
-      # print(sd(
-      #   interpolated_data_old@data[[1]][[variable]] - (interpolated_data_new |> dplyr::slice(1) |> tidyr::unnest(cols = interpolated_data))[[variable]],
-      #   na.rm = TRUE
-      # ))
+
+      names(interpolated_data_old@data) |>
+        purrr::set_names(names(interpolated_data_old@data)) |>
+        purrr::walk(
+          .f = \(date_index) {
+            expect_true(
+              abs(mean(
+                interpolated_data_old@data[[date_index]][[variable]] -
+                  (interpolated_data_new |>
+                     dplyr::filter(as.character(date) == date_index) |>
+                     dplyr::pull(variable) |>
+                     as.vector()),
+                na.rm = TRUE
+              )) < testthat_tolerance()
+            )
+            expect_true(
+              sd(
+                interpolated_data_old@data[[date_index]][[variable]] -
+                  (interpolated_data_new |>
+                     dplyr::filter(as.character(date) == date_index) |>
+                     dplyr::pull(variable) |>
+                     as.vector()),
+                na.rm = TRUE
+              ) < testthat_tolerance()
+            )
+          }
+        )
     })
 })
 
@@ -604,13 +607,11 @@ test_that("[points] summarise interpolated data results are the same", {
     purrr::walk(
       .f = \(var) {
         # correct object
-        expect_s4_class(
-          suppressWarnings(
-            summarised_data_old <-
-              summarypoints(interpolated_data_old, var = var, freq = "week")
-          ),
-          "Spatial"
+        suppressWarnings(
+          summarised_data_old <-
+            summarypoints(interpolated_data_old, var = var, freq = "week")
         )
+        expect_s4_class(summarised_data_old, "Spatial")
 
         # For each station, lets check all results are ok
         1:nrow(summarised_data_old@data) |>
@@ -631,6 +632,9 @@ test_that("[points] summarise interpolated data results are the same", {
 })
 
 test_that("[raster]  summarise interpolated data results are the same", {
+
+  skip("bug in old meteoland makes this untestable for now")
+
   # interpolation process for both
   raster_sgdf <- suppressWarnings(
     as(as(raster_to_interpolate_example, "Raster"), "SpatialGridDataFrame")
@@ -662,13 +666,11 @@ test_that("[raster]  summarise interpolated data results are the same", {
     purrr::walk(
       .f = \(var) {
         # correct object
-        expect_s4_class(
-          suppressWarnings(
-            summarised_data_old <-
-              summarygrid(interpolated_data_old, var = var, freq = "week")
-          ),
-          "Spatial"
+        suppressWarnings(
+          summarised_data_old <-
+            summarygrid(interpolated_data_old, var = var, freq = "week")
         )
+        expect_s4_class(summarised_data_old, "Spatial")
 
         # For each station, lets check all results are ok
         1:length(summarised_data_old@data) |>

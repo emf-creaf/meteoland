@@ -15,6 +15,7 @@ test_that("worldmet2meteoland works", {
       "stationID", "dates", "elevation"
     ) %in% names(test_res))
   )
+  expect_true(sum(duplicated(test_res)) < 1)
 
   meteo_test_no_dates <- worldmet_test |> dplyr::select(-date)
   meteo_test_no_relative_humidity <- worldmet_test |>
@@ -35,6 +36,7 @@ test_that("worldmet2meteoland works", {
       "stationID", "dates"
     ) %in% names(test_res_norh))
   )
+  expect_true(sum(duplicated(test_res_norh)) < 1)
 
   expect_s3_class(
     test_complete_no_changes <- suppressWarnings(worldmet2meteoland(worldmet_test, complete = TRUE)),
@@ -46,6 +48,7 @@ test_that("worldmet2meteoland works", {
   expect_false(
     identical(test_res$Radiation, test_complete_no_changes$Radiation)
   )
+  expect_true(sum(duplicated(test_complete_no_changes)) < 1)
 
 
 })
@@ -68,6 +71,7 @@ test_that("meteospain2meteoland works", {
       "stationID", "dates", "elevation"
     ) %in% names(test_res))
   )
+  expect_true(sum(duplicated(test_res)) < 1)
 
   meteo_test_no_dates <- meteo_test |> dplyr::select(-timestamp)
   meteo_test_no_relative_humidity <- meteo_test |>
@@ -87,12 +91,14 @@ test_that("meteospain2meteoland works", {
       "stationID", "dates"
     ) %in% names(test_res_norh))
   )
+  expect_true(sum(duplicated(test_res_norh)) < 1)
 
   expect_warning(
     meteo_test_fixed <- meteospain2meteoland(meteo_test_non_unique_ids),
     "Choosing the most recent metadata"
   )
   expect_identical(meteo_test_fixed, test_res)
+  expect_true(sum(duplicated(meteo_test_fixed)) < 1)
 
   # complete checks
 
@@ -106,6 +112,7 @@ test_that("meteospain2meteoland works", {
   expect_false(
     identical(test_res$MeanRelativeHumidity, test_complete_no_changes$MeanRelativeHumidity)
   )
+  expect_true(sum(duplicated(test_complete_no_changes)) < 1)
 
   meteo_test_no_vars <- dplyr::mutate(
     meteo_test,
@@ -126,6 +133,8 @@ test_that("meteospain2meteoland works", {
   expect_true(any(!is.na(test_complete_all$MinRelativeHumidity)))
   expect_true(all(!is.na(test_complete_all$MaxRelativeHumidity))) # is all because we put 100 in all
   expect_true(any(!is.na(test_complete_all$Radiation)))
+
+  expect_true(sum(duplicated(test_complete_all)) < 1)
 
   # subdaily checks
 
@@ -153,8 +162,9 @@ test_that("meteospain2meteoland works", {
       "Precipitation",
       "MeanRelativeHumidity", "MinRelativeHumidity", "MaxRelativeHumidity",
       "stationID", "dates", "elevation"
-    ) %in% names(test_res))
+    ) %in% names(test_subdaily))
   )
+  expect_true(sum(duplicated(test_subdaily)) < 1)
 
   expect_s3_class(
     suppressWarnings(test_subdaily_complete <- meteospain2meteoland(meteo_test_subdaily_with_errors, complete = TRUE)),
@@ -166,6 +176,41 @@ test_that("meteospain2meteoland works", {
   expect_false(
     identical(test_subdaily$MeanRelativeHumidity, test_subdaily_complete$MeanRelativeHumidity)
   )
+  expect_true(sum(duplicated(test_subdaily_complete)) < 1)
+
+
+})
+
+# TODO to test fringe cases when metadata of station changes, test this with
+# subdaily_meteo_generating_duplicated_rows_in_meteospain2meteoland.rds which
+# generates duplicated rows in the process.
+test_that("meteospain2meteoland works with subdaily fringe cases", {
+
+  meteo_test_subdaily_with_errors <-
+    readRDS("old_rds/subdaily_meteo_generating_duplicated_rows_in_meteospain2meteoland.rds")
+  expect_no_error(test_subdaily <- suppressWarnings(meteospain2meteoland(meteo_test_subdaily_with_errors)))
+  expect_s3_class(test_subdaily, 'sf')
+  expect_true(
+    all(c(
+      "MeanTemperature", "MinTemperature", "MaxTemperature",
+      "Precipitation",
+      "MeanRelativeHumidity", "MinRelativeHumidity", "MaxRelativeHumidity",
+      "stationID", "dates", "elevation"
+    ) %in% names(test_subdaily))
+  )
+  expect_true(sum(duplicated(test_subdaily)) < 1)
+
+  expect_s3_class(
+    suppressWarnings(test_subdaily_complete <- meteospain2meteoland(meteo_test_subdaily_with_errors, complete = TRUE)),
+    "sf"
+  )
+  expect_identical(nrow(test_subdaily_complete), nrow(test_subdaily))
+  expect_identical(names(test_subdaily_complete), c(names(test_subdaily), 'aspect', 'slope'))
+  expect_identical(test_subdaily_complete$MinTemperature, test_subdaily$MinTemperature)
+  expect_false(
+    identical(test_subdaily$MeanRelativeHumidity, test_subdaily_complete$MeanRelativeHumidity)
+  )
+  expect_true(sum(duplicated(test_subdaily_complete)) < 1)
 
 
 })

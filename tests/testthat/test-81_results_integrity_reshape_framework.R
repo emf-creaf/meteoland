@@ -173,6 +173,10 @@ test_that("reshaping and completing daily meteospain works the same", {
 
 test_that("reshaping and completing subdaily meteospain works the same", {
 
+  # TODO to test fringe cases when metadata of station changes, test this with
+  # subdaily_meteo_generating_duplicated_rows_in_meteospain2meteoland.rds which
+  # generates duplicated rows in the process.
+
   # results are the expected classes for each, old and new
   meteo_completed_old <- suppressWarnings(reshapemeteospain(subdaily_test, verbose = FALSE))
   meteo_completed_new <- suppressWarnings(meteospain2meteoland(subdaily_test, complete = TRUE))
@@ -224,10 +228,6 @@ test_that("reshaping and completing subdaily meteospain works the same", {
     # filtered in the new workflow
     dplyr::filter(!is.na(MaxRelativeHumidity))
 
-  # TODO to test fringe cases when metadata of station changes, test this with
-  # subdaily_meteo_generating_duplicated_rows_in_meteospain2meteoland.rds which
-  # generates duplicated rows in the process.
-  
   expect_identical(nrow(meteo_completed_joined_old), nrow(meteo_completed_new))
   expect_identical(
     meteo_completed_joined_old$dates |>

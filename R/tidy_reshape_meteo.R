@@ -385,6 +385,9 @@ worldmet2meteoland <- function(meteo, complete = FALSE) {
       dplyr::as_tibble() |>
       dplyr::select(-!!geometry_name) |>
       dplyr::left_join(distinct_rows, by = 'stationID') |>
+      # duplicated rows has been generated in the aggregation step due to different geometries for
+      # the same stationID. We remove those duplicates
+      dplyr::distinct() |>
       sf::st_as_sf()
   }
 

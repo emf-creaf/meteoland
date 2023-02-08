@@ -513,7 +513,7 @@ test_that("[points] interpolation results are the same", {
 
 test_that("[raster] interpolation results are the same", {
 
-  skip("bug in old meteoland makes this untestable for now")
+  # skip("bug in old meteoland makes this untestable for now")
 
   # results from interpolationpoints and interpolationgrid are not the same for the same set of
   # coordinates. This makes the tests of integrity in interpolated rasters fail, in Humidity
@@ -633,7 +633,7 @@ test_that("[points] summarise interpolated data results are the same", {
 
 test_that("[raster]  summarise interpolated data results are the same", {
 
-  skip("bug in old meteoland makes this untestable for now")
+  # skip("bug in old meteoland makes this untestable for now")
 
   # interpolation process for both
   raster_sgdf <- suppressWarnings(

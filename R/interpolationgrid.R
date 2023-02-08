@@ -52,7 +52,7 @@
     rhmin = pmax(0,.relativeHumidityFromDewpointTemp(tmax, tmin))
   } else {
     TdewM = .dewpointTemperatureFromRH(0.606*as.matrix(object@MaxTemperature[,i,drop=FALSE])+0.394*as.matrix(object@MinTemperature[,i,drop=FALSE]),
-                                       as.matrix(object@RelativeHumidity))
+                                       as.matrix(object@RelativeHumidity[,i,drop=FALSE]))
     tdew = .interpolateTdewSeriesPoints(Xp= cc[,1], Yp =cc[,2], Zp = z,
                                         X = object@coords[,1],
                                         Y = object@coords[,2],
@@ -77,7 +77,7 @@
                                                       X = object@coords[,1],
                                                       Y = object@coords[,2],
                                                       Z = object@elevation,
-                                                      T = as.matrix(object@SmoothedTemperatureRange)[,i,drop=FALSE],
+                                                      T = abs(as.matrix(object@SmoothedTemperatureRange)[,i,drop=FALSE]),
                                                       iniRp = mPar$initial_Rp,
                                                       alpha = mPar$alpha_MinTemperature,
                                                       N = mPar$N_MinTemperature,

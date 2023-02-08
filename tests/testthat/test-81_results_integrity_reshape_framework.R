@@ -56,14 +56,10 @@ meteo_worldmet_test <- readRDS("worldmet_test.rds")
 test_that("reshaping and completing daily meteospain works the same", {
 
   # results are the expected classes for each, old and new
-  expect_s4_class(
-    (meteo_completed_old <- suppressWarnings(reshapemeteospain(meteo_test))),
-    "SpatialPointsMeteorology"
-  )
-  expect_s3_class(
-    (meteo_completed_new <- meteospain2meteoland(meteo_test, complete = TRUE)),
-    "sf"
-  )
+  meteo_completed_old <- suppressWarnings(reshapemeteospain(meteo_test, verbose = FALSE))
+  meteo_completed_new <- meteospain2meteoland(meteo_test, complete = TRUE)
+  expect_s4_class(meteo_completed_old, "SpatialPointsMeteorology")
+  expect_s3_class(meteo_completed_new, "sf")
 
   # values are identical between old and new
   expect_identical(
@@ -178,14 +174,10 @@ test_that("reshaping and completing daily meteospain works the same", {
 test_that("reshaping and completing subdaily meteospain works the same", {
 
   # results are the expected classes for each, old and new
-  expect_s4_class(
-    (meteo_completed_old <- suppressWarnings(reshapemeteospain(subdaily_test))),
-    "SpatialPointsMeteorology"
-  )
-  expect_s3_class(
-    (meteo_completed_new <- suppressWarnings(meteospain2meteoland(subdaily_test, complete = TRUE))),
-    "sf"
-  )
+  meteo_completed_old <- suppressWarnings(reshapemeteospain(subdaily_test, verbose = FALSE))
+  meteo_completed_new <- suppressWarnings(meteospain2meteoland(subdaily_test, complete = TRUE))
+  expect_s4_class(meteo_completed_old, "SpatialPointsMeteorology")
+  expect_s3_class(meteo_completed_new, "sf")
   # Mean Temperature is a vector of 2 in the old, one as NA beacuse is not
   # available, whereas in the new method, the NAs are removed
   expect_true(sum(is.na(meteo_completed_old@data$ZD$MeanTemperature)) == 1)
@@ -306,14 +298,10 @@ test_that("reshaping and completing subdaily meteospain works the same", {
 test_that("reshaping and completing worldmet works the same", {
 
   # results are the expected classes for each, old and new
-  expect_s4_class(
-    (meteo_completed_old <- suppressWarnings(reshapeworldmet(meteo_worldmet_test))),
-    "SpatialPointsMeteorology"
-  )
-  expect_s3_class(
-    (meteo_completed_new <- suppressWarnings(worldmet2meteoland(meteo_worldmet_test, complete = TRUE))),
-    "sf"
-  )
+  meteo_completed_old <- suppressWarnings(reshapeworldmet(meteo_worldmet_test, verbose = FALSE))
+  meteo_completed_new <- suppressWarnings(worldmet2meteoland(meteo_worldmet_test, complete = TRUE))
+  expect_s4_class(meteo_completed_old, "SpatialPointsMeteorology")
+  expect_s3_class(meteo_completed_new, "sf")
 
   # values are identical between old and new
   expect_identical(

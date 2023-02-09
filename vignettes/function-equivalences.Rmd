@@ -1,5 +1,6 @@
 ---
 title: "Function equivalences between older (< 2.0.0) and newer (>= 2.0.0) meteoland versions"
+author: "Victor Granda"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Function equivalences between older (< 2.0.0) and newer (>= 2.0.0) meteoland versions}
@@ -23,10 +24,9 @@ library(meteoland)
 Function (< 2.0.0) | Equivalence (>= 2.0.0) | deprecated
 --------------|----------------|-------------
 `averagearea` | No equivalence, aggregating by area can be done with the `sf` package | `TRUE`
-`correctionpoint`, `correctionpoints`, `correctionpoints.errors`, `correction_series` | No equivalence, better correction methods are provided by other packages (see * and * for example) | `TRUE`
-`defaultCorrectionParams`, `defaultGenerationParams` | No equivalence, weather generation methods will dissapear in future versions of meteoland, as there are better alternatives (see * and *) | `TRUE`
+`correctionpoint`, `correctionpoints`, `correctionpoints.errors`, `correction_series`, `defaultCorrectionParams` | No equivalence, better bias correction methods are provided by other packages (see package `MBC` for example) | `TRUE`
 `defaultInterpolationParams` | No change | `FALSE`
-`download_*` functions | No equivalence, meteo download functions are now provided by `meteospain` package | `TRUE`
+`download_*` functions | No equivalence, weather download functions are now provided by `meteospain` package | `TRUE`
 `extractdates`, `extractgridindex`, `extractgridpoints`, `extractNetCDF`, `extractvars` | No equivalence, not needed as the meteo objects are now sf objects | `TRUE`
 `humidity_*` conversion tools | No change | `FALSE`
 `interpolation.calibration` | `interpolator_calibration` | `TRUE`
@@ -34,7 +34,7 @@ Function (< 2.0.0) | Equivalence (>= 2.0.0) | deprecated
 `interpolation.coverage` | No equivalence | `TRUE`
 `interpolation.cv` | `interpolation_cross_validation` | `TRUE`
 `interpolationgrid`, `interpolationpixels`, `interpolationpoints` | `interpolate_data` | `TRUE`
-`mergegrid`, `mergepoints` | No equivalence, meteo objects are now sf objects and can be merged, joined or filtered as any data.frame | `TRUE`
+`mergegrid`, `mergepoints` | No equivalence, meteorological objects are now `sf` objects and can be merged, joined or filtered as any data.frame | `TRUE`
 `meteocomplete` | `complete_meteo` | `TRUE`
 `meteoplot` | No equivalence, meteo objects are now sf objects and can be plotted as any other data.frame | `TRUE`
 `Meteorology_*_Data` | No equivalence, spatial classes based on sp are now deprecated in `meteoland` | `TRUE`
@@ -48,11 +48,11 @@ Function (< 2.0.0) | Equivalence (>= 2.0.0) | deprecated
 `readWindNinjaWindFields` | No equivalence | `TRUE`
 `reshapemeteospain` | `meteospain2meteoland` | `TRUE`
 `reshapeworldmet` | `worldmet2meteoland` | `TRUE`
-`reshapeweathercan` | No equivalence, weathercan package was removed from CRAN | `TRUE`
+`reshapeweathercan` | No equivalence, `weathercan` package was removed from CRAN and the functions are deprecated | `TRUE`
 `Spatial**Meteorology`, `Spatial**Topography` | No equivalence, spatial classes based on sp are now deprecated in `meteoland` | `TRUE`
 `summary*` | `summarise_interpolate_data`, `summarise_interpolator` | `TRUE`
 `utils_*` | No change | `FALSE`
-`weathergeneration` | No equivalence, weather generation methods are deprecated | `TRUE`
+`weathergeneration`, `defaultGenerationParams` | No equivalence, current weather generation methods are currently deprecated because they operate with classes that are deprecated themselves, but for future versions, we plan to keep the functionality in new functions. | `TRUE`
 `writemeteorology*` | No equivalence, spatial classes based on sp are now deprecated in `meteoland` | `TRUE`
 
 

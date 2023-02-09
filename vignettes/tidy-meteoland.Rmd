@@ -1,5 +1,6 @@
 ---
 title: "Tidy meteoland"
+author: "Victor Granda"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Tidy meteoland}
@@ -25,29 +26,29 @@ library(dplyr)
 ## A new way of working with `meteoland`
 
 With the [retirement](https://r-spatial.org/r/2022/04/12/evolution.html)
-of `rgdal`, `rgeos` and `maptools` R packages, and the hard dependency `meteoland` has
-with `sp` and `raster` R packages, a complete update of `meteoland` was necessary. Starting with
+of `rgdal`, `rgeos` and `maptools` R packages, a complete update of `meteoland` was necessary 
+to remove the hard dependency `meteoland` has with `sp` and `raster` R packages. Starting with
 version 2.0.0 of `meteoland`, any hard dependency on retired packages as well as `sp` and `raster`
 has been removed, and now `sf` and `stars` packages are internally used for working with simple
 features and raster data.
-In future versions of `meteoland`, `sp` and `raster` packages will be completely
-removed from the dependency list.
+
+By June 2023, `sp` and `raster` packages will be completely removed from the dependency list.
 
 As fundamental changes were required (`meteoland` meteorology classes were based on `sp` ones), a
 decision to improve and make meteorological interpolation process simpler was taken. In this
-vignette we provide insights on the new ways of working with `meteoland`.
+vignette, we provide insights on the new ways of working with `meteoland`.
 
 If you are interested in the equivalences between older and newer functions of `meteoland`,
 please see `vignette("function-equivalences", package = 'meteoland')`.
 
-## Examples data
+## Example datasets
 
 `meteoland` now ships with new example objects, based on the `sf` and `stars` packages. The
-following table describe the new data examples:
+following table describes the new data examples:
 
 Name | Description
 -----|------------
-meteoland_interpolator_example | A meteoland interpolator object, with daily meteorological data in Catalonia (Spain) for April 2022.
+meteoland_interpolator_example | A `meteoland` interpolator object, with daily meteorological data in Catalonia (Spain) for April 2022.
 meteoland_meteo_example | Data from meteorological stations in Catalonia (Spain) for April 2022.
 meteoland_meteo_no_topo_example | Data from meteorological stations in Catalonia (Spain) for April 2022, without topographical information.
 meteoland_topo_example | Topographical information for meteorological stations in Catalonia (Spain).
@@ -56,54 +57,54 @@ raster_to_interpolate_example | Topographical information for a 0.01 degree grid
 
 ## The new interpolation process
 
-For interpolating meteorological information we need mainly two things:
+The interpolation of meteorological information requires two kinds of information:
 
-  1. The **topographical information** of the locations to interpolate. This includes elevation,
+  1. The **topographical information** of the target locations to interpolate. This includes elevation,
   aspect and slope. Elevation is the only mandatory topography variable, but interpolation
-  results improve when also aspect and slope are provided.
+  results improve when also aspect and slope are provided in mountain areas.
   
-  1. The reference **meteorological information** that we will use to build the interpolator
+  2. The reference **meteorological information** that we will use to build the interpolator
   object. This information can come from meteorological stations in the area we are interested
-  on, or can be extracted from rasters with meteorological variables.
+  on or, alternatively, can be extracted from available rasters with meteorological variables.
 
 ### Topographical information
 
-In order to interpolate, we need our locations in a format that `meteoland` can use. For
-points, this is a `sf` object, with the `elevation`, `slope` and `aspect` variables:
+In order to interpolate, we need our locations in a format that `meteoland` can understand. For
+point locations, this is a `sf` object including the `elevation` (in m.a.s.l.), `slope` (in degrees) and `aspect` (in degrees) variables, such as:
 
 ```{r points_to_interpolate_example}
 points_to_interpolate_example
 ```
 
-For continuous data (raster), we need it in a `stars` object, with `elevation`, `slope` and
-`aspect` as attributes:
+For spatially-continuous data (i.e. a raster), we need a `stars` object including `elevation` (in m.a.s.l.), `slope` (in degrees) and
+`aspect` (in degrees) as attributes, such as:
 
 ```{r raster_to_interpolate_example}
 raster_to_interpolate_example
 ```
 
 Both, `sf` and `stars` R packages have the necessary functions to read most spatial formats,
-the only thing to consider is ensuring that the topographical variables has the mandatory names
-(`elevation`, `aspect`, `slope`).
+the only thing to consider is ensuring that the topographical variables are included, have the proper units and mandatory names
+(`elevation`, `aspect`, `slope`). 
 
 ### Meteorological information
 
 For interpolating the meteorological variables in our locations (see above), we need a
-reference meteo data. This is a `sf` object with the reference locations, and daily values of the
-meteo variables needed to perform the interpolation:
+reference meteorological data. This is a `sf` object with the reference locations, and daily values of the
+weather variables needed to perform the interpolation, for example:
 
 ```{r meteoland_meteo_example}
 meteoland_meteo_example
 ```
 
-`meteoland` expect names to be as indicated in the example:
+`meteoland` expects variable names to be as indicated in the example:
 
 ```{r meteo_names}
 names(meteoland_meteo_example)
 ```
 
 The only mandatory variables are `MinTemperature` and `MaxTemperature`. Other variables
-(`Precipitation`, `WindSpeed`...), when present, allow for a more complete
+(`Precipitation`, `WindSpeed`...), when present, allow for a more complete weather
 interpolation.
 
 For more information on preparing meteorological data for `meteoland`, see
@@ -126,9 +127,9 @@ points_interpolated
 
 Let's see this step by step.
 
-  - `with_meteo(...)` ensures that the provided meteo information is in the correct format
+  - `with_meteo(...)` ensures that the provided meteorological information is in the correct format
   for using it with `meteoland`. It performs several checks and informs of any error found.
-  For example, if the meteo information doesn't have the mandatory variables, an informative
+  For example, if the meteorological information doesn't have the mandatory variables, an informative
   error is shown:
   
 ```{r non_mandatory_vars_in_meteo, error=TRUE}
@@ -138,12 +139,11 @@ meteo_without_temp[["MaxTemperature"]] <- NULL
 with_meteo(meteo_without_temp)
 ```
   
-  - `create_meteo_interpolator(...)` creates the interpolator object from the meteo information.
-  This object stores not only the meteorological information, but also the interpolation
-  parameters that will be used in the interpolation.  
-  Parameters can be supplied as a list in the `params` argument from
+  - `create_meteo_interpolator(...)` creates the interpolator object from the meteorological information.
+  This object stores not only the meteorological information, but also the parameters that will be used in the interpolation
+  process. These parameters can be supplied as a list in the `params` argument from
   `create_meteo_interpolator()` function. If not supplied, a default set of parameters is
-  used.
+  used. At any point, we can display the interpolation parameters using function `get_interpolation_params()`:
   
 ```{r interpolatior_params}
 # parameters
@@ -151,8 +151,8 @@ get_interpolation_params(interpolator)
 ```
 
   - `interpolate_data(...)` performs the interpolation using the topography provided and the
-  interpolator object. If the topography information is in an sf object, as in the example,
-  `interpolate_data` returns the same `sf` object with a new column called
+  interpolator object. If the topographical information is in an `sf` object, as in the example above,
+  `interpolate_data` returns the same `sf` object with an additional column called
   `interpolated_data`:
   
 ```{r interpolated_data}
@@ -161,7 +161,7 @@ points_interpolated[["interpolated_data"]][1]
 ```
 
 We can "unnest" the results to get the data in a *long* format (each combination of
-location and date in each row):
+location and date in a different row):
 
 ```{r long}
 tidyr::unnest(points_interpolated, cols = "interpolated_data")
@@ -170,7 +170,7 @@ tidyr::unnest(points_interpolated, cols = "interpolated_data")
 
 ## Interpolator object
 
-In older versions of meteoland, the interpolator object inherits the `MeteorologyInterpolationData` class (based on `sp` classes). Starting on `meteoland v2.0.0`
+In older versions of meteoland, the interpolator object inherited the `MeteorologyInterpolationData` class (based on `sp` classes). Starting on `meteoland v2.0.0`, `MeteorologyInterpolationData` class is deprecated, and
 the interpolator object created by `create_meteo_interpolator()` inherits directly from
 `stars` class.
 
@@ -178,21 +178,21 @@ the interpolator object created by `create_meteo_interpolator()` inherits direct
 class(interpolator)
 ```
 
-This object is a data cube, with meteo locations and dates as dimensions, and meteorological
+This object is a data cube, with reference weather locations and dates as dimensions, and meteorological
 and topographical variables as attributes.
 
 ```{r interpolator_description}
 interpolator
 ```
 
-It also contains the interpolation parameters as an attribute, that can be accessed with
-`get_interpolation_params`.
+The object also contains the interpolation parameters as an attribute, that can be accessed with
+`get_interpolation_params()`.
 
 ```{r get_interpolation_params}
 get_interpolation_params(interpolator)
 ```
 
-Parameters can also be changed with `set_interpolation_params`.
+Interpolation parameters can also be changed with `set_interpolation_params()`.
 
 ```{r set_interpolation_params}
 # wind_height parameter
@@ -205,7 +205,7 @@ get_interpolation_params(interpolator)$wind_height
 
 ### Writing and reading interpolator objects
 
-Interpolator objects can be reused for different interpolations in the same area covered
+Interpolator objects can be reused for different interpolations exercises within the area covered
 by the interpolator. To allow interpolator objects to be shared between sessions,
 `meteoland` offers functions to write and read these objects. The interpolator
 is saved in NetCDF-CF format (https://cfconventions.org/cf-conventions/cf-conventions.html)
@@ -218,7 +218,7 @@ write_interpolator(interpolator, file.path(temporal_folder, "interpolator.nc"))
 file.exists(file.path(temporal_folder, "interpolator.nc"))
 ```
 
-For reading the interpolator in your session again, you can use the `read_interpolator`
+To load the interpolator in your session again, you can use the function `read_interpolator()`
 function.
 
 ```{r reading_interpolator}
@@ -232,7 +232,7 @@ identical(file_interpolator, interpolator)
 Interpolation parameters can be calibrated for individual variables before performing the
 interpolation process. In fact, **it's recommended** to calibrate the interpolator object
 before using it, as the default interpolation parameters can be not adequate for the
-studied area. `meteoland` offers a calibration process with the `interpolator_calibration`
+studied area. `meteoland` offers a calibration process with the `interpolator_calibration()`
 function.
 
     **Important!** Calibration process for one variable can take a long time to finish,
@@ -260,7 +260,7 @@ get_interpolation_params(interpolator)$N_MinTemperature
 get_interpolation_params(interpolator)$alpha_MinTemperature
 ```
 
-One advantage of the new data flows in `meteoland` is that we can pipe the creation and the
+One advantage of the new data flows in `meteoland` is that we can *pipe* the creation and the
 calibration of the interpolator, as well as the writing:
 
 ```{r preparing_interpolator}
@@ -316,8 +316,8 @@ cross_validation$r2
 `meteoland` works at the daily scale. But sometimes the data needs to be aggregated into
 bigger temporal scales (monthly, quarterly, yearly...). This can be done with the
 `summarise_interpolated_data()` function. This function takes the result of
-`interpolate_data` and summarise the interpolation in the desired frequency.  
-The function returns the same interpolated data, but with the weekly summary as a new column.
+`interpolate_data` and creates summaries in the desired frequency.  
+The function returns the same interpolated data given as input, but with the weekly summary in an additional column.
 
 ```{r summarise_interpolated_data}
 summarise_interpolated_data(
@@ -340,7 +340,7 @@ precipitation_rainfall_erosivity(
 )
 ```
 
-But also for all locations in the results obtained from `interpolate_data`:
+But also for all locations in the results obtained from the call to `interpolate_data()`:
 
 ```{r erosivity_mutate}
 points_interpolated |>
@@ -379,8 +379,8 @@ points_interpolated
 
 ## Interpolation on raster data
 
-We can use `interpolate_data` in a raster type of data. All we need is the topography information
-in a `stars` object, with elevation, aspect and slope as raster attributes:
+We can use function `interpolate_data()` in a raster type of data. All we need in this case is the topography information
+in a `stars` object, with `elevation`, `aspect` and `slope` variables as raster attributes:
 
 ```{r raster_to_interpolate}
 raster_to_interpolate_example
@@ -397,12 +397,12 @@ raster_interpolated
 ```
 
 As we can see, the returned object is the same `stars` raster provided to the function, with the
-interpolated meteorological variables as new attributes. Dimensions now include the date, besides
+interpolated meteorological variables as new attributes. Dimensions now include the date, besides the input's
 latitude and longitude.
 
 ### Temporal aggregation in raster
 
-As with the points example, interpolated data in raster format can also be aggregated temporaly.
+Like with the point location example, interpolated data in raster format can also be aggregated temporaly.
 
 ```{r raster_temporal_agg}
 summarise_interpolated_data(

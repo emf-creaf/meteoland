@@ -1,8 +1,9 @@
 ---
-title: "Reshaping meteo data for meteoland"
+title: "Reshaping meteorological data for meteoland"
+author: "Victor Granda"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Reshaping meteo data for meteoland}
+  %\VignetteIndexEntry{Reshaping meteorological data for meteoland}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -37,18 +38,17 @@ unformatted_meteo <- tibble(
 ```
 
 
-## Meteo data format
+## Meteorological data format
 
-For interpolating the meteorological variables in our locations, we need a
-reference meteo data. In `meteoland` this is a `sf` object with reference
-locations (usually meteorological stations) and daily values of the meteo
+For the interpolation of meteorological variables on our target locations, we need meteorological data for a reference set of locations. In `meteoland` this is a `sf` object with the spatial coordinates of our reference
+locations (usually meteorological stations) and daily values of the meteorological
 variables needed to perform the interpolation, *i.e.*:
 
 ```{r meteoland_meteo_example}
 meteoland_meteo_example
 ```
 
-`meteoland` expect names to be as in the example:
+`meteoland` expects names to be as in the example:
 
 ```{r meteo_names}
 names(meteoland_meteo_example)
@@ -58,17 +58,17 @@ The only mandatory variables are `MinTemperature` and `MaxTemperature`. Other va
 (`Precipitation`, `WindSpeed`...), when present, allow for a more complete
 interpolation.
 
-## Converting meteo data to `meteoland` format
+## Converting meteorological data to `meteoland` format
 
-Meteo data can come in many formats and with different names for the same
+Meteorological data can come in many formats and with different names for the same
 variables. As we saw above, we need to convert it to a `meteoland` compliant
 format (`sf` object with correct names).
 
 ### Converting from data frames
 
-If we have our meteo data in a data.frame (*i.e.* we obtained the meteo from
-our own meteo stations, or download it from other source in this format) we can
-just simply transform to the desired format:
+If we have our meteorological data in a data.frame (*i.e.* we obtained it from
+our own weather stations, or download it from other source in this format) we can
+just simply transform it to the desired format:
 
 ```{r unformatted_meteo}
 unformatted_meteo
@@ -93,9 +93,9 @@ ready_meteo
 
 And *voilà*, we have our meteo data in the correct format
 
-### Meteo data from other R packages
+### Meteorological data from other R packages
 
-`meteoland` offers transformation functions for meteo data downloaded from the
+`meteoland` offers transformation functions for meteorological data downloaded from the
 [`meteospain`](https://emf-creaf.github.io/meteospain/) and
 [`worldmet`](https://davidcarslaw.github.io/worldmet/) R packages.
 
@@ -124,14 +124,14 @@ worldmet::importNOAA("081120-99999", year = 2022) |>
   worldmet2meteoland()
 ```
 
-### meteo data from raster sources
+### Meteorological data from raster sources
 
-As we have seen, we need the meteo reference data in a `sf` object (points).
+As we have seen, we need the meteorological reference data in a `sf` object (points).
 To be able to create an interpolator from a raster, we need to transform the cell values to points
 (*i.e.* using the cell center coordinates) for each variable and day and use it to create the
 interpolator.
 
-So if we have a multilayered raster with several dates of meteorological data:
+So if we have a multi-layered raster with several dates of meteorological data:
 
     > Remember that the raster, besides the meteo data, needs to contain also the topographic
     (elevation, aspect and slope) data for the interpolator to work.
@@ -174,7 +174,7 @@ points_meteo_reference <- names(raster_meteo_reference) |>
 points_meteo_reference
 ```
 
-And now we can use it:
+And now we can use it to build an interpolator object:
 
 ```{r raster_interpolator}
 with_meteo(points_meteo_reference) |>

@@ -1,4 +1,29 @@
+#' Creates a 'SpatialGridMeteorology'
+#' 
+#' @description
+#' `r lifecycle::badge("deprecated")`
+#' 
+#' Initializes an object of class \code{SpatialGridMeteorology-class}
+#' 
+#' 
+#' @param grid An object of class \code{\link{GridTopology-class}}
+#' @param proj4string Object of class \code{"CRS"} with the projection string.
+#' @param data A vector of data frames (one per date).
+#' @param dates Object of class \code{"Date"} describing the time period of
+#' meteorological estimates.
+#' @return An object of class \code{\link{SpatialGridMeteorology-class}}
+#' @author Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF
+#' @seealso \code{\link{SpatialGridMeteorology-class}}
+#' @export
 SpatialGridMeteorology<-function(grid, proj4string=CRS(as.character(NA)), data, dates) {
+  
+  # deprecation notice
+  lifecycle::deprecate_warn(
+    when = "2.0.0", what = "SpatialGridMeteorology()", with = NULL,
+    details = "Spatial_*_Meteorology classes are soft deprecated.
+    Meteorology objects are now normal sf points objects"
+  )
+  
   if(!inherits(grid, "GridTopology")) stop("'grid' has to be of class 'GridTopology'")
   if(!inherits(dates, "Date")) stop("'date' has to be of class 'Date'")
   ndates = length(dates)
@@ -30,6 +55,40 @@ SpatialGridMeteorology<-function(grid, proj4string=CRS(as.character(NA)), data, 
   return(spm)
 }
 
+#' Spatial grid plots
+#' 
+#' @description
+#' `r lifecycle::badge("deprecated")`
+#' 
+#' Function \code{spplot} for \code{\link{SpatialGridTopography-class}} and
+#' \code{\link{SpatialPixelsTopography-class}} objects allows drawing maps of
+#' topographic attributes. Function \code{spplot} for
+#' \code{\link{SpatialGridMeteorology-class}} and
+#' \code{\link{SpatialPixelsMeteorology-class}} objects allows drawing maps of
+#' meteorological variables corresponding to specific dates.
+#' 
+#' 
+#' @aliases spplot,SpatialGridTopography-method
+#' spplot,SpatialGridMeteorology-method spplot,SpatialPixelsTopography-method
+#' spplot,SpatialPixelsMeteorology-method
+#' @param obj An object of class \code{SpatialGridTopography}.
+#' @param variable A string of the variable to be plotted (only
+#' \code{type="elevation"}, \code{type="slope"}, \code{type="aspect"} are
+#' allowed).
+#' @param ... Additional parameters to function \code{\link{spplot}}.
+#' @param date A string or an integer for the date to be plotted.
+#' @author Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF
+#' @seealso \code{\link{meteoplot}}
+#' @examples
+#' 
+#' data(examplegridtopography)
+#' 
+#' #Display data
+#' spplot(examplegridtopography, type="elevation", scales=list(draw=TRUE))
+#' spplot(examplegridtopography, type="slope", scales=list(draw=TRUE))
+#' spplot(examplegridtopography, type="aspect", scales=list(draw=TRUE))
+#' 
+#' @export
 setMethod("spplot", signature("SpatialGridMeteorology"), definition=
             function(obj, date, variable="MeanTemperature", ...) {
               sgd = SpatialGridDataFrame(grid = obj@grid, data=obj@data[[date]], 
@@ -49,7 +108,11 @@ print.SpatialGridMeteorology = function(x, ...) {
   cat(pst, "\n")
   invisible(x)
 }
+
+#' @export
 setMethod("print", "SpatialGridMeteorology", function(x, ...) print.SpatialGridMeteorology(x, ...))
+
+#' @export
 setMethod("show", "SpatialGridMeteorology", function(object) print.SpatialGridMeteorology(object))
 
 subs.SpatialGridMeteorology <- function(x, i, j, ..., drop = FALSE) {
@@ -95,6 +158,8 @@ subs.SpatialGridMeteorology <- function(x, i, j, ..., drop = FALSE) {
         data = x@data[idx])
   }
 }
+
+#' @export
 setMethod("[", "SpatialGridMeteorology", subs.SpatialGridMeteorology)
 
 

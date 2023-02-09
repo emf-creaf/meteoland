@@ -1,4 +1,15 @@
+#' @describeIn interpolation.cv `r lifecycle::badge("deprecated")`
+#' @method summary interpolation.cv
+#' @exportS3Method summary interpolation.cv
 summary.interpolation.cv<-function(object,...) {
+
+  # deprecation notice
+  lifecycle::deprecate_warn(
+    when = "2.0.0", what = "summary.interpolation.cv()", with = NULL,
+    details = "interpolation_cross_validation() returns a list with the cross validation results for
+    dates and for stations. List elements are data frames that can be summarise in any usual way (base, tidyverse...)"
+  )
+
   mintemp_error = as.matrix(object$MinTemperatureError)
   maxtemp_error = as.matrix(object$MaxTemperatureError)
   temprange_error = as.matrix(object$TemperatureRangeError)
@@ -8,10 +19,10 @@ summary.interpolation.cv<-function(object,...) {
   mintemp_day_bias = object$dates$MinTemperature.Bias
   stats <- data.frame(n = rep(NA,13),
                       r = rep(NA,13),
-                      MAE = rep(NA,13), 
+                      MAE = rep(NA,13),
                       sd.station.MAE = rep(NA,13),
                       sd.dates.MAE = rep(NA,13),
-                      Bias = rep(NA,13), 
+                      Bias = rep(NA,13),
                       sd.station.Bias = rep(NA,13),
                       sd.dates.Bias = rep(NA,13),
                       row.names = c("MinTemperature", "MaxTemperature", "TemperatureRange", "RelativeHumidity", "Radiation",
@@ -19,7 +30,7 @@ summary.interpolation.cv<-function(object,...) {
                                     "Station.precdays", "Station.precdays.relative",
                                     "Date.rainfall", "Date.rainfall.relative",
                                     "Date.precstations", "Date.precstations.relative"))
-  
+
   stats["MinTemperature","n"] = sum(!is.na(object$MinTemperatureError))
   stats["MaxTemperature","n"] = sum(!is.na(object$MaxTemperatureError))
   stats["TemperatureRange","n"] = sum(!is.na(object$TemperatureRangeError))
@@ -43,7 +54,7 @@ summary.interpolation.cv<-function(object,...) {
   stats["Station.precdays","r"] = cor(object$stations$PrecFreq.Obs, object$stations$PrecFreq.Pred, use="complete.obs")
   stats["Date.rainfall","r"] = cor(object$dates$TotalPrec.Obs, object$dates$TotalPrec.Pred, use="complete.obs")
   stats["Date.precstations","r"] = cor(object$dates$PrecFreq.Obs, object$dates$PrecFreq.Pred, use="complete.obs")
-  
+
   stats["MinTemperature","MAE"] = mean(abs(mintemp_error),na.rm=TRUE)
   stats["MaxTemperature","MAE"] = mean(abs(maxtemp_error),na.rm=TRUE)
   stats["TemperatureRange","MAE"] = mean(abs(temprange_error),na.rm=TRUE)
@@ -77,7 +88,7 @@ summary.interpolation.cv<-function(object,...) {
   stats["Date.rainfall.relative", "sd.dates.MAE"] = sqrt(var(abs(object$dates$TotalPrec.RelBias),na.rm=TRUE))
   stats["Date.precstations", "sd.dates.MAE"] = sqrt(var(abs(object$dates$PrecStations.Bias),na.rm=TRUE))
   stats["Date.precstations.relative", "sd.dates.MAE"] = sqrt(var(abs(object$dates$PrecStations.RelBias),na.rm=TRUE))
-  
+
   stats["MinTemperature","Bias"] = mean(mintemp_error,na.rm=TRUE)
   stats["MaxTemperature","Bias"] = mean(maxtemp_error,na.rm=TRUE)
   stats["TemperatureRange","Bias"] = mean(temprange_error,na.rm=TRUE)
@@ -91,7 +102,7 @@ summary.interpolation.cv<-function(object,...) {
   stats["Date.rainfall.relative", "Bias"] = mean(object$dates$TotalPrec.RelBias, na.rm=TRUE)
   stats["Date.precstations", "Bias"] = mean(object$dates$PrecStations.Bias, na.rm=TRUE)
   stats["Date.precstations.relative", "Bias"] = mean(object$dates$PrecStations.RelBias, na.rm=TRUE)
-  
+
   stats["MinTemperature","sd.station.Bias"] = sqrt(var(object$stations$MinTemperature.Bias,na.rm=TRUE))
   stats["MaxTemperature","sd.station.Bias"] = sqrt(var(object$stations$MaxTemperature.Bias,na.rm=TRUE))
   stats["TemperatureRange","sd.station.Bias"] = sqrt(var(object$stations$TemperatureRange.Bias,na.rm=TRUE))
@@ -101,7 +112,7 @@ summary.interpolation.cv<-function(object,...) {
   stats["Station.rainfall.relative", "sd.station.Bias"] = sqrt(var(object$stations$TotalPrec.RelBias,na.rm=TRUE))
   stats["Station.precdays", "sd.station.Bias"] = sqrt(var(object$stations$PrecDays.Bias,na.rm=TRUE))
   stats["Station.precdays.relative", "sd.station.Bias"] = sqrt(var(object$stations$PrecDays.RelBias,na.rm=TRUE))
-  
+
   stats["MinTemperature","sd.dates.Bias"] = sqrt(var(object$dates$MinTemperature.Bias,na.rm=TRUE))
   stats["MaxTemperature","sd.dates.Bias"] = sqrt(var(object$dates$MaxTemperature.Bias,na.rm=TRUE))
   stats["TemperatureRange","sd.dates.Bias"] = sqrt(var(object$dates$TemperatureRange.Bias,na.rm=TRUE))

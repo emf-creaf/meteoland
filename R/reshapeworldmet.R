@@ -1,10 +1,19 @@
-reshapeworldmet<-function(hourly_data, output="SpatialPointsMeteorology", 
+#' @describeIn reshapemeteospain `r lifecycle::badge("deprecated")`
+#' @export
+reshapeworldmet<-function(hourly_data, output="SpatialPointsMeteorology",
                           proj4string = NULL, complete=TRUE, verbose = TRUE) {
+  # deprecation notice
+  lifecycle::deprecate_warn(
+    when = "2.0.0", what = "reshapeworldmet()", with = "worldmet2meteoland()",
+    details = "Spatial_*_Meteorology classes are soft deprecated.
+    Adapting worldmet meteo output to meteoland can be done with worldmet2meteoland()"
+  )
+
   output <- match.arg(output, c("SpatialPointsMeteorology", "SpatialPointsTopography", "MeteorologyInterpolationData"))
   x= as.data.frame(hourly_data)
   s = split(x, x$code)
   codes = names(s)
-  
+
   nstations = length(s)
   elevation = rep(NA, nstations)
   l = vector("list", nstations)
@@ -12,11 +21,11 @@ reshapeworldmet<-function(hourly_data, output="SpatialPointsMeteorology",
   coords = data.frame(lon = rep(NA, nstations), lat = rep(NA, nstations),
                       row.names = codes)
   dates = character(0)
-  
+
   if(verbose) {
     cat("\nParsing hourly data...\n")
     pb = txtProgressBar(0, nstations, style = 3)
-  } 
+  }
   for(i in 1:nstations) {
     if(verbose) setTxtProgressBar(pb, i)
     data_df = s[[i]]
@@ -26,11 +35,11 @@ reshapeworldmet<-function(hourly_data, output="SpatialPointsMeteorology",
     numvar <- c("longitude","latitude","elev","air_temp", "precip_6", "RH", "wd", "ws")
     numvar <- numvar[numvar %in% names(data_df)]
     data_df[,numvar] <- sapply(data_df[,numvar],as.numeric)
-    
+
     df_dates = levels(as.factor(as.Date(data_df$date)))
     dates = sort(unique(c(dates,as.character(df_dates))))
-                      
-    data_agg <- aggregate(data_df[,numvar],list(date = as.Date(data_df$date)), 
+
+    data_agg <- aggregate(data_df[,numvar],list(date = as.Date(data_df$date)),
                           function(x){
                             if(sum(is.na(x))<length(x)) {
                               mean<-mean(x,na.rm=T)
@@ -38,7 +47,7 @@ reshapeworldmet<-function(hourly_data, output="SpatialPointsMeteorology",
                               max<-max(x,na.rm=T)
                               sum<-sum(x,na.rm=T)
                               return(c(mean=mean,min=min,max=max,sum=sum))
-                            } 
+                            }
                             return(c(mean=NA, min=NA, max=NA, sum=NA))})
 
     # wind direction
@@ -50,11 +59,11 @@ reshapeworldmet<-function(hourly_data, output="SpatialPointsMeteorology",
                           dv[dv<0] <- dv[dv<0]+360
                           return(dv)
                         })
-    
+
     coords$lon[i] = data_agg$lon[1,"mean"]
     coords$lat[i] = data_agg$lat[1,"mean"]
     elevation[i] = data_agg$elev[1,"mean"]
-    
+
     data_out <- data.frame(row.names = as.character(df_dates))
     if("air_temp" %in% varnames) {
       data_out$MeanTemperature = data_agg$air_temp[,"mean"]
@@ -66,7 +75,7 @@ reshapeworldmet<-function(hourly_data, output="SpatialPointsMeteorology",
       data_out$MaxTemperature = NA
     }
     if("precip_6" %in% varnames) {
-      data_out$Precipitation = data_agg$precip_6[,"sum"] 
+      data_out$Precipitation = data_agg$precip_6[,"sum"]
     } else {
       data_out$Precipitation = NA
     }
@@ -83,7 +92,7 @@ reshapeworldmet<-function(hourly_data, output="SpatialPointsMeteorology",
     else data_out$WindSpeed = NA
     if("wd" %in% varnames) data_out$WindDirection = wd_agg$wd
     else data_out$WindDirection = NA
-    if(complete) data_out<-meteocomplete(data_out, 
+    if(complete) data_out<-meteocomplete(data_out,
                                          latitude = coords$lat[i],
                                          elevation = elevation[i],
                                          aspect= NA,
@@ -97,7 +106,7 @@ reshapeworldmet<-function(hourly_data, output="SpatialPointsMeteorology",
     rownames(df) <- dates
     l[[i]] <- df
   }
-  
+
   sp <- SpatialPoints(coords = coords,
                       proj4string = CRS(SRS_string = "EPSG:4326"))
   if(!is.null(proj4string)) {

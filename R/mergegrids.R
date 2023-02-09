@@ -1,4 +1,38 @@
+#' Merges meteorological data
+#' 
+#' @description 
+#' `r lifecycle::badge("deprecated")`
+#'
+#' Merges point or gridded meteorological data into a single object
+#' 
+#' @details
+#' Function \code{mergepoints} requires all coordinate reference systems to the
+#' same. The function allows merging data from the same points (i.e. if they
+#' have the same coordinates). Function \code{mergegrids} pools dates and
+#' variables, but spatial structures (i.e. grid topology, pixel indices,
+#' reference system, ...) should be the same for all objects to be merged.
+#' 
+#' @aliases mergegrids mergepoints
+#' @param ... Objects to be merged, either of class
+#' \code{SpatialPointsMeteorology}, \code{SpatialGridMeteorology} or
+#' \code{SpatialPixelsMeteorology}. All objects of the same class.
+#' @param verbose A logical flag to indicate console output.
+#' @return Function codemergepoints returns an object
+#' \code{\link{SpatialPointsMeteorology-class}}. Function \code{mergegrids}
+#' returns an object \code{\link{SpatialGridMeteorology-class}} or an object
+#' \code{\link{SpatialPixelsMeteorology-class}}, depending on the input.
+#' @author Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF
+#' @seealso \code{\link{SpatialPointsMeteorology-class}},
+#' \code{\link{SpatialGridMeteorology-class}},
+#' \code{\link{SpatialPixelsMeteorology-class}}
+#' @export
 mergegrids<-function(..., verbose = TRUE) {
+  # deprecation warning
+  lifecycle::deprecate_warn(
+    when = "2.0.0", what = "mergegrids()", with = NULL,
+    details = "Spatial_*_Meteorology classes are soft deprecated.
+    Meteo objects are now sf objects and can be merged, joined or filtered as any data.frame"
+  )
   l <- list(...)
   if(inherits(l[[1]], "list")) l = l[[1]]
   ng <- length(l)
@@ -53,7 +87,16 @@ mergegrids<-function(..., verbose = TRUE) {
   return(sgm)
 }
 
+#' @describeIn mergegrids `r lifecycle::badge("deprecated")`
+#' @export
 mergepoints<-function(..., verbose = TRUE) {
+  # deprecation warning
+  lifecycle::deprecate_warn(
+    when = "2.0.0", what = "mergegrids()", with = NULL,
+    details = "Spatial_*_Meteorology classes are soft deprecated.
+    Meteo objects are now sf objects and can be merged, joined or filtered as any data.frame"
+  )
+
   l <- list(...)
   if(inherits(l[[1]], "list")) l = l[[1]]
   ng <- length(l)

@@ -111,6 +111,8 @@ NumericVector interpolateWindPoint(double xp, double yp, NumericVector ws, Numer
  * Interpolates wind direction and wind speed of meteorological stations
  * for a set of points (no use of wind fields).
  */
+//' @describeIn interpolation_temperature Wind 
+//' @export
 // [[Rcpp::export("interpolation_wind")]]
 NumericMatrix interpolateWindStationPoints(NumericVector Xp, NumericVector Yp, NumericVector WS, NumericVector WD,
                                          NumericVector X, NumericVector Y,

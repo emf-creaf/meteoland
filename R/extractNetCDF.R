@@ -1,21 +1,83 @@
-
-
-extractNetCDF<-function(ncdf_files, bbox = NULL, offset = 0, cells = NULL, export = TRUE, 
+#' Extraction of climatic data from NetCDF files (deprecated)
+#' 
+#' @description
+#' `r lifecycle::badge("deprecated")`
+#' 
+#' This function reads a set of NetCDF files (one per variable) and extracts
+#' data for a set of NetCDF cells that are specified using a boundary box (in
+#' lon/lat format) or a set of (x,y) grid indices.
+#' 
+#' @details
+#' Function \code{extractNetCDF} first identifies which cells in NetCDF data
+#' should be extracted according to \code{bbox} (or the cells are indicated by
+#' the user using \code{cells}), and the overall period (days). If neither
+#' \code{bbox} or \code{cells} is supplied, then all NetCDF cells will be
+#' processed. For each cell to be processed, the function loops over all files
+#' (which can describe different variables and time periods) and extracts the
+#' corresponding data. The function transforms units to the units used in
+#' \code{meteoland}. If specific humidity and mean temperature are available,
+#' the function calculates mean relative humidity.
+#' 
+#' Extracted meteorological data (a data frame with days in rows and
+#' meteorological variables in columns) can be stored in an object
+#' \code{\link{SpatialPointsMeteorology-class}} or it can be written in the
+#' disk (one file per cell). In the latter case, the output format can be
+#' chosen and the function also writes a supplementary file containing the meta
+#' data (i.e. the coordinates and filename of each file).
+#' 
+#' Humidity in climate model files is given as specific humidity. This is
+#' converted to relative humidity and the conversion may produce values above
+#' saturation (>100%) (see also \code{\link{defaultCorrectionParams}} for the
+#' same issue when performing bias correction).
+#' 
+#' @param ncdf_files Character vector containing files to read
+#' @param bbox Boundary box (2 x 2 matrix) specifying the limit coordinates of
+#' a study area (in lon/lat format).
+#' @param offset A buffer to include NetCDF cells that are at a certain
+#' distance around the boundary box.
+#' @param cells A (n x 2) matrix specifying the x and y indices of n cells in a
+#' grid.
+#' @param export If \code{export = FALSE} the extracted data is stored in
+#' memory. Otherwise the result is written in the disk (using the format
+#' specified in \code{exportFormat}).
+#' @param exportFormat Export format for meteorological data (see
+#' \code{\link{writemeteorologypoint}}).
+#' @param exportDir Output directory for extracted meteorology.
+#' @param mpfilename The name of the file that will store the meta data
+#' describing all written files.
+#' @return If \code{export = FALSE}, the function returns an object of class
+#' \code{\link{SpatialPointsMeteorology-class}} with the meteorological series
+#' for each cell (represented by a spatial point). Otherwise the function
+#' returns an object of class \code{\link{SpatialPointsDataFrame-class}}
+#' containing the meta data of the files written in the disk.
+#' @author Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF
+#' 
+#' Nicolas Martin, INRA-Avignon
+#' @seealso \code{\link{correctionpoints}},
+#' \code{\link{writemeteorologypointfiles}},
+#' \code{\link{SpatialPointsMeteorology-class}}
+#' @export
+extractNetCDF<-function(ncdf_files, bbox = NULL, offset = 0, cells = NULL, export = TRUE,
                         exportDir = getwd(), exportFormat = "meteoland/txt", mpfilename = "MP.txt") {
+
+  lifecycle::deprecate_warn(
+    when = "2.0.0", what = "extractNetCDF()", with = NULL,
+    details = "???"
+  )
 
   nfiles = length(ncdf_files)
   cat(paste("Number of NetCDFs: ", nfiles,"\n", sep=""))
 
   #Read spatial info from first file
   ncname<-ncdf_files[1]
-  ncin <- nc_open(ncname)
-  lat <- ncvar_get(ncin, "lat")
-  lon <- ncvar_get(ncin, "lon")
+  ncin <- ncdf4::nc_open(ncname)
+  lat <- ncdf4::ncvar_get(ncin, "lat")
+  lon <- ncdf4::ncvar_get(ncin, "lon")
   varlist <- .nc_get_varlist(ncin)
   nx = nrow(lat)
   ny = ncol(lat)
   cat(paste("NetCDF grid: nx",nx, "ny",ny,"ncells", nx*ny,"\n"))
-  
+
   sel = matrix(FALSE, nrow=nx, ncol=ny)
   vertices = FALSE
   if(!is.null(bbox)) {
@@ -26,8 +88,8 @@ extractNetCDF<-function(ncdf_files, bbox = NULL, offset = 0, cells = NULL, expor
     }
     vertices = ("lat_vertices" %in% varlist) & ("lon_vertices" %in% varlist)
     if(vertices) {
-      lat_ver <- ncvar_get(ncin, "lat_vertices")
-      lon_ver <- ncvar_get(ncin, "lon_vertices")
+      lat_ver <- ncdf4::ncvar_get(ncin, "lat_vertices")
+      lon_ver <- ncdf4::ncvar_get(ncin, "lon_vertices")
       #Select target cells when at least one vertex falls in the boundary box
       for(v in 1:4) {
         sel1 = (lon_ver[v,,] +offset >= bbox[1,1]) &
@@ -58,8 +120,8 @@ extractNetCDF<-function(ncdf_files, bbox = NULL, offset = 0, cells = NULL, expor
   } else {
     cat("No user cell selection. All cells will be extracted.")
   }
-  nc_close(ncin)
-  
+  ncdf4::nc_close(ncin)
+
   ncells = sum(sel)
   cat(paste("Cells to extract: ", ncells,"\n", sep=""))
 
@@ -67,11 +129,11 @@ extractNetCDF<-function(ncdf_files, bbox = NULL, offset = 0, cells = NULL, expor
   #Extract dates from all files
   dates = NULL
   for(filei in 1:nfiles) {
-    ncin <- nc_open(ncdf_files[filei])
-    t <- ncvar_get(ncin, "time")
+    ncin <- ncdf4::nc_open(ncdf_files[filei])
+    t <- ncdf4::ncvar_get(ncin, "time")
     nt = length(t)
-    tunits <- ncatt_get(ncin, "time", "units")
-    nc_close(ncin)
+    tunits <- ncdf4::ncatt_get(ncin, "time", "units")
+    ncdf4::nc_close(ncin)
     s = strsplit(tunits$value, " ")[[1]]
     s = s[3]
     t <- floor(t)
@@ -129,11 +191,11 @@ extractNetCDF<-function(ncdf_files, bbox = NULL, offset = 0, cells = NULL, expor
         pb = txtProgressBar(0, nfiles, 0, style = 3)
         for(filei in 1:nfiles) {
           setTxtProgressBar(pb, filei-1)
-          ncin <- nc_open(ncdf_files[filei])
+          ncin <- ncdf4::nc_open(ncdf_files[filei])
           #get dates
-          t <- ncvar_get(ncin, "time")
+          t <- ncdf4::ncvar_get(ncin, "time")
           nt = length(t)
-          tunits <- ncatt_get(ncin, "time", "units")
+          tunits <- ncdf4::ncatt_get(ncin, "time", "units")
           s = strsplit(tunits$value, " ")[[1]]
           s = s[3]
           t <- floor(t)
@@ -146,29 +208,29 @@ extractNetCDF<-function(ncdf_files, bbox = NULL, offset = 0, cells = NULL, expor
           varlist = .nc_get_varlist(ncin)
           for(var in varlist) {
             if(var=="huss") {
-              vec = ncvar_get(ncin,varid = var, start = c(xi, yi, 1), count=c(1,1,length(datesfile)))
+              vec = ncdf4::ncvar_get(ncin,varid = var, start = c(xi, yi, 1), count=c(1,1,length(datesfile)))
               df[datesfile,"SpecificHumidity"] = vec #kg/kg
             } else if(var=="tas")  {
-              vec = ncvar_get(ncin,varid = var, start = c(xi, yi, 1), count=c(1,1,length(datesfile)))
+              vec = ncdf4::ncvar_get(ncin,varid = var, start = c(xi, yi, 1), count=c(1,1,length(datesfile)))
               df[datesfile,"MeanTemperature"] = vec - 273.15 #From degrees K to degrees C
             } else if(var=="tasmin")  {
-              vec = ncvar_get(ncin,varid = var, start = c(xi, yi, 1), count=c(1,1,length(datesfile)))
+              vec = ncdf4::ncvar_get(ncin,varid = var, start = c(xi, yi, 1), count=c(1,1,length(datesfile)))
               df[datesfile,"MinTemperature"] = vec - 273.15 #From degrees K to degrees C
             } else if(var=="tasmax")  {
-              vec = ncvar_get(ncin,varid = var, start = c(xi, yi, 1), count=c(1,1,length(datesfile)))
+              vec = ncdf4::ncvar_get(ncin,varid = var, start = c(xi, yi, 1), count=c(1,1,length(datesfile)))
               df[datesfile,"MaxTemperature"] = vec - 273.15 #From degrees K to degrees C
             } else if(var=="pr")  {
-              vec = ncvar_get(ncin,varid = var, start = c(xi, yi, 1), count=c(1,1,length(datesfile)))
+              vec = ncdf4::ncvar_get(ncin,varid = var, start = c(xi, yi, 1), count=c(1,1,length(datesfile)))
               df[datesfile,"Precipitation"] = vec*3600*24 #From kg/m2/s to L/m2/day
             } else if(var=="rsds")  {
-              vec = ncvar_get(ncin,varid = var, start = c(xi, yi, 1), count=c(1,1,length(datesfile)))
+              vec = ncdf4::ncvar_get(ncin,varid = var, start = c(xi, yi, 1), count=c(1,1,length(datesfile)))
               df[datesfile,"Radiation"] = vec*3600*24/1000000 #From W/m2 to MJ/m2
             } else if(var=="sfcWind")  {
-              vec = ncvar_get(ncin,varid = var, start = c(xi, yi, 1), count=c(1,1,length(datesfile)))
+              vec = ncdf4::ncvar_get(ncin,varid = var, start = c(xi, yi, 1), count=c(1,1,length(datesfile)))
               df[datesfile,"WindSpeed"] = vec #in m/s
             }
           }
-          nc_close(ncin)
+          ncdf4::nc_close(ncin)
           cat("\n")
         }
         close(pb)
@@ -180,7 +242,7 @@ extractNetCDF<-function(ncdf_files, bbox = NULL, offset = 0, cells = NULL, expor
         } else {
           if(exportFormat %in% c("meteoland/txt","castanea/txt")) formatType = "txt"
           else if (exportFormat %in% c("meteoland/rds","castanea/rds")) formatType = "rds"
-          
+
           filename = paste0("P_",xi,"_",yi,".",formatType)
           if(exportDir!="") dir = paste(getwd(),exportDir,sep="/")
           else dir = getwd()

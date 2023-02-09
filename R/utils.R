@@ -1,5 +1,32 @@
+#' Humidity conversion tools
+#'
+#' @description
+#' Functions to transform relative humidity to specific humidity or dew point
+#' temperature and viceversa.
+#'
+#' @param Tc A numeric vector of temperature in degrees Celsius.
+#' @param HR A numeric vector of relative Humidity (in %).
+#' @param Td A numeric vector of dew temperature in degrees Celsius.
+#' @param HS A numeric vector of specific humidity (unitless).
+#' @param allowSaturated Logical flag to allow values over 100%
+#' @return A numeric vector with specific or relative humidity.
+#' @author Nicholas Martin-StPaul, INRA
+#'
+#' Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF
+#' @seealso \code{\link{meteocomplete}}
+#' @rdname humidity-conversion-tools
+#' @export
+humidity_relative2dewtemperature <- function(Tc, HR) {
 
-humidity_relative2dewtemperature<-function(Tc, HR) {
+  # assertions
+  assertthat::assert_that(
+    is.numeric(Tc), is.numeric(HR),
+    msg = "Tc and HR must be numeric vectors"
+  )
+  assertthat::assert_that(
+    identical(length(Tc), length(HR)), msg = "Tc and HR must be the same length"
+  )
+
   if(is.data.frame(Tc)) Tc = as.matrix(Tc)
   if(is.data.frame(HR)) HR = as.matrix(HR)
   if(is.matrix(Tc) && is.matrix(HR)) {
@@ -10,15 +37,43 @@ humidity_relative2dewtemperature<-function(Tc, HR) {
   }
   return(Td)
 }
+#' @rdname humidity-conversion-tools
+#' @export
 humidity_dewtemperature2relative<-function(Tc, Td, allowSaturated = FALSE) {
+
+  # assertions
+  assertthat::assert_that(
+    is.numeric(Tc), is.numeric(Td),
+    msg = "Tc and Td must be numeric vectors"
+  )
+  assertthat::assert_that(
+    assertthat::is.flag(allowSaturated), msg = "allowSaturated must be TRUE or FALSE"
+  )
+  assertthat::assert_that(
+    identical(length(Tc), length(Td)), msg = "Tc and Td must be the same length"
+  )
+
   HR= as.vector(.relativeHumidityFromDewpointTemp(as.numeric(Tc),as.numeric(Td)))
   if(!allowSaturated) HR[HR>100]=100 # On ne passe pas audessus de 100
   return(HR)
 }
 
 #Functions to switch from relative humidity to specific humidity
-humidity_specific2relative<-function(Tc, HS, allowSaturated = FALSE){
+#' @rdname humidity-conversion-tools
+#' @export
+humidity_specific2relative <- function(Tc, HS, allowSaturated = FALSE) {
 
+  # assertions
+  assertthat::assert_that(
+    is.numeric(Tc), is.numeric(HS),
+    msg = "Tc and HS must be numeric vectors"
+  )
+  assertthat::assert_that(
+    assertthat::is.flag(allowSaturated), msg = "allowSaturated must be TRUE or FALSE"
+  )
+  assertthat::assert_that(
+    identical(length(Tc), length(HS)), msg = "Tc and HS must be the same length"
+  )
 
   #-------------------------------------------------------------
   #D?claration des constantes pour le calcul de l'HR et de la T en ?C
@@ -39,7 +94,18 @@ humidity_specific2relative<-function(Tc, HS, allowSaturated = FALSE){
   if(!allowSaturated) HR[HR>100]=100 # On ne passe pas audessus de 100
   return(HR)
 }
+#' @rdname humidity-conversion-tools
+#' @export
 humidity_relative2specific<-function(Tc, HR){
+
+  # assertions
+  assertthat::assert_that(
+    is.numeric(Tc), is.numeric(HR),
+    msg = "Tc and HR must be numeric vectors"
+  )
+  assertthat::assert_that(
+    identical(length(Tc), length(HR)), msg = "Tc and HR must be the same length"
+  )
 
   #-------------------------------------------------------------
   #D?claration des constantes pour le calcul de l'HR et de la T en ?C

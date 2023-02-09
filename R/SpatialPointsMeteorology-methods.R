@@ -1,4 +1,47 @@
+#' Creates a 'SpatialPointsMeteorology'
+#' 
+#' @description
+#' `r lifecycle::badge("deprecated")`
+#' 
+#' Initializes an object of class \code{SpatialPointsMeteorology-class}
+#' 
+#' @details
+#' There are two ways of building an object of of class
+#' \code{\link{SpatialPointsMeteorology-class}}. The first way
+#' (\code{dataByDate = FALSE}) is to supply as value for \code{data} a vector
+#' of data frames with one data frame per spatial point, with dates as rows and
+#' meteorological variables as columns. In this case all data frames must have
+#' the same number of rows (dates) and columns (variables). The second way (if
+#' \code{dataByDate = TRUE}) is to supply as value for \code{data} a vector of
+#' data frames with one data frame per date, with points as rows and
+#' meteorological variables as columns. In this case, the data frames may have
+#' different rows and different columns. Only the information corresponding to
+#' \code{points} will be taken and some variables may be missing.
+#' 
+#' @param points An object of class \code{\link{SpatialPoints-class}}. Row
+#' names of point coordinates are used to identify points.
+#' @param data A list of data frames. If \code{dataByDate = FALSE} the elements
+#' of \code{data} are assumed to correspond to points. If \code{dataByDate =
+#' TRUE} the elements of \code{data} are assumed to correspond to dates (see
+#' 'Details').
+#' @param dates Object of class \code{"Date"} describing the time period of
+#' meteorological estimates.
+#' @param dataByDate A flag to indicate that elements of \code{data} correspond
+#' to dates, as opposed to the default (\code{dataByDate = FALSE}) which
+#' assumes that elements correspond to points (see 'Details').
+#' @return An object of class \code{\link{SpatialPointsMeteorology-class}}
+#' @author Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF
+#' @seealso \code{\link{SpatialPointsMeteorology-class}}
+#' @export
 SpatialPointsMeteorology<-function(points, data, dates, dataByDate = FALSE) {
+  
+  # deprecation notice
+  lifecycle::deprecate_warn(
+    when = "2.0.0", what = "SpatialPointsMeteorology()", with = NULL,
+    details = "Spatial_*_Meteorology classes are soft deprecated.
+    Meteorology objects are now normal sf points objects"
+  )
+  
   if(!inherits(points, "SpatialPoints")) stop("'points' has to be of class 'SpatialPoints'")
   if(!inherits(dates, "Date")) stop("'dates' has to be of class 'Date'")
   if(!is.list(data)) stop("'data' has to be a list of data frames")
@@ -59,6 +102,7 @@ SpatialPointsMeteorology<-function(points, data, dates, dataByDate = FALSE) {
   return(spm)
 }
 
+#' @export
 setMethod("[", signature("SpatialPointsMeteorology"),definition =
             function (x, i, j, ..., drop = TRUE) 
             {
@@ -80,6 +124,8 @@ head.SpatialPointsMeteorology <- function(x, n=6L, ...) {
   ix <- sign(n)*seq(abs(n))
   x[ ix , , drop=FALSE]
 }
+
+#' @export
 setMethod("head", "SpatialPointsMeteorology", function(x, n=6L, ...) head.SpatialPointsMeteorology(x,n,...))
 
 tail.SpatialPointsMeteorology <- function(x, n=6L, ...) {
@@ -87,6 +133,8 @@ tail.SpatialPointsMeteorology <- function(x, n=6L, ...) {
   ix <- sign(n)*rev(seq(length(x), by=-1L, len=abs(n)))
   x[ ix , , drop=FALSE]
 }
+
+#' @export
 setMethod("tail", "SpatialPointsMeteorology", function(x, n=6L, ...) tail.SpatialPointsMeteorology(x,n,...))
 
 print.SpatialPointsMeteorology <- function(x, ..., digits = getOption("digits"))
@@ -101,7 +149,11 @@ print.SpatialPointsMeteorology <- function(x, ..., digits = getOption("digits"))
     proj4string(x))), collapse="\n")
   cat(pst, "\n")
 }
+
+#' @export
 setMethod("print", "SpatialPointsMeteorology", function(x, ..., digits = getOption("digits")) print.SpatialPointsMeteorology(x, ..., digits))
+
+#' @export
 setMethod("show", "SpatialPointsMeteorology", function(object) print.SpatialPointsMeteorology(object))
 
 as.SpPtsMet.STFDF = function(from) {

@@ -1,4 +1,86 @@
+#' Creates a 'SpatialGridTopography'
+#' 
+#' @description
+#' `r lifecycle::badge("deprecated")`
+#' 
+#' Function \code{SpatialGridTopography} creates an object of class
+#' \code{\link{SpatialGridTopography-class}} containing topographic variables
+#' over a landscape.
+#' 
+#' @details
+#' Slope and aspect calculations were adapted from functions in package
+#' 'SDMTools', which used the approach described in Burrough & McDonell (1998).
+#' 
+#' The rate of change (delta) of the surface in the horizontal \code{(dz/dx)}
+#' and vertical \code{(dz/dy)} directions from the center cell determines the
+#' slope and aspect. The values of the center cell and its eight neighbors
+#' determine the horizontal and vertical deltas. The neighbors are identified
+#' as letters from 'a' to 'i', with 'e' representing the cell for which the
+#' aspect is being calculated. The rate of change in the x direction for cell
+#' 'e' is calculated with the algorithm:
+#' 
+#' \code{[dz/dx] = ((c + 2f + i) - (a + 2d + g) / (8 * x_cell_size)}
+#' 
+#' The rate of change in the y direction for cell 'e' is calculated with the
+#' following algorithm:
+#' 
+#' \code{[dz/dy] = ((g + 2h + i) - (a + 2b + c)) / (8 * y_cell_size)}
+#' 
+#' The algorithm calculates slope as: \code{rise_run = sqrt ( [dz/dx]2 +
+#' [dz/dy]2 ])}.
+#' 
+#' From this value , one can calculate the slope in degrees or radians as:
+#' 
+#' \code{slope_degrees = ATAN (rise_run) * 57.29578}
+#' 
+#' \code{slope_radians = ATAN (rise_run)}
+#' 
+#' Taking the rate of change in both the x and y direction for cell 'e', aspect
+#' is calculated using:
+#' 
+#' \code{aspect = 57.29578 * atan2 ([dz/dy], -[dz/dx])}
+#' 
+#' The aspect value is then converted to compass direction values (0-360
+#' degrees).
+#' 
+#' @param grid An object of class \code{\link{GridTopology-class}} or
+#' \code{\link{SpatialGrid-class}}.
+#' @param elevation A vector of elevation values for all cells of the grid (in
+#' m.a.s.l.).
+#' @param slope A vector of slope angles for all cells of the grid (in
+#' degrees). If \code{slope=NULL}, slope is calculated as indicated in details.
+#' @param aspect A vector of aspect angles for all cells of the grid (in
+#' degrees from North clockwise ). \code{aspect=NULL}, aspect values are
+#' calculated as indicated in details.
+#' @param proj4string An object of class \code{\link{CRS-class}}.
+#' @return Function \code{SpatialGridTopography} returns an object
+#' '\code{\link{SpatialGridTopography-class}}'.
+#' @author Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF
+#' @seealso \code{\link{SpatialGridTopography-class}}
+#' @references Burrough, P. A. and McDonell, R.A., 1998. Principles of
+#' Geographical Information Systems (Oxford University Press, New York), p.
+#' 190.
+#' @examples
+#' 
+#' data(examplegridtopography)
+#' 
+#' #Display data
+#' spplot(examplegridtopography, variable="elevation", scales=list(draw=TRUE))
+#' 
+#' #Grids can be subsetted
+#' sgt = examplegridtopography[1:50, 1:50]
+#' spplot(sgt, variable="elevation", scales=list(draw=TRUE))
+#' 
+#' @export
 SpatialGridTopography<-function(grid, elevation, slope = NULL, aspect = NULL, proj4string = CRS(as.character(NA))) {
+  
+  # deprecation notice
+  lifecycle::deprecate_warn(
+    when = "2.0.0", what = "SpatialGridTopography()", with = NULL,
+    details = "Spatial_*_Topography classes are soft deprecated.
+    User topography now can be provided as sf or stars objects"
+  )
+  
   if (!is(grid, "SpatialGrid")) sg = SpatialGrid(grid, proj4string)
   else sg = grid
   nrows = sg@grid@cells.dim[1]
@@ -15,6 +97,8 @@ SpatialGridTopography<-function(grid, elevation, slope = NULL, aspect = NULL, pr
           data = data)
   return(lt)
 }
+
+#' @export
 setMethod("spplot", signature("SpatialGridTopography"), definition =
             function(obj, variable="elevation",...) {
               if(variable=="elevation") {
@@ -34,6 +118,7 @@ setMethod("spplot", signature("SpatialGridTopography"), definition =
               }
             }
 )
+
 print.SpatialGridTopography = function(x, ...) {
   cat("Object of class SpatialGridTopography\n")
   print(summary(x@grid))
@@ -51,7 +136,11 @@ print.SpatialGridTopography = function(x, ...) {
   }
   invisible(x)
 }
+
+#' @export
 setMethod("print", "SpatialGridTopography", function(x, ...) print.SpatialGridTopography(x, ...))
+
+#' @export
 setMethod("show", "SpatialGridTopography", 
           function(object) print.SpatialGridTopography(object))
 
@@ -96,6 +185,8 @@ subs.SpatialGridTopography <- function(x, i, j, ..., drop = FALSE) {
              data = x@data[idx, , drop = FALSE])
   }
 }
+
+#' @export
 setMethod("[", "SpatialGridTopography", subs.SpatialGridTopography)
 
 as.SpGrdTop.SpPoiTop = function(from) {

@@ -82,6 +82,8 @@ double interpolatePrecipitationEventPoint(double xp, double yp, double zp, Numer
   return(0.0);
 }
 
+//' @describeIn interpolation_temperature Precipitation 
+//' @export
 // [[Rcpp::export("interpolation_precipitation")]]
 NumericVector interpolatePrecipitationPoints(NumericVector Xp, NumericVector Yp, NumericVector Zp, NumericVector X, NumericVector Y, NumericVector Z, NumericVector P, NumericVector Psmooth,
                                              double iniRp = 140000, double alpha_event = 6.25, double alpha_amount = 6.25,

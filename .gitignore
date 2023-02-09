@@ -10,3 +10,6 @@ vignettes/examples/*.grd
 vignettes/examples/*.gri
 vignettes/examples/*.vrt
 vignettes/examples/*.nc
+interpolator_test*
+*.nc
+inst/doc

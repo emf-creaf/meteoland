@@ -1,12 +1,59 @@
+#' Averages area weather
+#' 
+#' @description 
+#' `r lifecycle::badge("deprecated")`
+#' 
+#' Averages the weather data series of points or grid pixels.
+#' 
+#' @details
+#' Assumes that all points/pixels represent the same area.
+#' 
+#' @param object An object of class
+#' \code{\link{SpatialPointsMeteorology-class}},
+#' \code{\link{SpatialGridMeteorology-class}} or
+#' \code{\link{SpatialPixelsMeteorology-class}}.
+#' @param na.rm Boolean flag to indicate that missing values should be excluded
+#' from averages.
+#' @return An object of class as the input
+#' \code{SpatialPointsMeteorology-class} with weather series corresponding to
+#' the spatial average of the input.
+#' @author Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF
+#' @seealso \code{\link{weathergeneration}}
+#' @examples
+#' 
+#' data(examplegridtopography)
+#' data(exampleinterpolationdata)
+#' 
+#' #Interpolation of meteorology over a grid for two days
+#' ml = interpolationgrid(exampleinterpolationdata, examplegridtopography,
+#'                        as.Date(c("2001-02-03", "2001-06-03")))
+#' 
+#' #Call averaging function
+#' pa = averagearea(ml)
+#' 
+#' #Spatial information
+#' pa
+#' 
+#' #Weather data
+#' pa@data[[1]]
+#' 
+#' @export
 averagearea<-function(object, na.rm=TRUE) {
+
+  # deprecation warning
+  lifecycle::deprecate_warn(
+    when = "2.0.0", what = "averagearea()", with = NULL,
+    details = "Spatial_*_Meteorology classes are soft deprecated. To average meteo data series is better to use the corresponding functions in the sf package"
+  )
+
   # Calculate mean area series
-  if((!inherits(object,"SpatialPointsMeteorology")) 
-     && (!inherits(object,"SpatialGridMeteorology")) 
+  if((!inherits(object,"SpatialPointsMeteorology"))
+     && (!inherits(object,"SpatialGridMeteorology"))
      && (!inherits(object,"SpatialPixelsMeteorology"))) stop("'object' has to be of class 'Spatial_*_Meteorology'.")
   #Average coordinates
   cc = matrix(apply(coordinates(object), 2, mean), nrow=1, ncol=2)
   dates = object@dates
-  df = data.frame(row.names=as.character(dates)) 
+  df = data.frame(row.names=as.character(dates))
   cn = names(object@data[[1]])
   if(!("DOY" %in% cn)) cn = c("DOY", cn)
   df[cn] = NA

@@ -7,7 +7,7 @@
   z = pixels@data$elevation
   mPar = object@params
   if(!("debug" %in% names(mPar))) mPar$debug = FALSE
-  
+
   tmin = .interpolateTemperatureSeriesPoints(Xp= cc[,1], Yp =cc[,2], Zp = z,
                                              X = object@coords[,1],
                                              Y = object@coords[,2],
@@ -87,7 +87,7 @@
   latrad = latitude * (pi/180)
   asprad = pixels$aspect * (pi/180)
   slorad = pixels$slope  * (pi/180)
-  rad = .radiationPoints(latrad, pixels$elevation, slorad, asprad, J, 
+  rad = .radiationPoints(latrad, pixels$elevation, slorad, asprad, J,
                          diffTemp, diffTempMonth, VP, prec)
   #wind
   if((!is.null(object@WFIndex)) && (!is.null(object@WFFactor))) {
@@ -141,14 +141,25 @@
   return(SpatialPixelsDataFrame(pixels@coords, data = df, grid=pixels@grid, proj4string= pixels@proj4string))
 }
 
+#' @describeIn interpolationpoints `r lifecycle::badge("deprecated")`
+#' @export
 interpolationpixels<-function(object, pixels, dates = NULL,
                               exportFile = NULL, exportFormat = "netCDF", add = FALSE, overwrite = FALSE,
                               verbose = TRUE) {
+  # deprecation warning
+  lifecycle::deprecate_warn(
+    when = "2.0.0", what = "interpolationpixels()", with = "interpolate_data()",
+    details = "Spatial_*_Topography and MetereologyInterpolationData classes are soft deprecated.
+    Interpolator should be created with create_meteo_interpolator(),
+    and spatial objects to interpolate should be from sf (vector) or star (raster) classes.
+    Interpolation is performed with interpolate_data()"
+  )
+
   if(!inherits(object,"MeteorologyInterpolationData")) stop("'object' has to be of class 'MeteorologyInterpolationData'.")
   if(!inherits(pixels,"SpatialPixelsTopography")) stop("'pixels' has to be of class 'SpatialPixelsTopography'.")
   if(!is.null(dates)) {
     if(!inherits(dates, "Date")) stop("'dates' has to be of class 'Date'.")
-    if(sum(as.character(dates) %in% as.character(object@dates))<length(dates)) 
+    if(sum(as.character(dates) %in% as.character(object@dates))<length(dates))
       stop("At least one of the dates is outside the time period for which interpolation is possible.")
   }
   else dates = object@dates
@@ -171,7 +182,7 @@ interpolationpixels<-function(object, pixels, dates = NULL,
   # Define vector of data frames
   l = vector("list", ndates)
 
-  if(export) nc =  .openwritegridNetCDF(pixels@grid, proj4string(pixels), vars = NULL, 
+  if(export) nc =  .openwritegridNetCDF(pixels@grid, proj4string(pixels), vars = NULL,
                                     dates = dates, file = exportFile, add = add, overwrite = overwrite, verbose = verbose)
   for(i in 1:ndates) {
     if(verbose) cat(paste("Interpolating day '", dates[i], "' (",i,"/",ndates,") - ",sep=""))

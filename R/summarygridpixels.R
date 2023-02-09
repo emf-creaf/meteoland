@@ -39,7 +39,7 @@
     dfvec = vector("list",npoints)
     cnt = 1
     timefirst = (ncin$var[[var]]$dim[[1]]$name=="time")
-    val_array = ncvar_get(ncin, ncin$var[[var]])
+    val_array = ncdf4::ncvar_get(ncin, ncin$var[[var]])
     pb = txtProgressBar(0, npoints, 0, style = 3)
     sel = rep(TRUE, npoints)
     for(j in 1:ny) {
@@ -83,11 +83,31 @@
     return(SpatialPixelsDataFrame(points=points, data=dfout, proj4string=crs, grid = gt))
   }
 }
+#' @describeIn summarypoints `r lifecycle::badge("deprecated")`
+#' @export
 summarypixels<-function(pixels, var, fun=mean, freq=NULL, dates = NULL, months = NULL, ...) {
+  
+  # deprecation notice
+  lifecycle::deprecate_warn(
+    when = "2.0.0", what = "summarypixels()", with = "summarise_interpolated_data()",
+    details = "Spatial_*_Meteorology classes are soft deprecated.
+    Interpolation results are now sf or stars objects and can be summarised with summarise_interpolated_data()"
+  )
+  
   if(!inherits(pixels,"SpatialPixelsMeteorology") && !inherits(pixels,"character")) stop("'pixels' has to be of class 'SpatialPixelsMeteorology' or a 'character'.")
   return(.summarygridpixels(pixels, var=var, fun=fun, freq=freq, dates=dates, months=months, pixels = TRUE, ...))
 }
+#' @describeIn summarypoints `r lifecycle::badge("deprecated")`
+#' @export
 summarygrid<-function(grid, var, fun=mean, freq=NULL, dates = NULL, months = NULL, ...) {
+  
+  # deprecation notice
+  lifecycle::deprecate_warn(
+    when = "2.0.0", what = "summarygrid()", with = "summarise_interpolated_data()",
+    details = "Spatial_*_Meteorology classes are soft deprecated.
+    Interpolation results are now sf or stars objects and can be summarised with summarise_interpolated_data()"
+  )
+  
   if(!inherits(grid,"SpatialGridMeteorology") && !inherits(grid,"character")) stop("'grid' has to be of class 'SpatialPixelsMeteorology' or a 'character'.")
   return(.summarygridpixels(grid, var=var, fun=fun, freq=freq, dates=dates, months=months, pixels = FALSE, ...))
 }

@@ -18,8 +18,16 @@
   }
   return(df)
 }
+#' @describeIn extractdates `r lifecycle::badge("deprecated")`
+#' @export
 extractgridindex<-function(grid, index) {
-  if(!inherits(grid,"SpatialGridMeteorology") && !inherits(grid,"SpatialPixelsMeteorology") && !inherits(grid,"character")) 
+  lifecycle::deprecate_warn(
+    when = "2.0.0", what = "extractgridindex()", with = NULL,
+    details = "Spatial_*_Meteorology classes are soft deprecated.
+    Extraction of indexes is not needed as the meteo objects are now sf objects"
+  )
+
+  if(!inherits(grid,"SpatialGridMeteorology") && !inherits(grid,"SpatialPixelsMeteorology") && !inherits(grid,"character"))
     stop("'grid' has to be of class 'SpatialGridMeteorology', 'SpatialPixelsMeteorology' or 'character'.")
   if(inherits(grid,"SpatialGridMeteorology") || inherits(grid,"SpatialPixelsMeteorology")) {
     return(.extractSGMSPMindexdata(grid, index))
@@ -38,13 +46,20 @@ extractgridindex<-function(grid, index) {
     return(df)
   }
 }
+#' @describeIn extractdates `r lifecycle::badge("deprecated")`
+#' @export
 extractgridpoints<-function(grid, points, verbose = FALSE) {
+  lifecycle::deprecate_warn(
+    when = "2.0.0", what = "extractgridpoints()", with = NULL,
+    details = "Spatial_*_Meteorology classes are soft deprecated.
+    Extraction of grid points is not needed as the meteo objects are now sf objects"
+  )
   if(!inherits(points,"SpatialPoints")) stop("'points' has to be of class 'SpatialPoints'.")
-  if(!inherits(grid,"SpatialGridMeteorology") && !inherits(grid,"SpatialPixelsMeteorology") && !inherits(grid,"character")) 
+  if(!inherits(grid,"SpatialGridMeteorology") && !inherits(grid,"SpatialPixelsMeteorology") && !inherits(grid,"character"))
     stop("'grid' has to be of class 'SpatialGridMeteorology', 'SpatialPixelsMeteorology' or 'character'.")
   points = as(points,"SpatialPoints")
 
-  
+
   if(inherits(grid,"SpatialGridMeteorology") || inherits(grid,"SpatialPixelsMeteorology")) {
     gdates = grid@dates
     gt =  getGridTopology(grid)
@@ -55,7 +70,7 @@ extractgridpoints<-function(grid, points, verbose = FALSE) {
     gt = .readgridtopologyNetCDF(ncin)
     proj4string = .readCRSNetCDF(ncin)
   }
-  
+
   indices = getGridIndex(spTransform(points, proj4string)@coords, gt, all.inside = FALSE)
   if(inherits(grid,"SpatialPixelsMeteorology")) {
     indices[!(indices %in% grid@grid.index)] = NA
@@ -87,6 +102,6 @@ extractgridpoints<-function(grid, points, verbose = FALSE) {
   if(!inherits(grid,"SpatialGridMeteorology") && !inherits(grid,"SpatialPixelsMeteorology")) {
     .closeNetCDF(grid, ncin, verbose=FALSE)
   }
-  
+
   return(SpatialPointsMeteorology(points, res, gdates))
 }

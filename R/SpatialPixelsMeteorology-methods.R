@@ -1,5 +1,39 @@
+#' Creates a 'SpatialPixelsMeteorology'
+#' 
+#' @description
+#' `r lifecycle::badge("deprecated")`
+#' 
+#' Initializes an object of class \code{SpatialPixelsMeteorology-class}
+#' 
+#' 
+#' @param points An object of class \code{\link{SpatialPoints-class}}.
+#' @param data A vector of data frames (one per date).
+#' @param dates Object of class \code{"Date"} describing the time period of
+#' meteorological estimates.
+#' @param tolerance Precision up to which extent points should be exactly on a
+#' grid.
+#' @param proj4string Object of class \code{\linkS4class{CRS}} in the first
+#' form only used when points does not inherit from
+#' \code{\linkS4class{Spatial}}.
+#' @param round default \code{NULL}, otherwise a value passed to as the digits
+#' argument to \code{\link{round}} for setting cell size.
+#' @param grid Grid topology using an object of class
+#' \code{\linkS4class{GridTopology}}; a value of \code{NULL} implies that this
+#' will be derived from the point coordinates.
+#' @return An object of class \code{\link{SpatialPixelsMeteorology-class}}
+#' @author Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF
+#' @seealso \code{\link{SpatialPixelsMeteorology-class}}
+#' @export
 SpatialPixelsMeteorology<-function(points, data, dates, tolerance = sqrt(.Machine$double.eps),
                                    proj4string = CRS(as.character(NA)), round = NULL, grid = NULL) {
+  
+  # deprecation notice
+  lifecycle::deprecate_warn(
+    when = "2.0.0", what = "SpatialPixelsMeteorology()", with = NULL,
+    details = "Spatial_*_Meteorology classes are soft deprecated.
+    Meteorology objects are now normal sf points objects"
+  )
+  
   spx = SpatialPixels(points, tolerance, proj4string, round, grid) 
   if(!inherits(dates, "Date")) stop("'date' has to be of class 'Date'")
   ndates = length(dates)
@@ -31,6 +65,7 @@ SpatialPixelsMeteorology<-function(points, data, dates, tolerance = sqrt(.Machin
   return(spm)
 }
 
+#' @export
 setMethod("[", "SpatialPixelsMeteorology",
           function(x, i, j, ..., drop = FALSE) {
             if (!missing(j))
@@ -74,6 +109,7 @@ setMethod("[", "SpatialPixelsMeteorology",
           }
 )
 
+#' @export
 setMethod("spplot", signature("SpatialPixelsMeteorology"), definition=
             function(obj, date, variable="MeanTemperature", ...) {
               sgd = SpatialPixelsDataFrame(points=obj@coords, grid = obj@grid, data=obj@data[[date]], 
@@ -95,7 +131,11 @@ print.SpatialPixelsMeteorology = function(x, ...) {
   cat(pst, "\n")
   invisible(x)
 }
+
+#' @export
 setMethod("print", "SpatialPixelsMeteorology", function(x, ..., digits = getOption("digits")) print.SpatialPixelsMeteorology(x, ..., digits))
+
+#' @export
 setMethod("show", "SpatialPixelsMeteorology", function(object) print.SpatialPixelsMeteorology(object))
 
 

@@ -1,4 +1,54 @@
+#' Creates a 'SpatialPointsTopography'
+#' 
+#' @description
+#' `r lifecycle::badge("deprecated")`
+#' 
+#' Function \code{SpatialPointsTopography} creates an object of class
+#' \code{\link{SpatialPointsTopography-class}} containing topographic variables
+#' for a set of points.
+#' 
+#' @details
+#' If either \code{slope = NULL} or \code{aspect = NULL} then when estimating
+#' weather on the object locations radiation will be calculated assuming a flat
+#' surface.
+#' 
+#' @param points An object of class \code{\link{SpatialPoints-class}}.
+#' @param elevation Elevation values (in m) of the points.
+#' @param slope Slope values (in degrees) of the points.
+#' @param aspect Aspect values (in degrees from North) of the points.
+#' @param proj4string Object of class \code{\linkS4class{CRS}} in the first
+#' form only used when points does not inherit from
+#' \code{\linkS4class{Spatial}}.
+#' @return Function \code{SpatialPointsTopography} returns an object
+#' '\code{\link{SpatialPointsTopography-class}}'.
+#' @author Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF
+#' @seealso \code{\link{SpatialPointsTopography-class}}
+#' @examples
+#' 
+#' data(examplegridtopography)
+#' 
+#' #Creates spatial topography points from the grid
+#' p = 1:2
+#' points = as(examplegridtopography,"SpatialPoints")[p]
+#' spt = SpatialPointsTopography(points, examplegridtopography$elevation[p],
+#'                               examplegridtopography$slope[p],
+#'                               examplegridtopography$aspect[p])
+#' spt
+#' 
+#' #Alternatively, use coercing and subsetting
+#' spt = as(examplegridtopography, "SpatialPointsTopography")[p]
+#' spt
+#' 
+#' @export
 SpatialPointsTopography<-function(points, elevation, slope = NULL, aspect = NULL, proj4string = CRS(as.character(NA))) {
+  
+  # deprecation notice
+  lifecycle::deprecate_warn(
+    when = "2.0.0", what = "SpatialPointsTopography()", with = NULL,
+    details = "Spatial_*_Topography classes are soft deprecated.
+    User topography now can be provided as sf or stars objects"
+  )
+  
   if(!(inherits(points,"SpatialPoints")|| inherits(points,"matrix"))) stop("'points' has to be of class 'matrix' or 'SpatialPoints'.")
   if(inherits(points,"SpatialPoints")) {
     npoints = nrow(points@coords)
@@ -28,6 +78,8 @@ SpatialPointsTopography<-function(points, elevation, slope = NULL, aspect = NULL
           data = data)
   return(lt)
 }
+
+#' @export
 setMethod("[", signature("SpatialPointsTopography"),definition =
             function (x, i, j, ..., drop = TRUE) 
             {
@@ -59,7 +111,11 @@ print.SpatialPointsTopography = function(x, ..., digits = getOption("digits")) {
   row.names(df) = row.names(x@data)
   print(df, ..., digits = digits)
 }
+
+#' @export
 setMethod("print", "SpatialPointsTopography", function(x, ..., digits = getOption("digits")) print.SpatialPointsTopography(x, ..., digits))
+
+#' @export
 setMethod("show", "SpatialPointsTopography", function(object) print.SpatialPointsTopography(object))
 
 head.SpatialPointsTopography <- function(x, n=6L, ...) {
@@ -74,9 +130,12 @@ tail.SpatialPointsTopography <- function(x, n=6L, ...) {
   ix <- sign(n)*rev(seq(nrow(x), by=-1L, len=abs(n)))
   x[ ix , , drop=FALSE]
 }
+
+#' @export
 setMethod("tail", "SpatialPointsTopography", function(x, n=6L, ...) tail.SpatialPointsTopography(x,n,...))
 
 
+#' @export
 setMethod("spTransform", signature("SpatialPointsTopography", "CRS"),
       function(x, CRSobj, ...) {
             sp = spTransform(as(x,"SpatialPoints"), CRSobj) # calls the rgdal methods

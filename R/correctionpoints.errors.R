@@ -1,7 +1,7 @@
 .residualonepoint<-function(Data, MODHist, varmethods, allow_saturated = FALSE, qstep = 0.01, verbose=TRUE){
-  
+
   # if(verbose) cat(paste(", # historic records = ", nrow(MODHist), sep=""))
-  
+
   corrPrec<-vector("list",12)
   corrRad<-vector("list",12)
   corrTmean<-vector("list",12)
@@ -9,10 +9,10 @@
   corrTmax<-vector("list",12)
   corrWS<-vector("list",12) #WindSpeed
   corrHS<-vector("list",12) #SpecificHumidity
-  
+
   Data.months = as.numeric(format(as.Date(rownames(Data)),"%m"))
   MODHist.months = as.numeric(format(as.Date(rownames(MODHist)),"%m"))
-  
+
   #Copy original data
   DataCV = Data
   DataCV[,2:ncol(DataCV)]= NA
@@ -22,7 +22,7 @@
     indices = which(Data.months==m)
     DatTempMonth<-Data[Data.months==m,]
     ModelTempHistMonth<-MODHist[MODHist.months==m,]
-    
+
     for(i in 1:length(indices)) {
       #Remove day of interest
       DatTemp = DatTempMonth[-i,]
@@ -55,26 +55,26 @@
       } else {
         stop(paste("Wrong correction method for variable:", "MeanRelativeHumidity"))
       }
-      
-      #Apply correction 
+
+      #Apply correction
       #Correction Tmean
       DataCV$MeanTemperature[indices[i]] <-.corrApply(ModelTempHistMonth$MeanTemperature[i], corrTmean, varmethods["MeanTemperature"])
-      
+
       #Correction Tmin
       if(varmethods["MinTemperature"]=="scaling") {
         DataCV$MinTemperature[indices[i]]<-DataCV$MeanTemperature[indices[i]] + (pmin(ModelTempHistMonth$MinTemperature[i]-ModelTempHistMonth$MeanTemperature[i],0)*corrTmin)
       } else if(varmethods["MinTemperature"]=="quantmap") {
-        DataCV$MinTemperature[indices[i]]<-DataCV$MeanTemperature[indices[i]] + .corrApply(pmin(ModelTempHistMonth$MinTemperature[i]-ModelTempHistMonth$MeanTemperature[i],0), 
+        DataCV$MinTemperature[indices[i]]<-DataCV$MeanTemperature[indices[i]] + .corrApply(pmin(ModelTempHistMonth$MinTemperature[i]-ModelTempHistMonth$MeanTemperature[i],0),
                                                               corrTmin, varmethods["MinTemperature"])
       } else {#unbias/none
         DataCV$MinTemperature[indices[i]]<-.corrApply(ModelTempHistMonth$MinTemperature[i], corrTmin, varmethods["MinTemperature"])
       }
-      
+
       #Correction Tmax
       if(varmethods["MaxTemperature"]=="scaling") {
         DataCV$MaxTemperature[indices[i]]<-DataCV$MeanTemperature[indices[i]] + (pmax(ModelTempHistMonth$MaxTemperature[i]-ModelTempHistMonth$MeanTemperature[i],0)*corrTmax)
       } else if(varmethods["MaxTemperature"]=="quantmap") {
-        DataCV$MaxTemperature[indices[i]]<-DataCV$MeanTemperature[indices[i]] + .corrApply(pmax(ModelTempHistMonth$MaxTemperature[i]-ModelTempHistMonth$MeanTemperature[i],0), 
+        DataCV$MaxTemperature[indices[i]]<-DataCV$MeanTemperature[indices[i]] + .corrApply(pmax(ModelTempHistMonth$MaxTemperature[i]-ModelTempHistMonth$MeanTemperature[i],0),
                                                                                            corrTmax, varmethods["MaxTemperature"])
       } else {#unbias/none
         DataCV$MaxTemperature[indices[i]]<-.corrApply(ModelTempHistMonth$MaxTemperature[i], corrTmax, varmethods["MaxTemperature"])
@@ -109,25 +109,33 @@
       DataCV$MinRelativeHumidity[indices[i]] = pmin(DataCV$MinRelativeHumidity[indices[i]], DataCV$MaxRelativeHumidity[indices[i]])
       DataCV$MaxRelativeHumidity[indices[i]] = pmax(DataCV$MinRelativeHumidity[indices[i]], DataCV$MaxRelativeHumidity[indices[i]])
       DataCV$MeanRelativeHumidity[indices[i]] = pmin(pmax(DataCV$MeanRelativeHumidity[indices[i]], DataCV$MinRelativeHumidity[indices[i]]),DataCV$MaxRelativeHumidity[indices[i]])
-      
+
     }
   }
   return(DataCV)
 }
 
-correctionpoints.errors<-function(object, points, topodata = NULL, 
+#' @describeIn correctionpoints `r lifecycle::badge('deprecated')`
+#' @export
+correctionpoints.errors<-function(object, points, topodata = NULL,
                                   error.type = "residuals.cv", keep.data = FALSE, verbose = FALSE) {
-  
+
+  # deprecation warning
+  lifecycle::deprecate_warn(
+    when = "2.0.0", what = "correctionpoints.errors()", with = NULL,
+    details = "Better correction methods are provided by other packages (see * and * for example)"
+  )
+
   #Check input classes
   if(!inherits(object,"MeteorologyUncorrectedData")) stop("'object' has to be of class 'MeteorologyUncorrectedData'.")
   if(!inherits(points,"SpatialPointsMeteorology") && !inherits(points,"SpatialPointsDataFrame")) stop("'points' has to be of class 'SpatialPointsMeteorology' or 'SpatialPointsDataFrame'.")
-  
+
   error.type = match.arg(error.type, c("before","residuals", "residuals.cv"))
-    
+
   mPar = object@params
-  
+
   npoints = length(points)
-  
+
   if(verbose) {
     cat(paste("Points to evaluate: ", npoints,"\n", sep=""))
     cat(paste("Error type: ", error.type,"\n", sep=""))
@@ -139,10 +147,10 @@ correctionpoints.errors<-function(object, points, topodata = NULL,
   if(sum(sel)<npoints) {
     warning("At least one target point is outside the boundary box of 'object'.\n", call. = FALSE, immediate.=TRUE)
   } else if(verbose) cat(paste("All points inside boundary box.\n", sep=""))
-  
+
   longlat = spTransform(points, CRS(SRS_string = "EPSG:4326"))
   latitude = longlat@coords[,2]
-  
+
   #Project long/lat coordinates of predicted climatic objects into the projection of points
   xypred = spTransform(SpatialPoints(object@coords,object@proj4string,object@bbox), points@proj4string)
   colnames(xypred@coords)<-c("x","y")
@@ -152,7 +160,7 @@ correctionpoints.errors<-function(object, points, topodata = NULL,
     slorad = topodata$slope*(pi/180)
     asprad = topodata$aspect*(pi/180)
   }
-  
+
   if(inherits(points,"SpatialPointsMeteorology")) {
     if(!is.null(names(points@data))) ids = names(points@data)
     else ids = 1:npoints
@@ -160,7 +168,7 @@ correctionpoints.errors<-function(object, points, topodata = NULL,
     if(!is.null(rownames(points@data))) ids = rownames(points@data)
     else ids = 1:npoints
   }
-  
+
   if(keep.data) {
     dataout = vector("list", npoints)
   }
@@ -176,7 +184,7 @@ correctionpoints.errors<-function(object, points, topodata = NULL,
                    "WindSpeed-Bias", "WindSpeed-MAE",
                    "PET-Bias", "PET-MAE")
   row.names(res) = ids
-  
+
   #Loop over all points
   for(i in 1:npoints) {
     if(verbose) cat(paste("Evaluating error for point '",ids[i],"' (",i,"/",npoints,") -",sep=""))
@@ -211,14 +219,14 @@ correctionpoints.errors<-function(object, points, topodata = NULL,
         stop("Cannot access reference meteorology data")
       }
     }
-    
+
     #subset compatible data
     sel1 = rownames(rcmhist) %in% rownames(obs)
     sel2 = rownames(obs) %in% rownames(rcmhist)
     rcmhist = rcmhist[sel1,]
     obs = obs[sel2,]
-    
-    
+
+
     if(error.type=="before") {#Errors before correction
       dataone = rcmhist
       #Fill minimum and maximum relative humidity if missing
@@ -232,21 +240,21 @@ correctionpoints.errors<-function(object, points, topodata = NULL,
       mbias = .monthbiasonepoint(obs,rcmhist, mPar$varmethods, verbose)
       dataone = .correctiononepoint(mbias, rcmhist, fill_wind = mPar$fill_wind, allow_saturated = mPar$allow_saturated, verbose = verbose)
     } else if(error.type == "residuals.cv") {#Residuals before correction (including cross-validation)
-      dataone = .residualonepoint(obs,rcmhist, mPar$varmethods, 
-                                  allow_saturated = mPar$allow_saturated, 
+      dataone = .residualonepoint(obs,rcmhist, mPar$varmethods,
+                                  allow_saturated = mPar$allow_saturated,
                                   qstep = mPar$qstep, verbose)
     }
 
     #Calculate PET
     if(!is.null(topodata) && ("PET" %in% names(obs))) {
       J = radiation_dateStringToJulianDays(row.names(obs))
-      dataone$PET = .penmanpoint(latrad[i], elevation[i],slorad[i], asprad[i], J, 
+      dataone$PET = .penmanpoint(latrad[i], elevation[i],slorad[i], asprad[i], J,
                                     dataone$MinTemperature, dataone$MaxTemperature,
                                     dataone$MinRelativeHumidity, dataone$MaxRelativeHumidity, dataone$Radiation,
                                     dataone$WindSpeed, mPar$wind_height,
                                     0.001, 0.25);
     }
-    
+
     res[i, "MeanTemperature-Bias"] = mean(dataone$MeanTemperature-obs$MeanTemperature, na.rm=T)
     res[i, "MeanTemperature-MAE"] = mean(abs(dataone$MeanTemperature-obs$MeanTemperature), na.rm=T)
     res[i, "MinTemperature-Bias"] = mean(dataone$MinTemperature-obs$MinTemperature, na.rm=T)
@@ -273,7 +281,7 @@ correctionpoints.errors<-function(object, points, topodata = NULL,
     }
     #Store cross validation data if required
     if(keep.data) dataout[[i]] = dataone
-    
+
     if(verbose) cat(".\n")
   }
   if(keep.data) return(list(data = dataout, evaluation = res))

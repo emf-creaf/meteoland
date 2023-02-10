@@ -1,6 +1,22 @@
 -------------------------------
  NEWS for R Package "meteoland"
 -------------------------------
+# meteoland 1.0.3.9000 (development version)
+
+- Added the new workflows to work without `sp`, `raster`, `rgdal` packages. **This is a breaking change**, meaning it affects all the package:
+  - New functions for interpolation, calibration, crossvalidation, summarising worflows has been
+    added. See `vignette("tidy-meteoland", package = "meteoland")` for more info.
+  - Added deprecation notices for all functions that use `sp`, `raster`, `rgdal` packages internally.
+  - All functions using `sp`, `raster`, `rgdal` packages enter in *maintenance* mode. Starting in June,
+    they will stop working in newer versions of `meteoland`, as these packages also enter in
+    *maintenance* mode
+  - Added tests for new workflows
+  - Added tests for results equivalences between new and current workflows
+  - Updated documentation (functions) to use roxygen2
+  - Added vignetes for the new workflows and the rationale behind it.
+- Maintenance of the old workflows:
+  - Bug correction in the interpolation.cv
+  - Bug correction in interpolategrid
 
 # Version 1.0.3
 - Minor C code corrections (clang check)

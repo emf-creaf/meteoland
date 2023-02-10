@@ -5,17 +5,41 @@ meteoland - Landscape meteorology tools
 [![](https://cranlogs.r-pkg.org/badges/meteoland)](https://cran.rstudio.com/web/packages/meteoland/index.html)
 [![R-CMD-check](https://github.com/emf-creaf/meteoland/workflows/R-CMD-check/badge.svg)](https://github.com/emf-creaf/meteoland/actions)
 
+# Important notice
+
+Starting on June 2023, `rgdal`, `rgeos` and `maptools` R packages will
+enter a *maintenance* mode (meaning no new updates, more info at
+<https://github.com/r-spatial/evolution>). Coincidentally, `sp` and
+`raster` packages are now superseded by the more modern alternatives
+`sf`, `stars` and `terra`. This means that the `meteoland` classes,
+which are based on `sp`, need to be updated to deal with these changes
+in the R-spatial ecosystem.
+
+Starting with version 2.0.0 of `meteoland` (February 2023) **all
+functions, methods and classes based on or using the `sp`, `raster` and
+`rgdal` package are now soft-deprecated**. They still work and can be
+used, but a warning will appear recommending using the new tidy
+workflows.
+
+> **In June 2023, all these functions, methods and classes will be
+> hard-deprecated, meaning they will stop working.**
+
+See the [*Tidy
+meteoland*](https://emf-creaf.github.io/meteoland/articles/tidy-meteoland.html)
+vignette (`vignette("tidy-meteoland", package = "meteoland")`) for more
+info about this changes.
+
 ## Introduction
 
 With the aim to assist research of climatic impacts on forests, the R
 package `meteoland` provides utilities to estimate daily weather
 variables at any position over complex terrains:
 
--   Spatial interpolation of daily weather records from meteorological
-    stations.
--   Statistical correction of meteorological data series (e.g. from
-    climate models).
--   Multisite and multivariate stochastic weather generation.
+- Spatial interpolation of daily weather records from meteorological
+  stations.
+- Statistical correction of meteorological data series (e.g. from
+  climate models).
+- Multisite and multivariate stochastic weather generation.
 
 A more detailed introduction to the package functionality can be found
 in De Cáceres et al. (2018).
@@ -61,7 +85,7 @@ Modelling Facility*](https://emf.creaf.cat) at CREAF (Catalonia, Spain).
 
 ## References
 
--   De Caceres M, Martin-StPaul N, Turco M, Cabon A, Granda V (2018)
-    Estimating daily meteorological data and downscaling climate models
-    over landscapes. Environmental Modelling and Software 108: 186-196.
-    (<doi:10.1016/j.envsoft.2018.08.003>).
+- De Caceres M, Martin-StPaul N, Turco M, Cabon A, Granda V (2018)
+  Estimating daily meteorological data and downscaling climate models
+  over landscapes. Environmental Modelling and Software 108: 186-196.
+  (<doi:10.1016/j.envsoft.2018.08.003>).

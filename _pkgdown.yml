@@ -14,8 +14,7 @@ articles:
   contents:
   - starts_with("tidy-meteoland")
   - starts_with("reshaping-meteo")
-  - starts_with("function-equivalences")
-  
+
 reference:
 - title: Daily weather classes
   desc: Daily weather spatial objects

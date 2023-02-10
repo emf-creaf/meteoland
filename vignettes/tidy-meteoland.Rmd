@@ -39,7 +39,7 @@ decision to improve and make meteorological interpolation process simpler was ta
 vignette, we provide insights on the new ways of working with `meteoland`.
 
 If you are interested in the equivalences between older and newer functions of `meteoland`,
-please see `vignette("function-equivalences", package = 'meteoland')`.
+please see the [appendix](#appendix) at the end of the vignette.
 
 ## Example datasets
 
@@ -143,7 +143,7 @@ with_meteo(meteo_without_temp)
   This object stores not only the meteorological information, but also the parameters that will be used in the interpolation
   process. These parameters can be supplied as a list in the `params` argument from
   `create_meteo_interpolator()` function. If not supplied, a default set of parameters is
-  used. At any point, we can display the interpolation parameters using function `get_interpolation_params()`:
+  used. At any point, we can display the interpolation parameters using `get_interpolation_params()`:
   
 ```{r interpolatior_params}
 # parameters
@@ -218,7 +218,7 @@ write_interpolator(interpolator, file.path(temporal_folder, "interpolator.nc"))
 file.exists(file.path(temporal_folder, "interpolator.nc"))
 ```
 
-To load the interpolator in your session again, you can use the function `read_interpolator()`
+To load the interpolator in your session again, you can use the `read_interpolator()`
 function.
 
 ```{r reading_interpolator}
@@ -379,7 +379,7 @@ points_interpolated
 
 ## Interpolation on raster data
 
-We can use function `interpolate_data()` in a raster type of data. All we need in this case is the topography information
+We can use the `interpolate_data()` function in a raster type of data. All we need in this case is the topography information
 in a `stars` object, with `elevation`, `aspect` and `slope` variables as raster attributes:
 
 ```{r raster_to_interpolate}
@@ -431,3 +431,40 @@ monthly_mean_temperature <- raster_to_interpolate_example |>
 plot(monthly_mean_temperature)
 ```
 
+# Appendix {#appendix}
+
+## Equivalence table
+
+Function (< 2.0.0) | Equivalence (>= 2.0.0) | deprecated
+--------------|----------------|-------------
+`averagearea` | No equivalence, aggregating by area can be done with the `sf` package | `TRUE`
+`correctionpoint`, `correctionpoints`, `correctionpoints.errors`, `correction_series`, `defaultCorrectionParams` | No equivalence, better bias correction methods are provided by other packages (see package `MBC` for example) | `TRUE`
+`defaultInterpolationParams` | No change | `FALSE`
+`download_*` functions | No equivalence, weather download functions are now provided by `meteospain` package | `TRUE`
+`extractdates`, `extractgridindex`, `extractgridpoints`, `extractNetCDF`, `extractvars` | No equivalence, not needed as the meteo objects are now sf objects | `TRUE`
+`humidity_*` conversion tools | No change | `FALSE`
+`interpolation.calibration` | `interpolator_calibration` | `TRUE`
+`interpolation.calibration.fmax` | `interpolator_calibration` | `TRUE`
+`interpolation.coverage` | No equivalence | `TRUE`
+`interpolation.cv` | `interpolation_cross_validation` | `TRUE`
+`interpolationgrid`, `interpolationpixels`, `interpolationpoints` | `interpolate_data` | `TRUE`
+`mergegrid`, `mergepoints` | No equivalence, meteorological objects are now `sf` objects and can be merged, joined or filtered as any data.frame | `TRUE`
+`meteocomplete` | `complete_meteo` | `TRUE`
+`meteoplot` | No equivalence, meteo objects are now sf objects and can be plotted as any other data.frame | `TRUE`
+`Meteorology_*_Data` | No equivalence, spatial classes based on `sp` are now deprecated in `meteoland` | `TRUE`
+`penman`, `penmanmonteith` | No changes | `FALSE`
+`plot.interpolation.cv` | No equivalence | `TRUE`
+`precipitation_concentration` | No equivalence, precipitation_concentration utility is deprecated and will be removed in future versions | `TRUE`
+`precipitation_rainfallErosivity` | `precipitation_rainfall_erosivity` | `TRUE`
+`radiation_*` utility functions | No change | `FALSE`
+`readmeteorology*` | No equivalence, spatial classes based on `sp` are now deprecated in `meteoland` | `TRUE`
+`readNetCDF*` | No equivalence, NetCDF files can be managed with more recent and up to date R packages (ncmeta, stars...) | `TRUE`
+`readWindNinjaWindFields` | No equivalence | `TRUE`
+`reshapemeteospain` | `meteospain2meteoland` | `TRUE`
+`reshapeworldmet` | `worldmet2meteoland` | `TRUE`
+`reshapeweathercan` | No equivalence, `weathercan` package was removed from CRAN and the functions are deprecated | `TRUE`
+`Spatial**Meteorology`, `Spatial**Topography` | No equivalence, spatial classes based on `sp` are now deprecated in `meteoland` | `TRUE`
+`summary*` | `summarise_interpolate_data`, `summarise_interpolator` | `TRUE`
+`utils_*` | No change | `FALSE`
+`weathergeneration`, `defaultGenerationParams` | No equivalence, current weather generation methods are currently deprecated because they operate with classes that are deprecated themselves, but for future versions, we plan to keep the functionality in new functions. | `TRUE`
+`writemeteorology*` | No equivalence, spatial classes based on `sp` are now deprecated in `meteoland` | `TRUE`

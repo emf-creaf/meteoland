@@ -2,13 +2,13 @@
 
 
 #' Default generation parameters
-#' 
+#'
 #' @description
 #' `r lifecycle::badge('deprecated')`
-#' 
+#'
 #' Returns a list with the default parameterization for weather generation.
-#' 
-#' 
+#'
+#'
 #' @return A list with the following items (default values in brackets):
 #' \itemize{ \item\code{conditional [= "none"]}: A string to indicate whether
 #' multi-year weather should be conditioned or not. If \code{conditional =
@@ -37,7 +37,7 @@
 #' @references Apipattanavis, S., G. Podesta, B. Rajagopalan, and R. W. Katz
 #' (2007), A semiparametric multivariate and multisite weather generator, Water
 #' Resour. Res., 43, W11401, doi:10.1029/2006WR005714.
-#' 
+#'
 #' Steinschneider S. & Brown C. (2013) A semiparametric multivariate, multisite
 #' weather generator with low-frequency variability for use in climate risk
 #' assessments. Water Resour. Res. 49, 7205-7220. doi:10.1002/wrcr.20528.
@@ -46,8 +46,7 @@ defaultGenerationParams<-function() {
   # deprecation warning
   lifecycle::deprecate_warn(
     when = "2.0.0", what = "correctionpoints.errors()", with = NULL,
-    details = "Weather generation methods will dissapear in future versions of meteoland, as there
-    are better alternatives (see * and *)"
+    details = "Current weather generation methods are currently deprecated because they operate with classes that are deprecated themselves, but for future versions, we plan to keep the functionality in new functions."
   )
 
   return(list(

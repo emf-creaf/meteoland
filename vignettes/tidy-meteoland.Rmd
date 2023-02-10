@@ -441,7 +441,7 @@ Function (< 2.0.0) | Equivalence (>= 2.0.0) | deprecated
 `correctionpoint`, `correctionpoints`, `correctionpoints.errors`, `correction_series`, `defaultCorrectionParams` | No equivalence, better bias correction methods are provided by other packages (see package `MBC` for example) | `TRUE`
 `defaultInterpolationParams` | No change | `FALSE`
 `download_*` functions | No equivalence, weather download functions are now provided by `meteospain` package | `TRUE`
-`extractdates`, `extractgridindex`, `extractgridpoints`, `extractNetCDF`, `extractvars` | No equivalence, not needed as the meteo objects are now sf objects | `TRUE`
+`extractdates`, `extractgridindex`, `extractgridpoints`, `extractNetCDF`, `extractvars` | No equivalence, not needed as the meteo objects are now `sf` objects | `TRUE`
 `humidity_*` conversion tools | No change | `FALSE`
 `interpolation.calibration` | `interpolator_calibration` | `TRUE`
 `interpolation.calibration.fmax` | `interpolator_calibration` | `TRUE`

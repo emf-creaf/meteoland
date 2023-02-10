@@ -7,7 +7,7 @@ downloadAEMEThistorical <- function(api, dates, station_id = NULL, export = FALS
   # deprecation warning
   lifecycle::deprecate_warn(
     when = "2.0.0", what = "downloadAEMEThistorical()", with = "meteospain::get_meteo_from()",
-    details = "This function is deprecated in favour of the meteospain package"
+    details = "Weather download functions are now provided by `meteospain` package"
   )
 
   opt <- meteospain::aemet_options("daily",
@@ -35,7 +35,7 @@ downloadSMChistorical <- function(api, date, station_id=NULL,
   # deprecation warning
   lifecycle::deprecate_warn(
     when = "2.0.0", what = "downloadSMChistorical()", with = "meteospain::get_meteo_from()",
-    details = "This function is deprecated in favour of the meteospain package"
+    details = "Weather download functions are now provided by `meteospain` package"
   )
 
   opt <- meteospain::meteocat_options("daily",
@@ -60,7 +60,7 @@ downloadMGhistorical <- function(date_from, date_to, station_id = NULL, verbose=
   # deprecation warning
   lifecycle::deprecate_warn(
     when = "2.0.0", what = "downloadMGhistorical()", with = "meteospain::get_meteo_from()",
-    details = "This function is deprecated in favour of the meteospain package"
+    details = "Weather download functions are now provided by `meteospain` package"
   )
 
   opt <- meteospain::meteogalicia_options("daily",

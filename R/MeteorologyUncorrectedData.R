@@ -1,14 +1,14 @@
 #' Creates an object of class 'MeteorologyUncorrectedData'
-#' 
+#'
 #' @description
 #' `r lifecycle::badge("deprecated")`
-#' 
+#'
 #' Initializes an object for statistical correction of meteorological data over
 #' landscapes.
-#' 
+#'
 #' @details
 #' See correction details in vignettes or in \code{\link{correctionpoints}}.
-#' 
+#'
 #' @param points An object of class \code{\link{SpatialPoints}}.
 #' @param reference_data Reference (historic) meteorological data used to
 #' calibrate correction factors when compared with observations. A vector of
@@ -32,17 +32,17 @@
 #' @export
 MeteorologyUncorrectedData<-function(points, reference_data, projection_data, dates,
                                      params = defaultCorrectionParams()) {
-  
+
   lifecycle::deprecate_warn(
     when = "2.0.0", what = "MeteorologyUncorrectedData()", with = NULL,
     details = "Correction methods and data classes are soft deprecated.
-    Better correction methods are provided by other packages (see * and * for example)"
+    Better bias correction methods are provided by other packages (see package `MBC` for example)"
   )
-  
+
   if(!inherits(points, "SpatialPoints")) stop("'points' has to be of class 'SpatialPoints'")
-  if(!inherits(reference_data,"data.frame") && !inherits(reference_data,"list") && !inherits(reference_data,"character")) 
+  if(!inherits(reference_data,"data.frame") && !inherits(reference_data,"list") && !inherits(reference_data,"character"))
     stop("'reference_data' has to be of class 'data.frame, 'character' or 'list'.")
-  if(!inherits(projection_data,"data.frame") && !inherits(projection_data,"list") && !inherits(projection_data,"character")) 
+  if(!inherits(projection_data,"data.frame") && !inherits(projection_data,"list") && !inherits(projection_data,"character"))
     stop("'projection_data' has to be of class 'data.frame', 'character' or 'list'.")
   if(!inherits(dates, "Date")) stop("'date' has to be of class 'Date'")
   ndates = length(dates)

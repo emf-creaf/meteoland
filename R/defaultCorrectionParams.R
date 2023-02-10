@@ -2,13 +2,13 @@
 
 
 #' Default correction parameters
-#' 
+#'
 #' @description
 #' `r lifecycle::badge('deprecated')`
-#' 
+#'
 #' Returns a list with the default parameterization for statistical correction.
-#' 
-#' 
+#'
+#'
 #' @return A list with the following items (default values in brackets):
 #' \itemize{ \item\code{methods}: A list with the correction method for each
 #' variable (options are "unbias" (shift of the mean), "scaling" (factor
@@ -18,7 +18,7 @@
 #' "quantmap"} \item\code{Precipitation = "quantmap"}
 #' \item\code{MeanRelativeHumidity = "unbias"} \item\code{Radiation = "unbias"}
 #' \item\code{WindSpeed = "quantmap"} }
-#' 
+#'
 #' \item\code{fill_wind [= TRUE]}: A logical flag to fill wind speed values
 #' with uncorrected values when reference data is missing.
 #' \item\code{allow_saturated [= FALSE]}: A logical flag to indicate whether
@@ -39,7 +39,8 @@ defaultCorrectionParams<-function() {
   # deprecation warning
   lifecycle::deprecate_warn(
     when = "2.0.0", what = "defaultCorrectionParams()", with = NULL,
-    details = "Better correction methods are provided by other packages (see * and * for example)"
+    details = "Correction methods and data classes are soft deprecated.
+    Better bias correction methods are provided by other packages (see package `MBC` for example)"
   )
 
   return(list(

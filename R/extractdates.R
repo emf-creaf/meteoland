@@ -5,8 +5,7 @@ extractvars<-function(object, vars, verbose = FALSE) {
   lifecycle::deprecate_warn(
     when = "2.0.0", what = "extractvars()", with = NULL,
     details = "Spatial_*_Meteorology classes are soft deprecated.
-    Extraction of variables or dates can be done as in a normal data.frame as the meteo objects are
-    now sf objects"
+    Extraction of variables or dates can be done as in a normal data.frame as the meteo objects are now sf objects"
   )
 
   if((!inherits(object,"SpatialPointsMeteorology"))
@@ -76,18 +75,18 @@ extractvars<-function(object, vars, verbose = FALSE) {
 
 
 #' Extracts meteorological data
-#' 
+#'
 #' @description
 #' `r lifecycle::badge("deprecated")`
-#' 
+#'
 #' Extracts meteorological data from an object.
-#' 
+#'
 #' @details
 #' Function \code{extractpoints} is deprecated, because its functionality can
 #' be achieved using subsetting of spatial classes
 #' \code{\link{SpatialGridMeteorology}} and
 #' \code{\link{SpatialPixelsMeteorology}}.
-#' 
+#'
 #' @aliases extractdates extractvars extractgridindex extractgridpoints
 #' @param object An object of class \code{\link{SpatialPointsMeteorology}},
 #' \code{\link{SpatialGridMeteorology}} or

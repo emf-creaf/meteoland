@@ -1,12 +1,12 @@
 #' Extraction of climatic data from NetCDF files (deprecated)
-#' 
+#'
 #' @description
 #' `r lifecycle::badge("deprecated")`
-#' 
+#'
 #' This function reads a set of NetCDF files (one per variable) and extracts
 #' data for a set of NetCDF cells that are specified using a boundary box (in
 #' lon/lat format) or a set of (x,y) grid indices.
-#' 
+#'
 #' @details
 #' Function \code{extractNetCDF} first identifies which cells in NetCDF data
 #' should be extracted according to \code{bbox} (or the cells are indicated by
@@ -17,19 +17,19 @@
 #' corresponding data. The function transforms units to the units used in
 #' \code{meteoland}. If specific humidity and mean temperature are available,
 #' the function calculates mean relative humidity.
-#' 
+#'
 #' Extracted meteorological data (a data frame with days in rows and
 #' meteorological variables in columns) can be stored in an object
 #' \code{\link{SpatialPointsMeteorology-class}} or it can be written in the
 #' disk (one file per cell). In the latter case, the output format can be
 #' chosen and the function also writes a supplementary file containing the meta
 #' data (i.e. the coordinates and filename of each file).
-#' 
+#'
 #' Humidity in climate model files is given as specific humidity. This is
 #' converted to relative humidity and the conversion may produce values above
 #' saturation (>100%) (see also \code{\link{defaultCorrectionParams}} for the
 #' same issue when performing bias correction).
-#' 
+#'
 #' @param ncdf_files Character vector containing files to read
 #' @param bbox Boundary box (2 x 2 matrix) specifying the limit coordinates of
 #' a study area (in lon/lat format).
@@ -51,7 +51,7 @@
 #' returns an object of class \code{\link{SpatialPointsDataFrame-class}}
 #' containing the meta data of the files written in the disk.
 #' @author Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF
-#' 
+#'
 #' Nicolas Martin, INRA-Avignon
 #' @seealso \code{\link{correctionpoints}},
 #' \code{\link{writemeteorologypointfiles}},
@@ -62,7 +62,7 @@ extractNetCDF<-function(ncdf_files, bbox = NULL, offset = 0, cells = NULL, expor
 
   lifecycle::deprecate_warn(
     when = "2.0.0", what = "extractNetCDF()", with = NULL,
-    details = "???"
+    details = "Extraction of variables or dates can be done as in a normal data.frame as the meteo objects are now sf objects"
   )
 
   nfiles = length(ncdf_files)

@@ -1,11 +1,11 @@
 #' Low-level correction functions
-#' 
+#'
 #' @description
 #' `r lifecycle::badge('deprecated')`
-#' 
+#'
 #' Low-level function to perform bias correction.
-#' 
-#' 
+#'
+#'
 #' @aliases correction_series
 #' @param obs Observed series for the reference (historical) period.
 #' @param mod Modelled series for the reference (historical) period.
@@ -29,7 +29,8 @@ correction_series<-function(obs, mod, proj = NULL, method = "unbias", isPrec=TRU
   # deprecation warning
   lifecycle::deprecate_warn(
     when = "2.0.0", what = "correction_series()", with = NULL,
-    details = "Better correction methods are provided by other packages (see * and * for example)"
+    details = "Correction methods and data classes are soft deprecated.
+    Better bias correction methods are provided by other packages (see package `MBC` for example)"
   )
 
   if(method=="unbias") {
@@ -50,7 +51,8 @@ correctionpoint<-function(obs, mod, proj, dates = NULL, params = defaultCorrecti
   # deprecation warning
   lifecycle::deprecate_warn(
     when = "2.0.0", what = "correctionpoint()", with = NULL,
-    details = "Better correction methods are provided by other packages (see * and * for example)"
+    details = "Correction methods and data classes are soft deprecated.
+    Better bias correction methods are provided by other packages (see package `MBC` for example)"
   )
 
   #Calculate mean temperature if absent
@@ -75,17 +77,17 @@ correctionpoint<-function(obs, mod, proj, dates = NULL, params = defaultCorrecti
 
 
 #' Statistical correction of meteorological variables for a set of points
-#' 
+#'
 #' @description
 #' `r lifecycle::badge('deprecated')`
-#' 
+#'
 #' Functions \code{correctionpoint} and \code{correctionpoints} perform
 #' correction of predicted climatic data by applying statistical correction
 #' methods (unbiasing, scaling, or quantile mapping) to meteorological
 #' variables. Function \code{correctionpoints.errors} allows evaluating, for
 #' each point, the bias and mean absolute error (MAE) obtained before and after
 #' correcting the climate model for the historical period.
-#' 
+#'
 #' @details
 #' Function \code{correctionpoints} performs statistical correction of
 #' predicted climatic data for all points supplied in \code{points} whereas
@@ -95,7 +97,7 @@ correctionpoint<-function(obs, mod, proj, dates = NULL, params = defaultCorrecti
 #' meteorology of several stations (see
 #' \code{\link{MeteorologyInterpolationData}}) or they can be extracted from
 #' reanalyzed meteorology (e.g. EU-WATCH) (see \code{\link{extractNetCDF}}).
-#' 
+#'
 #' For each target point, \code{correctionpoints} function first determines the
 #' predicted cell where the point falls according to the euclidean distance in
 #' the geographic space of \code{object}. Then it calls \code{correctionpoint}.
@@ -112,7 +114,7 @@ correctionpoint<-function(obs, mod, proj, dates = NULL, params = defaultCorrecti
 #' (b) 'scaling' for multiplication by a factor; and (c) 'quantmap' for
 #' empirical quantile mapping between observed and modelled data
 #' (\enc{Déqué}{Deque} 2007).
-#' 
+#'
 #' A difficulty arises for quantile mapping when the variables bounded by zero,
 #' such as precipitation. As the models tend to drizzle (or may have lower
 #' frequency of precipitation events), the probability of precipitation in the
@@ -122,7 +124,7 @@ correctionpoint<-function(obs, mod, proj, dates = NULL, params = defaultCorrecti
 #' the probability of no precipitation in the model. This procedure ensures
 #' that the probability of precipitation after correction is equal to that
 #' observed (\enc{Boé}{Boe} 2007).
-#' 
+#'
 #' @aliases correctionpoint correctionpoints correctionpoints.errors
 #' @param obs A data frame with observed meteorology.
 #' @param mod,proj Data frame with predicted meteorology for the reference and
@@ -187,7 +189,7 @@ correctionpoint<-function(obs, mod, proj, dates = NULL, params = defaultCorrecti
 #' data frames with the uncorrected/corrected series used in the comparisons
 #' with observations.} }
 #' @author Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF
-#' 
+#'
 #' Nicolas Martin, INRA-Avignon
 #' @seealso \code{\link{penman}}, \code{\link{SpatialPointsMeteorology-class}},
 #' \code{\link{writemeteorologypointfiles}},
@@ -197,32 +199,32 @@ correctionpoint<-function(obs, mod, proj, dates = NULL, params = defaultCorrecti
 #' and dynamical downscaling of the Seine basin climate for
 #' hydro-meteorological studies. Int J Climatol 27:1643–1655. doi:
 #' 10.1002/joc.1602
-#' 
+#'
 #' De Caceres M, Martin-StPaul N, Turco M, Cabon A, Granda V (2018) Estimating
 #' daily meteorological data and downscaling climate models over landscapes.
 #' Environmental Modelling and Software 108: 186-196.
-#' 
+#'
 #' \enc{Déqué}{Deque} M (2007) Frequency of precipitation and temperature
 #' extremes over France in an anthropogenic scenario: Model results and
 #' statistical correction according to observed values. Glob Planet Change
 #' 57:16–26. doi: 10.1016/j.gloplacha.2006.11.030
 #' @examples
-#' 
+#'
 #' data(examplegridtopography)
 #' data(exampleinterpolationdata)
 #' data(examplecorrectiondata)
-#' 
+#'
 #' #Creates spatial topography points from the grid
 #' p = 1:2
 #' spt = as(examplegridtopography, "SpatialPointsTopography")[p]
-#' 
-#' 
+#'
+#'
 #' #Interpolation of two points for the whole time period (2000-2003)
 #' historical = interpolationpoints(exampleinterpolationdata, spt)
-#' 
+#'
 #' #Downscaling of future predictions (RCM models, year 2023)
 #' predicted = correctionpoints(examplecorrectiondata, historical, spt@data)
-#' 
+#'
 #' #Plot predicted mean temperature for point 1
 #' meteoplot(predicted, 1, "MeanTemperature", ylab="Temperature (Celsius)", ylim=c(-5,40))
 #' meteoplot(predicted, 1, "MinTemperature", add=TRUE, col="blue")
@@ -237,15 +239,15 @@ correctionpoint<-function(obs, mod, proj, dates = NULL, params = defaultCorrecti
 #' lines(examplecorrectiondata@dates,
 #'       examplecorrectiondata@projection_data[[3]]$MaxTemperature,
 #'       col="red", lty=3)
-#' legend("topright", legend=c("corrected","uncorrected", "Maximum", "Mean", "Minimum"), 
+#' legend("topright", legend=c("corrected","uncorrected", "Maximum", "Mean", "Minimum"),
 #'        col=c("black","black", "red","black","blue"), lty=c(1,3,1,1,1), bty="n")
-#' 
+#'
 #' #Scatter plot
 #' plot(examplecorrectiondata@projection_data[[3]]$MeanTemperature,
 #'      predicted@data[[1]]$MeanTemperature, cex=0.1, asp=1,
 #'      ylab="Corrected mean temperature", xlab="Uncorrected mean temperature")
 #' abline(a=0,b=1,col="gray")
-#' 
+#'
 #' #Plot predicted precipitation for point 1
 #' meteoplot(predicted, 1, "Precipitation", ylab="Precipitation (mm)", ylim=c(0,120))
 #' #Add uncorrected mean temperature data (cell #3)
@@ -253,13 +255,13 @@ correctionpoint<-function(obs, mod, proj, dates = NULL, params = defaultCorrecti
 #'       examplecorrectiondata@projection_data[[3]]$Precipitation,
 #'       col="red", lty=3)
 #' legend("topleft", legend=c("corrected","uncorrected"), col=c("black","red"), lty=c(1,3), bty="n")
-#' 
+#'
 #' #Scatter plot
 #' plot(examplecorrectiondata@projection_data[[3]]$Precipitation,
 #'      predicted@data[[1]]$Precipitation, cex=0.1, asp=1,
 #'      ylab="Corrected precipitation (mm)", xlab="Uncorrected precipitation (mm)")
 #' abline(a=0,b=1,col="gray")
-#' 
+#'
 #' @export
 correctionpoints<-function(object, points, topodata = NULL, dates = NULL, export = FALSE,
                            exportDir = getwd(), exportFile = NULL, exportFormat = "meteoland/txt",
@@ -268,7 +270,8 @@ correctionpoints<-function(object, points, topodata = NULL, dates = NULL, export
   # deprecation warning
   lifecycle::deprecate_warn(
     when = "2.0.0", what = "correctionpoints()", with = NULL,
-    details = "Better correction methods are provided by other packages (see * and * for example)"
+    details = "Correction methods and data classes are soft deprecated.
+    Better bias correction methods are provided by other packages (see package `MBC` for example)"
   )
 
   if(export) exportFormat = match.arg(exportFormat, c("meteoland/txt", "meteoland/rds", "castanea/txt", "castanea/rds", "netCDF"))

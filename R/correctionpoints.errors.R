@@ -123,7 +123,8 @@ correctionpoints.errors<-function(object, points, topodata = NULL,
   # deprecation warning
   lifecycle::deprecate_warn(
     when = "2.0.0", what = "correctionpoints.errors()", with = NULL,
-    details = "Better correction methods are provided by other packages (see * and * for example)"
+    details = "Correction methods and data classes are soft deprecated.
+    Better bias correction methods are provided by other packages (see package `MBC` for example)"
   )
 
   #Check input classes

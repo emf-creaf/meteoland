@@ -38,8 +38,10 @@ variables at any position over complex terrains:
 - Spatial interpolation of daily weather records from meteorological
   stations.
 - Statistical correction of meteorological data series (e.g. from
-  climate models).
-- Multisite and multivariate stochastic weather generation.
+  climate models). Note that this functionality is deprecated starting
+  in version 2.0.0.
+- Multisite and multivariate stochastic weather generation. Note that
+  this functionality is deprecated starting in version 2.0.0.
 
 A more detailed introduction to the package functionality can be found
 in De Cáceres et al. (2018).

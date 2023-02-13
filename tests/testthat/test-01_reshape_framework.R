@@ -187,7 +187,7 @@ test_that("meteospain2meteoland works", {
 test_that("meteospain2meteoland works with subdaily fringe cases", {
 
   meteo_test_subdaily_with_errors <-
-    readRDS("old_rds/subdaily_meteo_generating_duplicated_rows_in_meteospain2meteoland.rds")
+    readRDS("subdaily_duplicated_rows_generator.rds")
   expect_no_error(test_subdaily <- suppressWarnings(meteospain2meteoland(meteo_test_subdaily_with_errors)))
   expect_s3_class(test_subdaily, 'sf')
   expect_true(

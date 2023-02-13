@@ -11,3 +11,4 @@ metadata.yml
 ^\.github$
 ^old_man/*$
 ^roxygen_tmp/*$
+tests/testthat/old_rds

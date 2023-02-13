@@ -65,7 +65,7 @@ reference:
   contents:
   - starts_with("read")
   - starts_with("write")
-  - NetCDFutils
+  - starts_with("readNetCDF")
   - extractNetCDF
 - title: Weather data download
   desc: Functions to access daily weather data from national/regional APIs

@@ -242,6 +242,57 @@ test_that("interpolation process works as intended", {
   expect_true(
     all(is.na(raster_twovars_res[["Radiation"]]))
   )
+  
+  # testing that missing variables in the interpolator behaves as they should
+  #   - no relative humidity, then it is interpolated with temperatures, so the
+  #     variable has data in the res
+  #   - no precipitation, then precipitation is NA in the results, but radiation
+  #     is interpolated as clear days, with a warning to the user
+  interpolator_test_no_relative_humidity <- meteoland_interpolator_example
+  interpolator_test_no_relative_humidity[["RelativeHumidity"]] <- NA_real_
+  interpolator_test_no_precipitation <- meteoland_interpolator_example
+  interpolator_test_no_precipitation[["Precipitation"]] <- NA_real_
+  interpolator_test_no_precipitation[["SmoothedPrecipitation"]] <- NA_real_
+  interpolator_test_no_precipitation[["Radiation"]] <- NA_real_
+  
+  expect_s3_class(
+    points_res_no_relative_humidity <-
+      interpolate_data(points_to_interpolate_example, interpolator_test_no_relative_humidity),
+    "sf"
+  )
+  1:length(unique(points_res_no_relative_humidity$plot_id)) |>
+    purrr::walk(
+      .f = \(point) {
+        expect_false(
+          any(is.na(points_res_no_relative_humidity$interpolated_data[[point]]$MeanRelativeHumidity))
+        )
+        expect_false(
+          any(is.na(points_res_no_relative_humidity$interpolated_data[[point]]$MinRelativeHumidity))
+        )
+        expect_false(
+          any(is.na(points_res_no_relative_humidity$interpolated_data[[point]]$MaxRelativeHumidity))
+        )
+      }
+    )
+  
+  expect_warning(
+    points_res_no_precipitation <-
+      interpolate_data(points_to_interpolate_example, interpolator_test_no_precipitation),
+    "assuming clear days"
+  )
+  
+  1:length(unique(points_res_no_precipitation$plot_id)) |>
+    purrr::walk(
+      .f = \(point) {
+        expect_true(
+          all(is.na(points_res_no_precipitation$interpolated_data[[point]]$Precipitation))
+        )
+        expect_false(
+          any(is.na(points_res_no_precipitation$interpolated_data[[point]]$Radiation))
+        )
+      }
+    )
+  
 
 })
 

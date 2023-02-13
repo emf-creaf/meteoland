@@ -138,27 +138,34 @@ NumericMatrix interpolatePrecipitationSeriesPoints(NumericVector Xp, NumericVect
       missing[i] = (NumericVector::is_na(P(i,d)) || NumericVector::is_na(X[i]) || NumericVector::is_na(Y[i]) || NumericVector::is_na(Z[i]));
       if(missing[i]) nmis++;
     }
-    if(debug) Rcout << "Day "<< d << " nexcluded = " << nmis;
-    NumericVector Pday(nstations-nmis);
-    NumericVector Psmoothday(nstations-nmis);
-    NumericVector Xday(nstations-nmis);
-    NumericVector Yday(nstations-nmis);
-    NumericVector Zday(nstations-nmis);
-    int c = 0;
-    for(int i=0;i<nstations;i++) {
-      if(!missing[i]) {
-        Pday[c] = P(i,d);
-        Psmoothday[c] = Psmooth(i,d);
-        Xday[c] = X[i];
-        Yday[c] = Y[i];
-        Zday[c] = Z[i];
-        c++;
+    if(nmis == nstations) {
+      for(int p=0;p<npoints;p++) {
+        Pp(p,d) = NA_REAL;
       }
-    }
-    NumericVector Ppday = interpolatePrecipitationPoints(Xp, Yp,Zp, Xday, Yday, Zday, Pday,Psmoothday, iniRp, alpha_event, alpha_amount,
-                                                         N_event, N_amount, iterations, popcrit, fmax, debug);
-    for(int p=0;p<npoints;p++) {
-      Pp(p,d) = Ppday[p];
+    } else {
+      // nmis != nstations
+      if(debug) Rcout << "Day "<< d << " nexcluded = " << nmis;
+      NumericVector Pday(nstations-nmis);
+      NumericVector Psmoothday(nstations-nmis);
+      NumericVector Xday(nstations-nmis);
+      NumericVector Yday(nstations-nmis);
+      NumericVector Zday(nstations-nmis);
+      int c = 0;
+      for(int i=0;i<nstations;i++) {
+        if(!missing[i]) {
+          Pday[c] = P(i,d);
+          Psmoothday[c] = Psmooth(i,d);
+          Xday[c] = X[i];
+          Yday[c] = Y[i];
+          Zday[c] = Z[i];
+          c++;
+        }
+      }
+      NumericVector Ppday = interpolatePrecipitationPoints(Xp, Yp,Zp, Xday, Yday, Zday, Pday,Psmoothday, iniRp, alpha_event, alpha_amount,
+                                                           N_event, N_amount, iterations, popcrit, fmax, debug);
+      for(int p=0;p<npoints;p++) {
+        Pp(p,d) = Ppday[p];
+      }
     }
   }
   return(Pp);

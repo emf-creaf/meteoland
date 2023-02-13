@@ -298,13 +298,22 @@
     slorad <- sf[["slope"]] * (pi/180)
     asprad <- sf[["aspect"]] * (pi/180)
     rad <- array(dim = dim(tmin))
+    points_wo_precip <- numeric(0)
     for (i in 1:length(latrad)) {
+      if (any(is.na(prec[i,]))) {
+        points_wo_precip <- c(points_wo_precip, i)
+      }
       rad[i,] <- .radiationSeries(
         latrad[i], sf$elevation[i], slorad[i], asprad[i],
         J,
         diffTemp[i,], diffTempMonth[i,],
         VP[i,], prec[i,]
       )
+    }
+    if (length(points_wo_precip) > 0) {
+      cli::cli_warn(c(
+        "Some/All dates for points {.val {points_wo_precip}} have missing precipitation values, assuming clear days when interpolating radiation for these days"
+      ))
     }
   }
 

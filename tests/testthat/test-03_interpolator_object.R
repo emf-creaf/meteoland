@@ -111,6 +111,50 @@ test_that("create_meteo_interpolator works as expected", {
     .is_interpolator(interpolator_test_no_topo_names),
     "comply"
   )
+  
+  ## TODO
+  # tests that interpolator has all names when variables are missing from 
+  # meteo (interpolator variables are created filled with NAs)
+  meteo_test_no_relative_humidity <- meteo_test_correct |>
+    dplyr::select(!dplyr::contains("RelativeHumidity"))
+  meteo_test_no_precipitation <- meteo_test_correct |>
+    dplyr::select(!dplyr::contains("Precipitation"))
+  
+  expect_warning(
+    interpolator_test_no_relative_humidity <-
+      create_meteo_interpolator(meteo_test_no_relative_humidity),
+    "No interpolation parameters"
+  )
+  expect_named(
+    interpolator_test_no_relative_humidity, names(interpolator_test)
+  )
+  expect_true(
+    all(is.na(interpolator_test_no_relative_humidity[["RelativeHumidity"]]))
+  )
+  expect_identical(
+    interpolator_test_no_relative_humidity[["MinTemperature"]],
+    interpolator_test[["MinTemperature"]]
+  )
+  
+  expect_warning(
+    interpolator_test_no_precipitation <-
+      create_meteo_interpolator(meteo_test_no_precipitation),
+    "No interpolation parameters"
+  )
+  expect_named(
+    interpolator_test_no_precipitation, names(interpolator_test)
+  )
+  expect_true(
+    all(is.na(interpolator_test_no_precipitation[["Precipitation"]]))
+  )
+  expect_true(
+    all(is.na(interpolator_test_no_precipitation[["SmoothedPrecipitation"]]))
+  )
+  expect_identical(
+    interpolator_test_no_precipitation[["MinTemperature"]],
+    interpolator_test[["MinTemperature"]]
+  )
+  
 })
 
 suppressWarnings(

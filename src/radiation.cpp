@@ -324,6 +324,7 @@ double RDay(double solarConstant, double latrad, double elevation, double slorad
   double RpotFlat = 0.0; //Rpot for a flat surface (needed for diffuse radiation)
   double B = 0.031+0.201*exp(-0.185*diffTempMonth);
   double Tfmax = 1.0-0.9*exp(-B*pow(diffTemp,1.5));
+  if(NumericVector::is_na(precipitation)) precipitation = 0.0;
   if(precipitation>0.0) Tfmax *=0.75; //Correction for wet days
   double Ttmax = 0.0, RpotInst = 0.0, RpotInstFlat = 0.0, costheta=0.0;
   double pratio = pow(1.0 -2.2569e-5*elevation,5.2553); // from Pearcy et al. 1991

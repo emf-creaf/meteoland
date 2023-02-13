@@ -80,3 +80,26 @@ reference:
   - starts_with("humidity_")
   - starts_with("precipitation")
   - meteocomplete
+- title: meteoland tidy (ver. >= 2.0.0)
+  desc: New workflows for meteorologic data interpolation
+  contents:
+  - add_topo
+  - complete_meteo
+  - create_meteo_interpolator
+  - get_interpolation_params
+  - interpolate_data
+  - meteospain2meteoland
+  - set_interpolation_params
+  - summarise_interpolated_data
+  - summarise_interpolator
+  - with_meteo
+  - worldmet2meteoland
+title: meteoland tidy examples (ver. >= 2.0.0)
+  desc: New example datasets
+  contents:
+  - meteoland_interpolator_example
+  - meteoland_meteo_example
+  - meteoland_meteo_no_topo_example
+  - meteoland_topo_example
+  - points_to_interpolate_example
+  - raster_to_interpolate_example

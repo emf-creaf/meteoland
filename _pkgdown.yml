@@ -77,6 +77,6 @@ reference:
   contents:
   - starts_with("utils")
   - penman
-  - humidity
-  - precipitation
+  - starts_with("humidity_")
+  - starts_with("precipitation")
   - meteocomplete

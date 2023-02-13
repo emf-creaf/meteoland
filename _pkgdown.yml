@@ -94,7 +94,7 @@ reference:
   - summarise_interpolator
   - with_meteo
   - worldmet2meteoland
-title: meteoland tidy examples (ver. >= 2.0.0)
+- title: meteoland tidy examples (ver. >= 2.0.0)
   desc: New example datasets
   contents:
   - meteoland_interpolator_example

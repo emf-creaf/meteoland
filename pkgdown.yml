@@ -1,8 +1,10 @@
 pandoc: 2.7.3
-pkgdown: 2.0.6
+pkgdown: 2.0.7
 pkgdown_sha: ~
 articles:
   UserGuide: UserGuide.html
   InterpolationSenegal: examples/InterpolationSenegal.html
-last_built: 2022-09-13T14:34Z
+  reshaping-meteo: reshaping-meteo.html
+  tidy-meteoland: tidy-meteoland.html
+last_built: 2023-02-13T09:43Z
 

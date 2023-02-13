@@ -33,7 +33,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">meteoland</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.0.3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.0.3.9000</span>
       </span>
     </div>
 
@@ -61,18 +61,27 @@
 
       </header><div class="row">
   <div class="contents col-md-9">
+
 <div class="section level1">
 <div class="page-header"><h1 id="meteoland---landscape-meteorology-tools">meteoland - Landscape meteorology tools<a class="anchor" aria-label="anchor" href="#meteoland---landscape-meteorology-tools"></a>
 </h1></div>
-
+<p><a href="https://cran.r-project.org/package=meteoland" class="external-link"><img src="http://www.r-pkg.org/badges/version/meteoland" alt="CRAN_Status_Badge"></a> <a href="https://cran.rstudio.com/web/packages/meteoland/index.html" class="external-link"><img src="https://cranlogs.r-pkg.org/badges/meteoland"></a> <a href="https://github.com/emf-creaf/meteoland/actions" class="external-link"><img src="https://github.com/emf-creaf/meteoland/workflows/R-CMD-check/badge.svg" alt="R-CMD-check"></a></p>
+</div>
+<div class="section level1">
+<h1 id="important-notice">Important notice<a class="anchor" aria-label="anchor" href="#important-notice"></a>
+</h1>
+<p>Starting on June 2023, <code>rgdal</code>, <code>rgeos</code> and <code>maptools</code> R packages will enter a <em>maintenance</em> mode (meaning no new updates, more info at <a href="https://github.com/r-spatial/evolution" class="external-link uri">https://github.com/r-spatial/evolution</a>). Coincidentally, <code>sp</code> and <code>raster</code> packages are now superseded by the more modern alternatives <code>sf</code>, <code>stars</code> and <code>terra</code>. This means that the <code>meteoland</code> classes, which are based on <code>sp</code>, need to be updated to deal with these changes in the R-spatial ecosystem.</p>
+<p>Starting with version 2.0.0 of <code>meteoland</code> (February 2023) <strong>all functions, methods and classes based on or using the <code>sp</code>, <code>raster</code> and <code>rgdal</code> package are now soft-deprecated</strong>. They still work and can be used, but a warning will appear recommending using the new tidy workflows.</p>
+<blockquote><p><strong>In June 2023, all these functions, methods and classes will be hard-deprecated, meaning they will stop working.</strong></p></blockquote>
+<p>See the <a href="https://emf-creaf.github.io/meteoland/articles/tidy-meteoland.html" class="external-link"><em>Tidy meteoland</em></a> vignette (<code><a href="articles/tidy-meteoland.html">vignette("tidy-meteoland", package = "meteoland")</a></code>) for more info about this changes.</p>
 <div class="section level2">
 <h2 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
 </h2>
 <p>With the aim to assist research of climatic impacts on forests, the R package <code>meteoland</code> provides utilities to estimate daily weather variables at any position over complex terrains:</p>
 <ul>
 <li>Spatial interpolation of daily weather records from meteorological stations.</li>
-<li>Statistical correction of meteorological data series (e.g. from climate models).</li>
-<li>Multisite and multivariate stochastic weather generation.</li>
+<li>Statistical correction of meteorological data series (e.g. from climate models). Note that this functionality is deprecated starting in version 2.0.0.</li>
+<li>Multisite and multivariate stochastic weather generation. Note that this functionality is deprecated starting in version 2.0.0.</li>
 </ul>
 <p>A more detailed introduction to the package functionality can be found in De Cáceres et al. (2018).</p>
 </div>
@@ -101,6 +110,7 @@
 <ul><li>De Caceres M, Martin-StPaul N, Turco M, Cabon A, Granda V (2018) Estimating daily meteorological data and downscaling climate models over landscapes. Environmental Modelling and Software 108: 186-196. (<a href="doi:10.1016/j.envsoft.2018.08.003" class="uri">doi:10.1016/j.envsoft.2018.08.003</a>).</li></ul>
 </div>
 </div>
+
   </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
@@ -137,14 +147,7 @@
 </ul>
 </div>
 
-<div class="dev-status">
-<h2 data-toc-skip>Dev status</h2>
-<ul class="list-unstyled">
-<li><a href="https://cran.r-project.org/package=meteoland" class="external-link"><img src="http://www.r-pkg.org/badges/version/meteoland" alt="CRAN_Status_Badge"></a></li>
-<li><a href="https://cran.rstudio.com/web/packages/meteoland/index.html" class="external-link"><img src="https://cranlogs.r-pkg.org/badges/meteoland"></a></li>
-<li><a href="https://github.com/emf-creaf/meteoland/actions" class="external-link"><img src="https://github.com/emf-creaf/meteoland/workflows/R-CMD-check/badge.svg" alt="R-CMD-check"></a></li>
-</ul>
-</div>
+
 
   </div>
 </div>
@@ -157,7 +160,7 @@
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer>

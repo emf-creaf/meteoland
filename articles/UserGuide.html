@@ -33,7 +33,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">meteoland</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.0.3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.0.3.9000</span>
       </span>
     </div>
 
@@ -65,7 +65,7 @@
       <h1 data-toc-skip>User guide to meteoland</h1>
                         <h4 data-toc-skip class="author">Miquel De Cáceres, Victor Granda</h4>
             
-            <h4 data-toc-skip class="date">2022-09-13</h4>
+            <h4 data-toc-skip class="date">2023-02-13</h4>
       
       
       <div class="hidden name"><code>UserGuide.Rmd</code></div>
@@ -173,6 +173,11 @@
 <span>                                             MaxTemperature <span class="op">=</span> <span class="va">tmax</span>,</span>
 <span>                                             Precipitation <span class="op">=</span> <span class="va">prec</span>,</span>
 <span>                                             RelativeHumidity <span class="op">=</span> <span class="va">rhum</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Warning: `MeteorologyInterpolationData()` was deprecated in meteoland 2.0.0.</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Please use `create_meteo_interpolator()` instead.</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> MeteorologyInterpolationData class is soft deprecated. Interpolator object</span></span>
+<span><span class="co">#&gt;   should be created with create_meteo_interpolator() which returns an star data</span></span>
+<span><span class="co">#&gt;   cube object</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/class.html" class="external-link">class</a></span><span class="op">(</span><span class="va">interpolator</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] "MeteorologyInterpolationData"</span></span>
 <span><span class="co">#&gt; attr(,"package")</span></span>
@@ -180,6 +185,10 @@
 <p>The resulting object is ready to be used to perform interpolation on a set of target locations (see next section). We can inspect the amount of data in our interpolation object using function <code>interpolation.coverage</code>. For example, with:</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">spatial_coverage</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/interpolation.coverage.html">interpolation.coverage</a></span><span class="op">(</span><span class="va">interpolator</span>, type <span class="op">=</span> <span class="st">'spatial'</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Warning: `interpolation.coverage()` was deprecated in meteoland 2.0.0.</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Please use `create_meteo_interpolator()` instead.</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> MeteorologyInterpolationData class is soft deprecated. A summary of the</span></span>
+<span><span class="co">#&gt;   variables can be glanced calling the interpolator object</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">spatial_coverage</span><span class="op">)</span></span>
 <span><span class="co">#&gt;          coordinates MinTemperature MaxTemperature Precipitation</span></span>
 <span><span class="co">#&gt; C7 (347104, 4614634)           1456           1454          1456</span></span>
@@ -368,6 +377,11 @@ W(r) = e^{-\alpha \cdot (r/R_p)^2} - e^{-\alpha}
 <span>                                      N_seq <span class="op">=</span> <span class="fl">20</span>,</span>
 <span>                                      alpha_seq <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">5</span>, <span class="fl">10</span>, by <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>,</span>
 <span>                                      verbose <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Warning: `interpolation.calibration()` was deprecated in meteoland 2.0.0.</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Please use `interpolator_calibration()` instead.</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> MeteorologyInterpolationData class is soft deprecated. Interpolator object</span></span>
+<span><span class="co">#&gt;   should be created with create_meteo_interpolator() and the calibration must</span></span>
+<span><span class="co">#&gt;   be done with interpolator_calibration()</span></span>
 <span><span class="co">#&gt; Total number of stations: 38</span></span>
 <span><span class="co">#&gt; Number of stations with available data: 15</span></span>
 <span><span class="co">#&gt; Number of stations used for MAE: 15</span></span>
@@ -397,36 +411,75 @@ W(r) = e^{-\alpha \cdot (r/R_p)^2} - e^{-\alpha}
 <span><span class="va">interpolator</span><span class="op">@</span><span class="va">params</span><span class="op">$</span><span class="va">alpha_MinTemperature</span> <span class="op">=</span> <span class="va">tmin_cal</span><span class="op">$</span><span class="va">alpha</span></span></code></pre></div>
 <p>We strongly recommend conducting calibration exercises at least once for each variable and each data set used as reference for interpolation, and more than once if periods differ in the number of stations available.</p>
 <p>Before using the object for interpolations, we also need to assess its performance. This is done by cross-validation in function <code>interpolation.cv</code>:</p>
-<pre><code><span><span class="co">#&gt; Station #1 C7</span></span>
+<pre><code><span><span class="co">#&gt; Warning: `interpolation.cv()` was deprecated in meteoland 2.0.0.</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Please use `interpolation_cross_validation()` instead.</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> MeteorologyInterpolationData class is soft deprecated. Interpolator object</span></span>
+<span><span class="co">#&gt;   should be created with create_meteo_interpolator() and the cross validation</span></span>
+<span><span class="co">#&gt;   must be done with interpolation_cross_validation()</span></span>
+<span><span class="co">#&gt; Station #1 C7</span></span>
+<span><span class="co">#&gt; Warning: `SpatialPointsTopography()` was deprecated in meteoland 2.0.0.</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Spatial_*_Topography classes are soft deprecated. User topography now can be</span></span>
+<span><span class="co">#&gt;   provided as sf or stars objects</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> The deprecated feature was likely used in the <span style="color: #0000BB;">meteoland</span> package.</span></span>
+<span><span class="co">#&gt;   Please report the issue to the authors.</span></span>
+<span><span class="co">#&gt; Warning: `interpolationpoints()` was deprecated in meteoland 2.0.0.</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Please use `interpolate_data()` instead.</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Spatial_*_Topography and MetereologyInterpolationData classes are soft</span></span>
+<span><span class="co">#&gt;   deprecated. Interpolator should be created with create_meteo_interpolator(),</span></span>
+<span><span class="co">#&gt;   and spatial objects to interpolate should be from sf (vector) or star</span></span>
+<span><span class="co">#&gt;   (raster) classes. Interpolation is performed with interpolate_data()</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> The deprecated feature was likely used in the <span style="color: #0000BB;">meteoland</span> package.</span></span>
+<span><span class="co">#&gt;   Please report the issue to the authors.</span></span>
+<span><span class="co">#&gt; Warning: PROJ support is provided by the sf and terra packages among others</span></span>
+<span><span class="co">#&gt; Warning: `SpatialPointsMeteorology()` was deprecated in meteoland 2.0.0.</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Spatial_*_Meteorology classes are soft deprecated. Meteorology objects are</span></span>
+<span><span class="co">#&gt;   now normal sf points objects</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> The deprecated feature was likely used in the <span style="color: #0000BB;">meteoland</span> package.</span></span>
+<span><span class="co">#&gt;   Please report the issue to the authors.</span></span>
 <span><span class="co">#&gt; Station #2 C8</span></span>
+<span><span class="co">#&gt; Warning: PROJ support is provided by the sf and terra packages among others</span></span>
 <span><span class="co">#&gt; Station #3 CA</span></span>
+<span><span class="co">#&gt; Warning: PROJ support is provided by the sf and terra packages among others</span></span>
 <span><span class="co">#&gt; Station #4 VD</span></span>
+<span><span class="co">#&gt; Warning: PROJ support is provided by the sf and terra packages among others</span></span>
 <span><span class="co">#&gt; Station #5 VP</span></span>
+<span><span class="co">#&gt; Warning: PROJ support is provided by the sf and terra packages among others</span></span>
 <span><span class="co">#&gt; Station #6 W5</span></span>
+<span><span class="co">#&gt; Warning: PROJ support is provided by the sf and terra packages among others</span></span>
 <span><span class="co">#&gt; Station #7 WA</span></span>
+<span><span class="co">#&gt; Warning: PROJ support is provided by the sf and terra packages among others</span></span>
 <span><span class="co">#&gt; Station #8 XT: No observations.</span></span>
 <span><span class="co">#&gt; Station #9 9713</span></span>
+<span><span class="co">#&gt; Warning: PROJ support is provided by the sf and terra packages among others</span></span>
 <span><span class="co">#&gt; Station #10 9713A: No observations.</span></span>
 <span><span class="co">#&gt; Station #11 9650X: No observations.</span></span>
 <span><span class="co">#&gt; Station #12 0166: No observations.</span></span>
 <span><span class="co">#&gt; Station #13 9717</span></span>
+<span><span class="co">#&gt; Warning: PROJ support is provided by the sf and terra packages among others</span></span>
 <span><span class="co">#&gt; Station #14 9717A</span></span>
+<span><span class="co">#&gt; Warning: PROJ support is provided by the sf and terra packages among others</span></span>
 <span><span class="co">#&gt; Station #15 9718C</span></span>
+<span><span class="co">#&gt; Warning: PROJ support is provided by the sf and terra packages among others</span></span>
 <span><span class="co">#&gt; Station #16 9712N: No observations.</span></span>
 <span><span class="co">#&gt; Station #17 9712O</span></span>
+<span><span class="co">#&gt; Warning: PROJ support is provided by the sf and terra packages among others</span></span>
 <span><span class="co">#&gt; Station #18 9720N: No observations.</span></span>
 <span><span class="co">#&gt; Station #19 9638E: No observations.</span></span>
 <span><span class="co">#&gt; Station #20 9638: No observations.</span></span>
 <span><span class="co">#&gt; Station #21 0130: No observations.</span></span>
 <span><span class="co">#&gt; Station #22 9640: No observations.</span></span>
 <span><span class="co">#&gt; Station #23 9649</span></span>
+<span><span class="co">#&gt; Warning: PROJ support is provided by the sf and terra packages among others</span></span>
 <span><span class="co">#&gt; Station #24 9649A: No observations.</span></span>
 <span><span class="co">#&gt; Station #25 0133: No observations.</span></span>
 <span><span class="co">#&gt; Station #26 0132: No observations.</span></span>
 <span><span class="co">#&gt; Station #27 0131U</span></span>
+<span><span class="co">#&gt; Warning: PROJ support is provided by the sf and terra packages among others</span></span>
 <span><span class="co">#&gt; Station #28 9720X</span></span>
+<span><span class="co">#&gt; Warning: PROJ support is provided by the sf and terra packages among others</span></span>
 <span><span class="co">#&gt; Station #29 9720: No observations.</span></span>
 <span><span class="co">#&gt; Station #30 9720A</span></span>
+<span><span class="co">#&gt; Warning: PROJ support is provided by the sf and terra packages among others</span></span>
 <span><span class="co">#&gt; Station #31 9647X: No observations.</span></span>
 <span><span class="co">#&gt; Station #32 9718X: No observations.</span></span>
 <span><span class="co">#&gt; Station #33 0166I: No observations.</span></span>
@@ -438,11 +491,15 @@ W(r) = e^{-\alpha \cdot (r/R_p)^2} - e^{-\alpha}
 <p>Cross-validation is perfomed by <em>leave-one-out</em>, which means that each target station is first removed from the data set and then the remaining stations are used to obtain interpolation estimates. In this way one maximizes the amount of information for estimates, while keeping them independent of the observed values in each station. The results of cross-validation can be inspected using a specific <code>summary</code> function:</p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">cv</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Warning: `summary.interpolation.cv()` was deprecated in meteoland 2.0.0.</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> interpolation_cross_validation() returns a list with the cross validation</span></span>
+<span><span class="co">#&gt;   results for dates and for stations. List elements are data frames that can be</span></span>
+<span><span class="co">#&gt;   summarise in any usual way (base, tidyverse...)</span></span>
 <span><span class="co">#&gt;                                n          r         MAE sd.station.MAE</span></span>
 <span><span class="co">#&gt; MinTemperature             20618  0.9711987   1.1808234      0.4504965</span></span>
 <span><span class="co">#&gt; MaxTemperature             20616  0.9848303   1.0813712      0.5078724</span></span>
 <span><span class="co">#&gt; TemperatureRange           20612  0.8486540   1.6104133      0.6126532</span></span>
-<span><span class="co">#&gt; RelativeHumidity               0         NA         NaN             NA</span></span>
+<span><span class="co">#&gt; RelativeHumidity             708  0.6900707  10.4897573             NA</span></span>
 <span><span class="co">#&gt; Radiation                      0         NA         NaN             NA</span></span>
 <span><span class="co">#&gt; Station.rainfall              16  0.8714303 149.3438156    133.4677792</span></span>
 <span><span class="co">#&gt; Station.rainfall.relative     16         NA   8.9551880      9.3741873</span></span>
@@ -456,7 +513,7 @@ W(r) = e^{-\alpha \cdot (r/R_p)^2} - e^{-\alpha}
 <span><span class="co">#&gt; MinTemperature                0.4370359   0.24744730       0.8188687</span></span>
 <span><span class="co">#&gt; MaxTemperature                0.4456374  -0.00178348       0.7216981</span></span>
 <span><span class="co">#&gt; TemperatureRange              0.5369418  -0.24924824       1.1273182</span></span>
-<span><span class="co">#&gt; RelativeHumidity                     NA          NaN              NA</span></span>
+<span><span class="co">#&gt; RelativeHumidity              7.0967503  -6.86671244              NA</span></span>
 <span><span class="co">#&gt; Radiation                            NA          NaN              NA</span></span>
 <span><span class="co">#&gt; Station.rainfall                     NA -66.05159025     192.2250286</span></span>
 <span><span class="co">#&gt; Station.rainfall.relative            NA  -2.09791005      12.9893224</span></span>
@@ -470,7 +527,7 @@ W(r) = e^{-\alpha \cdot (r/R_p)^2} - e^{-\alpha}
 <span><span class="co">#&gt; MinTemperature                 0.2263925</span></span>
 <span><span class="co">#&gt; MaxTemperature                 0.1699181</span></span>
 <span><span class="co">#&gt; TemperatureRange               0.2795973</span></span>
-<span><span class="co">#&gt; RelativeHumidity                      NA</span></span>
+<span><span class="co">#&gt; RelativeHumidity              10.6459418</span></span>
 <span><span class="co">#&gt; Radiation                             NA</span></span>
 <span><span class="co">#&gt; Station.rainfall                      NA</span></span>
 <span><span class="co">#&gt; Station.rainfall.relative             NA</span></span>
@@ -511,14 +568,15 @@ W(r) = e^{-\alpha \cdot (r/R_p)^2} - e^{-\alpha}
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sgt</span> <span class="op">=</span> <span class="fu"><a href="../reference/SpatialGridTopography.html">SpatialGridTopography</a></span><span class="op">(</span><span class="fu">as</span><span class="op">(</span><span class="va">elev</span>, <span class="st">"SpatialGrid"</span><span class="op">)</span>, elevation <span class="op">=</span> <span class="va">elev</span><span class="op">$</span><span class="va">elevation</span>,</span>
 <span>                            proj4string <span class="op">=</span> <span class="va">elev</span><span class="op">@</span><span class="va">proj4string</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Warning: `SpatialGridTopography()` was deprecated in meteoland 2.0.0.</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Spatial_*_Topography classes are soft deprecated. User topography now can be</span></span>
+<span><span class="co">#&gt;   provided as sf or stars objects</span></span>
 <span><span class="va">sgt</span></span>
 <span><span class="co">#&gt; Object of class SpatialGridTopography</span></span>
 <span><span class="co">#&gt; Grid topology:</span></span>
 <span><span class="co">#&gt;    cellcentre.offset cellsize cells.dim</span></span>
 <span><span class="co">#&gt; s1            360000      100        20</span></span>
 <span><span class="co">#&gt; s2           4639000      100        20</span></span>
-<span><span class="co">#&gt; Warning in proj4string(x): CRS object has comment, which is lost in output; in tests, see</span></span>
-<span><span class="co">#&gt; https://cran.r-project.org/web/packages/sp/vignettes/CRS_warnings.html</span></span>
 <span><span class="co">#&gt; Coordinate Reference System (CRS) arguments: +proj=utm +zone=31</span></span>
 <span><span class="co">#&gt; +datum=WGS84 +units=m +no_defs </span></span>
 <span><span class="co">#&gt; </span></span>
@@ -544,12 +602,24 @@ W(r) = e^{-\alpha \cdot (r/R_p)^2} - e^{-\alpha}
 <p>The name of interpolation functions depend on the target spatial structure. For grids we need to use function <code>interpolationgrid</code>:</p>
 <div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">ml</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/interpolationpoints.html">interpolationgrid</a></span><span class="op">(</span><span class="va">interpolator</span>, <span class="va">sgt</span>, <span class="va">dates</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Warning in proj4string(grid): CRS object has comment, which is lost in output; in tests, see</span></span>
-<span><span class="co">#&gt; https://cran.r-project.org/web/packages/sp/vignettes/CRS_warnings.html</span></span>
-<span><span class="co">#&gt; Warning in proj4string(object): CRS object has comment, which is lost in output; in tests, see</span></span>
-<span><span class="co">#&gt; https://cran.r-project.org/web/packages/sp/vignettes/CRS_warnings.html</span></span>
-<span><span class="co">#&gt; Interpolating day '2001-02-03' (1/2) - done.</span></span>
-<span><span class="co">#&gt; Interpolating day '2001-06-03' (2/2) - done.</span></span></code></pre></div>
+<span><span class="co">#&gt; Warning: `interpolationgrid()` was deprecated in meteoland 2.0.0.</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Please use `interpolate_data()` instead.</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Spatial_*_Topography and MetereologyInterpolationData classes are soft</span></span>
+<span><span class="co">#&gt;   deprecated. Interpolator should be created with create_meteo_interpolator(),</span></span>
+<span><span class="co">#&gt;   and spatial objects to interpolate should be from sf (vector) or star</span></span>
+<span><span class="co">#&gt;   (raster) classes. Interpolation is performed with interpolate_data()</span></span>
+<span><span class="co">#&gt; Warning: PROJ support is provided by the sf and terra packages among others</span></span>
+<span><span class="co">#&gt; Interpolating day '2001-02-03' (1/2) -</span></span>
+<span><span class="co">#&gt; Warning: PROJ support is provided by the sf and terra packages among others</span></span>
+<span><span class="co">#&gt; done.</span></span>
+<span><span class="co">#&gt; Interpolating day '2001-06-03' (2/2) -</span></span>
+<span><span class="co">#&gt; Warning: PROJ support is provided by the sf and terra packages among others</span></span>
+<span><span class="co">#&gt; done.</span></span>
+<span><span class="co">#&gt; Warning: `SpatialGridMeteorology()` was deprecated in meteoland 2.0.0.</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Spatial_*_Meteorology classes are soft deprecated. Meteorology objects are</span></span>
+<span><span class="co">#&gt;   now normal sf points objects</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> The deprecated feature was likely used in the <span style="color: #0000BB;">meteoland</span> package.</span></span>
+<span><span class="co">#&gt;   Please report the issue to the authors.</span></span></code></pre></div>
 <p>This function works processing each date at a time. Since calculations can take some time, the console output shows the progress. The output of the function is an object of class <code>SpatialGridMeteorology</code>:</p>
 <div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">ml</span></span>
@@ -559,8 +629,6 @@ W(r) = e^{-\alpha \cdot (r/R_p)^2} - e^{-\alpha}
 <span><span class="co">#&gt;    cellcentre.offset cellsize cells.dim</span></span>
 <span><span class="co">#&gt; s1            360000      100        20</span></span>
 <span><span class="co">#&gt; s2           4639000      100        20</span></span>
-<span><span class="co">#&gt; Warning in proj4string(x): CRS object has comment, which is lost in output; in tests, see</span></span>
-<span><span class="co">#&gt; https://cran.r-project.org/web/packages/sp/vignettes/CRS_warnings.html</span></span>
 <span><span class="co">#&gt; Coordinate Reference System (CRS) arguments: +proj=utm +zone=31</span></span>
 <span><span class="co">#&gt; +datum=WGS84 +units=m +no_defs</span></span></code></pre></div>
 <p>We can display interpolated grids in a map using function <code>spplot</code>:</p>
@@ -580,19 +648,19 @@ W(r) = e^{-\alpha \cdot (r/R_p)^2} - e^{-\alpha}
 <span><span class="co">#&gt; 5        6.881788      -1.022737       12.02103             0</span></span>
 <span><span class="co">#&gt; 6        6.762238      -1.244088       11.96767             0</span></span>
 <span><span class="co">#&gt;   MeanRelativeHumidity MinRelativeHumidity MaxRelativeHumidity Radiation</span></span>
-<span><span class="co">#&gt; 1             89.95225            63.26295                 100  10.32495</span></span>
-<span><span class="co">#&gt; 2             89.76196            63.20538                 100  10.94896</span></span>
-<span><span class="co">#&gt; 3             89.38017            63.09002                 100  12.05186</span></span>
-<span><span class="co">#&gt; 4             89.47821            63.11897                 100  11.20718</span></span>
-<span><span class="co">#&gt; 5             89.00246            62.97457                 100  12.32252</span></span>
-<span><span class="co">#&gt; 6             89.73713            63.19654                 100  10.93832</span></span>
+<span><span class="co">#&gt; 1             81.52697            57.33750                 100  10.40521</span></span>
+<span><span class="co">#&gt; 2             81.35451            57.28532                 100  11.03406</span></span>
+<span><span class="co">#&gt; 3             81.00847            57.18076                 100  12.14547</span></span>
+<span><span class="co">#&gt; 4             81.09733            57.20700                 100  11.29425</span></span>
+<span><span class="co">#&gt; 5             80.66614            57.07612                 100  12.41819</span></span>
+<span><span class="co">#&gt; 6             81.33200            57.27731                 100  11.02333</span></span>
 <span><span class="co">#&gt;   WindSpeed WindDirection      PET</span></span>
-<span><span class="co">#&gt; 1        NA            NA 1.220466</span></span>
-<span><span class="co">#&gt; 2        NA            NA 1.336128</span></span>
-<span><span class="co">#&gt; 3        NA            NA 1.541890</span></span>
-<span><span class="co">#&gt; 4        NA            NA 1.387141</span></span>
-<span><span class="co">#&gt; 5        NA            NA 1.597153</span></span>
-<span><span class="co">#&gt; 6        NA            NA 1.334787</span></span></code></pre></div>
+<span><span class="co">#&gt; 1        NA            NA 1.265536</span></span>
+<span><span class="co">#&gt; 2        NA            NA 1.382109</span></span>
+<span><span class="co">#&gt; 3        NA            NA 1.589493</span></span>
+<span><span class="co">#&gt; 4        NA            NA 1.433536</span></span>
+<span><span class="co">#&gt; 5        NA            NA 1.645207</span></span>
+<span><span class="co">#&gt; 6        NA            NA 1.380760</span></span></code></pre></div>
 <p>Some columns are missing (e.g. wind speed) because we did not include weather station data regarding these variables. If we wants to add grid coordinates to this data frame, we can use the spatial information stored in the <code>ml</code> object:</p>
 <div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sgdf_1</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/sp/man/SpatialGridDataFrame.html" class="external-link">SpatialGridDataFrame</a></span><span class="op">(</span>grid <span class="op">=</span> <span class="va">ml</span><span class="op">@</span><span class="va">grid</span>, data <span class="op">=</span> <span class="va">ml</span><span class="op">@</span><span class="va">data</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span>, proj4string <span class="op">=</span> <span class="va">ml</span><span class="op">@</span><span class="va">proj4string</span><span class="op">)</span></span>
@@ -618,21 +686,21 @@ W(r) = e^{-\alpha \cdot (r/R_p)^2} - e^{-\alpha}
 <span><span class="co">#&gt;  3rd Qu.:6.727   3rd Qu.:-1.2705   3rd Qu.:11.93   3rd Qu.:0    </span></span>
 <span><span class="co">#&gt;  Max.   :7.028   Max.   :-0.7301   Max.   :12.07   Max.   :0    </span></span>
 <span><span class="co">#&gt;                                                                 </span></span>
-<span><span class="co">#&gt;  MeanRelativeHumidity MinRelativeHumidity MaxRelativeHumidity   Radiation    </span></span>
-<span><span class="co">#&gt;  Min.   :88.11        Min.   :62.76       Min.   :100         Min.   : 4.49  </span></span>
-<span><span class="co">#&gt;  1st Qu.:89.95        1st Qu.:63.36       1st Qu.:100         1st Qu.: 9.60  </span></span>
-<span><span class="co">#&gt;  Median :90.68        Median :63.58       Median :100         Median :10.99  </span></span>
-<span><span class="co">#&gt;  Mean   :90.81        Mean   :63.64       Mean   :100         Mean   :10.98  </span></span>
-<span><span class="co">#&gt;  3rd Qu.:91.55        3rd Qu.:63.91       3rd Qu.:100         3rd Qu.:12.31  </span></span>
-<span><span class="co">#&gt;  Max.   :93.58        Max.   :64.56       Max.   :100         Max.   :16.29  </span></span>
-<span><span class="co">#&gt;                                                                              </span></span>
+<span><span class="co">#&gt;  MeanRelativeHumidity MinRelativeHumidity MaxRelativeHumidity   Radiation     </span></span>
+<span><span class="co">#&gt;  Min.   :79.86        Min.   :56.88       Min.   :100         Min.   : 4.525  </span></span>
+<span><span class="co">#&gt;  1st Qu.:81.53        1st Qu.:57.43       1st Qu.:100         1st Qu.: 9.675  </span></span>
+<span><span class="co">#&gt;  Median :82.18        Median :57.62       Median :100         Median :11.072  </span></span>
+<span><span class="co">#&gt;  Mean   :82.30        Mean   :57.68       Mean   :100         Mean   :11.068  </span></span>
+<span><span class="co">#&gt;  3rd Qu.:82.98        3rd Qu.:57.92       3rd Qu.:100         3rd Qu.:12.409  </span></span>
+<span><span class="co">#&gt;  Max.   :84.82        Max.   :58.52       Max.   :100         Max.   :16.414  </span></span>
+<span><span class="co">#&gt;                                                                               </span></span>
 <span><span class="co">#&gt;    WindSpeed   WindDirection      PET        </span></span>
-<span><span class="co">#&gt;  Min.   : NA   Min.   : NA   Min.   :0.1563  </span></span>
-<span><span class="co">#&gt;  1st Qu.: NA   1st Qu.: NA   1st Qu.:1.0785  </span></span>
-<span><span class="co">#&gt;  Median : NA   Median : NA   Median :1.3336  </span></span>
-<span><span class="co">#&gt;  Mean   :NaN   Mean   :NaN   Mean   :1.3290  </span></span>
-<span><span class="co">#&gt;  3rd Qu.: NA   3rd Qu.: NA   3rd Qu.:1.5790  </span></span>
-<span><span class="co">#&gt;  Max.   : NA   Max.   : NA   Max.   :2.2601  </span></span>
+<span><span class="co">#&gt;  Min.   : NA   Min.   : NA   Min.   :0.1932  </span></span>
+<span><span class="co">#&gt;  1st Qu.: NA   1st Qu.: NA   1st Qu.:1.1226  </span></span>
+<span><span class="co">#&gt;  Median : NA   Median : NA   Median :1.3796  </span></span>
+<span><span class="co">#&gt;  Mean   :NaN   Mean   :NaN   Mean   :1.3750  </span></span>
+<span><span class="co">#&gt;  3rd Qu.: NA   3rd Qu.: NA   3rd Qu.:1.6270  </span></span>
+<span><span class="co">#&gt;  Max.   : NA   Max.   : NA   Max.   :2.3133  </span></span>
 <span><span class="co">#&gt;  NA's   :400   NA's   :400</span></span></code></pre></div>
 <p>Results can be retrieved in this way and saved using <code>write.asciigrid</code> for its use outside R. The package also provides function for reading/writing NetCDFs (see function <code>writemeteorologygrid</code>) from <code>SpatialGridMeteorology</code> objects. Finally, the package allows interpolating on subsets of grid pixels in the same way as for full grids. This is done using objects of class <code>SpatialPixelsTopography</code> and calling function <code>interpolationpixels</code>, which will produce objects of class <code>SpatialPixelsMeteorology</code>.</p>
 </div>
@@ -662,6 +730,7 @@ W(r) = e^{-\alpha \cdot (r/R_p)^2} - e^{-\alpha}
 <p>In this case we only have elevation (in m), but slope and aspect should also be included if possible. Let us assume you want to interpolate on this points for the whole time series available in object <code>interpolator</code>. Since we are dealing with points, the function to interpolate is called <code>interpolationpoints</code>:</p>
 <div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">mp</span> <span class="op">=</span> <span class="fu"><a href="../reference/interpolationpoints.html">interpolationpoints</a></span><span class="op">(</span><span class="va">interpolator</span>, <span class="va">spt</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Warning: PROJ support is provided by the sf and terra packages among others</span></span>
 <span><span class="co">#&gt; Processing point '1' (1/4) - done.</span></span>
 <span><span class="co">#&gt; Processing point '2' (2/4) - done.</span></span>
 <span><span class="co">#&gt; Processing point '3' (3/4) - done.</span></span>
@@ -677,13 +746,14 @@ W(r) = e^{-\alpha \cdot (r/R_p)^2} - e^{-\alpha}
 <span><span class="co">#&gt; 2 362700 4640700</span></span>
 <span><span class="co">#&gt; 3 362900 4640400</span></span>
 <span><span class="co">#&gt; 4 360300 4638600</span></span>
-<span><span class="co">#&gt; Warning in proj4string(x): CRS object has comment, which is lost in output; in tests, see</span></span>
-<span><span class="co">#&gt; https://cran.r-project.org/web/packages/sp/vignettes/CRS_warnings.html</span></span>
 <span><span class="co">#&gt; Coordinate Reference System (CRS) arguments: +proj=utm +zone=31</span></span>
 <span><span class="co">#&gt; +datum=WGS84 +units=m +no_defs</span></span></code></pre></div>
 <p>And the time series for a given can be plotted using function <code>meteoplot</code>. For example, we show here the precipitation series of point #1:</p>
 <div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/meteoplot.html">meteoplot</a></span><span class="op">(</span><span class="va">mp</span>, <span class="fl">1</span>, <span class="st">"Precipitation"</span>, ylab<span class="op">=</span><span class="st">"Precipitation (mm)"</span>, xlab<span class="op">=</span><span class="st">""</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/meteoplot.html">meteoplot</a></span><span class="op">(</span><span class="va">mp</span>, <span class="fl">1</span>, <span class="st">"Precipitation"</span>, ylab<span class="op">=</span><span class="st">"Precipitation (mm)"</span>, xlab<span class="op">=</span><span class="st">""</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Warning: `meteoplot()` was deprecated in meteoland 2.0.0.</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Spatial_*_Meteorology classes are soft deprecated. Meteo objects are now sf</span></span>
+<span><span class="co">#&gt;   objects and can be plotted as any other data.frame</span></span></code></pre></div>
 <p><img src="UserGuide_files/figure-html/unnamed-chunk-33-1.png" width="672"></p>
 <p>Objects of class <code>SpatialPointsDataFrame</code> include a list of data frames, one per point. We can access one of them using:</p>
 <div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
@@ -713,6 +783,10 @@ W(r) = e^{-\alpha \cdot (r/R_p)^2} - e^{-\alpha}
 <p>This data frame can now be written into a file for its analysis outside R. The package also provides its own functions to write/read point meteorology data in different formats. If we are interested in inspecting the interpolation result by date, instead of by point, we can use function <code>extractdates</code>, which returns objects of class <code>SpatialGridDataFrame</code>:</p>
 <div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">dt_4</span> <span class="op">=</span> <span class="fu"><a href="../reference/extractdates.html">extractdates</a></span><span class="op">(</span><span class="va">mp</span>, <span class="fu"><a href="https://rdrr.io/r/base/as.Date.html" class="external-link">as.Date</a></span><span class="op">(</span><span class="st">"2001-01-04"</span><span class="op">)</span>, verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Warning: `extractdates()` was deprecated in meteoland 2.0.0.</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Spatial_*_Meteorology classes are soft deprecated. Extraction of variables or</span></span>
+<span><span class="co">#&gt;   dates can be done as in a normal data.frame as the meteo objects are now sf</span></span>
+<span><span class="co">#&gt;   objects</span></span>
 <span><span class="va">dt_4</span></span>
 <span><span class="co">#&gt;         coordinates DOY MeanTemperature MinTemperature MaxTemperature</span></span>
 <span><span class="co">#&gt; 1 (363500, 4640900)   4        8.831687       4.117643       11.89659</span></span>
@@ -802,7 +876,17 @@ W(r) = e^{-\alpha \cdot (r/R_p)^2} - e^{-\alpha}
 <span><span class="co">#&gt; +no_defs</span></span></code></pre></div>
 <p>Assuming the weather data to be corrected is in the proper format, the object is constructed using:</p>
 <div class="sourceCode" id="cb36"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">uncorrected</span> <span class="op">=</span> <span class="fu"><a href="../reference/MeteorologyUncorrectedData.html">MeteorologyUncorrectedData</a></span><span class="op">(</span><span class="va">sp</span>, <span class="va">ref_data</span>, <span class="va">proj_data</span>, <span class="va">proj_dates</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">uncorrected</span> <span class="op">=</span> <span class="fu"><a href="../reference/MeteorologyUncorrectedData.html">MeteorologyUncorrectedData</a></span><span class="op">(</span><span class="va">sp</span>, <span class="va">ref_data</span>, <span class="va">proj_data</span>, <span class="va">proj_dates</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Warning: `MeteorologyUncorrectedData()` was deprecated in meteoland 2.0.0.</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Correction methods and data classes are soft deprecated. Better bias</span></span>
+<span><span class="co">#&gt;   correction methods are provided by other packages (see package `MBC` for</span></span>
+<span><span class="co">#&gt;   example)</span></span>
+<span><span class="co">#&gt; Warning: `defaultCorrectionParams()` was deprecated in meteoland 2.0.0.</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Correction methods and data classes are soft deprecated. Better bias</span></span>
+<span><span class="co">#&gt;   correction methods are provided by other packages (see package `MBC` for</span></span>
+<span><span class="co">#&gt;   example)</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> The deprecated feature was likely used in the <span style="color: #0000BB;">meteoland</span> package.</span></span>
+<span><span class="co">#&gt;   Please report the issue to the authors.</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="target-point-weather-meteorology-taken-as-reference">Target point weather meteorology taken as reference<a class="anchor" aria-label="anchor" href="#target-point-weather-meteorology-taken-as-reference"></a>
@@ -819,8 +903,6 @@ W(r) = e^{-\alpha \cdot (r/R_p)^2} - e^{-\alpha}
 <span><span class="co">#&gt; 2 362700 4640700</span></span>
 <span><span class="co">#&gt; 3 362900 4640400</span></span>
 <span><span class="co">#&gt; 4 360300 4638600</span></span>
-<span><span class="co">#&gt; Warning in proj4string(x): CRS object has comment, which is lost in output; in tests, see</span></span>
-<span><span class="co">#&gt; https://cran.r-project.org/web/packages/sp/vignettes/CRS_warnings.html</span></span>
 <span><span class="co">#&gt; Coordinate Reference System (CRS) arguments: +proj=utm +zone=31</span></span>
 <span><span class="co">#&gt; +datum=WGS84 +units=m +no_defs</span></span></code></pre></div>
 <p>We named it <code>historical</code> to remind that we are using the historical period as reference and want to correct the RCM series for the projection period There are several ways to shape data into objects of class <code>SpatialPointsMeteorology</code>. For example, one can use function <code>readmeteorologypoints</code>.</p>
@@ -875,9 +957,22 @@ W(r) = e^{-\alpha \cdot (r/R_p)^2} - e^{-\alpha}
 <p>Once we have all the data objects that we need (the hard part), conducting statistical correction is straightforward:</p>
 <div class="sourceCode" id="cb40"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">projected</span> <span class="op">=</span> <span class="fu"><a href="../reference/correctionpoints.html">correctionpoints</a></span><span class="op">(</span><span class="va">uncorrected</span>, <span class="va">historical</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Warning: `correctionpoints()` was deprecated in meteoland 2.0.0.</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Correction methods and data classes are soft deprecated. Better bias</span></span>
+<span><span class="co">#&gt;   correction methods are provided by other packages (see package `MBC` for</span></span>
+<span><span class="co">#&gt;   example)</span></span>
 <span><span class="co">#&gt; Points to correct: 4</span></span>
+<span><span class="co">#&gt; Warning: PROJ support is provided by the sf and terra packages among others</span></span>
 <span><span class="co">#&gt; All points inside boundary box.</span></span>
-<span><span class="co">#&gt; Correcting point '1' (1/4) - ipred = 3 done.</span></span>
+<span><span class="co">#&gt; Warning: PROJ support is provided by the sf and terra packages among others</span></span>
+<span><span class="co">#&gt; Correcting point '1' (1/4) - ipred = 3</span></span>
+<span><span class="co">#&gt; Warning: `correctionpoint()` was deprecated in meteoland 2.0.0.</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Correction methods and data classes are soft deprecated. Better bias</span></span>
+<span><span class="co">#&gt;   correction methods are provided by other packages (see package `MBC` for</span></span>
+<span><span class="co">#&gt;   example)</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> The deprecated feature was likely used in the <span style="color: #0000BB;">meteoland</span> package.</span></span>
+<span><span class="co">#&gt;   Please report the issue to the authors.</span></span>
+<span><span class="co">#&gt;  done.</span></span>
 <span><span class="co">#&gt; Correcting point '2' (2/4) - ipred = 3 done.</span></span>
 <span><span class="co">#&gt; Correcting point '3' (3/4) - ipred = 3 done.</span></span>
 <span><span class="co">#&gt; Correcting point '4' (4/4) - ipred = 3 done.</span></span></code></pre></div>
@@ -892,8 +987,6 @@ W(r) = e^{-\alpha \cdot (r/R_p)^2} - e^{-\alpha}
 <span><span class="co">#&gt; 2 362700 4640700</span></span>
 <span><span class="co">#&gt; 3 362900 4640400</span></span>
 <span><span class="co">#&gt; 4 360300 4638600</span></span>
-<span><span class="co">#&gt; Warning in proj4string(x): CRS object has comment, which is lost in output; in tests, see</span></span>
-<span><span class="co">#&gt; https://cran.r-project.org/web/packages/sp/vignettes/CRS_warnings.html</span></span>
 <span><span class="co">#&gt; Coordinate Reference System (CRS) arguments: +proj=utm +zone=31</span></span>
 <span><span class="co">#&gt; +datum=WGS84 +units=m +no_defs</span></span></code></pre></div>
 <p>The following code displays the minimum/maximum temperatures before and after correction:</p>
@@ -922,7 +1015,22 @@ W(r) = e^{-\alpha \cdot (r/R_p)^2} - e^{-\alpha}
 </h3>
 <p>Function <code>weathergeneration</code> can be used to generate synthetic weather series for a range of inputs, including a (non-spatial) data frame (corresponding to weather series of a single location) as well as objects of classes <code>SpatialPointsDataFrame</code>, <code>SpatialPixelsDataFrame</code> or <code>SpatialGridDataFrame</code>. The following calls the function with a <code>SpatialPointsDataFrame</code> object, while hiding console output:</p>
 <div class="sourceCode" id="cb43"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">y</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/weathergeneration.html">weathergeneration</a></span><span class="op">(</span><span class="va">mp</span>, verbose<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">y</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/weathergeneration.html">weathergeneration</a></span><span class="op">(</span><span class="va">mp</span>, verbose<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Warning: `weathergeneration()` was deprecated in meteoland 2.0.0.</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Current weather generation methods are currently deprecated because they</span></span>
+<span><span class="co">#&gt;   operate with classes that are deprecated themselves, but for future versions,</span></span>
+<span><span class="co">#&gt;   we plan to keep the functionality in new functions.</span></span>
+<span><span class="co">#&gt; Warning: `correctionpoints.errors()` was deprecated in meteoland 2.0.0.</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Current weather generation methods are currently deprecated because they</span></span>
+<span><span class="co">#&gt;   operate with classes that are deprecated themselves, but for future versions,</span></span>
+<span><span class="co">#&gt;   we plan to keep the functionality in new functions.</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> The deprecated feature was likely used in the <span style="color: #0000BB;">meteoland</span> package.</span></span>
+<span><span class="co">#&gt;   Please report the issue to the authors.</span></span>
+<span><span class="co">#&gt; Warning: `averagearea()` was deprecated in meteoland 2.0.0.</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Spatial_*_Meteorology classes are soft deprecated. To average meteo data</span></span>
+<span><span class="co">#&gt;   series is better to use the corresponding functions in the sf package</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> The deprecated feature was likely used in the <span style="color: #0000BB;">meteoland</span> package.</span></span>
+<span><span class="co">#&gt;   Please report the issue to the authors.</span></span></code></pre></div>
 <p>The output of the function is of the same class as the input object:</p>
 <div class="sourceCode" id="cb44"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/class.html" class="external-link">class</a></span><span class="op">(</span><span class="va">y</span><span class="op">)</span></span>
@@ -1002,7 +1110,7 @@ W(r) = e^{-\alpha \cdot (r/R_p)^2} - e^{-\alpha}
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer>

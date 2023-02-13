@@ -13,6 +13,12 @@
     <loc>/articles/index.html</loc>
   </url>
   <url>
+    <loc>/articles/reshaping-meteo.html</loc>
+  </url>
+  <url>
+    <loc>/articles/tidy-meteoland.html</loc>
+  </url>
+  <url>
     <loc>/authors.html</loc>
   </url>
   <url>
@@ -35,9 +41,6 @@
   </url>
   <url>
     <loc>/reference/MeteorologyUncorrectedData.html</loc>
-  </url>
-  <url>
-    <loc>/reference/NetCDFutils.html</loc>
   </url>
   <url>
     <loc>/reference/SpatialGridMeteorology-class.html</loc>
@@ -76,13 +79,22 @@
     <loc>/reference/SpatialPointsTopography.html</loc>
   </url>
   <url>
+    <loc>/reference/add_topo.html</loc>
+  </url>
+  <url>
     <loc>/reference/averagearea.html</loc>
   </url>
   <url>
-    <loc>/reference/correction_lowlevel.html</loc>
+    <loc>/reference/complete_meteo.html</loc>
+  </url>
+  <url>
+    <loc>/reference/correction_series.html</loc>
   </url>
   <url>
     <loc>/reference/correctionpoints.html</loc>
+  </url>
+  <url>
+    <loc>/reference/create_meteo_interpolator.html</loc>
   </url>
   <url>
     <loc>/reference/defaultCorrectionParams.html</loc>
@@ -94,16 +106,16 @@
     <loc>/reference/defaultInterpolationParams.html</loc>
   </url>
   <url>
-    <loc>/reference/downloadAEMET.html</loc>
+    <loc>/reference/downloadAEMETcurrentday.html</loc>
   </url>
   <url>
-    <loc>/reference/downloadMETEOCLIMATIC.html</loc>
+    <loc>/reference/downloadMETEOCLIMATICcurrentday.html</loc>
   </url>
   <url>
-    <loc>/reference/downloadMG.html</loc>
+    <loc>/reference/downloadMGcurrentday.html</loc>
   </url>
   <url>
-    <loc>/reference/downloadSMC.html</loc>
+    <loc>/reference/downloadSMCcurrentday.html</loc>
   </url>
   <url>
     <loc>/reference/examplecorrectiondata.html</loc>
@@ -121,10 +133,16 @@
     <loc>/reference/extractdates.html</loc>
   </url>
   <url>
-    <loc>/reference/humidity.html</loc>
+    <loc>/reference/get_interpolation_params.html</loc>
+  </url>
+  <url>
+    <loc>/reference/humidity-conversion-tools.html</loc>
   </url>
   <url>
     <loc>/reference/index.html</loc>
+  </url>
+  <url>
+    <loc>/reference/interpolate_data.html</loc>
   </url>
   <url>
     <loc>/reference/interpolation.coverage.html</loc>
@@ -133,10 +151,13 @@
     <loc>/reference/interpolation.cv.html</loc>
   </url>
   <url>
-    <loc>/reference/interpolation_lowlevel.html</loc>
+    <loc>/reference/interpolation_temperature.html</loc>
   </url>
   <url>
     <loc>/reference/interpolationpoints.html</loc>
+  </url>
+  <url>
+    <loc>/reference/interpolator_calibration.html</loc>
   </url>
   <url>
     <loc>/reference/mergegrids.html</loc>
@@ -145,19 +166,55 @@
     <loc>/reference/meteocomplete.html</loc>
   </url>
   <url>
+    <loc>/reference/meteoland-package.html</loc>
+  </url>
+  <url>
+    <loc>/reference/meteoland_interpolator_example.html</loc>
+  </url>
+  <url>
+    <loc>/reference/meteoland_meteo_example.html</loc>
+  </url>
+  <url>
+    <loc>/reference/meteoland_meteo_no_topo_example.html</loc>
+  </url>
+  <url>
+    <loc>/reference/meteoland_topo_example.html</loc>
+  </url>
+  <url>
     <loc>/reference/meteoplot.html</loc>
+  </url>
+  <url>
+    <loc>/reference/meteospain2meteoland.html</loc>
   </url>
   <url>
     <loc>/reference/penman.html</loc>
   </url>
   <url>
-    <loc>/reference/precipitationconcentration.html</loc>
+    <loc>/reference/points_to_interpolate_example.html</loc>
   </url>
   <url>
-    <loc>/reference/radiation.html</loc>
+    <loc>/reference/precipitation_concentration.html</loc>
+  </url>
+  <url>
+    <loc>/reference/precipitation_rainfallErosivity.html</loc>
+  </url>
+  <url>
+    <loc>/reference/precipitation_rainfall_erosivity.html</loc>
+  </url>
+  <url>
+    <loc>/reference/radiation_julianDay.html</loc>
+  </url>
+  <url>
+    <loc>/reference/raster_to_interpolate_example.html</loc>
+  </url>
+  <url>
+    <loc>/reference/readNetCDFpoints.html</loc>
   </url>
   <url>
     <loc>/reference/readWindNinjaWindFields.html</loc>
+  </url>
+  <url>
+    <loc>/reference/read_interpolator.html</loc>
   </url>
   <url>
     <loc>/reference/readmeteorologygrid.html</loc>
@@ -166,22 +223,40 @@
     <loc>/reference/readmeteorologypoint.html</loc>
   </url>
   <url>
-    <loc>/reference/reshapeworldmet.html</loc>
+    <loc>/reference/reshapemeteospain.html</loc>
   </url>
   <url>
-    <loc>/reference/spplot.html</loc>
+    <loc>/reference/set_interpolation_params.html</loc>
+  </url>
+  <url>
+    <loc>/reference/spplot-SpatialGridMeteorology-method.html</loc>
   </url>
   <url>
     <loc>/reference/subsample.html</loc>
   </url>
   <url>
+    <loc>/reference/summarise_interpolated_data.html</loc>
+  </url>
+  <url>
+    <loc>/reference/summarise_interpolator.html</loc>
+  </url>
+  <url>
     <loc>/reference/summarypoints.html</loc>
   </url>
   <url>
-    <loc>/reference/utils.html</loc>
+    <loc>/reference/utils_saturationVP.html</loc>
   </url>
   <url>
     <loc>/reference/weathergeneration.html</loc>
+  </url>
+  <url>
+    <loc>/reference/with_meteo.html</loc>
+  </url>
+  <url>
+    <loc>/reference/worldmet2meteoland.html</loc>
+  </url>
+  <url>
+    <loc>/reference/write_interpolator.html</loc>
   </url>
   <url>
     <loc>/reference/writemeteorologygrid.html</loc>

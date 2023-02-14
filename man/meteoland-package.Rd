@@ -7,7 +7,10 @@
 \alias{meteoland}
 \title{meteoland: Landscape Meteorology Tools}
 \description{
-Functions to estimate weather variables at any position of a landscape \href{https://doi.org/10.1016/j.envsoft.2018.08.003}{De Caceres et al. (2018)}.
+Functions to estimate weather variables at any position of a landscape
+}
+\references{
+De Caceres et al., 2018 (\doi{10.1016/j.envsoft.2018.08.003}))
 }
 \seealso{
 Useful links: \itemize{ \item{

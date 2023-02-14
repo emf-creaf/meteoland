@@ -1,7 +1,6 @@
 #' meteoland: Landscape Meteorology Tools
 #'
-#' Functions to estimate weather variables at any position of a landscape [De
-#' Caceres et al. (2018)](https://doi.org/10.1016/j.envsoft.2018.08.003).
+#' Functions to estimate weather variables at any position of a landscape
 #'
 #' @name meteoland-package
 #' @aliases meteoland meteoland-package
@@ -20,6 +19,8 @@
 #' }
 #' @seealso Useful links: \itemize{ \item{
 #' \url{https://emf-creaf.github.io/meteoland/index.html}} }
+#'
+#' @references De Caceres et al., 2018 (\doi{10.1016/j.envsoft.2018.08.003}))
 #' @keywords internal
 "_PACKAGE"
 

@@ -1,8 +1,8 @@
 -------------------------------
  NEWS for R Package "meteoland"
 -------------------------------
-# meteoland 1.0.3.9000 (development version)
 
+# meteoland 2.0.0
 - Added the new workflows to work without `sp`, `raster`, `rgdal` packages.
 **This is a breaking change**, meaning it affects all the package:
   - New functions for interpolation, calibration, cross-validation and

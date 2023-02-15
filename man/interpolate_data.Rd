@@ -60,6 +60,7 @@ a better interpolation process, though this two variables are not mandatory.
 
 \examples{
 
+\donttest{
 # example of data to interpolate and example interpolator
 data("points_to_interpolate_example")
 data("meteoland_interpolator_example")
@@ -76,5 +77,6 @@ res
 res[["interpolated_data"]][1]
 # unnest results
 tidyr::unnest(res, cols = "interpolated_data")
+}
 
 }

@@ -50,10 +50,6 @@ wind speed and wind direction classes.
 WindNinja should be run with m/s as wind speed units and for all the
 combinations of domain-level wind speed and wind direction required.
 }
-\examples{
-
-## TO BE DONE ##
-}
 \references{
 Forthofer, J.M., Butler, B.W., Wagenbrenner, N.S., 2014. A
 comparison of three approaches for simulating fine-scale surface winds in

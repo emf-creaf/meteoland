@@ -359,6 +359,7 @@
 #'
 #' @examples
 #'
+#' \donttest{
 #' # example interpolator
 #' data("meteoland_interpolator_example")
 #'
@@ -371,6 +372,7 @@
 #' cv$station_stats
 #' cv$dates_stats
 #' cv$r2
+#' }
 #'
 #' @export
 interpolation_cross_validation <- function(interpolator, stations = NULL, verbose = getOption("meteoland_verbosity", TRUE)) {

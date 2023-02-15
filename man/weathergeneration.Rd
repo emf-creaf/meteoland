@@ -51,6 +51,7 @@ Recommended to generate stochastic series from climate change projections. }
 }
 \examples{
 
+\donttest{
 data(examplegridtopography)
 data(exampleinterpolationdata)
 
@@ -69,6 +70,7 @@ y = weathergeneration(mp)
 
 #Plot generated meteorological series
 meteoplot(y,1, ylab="Mean temperature")
+}
 
 }
 \references{

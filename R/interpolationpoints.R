@@ -221,6 +221,7 @@
 #' Environmental Modelling and Software 108: 186-196.
 #' @examples
 #' 
+#' \donttest{
 #' data(examplegridtopography)
 #' data(exampleinterpolationdata)
 #' 
@@ -258,6 +259,7 @@
 #'                        as.Date(c("2001-02-03", "2001-06-03")))
 #' #Plot PET corresponding to 2001-06-03
 #' spplot(ml,2,"PET")
+#' }
 #' 
 #' @export
 interpolationpoints<-function(object, points, dates = NULL,

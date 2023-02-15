@@ -100,6 +100,7 @@ summarypoint <- function(x, var, fun="mean", freq=NULL, dates = NULL, months= NU
 #' @seealso \code{\link{SpatialPointsMeteorology-class}}
 #' @examples
 #' 
+#' \donttest{
 #' data(examplegridtopography)
 #' data(exampleinterpolationdata)
 #' 
@@ -114,6 +115,7 @@ summarypoint <- function(x, var, fun="mean", freq=NULL, dates = NULL, months= NU
 #' mp.sum = summarypoints(mp, var="PET", freq="months", fun=sum)
 #' 
 #' mp.sum
+#' }
 #' @export
 summarypoints<-function(points, var, fun=mean, freq=NULL, dates = NULL, months = NULL, ...) {
   

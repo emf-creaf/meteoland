@@ -487,6 +487,7 @@ worldmet2meteoland <- function(meteo, complete = FALSE) {
 #'
 #' @examples
 #'
+#' \donttest{
 #' # example data
 #' data("meteoland_meteo_example")
 #'
@@ -496,6 +497,7 @@ worldmet2meteoland <- function(meteo, complete = FALSE) {
 #' completed_meteo <- complete_meteo(meteoland_meteo_example)
 #' # check MinRelativeHumidity
 #' completed_meteo$MinRelativeHumidity
+#' }
 #'
 #' @export complete_meteo
 complete_meteo <- function(meteo, verbose = getOption("meteoland_verbosity", TRUE)) {

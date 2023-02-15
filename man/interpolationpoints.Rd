@@ -126,6 +126,7 @@ function transforms the coordinates of
 }}
 \examples{
 
+\donttest{
 data(examplegridtopography)
 data(exampleinterpolationdata)
 
@@ -163,6 +164,7 @@ ml = interpolationgrid(exampleinterpolationdata, examplegridtopography,
                        as.Date(c("2001-02-03", "2001-06-03")))
 #Plot PET corresponding to 2001-06-03
 spplot(ml,2,"PET")
+}
 
 }
 \references{

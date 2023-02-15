@@ -412,6 +412,7 @@ create_meteo_interpolator <- function(meteo_with_topo, params = NULL, verbose = 
 #'
 #' @examples
 #'
+#' \donttest{
 #' # example interpolator
 #' data(meteoland_interpolator_example)
 #'
@@ -430,6 +431,7 @@ create_meteo_interpolator <- function(meteo_with_topo, params = NULL, verbose = 
 #'
 #' # read it again
 #' read_interpolator(file.path(tmp_dir, "meteoland_interpolator_example.nc"))
+#' }
 #'
 #' @export write_interpolator
 write_interpolator <- function(interpolator, filename, .overwrite = FALSE) {
@@ -548,6 +550,7 @@ write_interpolator <- function(interpolator, filename, .overwrite = FALSE) {
 #'
 #' @examples
 #'
+#' \donttest{
 #' # example interpolator
 #' data(meteoland_interpolator_example)
 #'
@@ -565,6 +568,7 @@ write_interpolator <- function(interpolator, filename, .overwrite = FALSE) {
 #'
 #' # read it again
 #' read_interpolator(file.path(tmp_dir, "meteoland_interpolator_example.nc"))
+#' }
 #'
 #' @export read_interpolator
 read_interpolator <- function(filename) {
@@ -685,6 +689,7 @@ read_interpolator <- function(filename) {
 #'
 #' @examples
 #'
+#' \donttest{
 #' # example interpolator
 #' data("meteoland_interpolator_example")
 #'
@@ -712,6 +717,7 @@ read_interpolator <- function(filename) {
 #' # check the new interpolator have the parameters updated
 #' get_interpolation_params(updated_interpolator)$N_MaxTemperature
 #' get_interpolation_params(updated_interpolator)$alpha_MaxTemperature
+#' }
 #'
 #' @export interpolator_calibration
 interpolator_calibration <- function(

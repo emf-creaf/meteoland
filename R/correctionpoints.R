@@ -210,6 +210,7 @@ correctionpoint<-function(obs, mod, proj, dates = NULL, params = defaultCorrecti
 #' 57:16–26. doi: 10.1016/j.gloplacha.2006.11.030
 #' @examples
 #'
+#' \donttest{
 #' data(examplegridtopography)
 #' data(exampleinterpolationdata)
 #' data(examplecorrectiondata)
@@ -261,6 +262,7 @@ correctionpoint<-function(obs, mod, proj, dates = NULL, params = defaultCorrecti
 #'      predicted@data[[1]]$Precipitation, cex=0.1, asp=1,
 #'      ylab="Corrected precipitation (mm)", xlab="Uncorrected precipitation (mm)")
 #' abline(a=0,b=1,col="gray")
+#' }
 #'
 #' @export
 correctionpoints<-function(object, points, topodata = NULL, dates = NULL, export = FALSE,

@@ -59,6 +59,7 @@
 #' 10.1016/j.ecolind.2015.06.043.
 #'
 #' @examples
+#' \donttest{
 #' interpolated_example <-
 #'   interpolate_data(points_to_interpolate_example, meteoland_interpolator_example)
 #'
@@ -68,6 +69,7 @@
 #'   scale = "month",
 #'   average = TRUE
 #' )
+#' }
 #'
 #' @export
 precipitation_rainfall_erosivity <- function(

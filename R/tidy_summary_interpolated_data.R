@@ -335,6 +335,7 @@
 #'
 #' @author \enc{Víctor}{Victor} Granda \enc{García}{Garcia}, CREAF
 #' @examples
+#' \donttest{
 #' # points interpolation aggregation
 #' points_to_interpolate_example |>
 #'   interpolate_data(meteoland_interpolator_example, verbose = FALSE) |>
@@ -344,8 +345,7 @@
 #' raster_to_interpolate_example |>
 #'   interpolate_data(meteoland_interpolator_example, verbose = FALSE) |>
 #'   summarise_interpolated_data()
-#'
-#' # TODO other examples
+#' }
 #'
 #' @export
 summarise_interpolated_data <- function(
@@ -436,6 +436,7 @@ summarise_interpolated_data <- function(
 #'
 #' @author \enc{Víctor}{Victor} Granda \enc{García}{Garcia}, CREAF
 #' @examples
+#' \donttest{
 #' # example interpolator
 #' meteoland_interpolator_example
 #'
@@ -445,7 +446,7 @@ summarise_interpolated_data <- function(
 #' # aggregate weekly, calculating mean values
 #' summarise_interpolator(meteoland_interpolator_example, frequency = "week")
 #'
-#' # TODO other examples
+#' }
 #'
 #' @export
 summarise_interpolator <- function(

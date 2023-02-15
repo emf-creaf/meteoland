@@ -137,6 +137,7 @@ all variables with default statistics and returns an object of class
 }}
 \examples{
 
+\donttest{
 data(examplegridtopography)
 data(exampleinterpolationdata)
 
@@ -151,6 +152,7 @@ mp = interpolationpoints(exampleinterpolationdata, spt)
 mp.sum = summarypoints(mp, var="PET", freq="months", fun=sum)
 
 mp.sum
+}
 }
 \seealso{
 \code{\link{SpatialPointsMeteorology-class}}

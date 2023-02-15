@@ -56,6 +56,7 @@ temporal dimension aggregated to desired frequency.
 Summarises an interpolator object by the desired temporal scale.
 }
 \examples{
+\donttest{
 # example interpolator
 meteoland_interpolator_example
 
@@ -65,7 +66,7 @@ summarise_interpolator(meteoland_interpolator_example, fun = "max")
 # aggregate weekly, calculating mean values
 summarise_interpolator(meteoland_interpolator_example, frequency = "week")
 
-# TODO other examples
+}
 
 }
 \author{

@@ -71,9 +71,6 @@
 #' Thornton, P.E., Running, S.W., White, M. a., 1997. Generating surfaces of
 #' daily meteorological variables over large regions of complex terrain. J.
 #' Hydrol. 190, 214–251. doi:10.1016/S0022-1694(96)03128-9.
-#' @examples
-#' 
-#' ## TO BE DONE ##
 #' @export
 MeteorologyInterpolationData<-function(points, elevation = NULL, slope = NULL, aspect = NULL,
                                        MinTemperature = NULL, MaxTemperature = NULL, Precipitation = NULL, RelativeHumidity = NULL,

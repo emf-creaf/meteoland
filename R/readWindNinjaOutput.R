@@ -35,9 +35,6 @@
 #' comparison of three approaches for simulating fine-scale surface winds in
 #' support of wildland fire management. Part I. Model formulation and
 #' comparison against measurements. Int. J. Wildl. Fire 23, 969–981.
-#' @examples
-#' 
-#' ## TO BE DONE ##
 #' @export
 readWindNinjaWindFields<-function(filebase, resolution = "100m",
                                   directionClasses = c(0,45,90,135,180,225,270,315),

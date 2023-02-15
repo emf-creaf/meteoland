@@ -70,6 +70,7 @@ for that location. If \code{interpolated_data} is a stars object as returned
 by \code{\link{interpolate_data}}, temporal summary is done for all the raster.
 }
 \examples{
+\donttest{
 # points interpolation aggregation
 points_to_interpolate_example |>
   interpolate_data(meteoland_interpolator_example, verbose = FALSE) |>
@@ -79,8 +80,7 @@ points_to_interpolate_example |>
 raster_to_interpolate_example |>
   interpolate_data(meteoland_interpolator_example, verbose = FALSE) |>
   summarise_interpolated_data()
-
-# TODO other examples
+}
 
 }
 \author{

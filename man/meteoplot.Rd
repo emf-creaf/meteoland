@@ -66,6 +66,7 @@ meteorological data to be plotted from the disk.
 }
 \examples{
 
+\donttest{
 data(examplegridtopography)
 data(exampleinterpolationdata)
 
@@ -80,6 +81,7 @@ mp = interpolationpoints(exampleinterpolationdata, spt)
 meteoplot(mp,1, ylab="Daily mean temperature")
 
 meteoplot(mp,1, ylab="Monthly mean temperature", fun=mean, freq="months")
+}
 
 }
 \seealso{

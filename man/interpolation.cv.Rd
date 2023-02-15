@@ -170,6 +170,7 @@ station from the predictive set).
 }}
 \examples{
 
+\donttest{
 data(exampleinterpolationdata)
 
 #Calibration procedure
@@ -198,6 +199,7 @@ summary(cv)
 
 #Plot results
 plot(cv)
+}
 
 }
 \references{

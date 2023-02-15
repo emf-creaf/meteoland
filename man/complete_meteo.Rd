@@ -26,6 +26,7 @@ missing variable if it is possible
 }
 \examples{
 
+\donttest{
 # example data
 data("meteoland_meteo_example")
 
@@ -35,5 +36,6 @@ meteoland_meteo_example$MinRelativeHumidity <- NULL
 completed_meteo <- complete_meteo(meteoland_meteo_example)
 # check MinRelativeHumidity
 completed_meteo$MinRelativeHumidity
+}
 
 }

@@ -42,6 +42,7 @@ used for the MedREM model are b0 = 0.117, b1 = -0.015, alpha = 2. Note that
 there is a mistake in Guerra et al. (2016) regarding parameters b1 and a.
 }
 \examples{
+\donttest{
 interpolated_example <-
   interpolate_data(points_to_interpolate_example, meteoland_interpolator_example)
 
@@ -51,6 +52,7 @@ precipitation_rainfall_erosivity(
   scale = "month",
   average = TRUE
 )
+}
 
 }
 \references{

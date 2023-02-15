@@ -30,6 +30,7 @@ https://cfconventions.org/cf-conventions/cf-conventions.html
 }
 \examples{
 
+\donttest{
 # example interpolator
 data(meteoland_interpolator_example)
 
@@ -48,6 +49,7 @@ file.exists(file.path(tmp_dir, "meteoland_interpolator_example.nc"))
 
 # read it again
 read_interpolator(file.path(tmp_dir, "meteoland_interpolator_example.nc"))
+}
 
 }
 \seealso{

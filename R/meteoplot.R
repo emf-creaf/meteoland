@@ -42,6 +42,7 @@
 #' @seealso \code{\link{summarypoints}}
 #' @examples
 #' 
+#' \donttest{
 #' data(examplegridtopography)
 #' data(exampleinterpolationdata)
 #' 
@@ -56,6 +57,7 @@
 #' meteoplot(mp,1, ylab="Daily mean temperature")
 #' 
 #' meteoplot(mp,1, ylab="Monthly mean temperature", fun=mean, freq="months")
+#' }
 #' 
 #' @export
 meteoplot<-function(object, index=1, var="MeanTemperature",

@@ -21,6 +21,7 @@
 #' @seealso \code{\link{weathergeneration}}
 #' @examples
 #' 
+#' \donttest{
 #' data(examplegridtopography)
 #' data(exampleinterpolationdata)
 #' 
@@ -36,6 +37,7 @@
 #' 
 #' #Weather data
 #' pa@data[[1]]
+#' }
 #' 
 #' @export
 averagearea<-function(object, na.rm=TRUE) {

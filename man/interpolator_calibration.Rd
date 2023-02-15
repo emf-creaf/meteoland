@@ -102,6 +102,7 @@ after exluding the station from the predictive set).
 }}
 \examples{
 
+\donttest{
 # example interpolator
 data("meteoland_interpolator_example")
 
@@ -114,8 +115,10 @@ cv$errors
 cv$station_stats
 cv$dates_stats
 cv$r2
+}
 
 
+\donttest{
 # example interpolator
 data("meteoland_interpolator_example")
 
@@ -143,5 +146,6 @@ updated_interpolator <- interpolator_calibration(
 # check the new interpolator have the parameters updated
 get_interpolation_params(updated_interpolator)$N_MaxTemperature
 get_interpolation_params(updated_interpolator)$alpha_MaxTemperature
+}
 
 }

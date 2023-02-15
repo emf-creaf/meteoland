@@ -122,6 +122,7 @@
 #' Environmental Modelling and Software 108: 186-196.
 #' @examples
 #'
+#' \donttest{
 #' data(exampleinterpolationdata)
 #'
 #' #Calibration procedure
@@ -150,6 +151,7 @@
 #'
 #' #Plot results
 #' plot(cv)
+#' }
 #'
 #' @export
 interpolation.cv<-function(object, stations = NULL, verbose = FALSE) {

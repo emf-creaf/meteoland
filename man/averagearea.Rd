@@ -30,6 +30,7 @@ Assumes that all points/pixels represent the same area.
 }
 \examples{
 
+\donttest{
 data(examplegridtopography)
 data(exampleinterpolationdata)
 
@@ -45,6 +46,7 @@ pa
 
 #Weather data
 pa@data[[1]]
+}
 
 }
 \seealso{

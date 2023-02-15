@@ -96,10 +96,6 @@ parameters \code{MinTemperature} and \code{MaxTemperature} will need to be
 supplied, each being a matrix with weather stations in rows and days in
 columns, but other variables may be left as \code{NULL}.} }
 }
-\examples{
-
-## TO BE DONE ##
-}
 \references{
 Thornton, P.E., Running, S.W., 1999. An improved algorithm for
 estimating incident daily solar radiation from measurements of temperature,

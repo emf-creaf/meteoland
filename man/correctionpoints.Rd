@@ -175,6 +175,7 @@ observed (\enc{Boé}{Boe} 2007).
 }}
 \examples{
 
+\donttest{
 data(examplegridtopography)
 data(exampleinterpolationdata)
 data(examplecorrectiondata)
@@ -226,6 +227,7 @@ plot(examplecorrectiondata@projection_data[[3]]$Precipitation,
      predicted@data[[1]]$Precipitation, cex=0.1, asp=1,
      ylab="Corrected precipitation (mm)", xlab="Uncorrected precipitation (mm)")
 abline(a=0,b=1,col="gray")
+}
 
 }
 \references{

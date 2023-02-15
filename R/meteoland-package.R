@@ -10,10 +10,10 @@
 #' [ORCID](https://orcid.org/0000-0001-7132-2080)
 #'
 #' Authors: \itemize{
-#' \item{ Nicolas Martin
-#' [ORCID](https://orcid.org/0000-0001-7574-0108)}
 #' \item{ Víctor Granda
 #' [ORCID](https://orcid.org/0000-0002-0469-1991)}
+#' \item{ Nicolas Martin
+#' [ORCID](https://orcid.org/0000-0001-7574-0108)}
 #' \item{ Antoine Cabon
 #' [ORCID](https://orcid.org/0000-0001-6426-1726)}
 #' }

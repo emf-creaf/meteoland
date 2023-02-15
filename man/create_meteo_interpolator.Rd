@@ -13,7 +13,7 @@ create_meteo_interpolator(
 \arguments{
 \item{meteo_with_topo}{Meteo object, as returned by \code{\link{with_meteo}}}
 
-\item{params}{Interpolation parameters as a list. Tipically the result of
+\item{params}{Interpolation parameters as a list. Typically the result of
 \code{\link{defaultInterpolationParams}}.}
 
 \item{verbose}{Logical indicating if the function must show messages and info.

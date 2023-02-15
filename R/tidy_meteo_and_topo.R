@@ -39,8 +39,8 @@ with_meteo <- function(meteo, verbose = getOption("meteoland_verbosity", TRUE)) 
 #'
 #' Add topography data to meteo object
 #'
-#' When using meteo data without topography info to create an inteprolator,
-#' topography must be addded
+#' When using meteo data without topography info to create an interpolator,
+#' topography must be added
 #'
 #' @param meteo meteo object
 #' @param topo topo object

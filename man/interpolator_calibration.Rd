@@ -93,7 +93,7 @@ variable. Optimization is done by minimizing mean absolute error ("MAE")
 errors ("MAE") for the prediction period of the interpolator object. In both
 calibration and cross validation procedures, predictions for each
 meteorological station are made using a \emph{leave-one-out} procedure (i.e.
-after exluding the station from the predictive set).
+after excluding the station from the predictive set).
 }
 \section{Functions}{
 \itemize{

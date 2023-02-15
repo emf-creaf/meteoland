@@ -79,13 +79,13 @@ Function \code{readmeteorologygrid} reads one or several files containing
 the meteorology over a grid for a set of days. Function
 \code{readmeteorologypixels} reads one or several file containing the
 meteorology over a grid for a set of days and filters those pixels with
-missing data. If more than one file is specificated, the functions read all
+missing data. If more than one file is specified, the functions read all
 of them and then try to merge the data into a single meteorology object (see
 function \code{\link{mergegrids}}).
 
 Function \code{readmeteorologygridpoints} is similar to the preceding ones,
 but is meant to extract specific grid pixels and return them as spatial
-points. If more than one file is specificated, the function reads all of
+points. If more than one file is specified, the function reads all of
 them and then tries to merge the data into a single meteorology object (see
 function \code{\link{mergepoints}}).
 

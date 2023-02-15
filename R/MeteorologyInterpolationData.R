@@ -14,7 +14,7 @@
 #' \code{\linkS4class{SpatialPointsMeteorology}} containing both the
 #' coordinates and meteorological series of stations. In this case
 #' \code{elevation} has to be provided, but \code{aspect} and \code{slope} may
-#' be ommitted. Parameters \code{MinTemperature} to \code{WindDirection} can be
+#' be omitted. Parameters \code{MinTemperature} to \code{WindDirection} can be
 #' left as \code{NULL}.} \item{The second way is using an object of class of
 #' \code{\link{SpatialPointsTopography}} containing the coordinates of stations
 #' and topographic variables. In this case parameters \code{MinTemperature} and
@@ -24,7 +24,7 @@
 #' \code{WindDirection} may be left as \code{NULL}.} \item{The third way is using
 #' an object of \code{\link{SpatialPoints}} containing the coordinates of
 #' stations only. In this case \code{elevation} has to be provided, but
-#' \code{aspect} and \code{slope} may be ommitted. As in the second case,
+#' \code{aspect} and \code{slope} may be omitted. As in the second case,
 #' parameters \code{MinTemperature} and \code{MaxTemperature} will need to be
 #' supplied, each being a matrix with weather stations in rows and days in
 #' columns, but other variables may be left as \code{NULL}.} }

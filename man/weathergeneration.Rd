@@ -43,7 +43,7 @@ precipitation is conditioned using a stationary auto-regressive (ARIMA)
 model and then a K-nearest neighbour algorithm is used to select a set of
 years to train the MC-KNN algorithm (similar to Steinschneider et al. 2013).
 Recommended if low-frequency variation of annual precipitation is to be
-acounted for in long series. \item\code{"window"} - The MC-KNN algorithm is
+accounted for in long series. \item\code{"window"} - The MC-KNN algorithm is
 trained with the subset of the input data corresponding to a window around
 the target year. Annual precipitation is conditioned using a lognormal
 random trial of the precipitation corresponding to the selected years.

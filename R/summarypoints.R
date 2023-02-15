@@ -74,7 +74,7 @@ summarypoint <- function(x, var, fun="mean", freq=NULL, dates = NULL, months= NU
 #' processed.
 #' @param months A numeric vector to indicate the subset of months for which
 #' summary is desired (e.g. \code{c(7,8)} for July and August). This parameter
-#' allows studing particular seasons, when combined with \code{freq}. For
+#' allows studying particular seasons, when combined with \code{freq}. For
 #' example \code{freq = "years"} and \code{months = 6:8} leads to summarizing
 #' summer months of each year.
 #' @param \dots Additional parameters to \code{fun}.

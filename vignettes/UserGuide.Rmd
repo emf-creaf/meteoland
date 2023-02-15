@@ -31,7 +31,7 @@ With the aim to assist research of climatic impacts on forests, the R package **
 2. Statistical correction of meteorological data series (e.g. from climate models).
 3. Multisite and multivariate stochastic weather generation.
 
-Using **meteoland** package is easy, but some ideas and concepts must be addresed to make the experience easy for new users. This vignette is intended as a working example to explain all the steps needed to get comfortable with **meteoland** workflow. We assume that the reader is more or less familiar with S4 spatial classes of package [**sp**](https://cran.r-project.org/package=sp). You will find detailed information regarding the package structure, its functions, and how calculations are done at the [meteoland reference book](https://emf-creaf.github.io/meteolandbook/index.html).
+Using **meteoland** package is easy, but some ideas and concepts must be addressed to make the experience easy for new users. This vignette is intended as a working example to explain all the steps needed to get comfortable with **meteoland** workflow. We assume that the reader is more or less familiar with S4 spatial classes of package [**sp**](https://cran.r-project.org/package=sp). You will find detailed information regarding the package structure, its functions, and how calculations are done at the [meteoland reference book](https://emf-creaf.github.io/meteolandbook/index.html).
 
 ## Installing and loading the package
 
@@ -130,7 +130,7 @@ names(interpolator@params)
 
 
 ## Interpolation basics and parameters
-Package meteoland implements, with a few modifications, the daily weather interpolation and estimation algorithms that un- derpin the U.S. [DAYMET](https://daymet.ornl.gov/) dataset (Thornton et al., 1997; Thornton and Running, 1999).This approach, similar to inverse distance weighting, interpolates weather variables using trun- cated Gaussian filters, which consist in defining spatial weights $W(r)$ at radial distance $r$ from a target point $p$ using:
+Package meteoland implements, with a few modifications, the daily weather interpolation and estimation algorithms that underpin the U.S. [DAYMET](https://daymet.ornl.gov/) dataset (Thornton et al., 1997; Thornton and Running, 1999).This approach, similar to inverse distance weighting, interpolates weather variables using truncated Gaussian filters, which consist in defining spatial weights $W(r)$ at radial distance $r$ from a target point $p$ using:
 \begin{equation}
 W(r) = e^{-\alpha \cdot (r/R_p)^2} - e^{-\alpha}
 \end{equation}
@@ -153,7 +153,7 @@ legend("topright", legend = c("alpha = 3", "alpha = 6.25"), lty=c(1,2), bty="n")
 
 $R_p$ is automatically adjusted so that it has lower values in data-rich regions and is increased in data-poor regions. The method, however, requires the user to specify $N$, the average number of observations to be included for each target point. $R_p$ is then varied as a smooth function of the local density in such a way that this average is achieved over the spatial domain. It is important that the initial value of $R_p$ 
 
-In meteoland estimation of $R_p$ is done once for each target point, variable and day. Interpolation of temperature includes a correction for the effects of elevation. More specifically, a weighted least-squares regression is used to assess the relationship between temperature differences and elevation differences in weather station data and this relationship is applied to elevation differences between weather stations and the target point. Interpolation of relative humidity is done after transforming it to dew-point temperature. No correction for elevation is performed during interpolation, but elevation effects arise when back-transforming dew-point temperature to relative humidity. Interpolation of daily precipitation is complicated by the need to predict both precipitation occurrence and, conditioned on this, precipitation amount. Thornton et al. (1997) defined a binomial predictor of spatial precipitation occurrence as a function of the weighted occurrence at surrounding weather stations. Conditional on precipitation occurrence, the interpolation routine predicts precipitation amount, where weighted least-squares regression is also used to account for elevation effects. Interpolation of wind is performed in three different ways depending on the information available. If only wind speed data is available, the spatial interpolation with Gaussian weights is used on wind scalars as described above. If weather station data includes wind direction, a polar average is cal- culated using Gaussian weights. Finally, if static wind fields are also available the interpolation routine first finds, for each weather station the wind field that best matches the observed vector. Then, the wind vectors extracted from the selected wind fields are averaged as before. Further details of how interpolation is done can be found at [meteoland's book](https://emf-creaf.github.io/meteolandbook/).
+In meteoland estimation of $R_p$ is done once for each target point, variable and day. Interpolation of temperature includes a correction for the effects of elevation. More specifically, a weighted least-squares regression is used to assess the relationship between temperature differences and elevation differences in weather station data and this relationship is applied to elevation differences between weather stations and the target point. Interpolation of relative humidity is done after transforming it to dew-point temperature. No correction for elevation is performed during interpolation, but elevation effects arise when back-transforming dew-point temperature to relative humidity. Interpolation of daily precipitation is complicated by the need to predict both precipitation occurrence and, conditioned on this, precipitation amount. Thornton et al. (1997) defined a binomial predictor of spatial precipitation occurrence as a function of the weighted occurrence at surrounding weather stations. Conditional on precipitation occurrence, the interpolation routine predicts precipitation amount, where weighted least-squares regression is also used to account for elevation effects. Interpolation of wind is performed in three different ways depending on the information available. If only wind speed data is available, the spatial interpolation with Gaussian weights is used on wind scalars as described above. If weather station data includes wind direction, a polar average is calculated using Gaussian weights. Finally, if static wind fields are also available the interpolation routine first finds, for each weather station the wind field that best matches the observed vector. Then, the wind vectors extracted from the selected wind fields are averaged as before. Further details of how interpolation is done can be found at [meteoland's book](https://emf-creaf.github.io/meteolandbook/).
 
 Interpolation parameters $\alpha$ and $N$ can be different for each variable to be interpolated. The following table lists all the interpolation parameters (see also function `defaultInterpolationParameters()`)
 
@@ -201,13 +201,13 @@ This function returns an interpolation.calibration class object which contains s
 
 * Numeric matrix with the mean absolute error (MAE) values for each combination of parameters $N$ and
 $\alpha$.
-* Miminum value found for MAE.
-* Value for the `N` parameter corresponding to the minumun MAE.
+* Minimum value found for MAE.
+* Value for the `N` parameter corresponding to the minimum MAE.
 * Value for the `alpha` parameter corresponding to the minimum MAE.
 * Matrix with the observed values.
 * Matrix with the predicted values for the optimum parameter combination.
 
-The result of the calibration needs to be manually stored in the interpolation params:
+The result of the calibration needs to be manually stored in the interpolation parameters:
 ```{r}
 interpolator@params$N_MinTemperature = tmin_cal$N
 interpolator@params$alpha_MinTemperature = tmin_cal$alpha
@@ -220,7 +220,7 @@ Before using the object for interpolations, we also need to assess its performan
 cv <- interpolation.cv(interpolator, verbose=T)
 ```
 
-Cross-validation is perfomed by *leave-one-out*, which means that each target station is first removed from the data set and then the remaining stations are used to obtain interpolation estimates. In this way one maximizes the amount of information for estimates, while keeping them independent of the observed values in each station. The results of cross-validation can be inspected using a specific `summary` function:
+Cross-validation is performed by *leave-one-out*, which means that each target station is first removed from the data set and then the remaining stations are used to obtain interpolation estimates. In this way one maximizes the amount of information for estimates, while keeping them independent of the observed values in each station. The results of cross-validation can be inspected using a specific `summary` function:
 ```{r}
 summary(cv)
 ```

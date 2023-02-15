@@ -146,7 +146,7 @@ set_interpolation_params <- function(interpolator, params = NULL, verbose = getO
 #' parameters and creates the interpolator object to be ready to use.
 #'
 #' @param meteo_with_topo Meteo object, as returned by \code{\link{with_meteo}}
-#' @param params Interpolation parameters as a list. Tipically the result of
+#' @param params Interpolation parameters as a list. Typically the result of
 #'   \code{\link{defaultInterpolationParams}}.
 #' @param verbose Logical indicating if the function must show messages and info.
 #' Default value checks \code{"meteoland_verbosity"} option and if not set, defaults
@@ -401,7 +401,7 @@ create_meteo_interpolator <- function(meteo_with_topo, params = NULL, verbose = 
 #' @param interpolator meteoland interpolator object, as created by
 #' \code{\link{create_meteo_interpolator}}
 #' @param filename file name for the interpolator nc file
-#' @param .overwrite logical indicating if the file should be overwrited if it
+#' @param .overwrite logical indicating if the file should be overwritten if it
 #' already exists
 #' @return invisible interpolator object, to allow using this function as a
 #' step in a pipe
@@ -650,7 +650,7 @@ read_interpolator <- function(filename) {
 #' errors ("MAE") for the prediction period of the interpolator object. In both
 #' calibration and cross validation procedures, predictions for each
 #' meteorological station are made using a \emph{leave-one-out} procedure (i.e.
-#' after exluding the station from the predictive set).
+#' after excluding the station from the predictive set).
 #'
 #' @param interpolator A meteoland interpolator object, as created by
 #' \code{\link{create_meteo_interpolator}}

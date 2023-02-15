@@ -10,7 +10,7 @@
 #' 
 #' @details
 #' Functions \code{writemeteorologygrid} and \code{writemeteorologypixels}
-#' writes grided meteorological data (i.e. class
+#' writes gridded meteorological data (i.e. class
 #' \code{\link{SpatialGridMeteorology-class}} or class
 #' \code{\link{SpatialPixelsMeteorology-class}}, respectively) into a netCDF,
 #' with the possibility to overwrite existing data. Function
@@ -30,7 +30,7 @@
 #' @param format Format of meteorological data. The only accepted format is
 #' \code{"netCDF"}.
 #' @param byPixel Boolean flag to specify whether file will be written/read by
-#' pixels. This forces a different (suposedly) more efficient chunking based on
+#' pixels. This forces a different (supposedly) more efficient chunking based on
 #' time series data instead of daily grids.
 #' @param chunksizes Specifies the size of data chunks to be read/written. If
 #' set, this must be a vector of three integers corresponding to XYT.

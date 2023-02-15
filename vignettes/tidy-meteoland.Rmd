@@ -110,7 +110,7 @@ interpolation.
 For more information on preparing meteorological data for `meteoland`, see
 `vignette("reshaping-meteo", package = "meteoland")`
 
-### Quick interpolation (if everythig is ok)
+### Quick interpolation (if everything is ok)
 
 With the necessary data in the correct format we can perform the interpolation right away:
 
@@ -402,7 +402,7 @@ latitude and longitude.
 
 ### Temporal aggregation in raster
 
-Like with the point location example, interpolated data in raster format can also be aggregated temporaly.
+Like with the point location example, interpolated data in raster format can also be aggregated temporally.
 
 ```{r raster_temporal_agg}
 summarise_interpolated_data(
@@ -412,7 +412,7 @@ summarise_interpolated_data(
 )
 ```
 
-In this case the result is the aggreagated variables as attributes, and the time dimension is aggregated in the desired frequency.
+In this case the result is the aggregated variables as attributes, and the time dimension is aggregated in the desired frequency.
 
 ### Piping raster interpolation
 

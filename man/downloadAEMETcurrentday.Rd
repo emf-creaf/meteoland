@@ -55,12 +55,12 @@ AEMET weather stations for which historical climatic series are available
 and can be retrieved using \code{downloadAEMEThistorical}.
 
 Function \code{downloadAEMEThistorical} downloads data for the specified
-AEMET stations and dates. Data are availables for dates up to 4 days before
+AEMET stations and dates. Data is available for dates up to 4 days before
 current date. If \code{export = FALSE}, function
 \code{downloadAEMEThistorical} returns a
 \code{\link{SpatialPointsMeteorology-class}} object with the downloaded
 meteorology for each station (point). Otherwise the function writes on the
-disk at the location specified by \code{exportDir} and solelely returns a
+disk at the location specified by \code{exportDir} and solely returns a
 \code{\link{SpatialPointsDataFrame-class}} object containing the files
 metadata.
 

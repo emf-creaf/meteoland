@@ -95,7 +95,7 @@
 #' should set 'precip = TRUE' when calling function 'importNOAA'. In the case
 #' of weathercan, precipitation is only provided for daily data (i.e. setting
 #' 'interval="day"' when calling 'weather_dl'), whereas wind speed and relative
-#' humidity are only availave for hourly data (i.e., setting 'interval="hour"'
+#' humidity are only available for hourly data (i.e., setting 'interval="hour"'
 #' when calling 'weather_dl'). Hence, in \code{meteoland} we recommend
 #' downloading both daily and hourly data and then calling function
 #' \code{reshapeweathercan} to merge the two sources.

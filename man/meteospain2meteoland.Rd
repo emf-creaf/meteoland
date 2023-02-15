@@ -20,7 +20,7 @@ Adapting meteospain meteo objects to meteoland meteo objects
 }
 \details{
 This function converts \code{meteospain} R package meteo objects to
-compatible meteoland meteo objects by seelcting the needed variables and
+compatible meteoland meteo objects by selecting the needed variables and
 adapting the names to comply with meteoland requirements.
 }
 \examples{

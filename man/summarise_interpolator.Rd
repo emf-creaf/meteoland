@@ -35,7 +35,7 @@ If NULL (default), all dates in the interpolated data are processed.}
 
 \item{months_to_summary}{A numeric vector with the month numbers to subset
 the data before summarising. (e.g. \code{c(7,8)} for July and August).
-This parameter allows studing particular seasons, when combined with
+This parameter allows studying particular seasons, when combined with
 \code{frequency}. For example \code{frequency = "years"} and
 \code{months = 6:8} leads to summarizing summer months of each year.}
 

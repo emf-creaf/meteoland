@@ -24,7 +24,7 @@ station_id codes provided.
 Function \code{downloadMETEOCLIMATICcurrentday} downloads recent weather
 (for the current day) from all currently available stations and returns a
 \code{\link{SpatialPointsDataFrame-class}} object with observations. Only
-acummulated precipitation, maximum and minimum temperature and relative
+accumulated precipitation, maximum and minimum temperature and relative
 humidity are returned.
 }
 \description{

@@ -12,7 +12,7 @@ write_interpolator(interpolator, filename, .overwrite = FALSE)
 
 \item{filename}{file name for the interpolator nc file}
 
-\item{.overwrite}{logical indicating if the file should be overwrited if it
+\item{.overwrite}{logical indicating if the file should be overwritten if it
 already exists}
 }
 \value{

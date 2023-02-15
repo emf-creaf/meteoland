@@ -23,8 +23,8 @@ meteo with the topography info added
 Add topography data to meteo object
 }
 \details{
-When using meteo data without topography info to create an inteprolator,
-topography must be addded
+When using meteo data without topography info to create an interpolator,
+topography must be added
 }
 \examples{
 # example meteo

@@ -58,7 +58,7 @@ indicating the dates to be written.}
 \code{"netCDF"}.}
 
 \item{byPixel}{Boolean flag to specify whether file will be written/read by
-pixels. This forces a different (suposedly) more efficient chunking based on
+pixels. This forces a different (supposedly) more efficient chunking based on
 time series data instead of daily grids.}
 
 \item{chunksizes}{Specifies the size of data chunks to be read/written. If
@@ -86,7 +86,7 @@ Functions to write grid meteorological data to the file system.
 }
 \details{
 Functions \code{writemeteorologygrid} and \code{writemeteorologypixels}
-writes grided meteorological data (i.e. class
+writes gridded meteorological data (i.e. class
 \code{\link{SpatialGridMeteorology-class}} or class
 \code{\link{SpatialPixelsMeteorology-class}}, respectively) into a netCDF,
 with the possibility to overwrite existing data. Function

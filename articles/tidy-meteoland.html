@@ -262,8 +262,11 @@
 <span><span class="co">#&gt; • Interpolating precipitation...</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Relative humidity interpolation is needed also...</span></span>
 <span><span class="co">#&gt; • Interpolating relative humidity...</span></span>
-<span><span class="co">#&gt; • Interpolating radiation...</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Radiation calculation is needed also...</span></span>
+<span><span class="co">#&gt; • Calculating radiation...</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Wind interpolation is needed also...</span></span>
 <span><span class="co">#&gt; • Interpolating wind...</span></span>
+<span><span class="co">#&gt; • Calculating PET...</span></span>
 <span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Interpolation done...</span></span>
 <span><span class="va">points_interpolated</span></span>
 <span><span class="co">#&gt; Simple feature collection with 15 features and 5 fields</span></span>
@@ -880,8 +883,11 @@ The function returns the same interpolated data given as input, but with the wee
 <span><span class="co">#&gt; • Interpolating precipitation...</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Relative humidity interpolation is needed also...</span></span>
 <span><span class="co">#&gt; • Interpolating relative humidity...</span></span>
-<span><span class="co">#&gt; • Interpolating radiation...</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Radiation calculation is needed also...</span></span>
+<span><span class="co">#&gt; • Calculating radiation...</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Wind interpolation is needed also...</span></span>
 <span><span class="co">#&gt; • Interpolating wind...</span></span>
+<span><span class="co">#&gt; • Calculating PET...</span></span>
 <span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Interpolation done...</span></span>
 <span></span>
 <span><span class="va">points_interpolated</span></span>
@@ -939,8 +945,11 @@ The function returns the same interpolated data given as input, but with the wee
 <span><span class="co">#&gt; • Interpolating precipitation...</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Relative humidity interpolation is needed also...</span></span>
 <span><span class="co">#&gt; • Interpolating relative humidity...</span></span>
-<span><span class="co">#&gt; • Interpolating radiation...</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Radiation calculation is needed also...</span></span>
+<span><span class="co">#&gt; • Calculating radiation...</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Wind interpolation is needed also...</span></span>
 <span><span class="co">#&gt; • Interpolating wind...</span></span>
+<span><span class="co">#&gt; • Calculating PET...</span></span>
 <span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Interpolation done...</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Binding together interpolation results</span></span>
 <span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Interpolation process finished</span></span>
@@ -959,7 +968,7 @@ The function returns the same interpolated data given as input, but with the wee
 <span><span class="co">#&gt; Radiation               7.38449673  16.1504318  20.815039  19.742938</span></span>
 <span><span class="co">#&gt; WindSpeed               0.02164994   0.9119314   1.252240   1.385929</span></span>
 <span><span class="co">#&gt; WindDirection           0.18621266  71.4293342 198.955399 181.615512</span></span>
-<span><span class="co">#&gt; PET                             NA          NA         NA        NaN</span></span>
+<span><span class="co">#&gt; PET                     1.09428184   2.4611166   3.196850   3.110504</span></span>
 <span><span class="co">#&gt; elevation             240.00000000 370.0000000 447.000000 460.322314</span></span>
 <span><span class="co">#&gt; slope                   1.43209624   5.7204332  11.348120  13.073426</span></span>
 <span><span class="co">#&gt; aspect                  5.19442749  74.7448807 174.369324 181.679232</span></span>
@@ -974,7 +983,7 @@ The function returns the same interpolated data given as input, but with the wee
 <span><span class="co">#&gt; Radiation              23.8148915  28.126824    0</span></span>
 <span><span class="co">#&gt; WindSpeed               1.7444530   5.811866   30</span></span>
 <span><span class="co">#&gt; WindDirection         264.0404014 359.908196 1350</span></span>
-<span><span class="co">#&gt; PET                            NA         NA 3630</span></span>
+<span><span class="co">#&gt; PET                     3.7822172   5.598250    0</span></span>
 <span><span class="co">#&gt; elevation             525.0000000 786.000000    0</span></span>
 <span><span class="co">#&gt; slope                  19.7585106  31.071896    0</span></span>
 <span><span class="co">#&gt; aspect                291.0375061 360.000000    0</span></span>
@@ -1007,7 +1016,7 @@ The function returns the same interpolated data given as input, but with the wee
 <span><span class="co">#&gt; Radiation              11.7245475  17.90842114  19.929736  19.765548</span></span>
 <span><span class="co">#&gt; WindSpeed               0.6861051   0.87245304   1.343451   1.515442</span></span>
 <span><span class="co">#&gt; WindDirection         122.7681189 152.95041467 168.597605 184.990642</span></span>
-<span><span class="co">#&gt; PET                            NA           NA         NA        NaN</span></span>
+<span><span class="co">#&gt; PET                     1.6176152   2.74501755   3.084015   3.091572</span></span>
 <span><span class="co">#&gt;                           3rd Qu.       Max. NA's</span></span>
 <span><span class="co">#&gt; MeanTemperature        15.8981470  17.107689    0</span></span>
 <span><span class="co">#&gt; MinTemperature          7.0401778   8.721007    0</span></span>
@@ -1019,7 +1028,7 @@ The function returns the same interpolated data given as input, but with the wee
 <span><span class="co">#&gt; Radiation              21.8800875  25.287348    0</span></span>
 <span><span class="co">#&gt; WindSpeed               1.8527502   4.348124    5</span></span>
 <span><span class="co">#&gt; WindDirection         234.5482210 246.486142  365</span></span>
-<span><span class="co">#&gt; PET                            NA         NA  605</span></span>
+<span><span class="co">#&gt; PET                     3.4728443   5.069591    0</span></span>
 <span><span class="co">#&gt; dimension(s):</span></span>
 <span><span class="co">#&gt;      from to         offset      delta  refsys point values x/y</span></span>
 <span><span class="co">#&gt; time    1  5 2022-03-28 UTC     7 days POSIXct    NA   NULL    </span></span>

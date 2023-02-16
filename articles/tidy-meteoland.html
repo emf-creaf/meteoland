@@ -33,7 +33,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">meteoland</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.0.3.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.0.0</span>
       </span>
     </div>
 
@@ -80,7 +80,7 @@
 <span><span class="co">#&gt; Linking to GEOS 3.10.2, GDAL 3.4.2, PROJ 8.2.1; sf_use_s2() is TRUE</span></span>
 <span><span class="co">#&gt; Loading required package: stars</span></span>
 <span><span class="co">#&gt; Loading required package: abind</span></span>
-<span><span class="co">#&gt; Package 'meteoland' [ver. 1.0.3.9000]</span></span>
+<span><span class="co">#&gt; Package 'meteoland' [ver. 2.0.0]</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://r-spatial.github.io/stars/" class="external-link">stars</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span>
 <span><span class="co">#&gt; </span></span>
@@ -236,7 +236,7 @@
 <p>For more information on preparing meteorological data for <code>meteoland</code>, see <code><a href="../articles/reshaping-meteo.html">vignette("reshaping-meteo", package = "meteoland")</a></code></p>
 </div>
 <div class="section level4">
-<h4 id="quick-interpolation-if-everythig-is-ok">Quick interpolation (if everythig is ok)<a class="anchor" aria-label="anchor" href="#quick-interpolation-if-everythig-is-ok"></a>
+<h4 id="quick-interpolation-if-everything-is-ok">Quick interpolation (if everything is ok)<a class="anchor" aria-label="anchor" href="#quick-interpolation-if-everything-is-ok"></a>
 </h4>
 <p>With the necessary data in the correct format we can perform the interpolation right away:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
@@ -987,7 +987,7 @@ The function returns the same interpolated data given as input, but with the wee
 <div class="section level4">
 <h4 id="temporal-aggregation-in-raster">Temporal aggregation in raster<a class="anchor" aria-label="anchor" href="#temporal-aggregation-in-raster"></a>
 </h4>
-<p>Like with the point location example, interpolated data in raster format can also be aggregated temporaly.</p>
+<p>Like with the point location example, interpolated data in raster format can also be aggregated temporally.</p>
 <div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/summarise_interpolated_data.html">summarise_interpolated_data</a></span><span class="op">(</span></span>
 <span>  <span class="va">raster_interpolated</span>,</span>
@@ -1025,7 +1025,7 @@ The function returns the same interpolated data given as input, but with the wee
 <span><span class="co">#&gt; time    1  5 2022-03-28 UTC     7 days POSIXct    NA   NULL    </span></span>
 <span><span class="co">#&gt; x       1 11        1.67091  0.0105789  WGS 84 FALSE   NULL [x]</span></span>
 <span><span class="co">#&gt; y       1 11        41.7624 -0.0105789  WGS 84 FALSE   NULL [y]</span></span></code></pre></div>
-<p>In this case the result is the aggreagated variables as attributes, and the time dimension is aggregated in the desired frequency.</p>
+<p>In this case the result is the aggregated variables as attributes, and the time dimension is aggregated in the desired frequency.</p>
 </div>
 <div class="section level4">
 <h4 id="piping-raster-interpolation">Piping raster interpolation<a class="anchor" aria-label="anchor" href="#piping-raster-interpolation"></a>
@@ -1263,7 +1263,7 @@ The function returns the same interpolated data given as input, but with the wee
 
       <footer><div class="copyright">
   <p></p>
-<p>Developed by Miquel De Cáceres, Nicolas Martin, Víctor Granda, Antoine Cabon.</p>
+<p>Developed by Miquel De Cáceres, Víctor Granda, Nicolas Martin, Antoine Cabon.</p>
 </div>
 
 <div class="pkgdown">

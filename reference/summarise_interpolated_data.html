@@ -19,7 +19,7 @@ temporal scale"><!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/l
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">meteoland</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.0.3.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.0.0</span>
       </span>
     </div>
 
@@ -98,7 +98,7 @@ If NULL (default), all dates in the interpolated data are processed.</p></dd>
 <dt>months_to_summary</dt>
 <dd><p>A numeric vector with the month numbers to subset
 the data before summarising. (e.g. <code>c(7,8)</code> for July and August).
-This parameter allows studing particular seasons, when combined with
+This parameter allows studying particular seasons, when combined with
 <code>frequency</code>. For example <code>frequency = "years"</code> and
 <code>months = 6:8</code> leads to summarizing summer months of each year.</p></dd>
 
@@ -142,7 +142,8 @@ by <code><a href="interpolate_data.html">interpolate_data</a></code>, temporal s
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># points interpolation aggregation</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># \donttest{</span></span></span>
+<span class="r-in"><span><span class="co"># points interpolation aggregation</span></span></span>
 <span class="r-in"><span><span class="va">points_to_interpolate_example</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>  <span class="fu"><a href="interpolate_data.html">interpolate_data</a></span><span class="op">(</span><span class="va">meteoland_interpolator_example</span>, verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>  <span class="fu">summarise_interpolated_data</span><span class="op">(</span><span class="op">)</span></span></span>
@@ -206,8 +207,7 @@ by <code><a href="interpolate_data.html">interpolate_data</a></code>, temporal s
 <span class="r-out co"><span class="r-pr">#&gt;</span> time    1  1      NA         NA POSIXct    NA 2022-04-01 UTC    </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> x       1 11 1.67091  0.0105789  WGS 84 FALSE           NULL [x]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> y       1 11 41.7624 -0.0105789  WGS 84 FALSE           NULL [y]</span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># TODO other examples</span></span></span>
+<span class="r-in"><span><span class="co"># }</span></span></span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
@@ -219,7 +219,7 @@ by <code><a href="interpolate_data.html">interpolate_data</a></code>, temporal s
 
 
       <footer><div class="copyright">
-  <p></p><p>Developed by Miquel De Cáceres, Nicolas Martin, Víctor Granda, Antoine Cabon.</p>
+  <p></p><p>Developed by Miquel De Cáceres, Víctor Granda, Nicolas Martin, Antoine Cabon.</p>
 </div>
 
 <div class="pkgdown">

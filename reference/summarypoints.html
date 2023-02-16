@@ -19,7 +19,7 @@ pixels in a grid, or weather stations of interpolation data."><!-- mathjax --><s
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">meteoland</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.0.3.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.0.0</span>
       </span>
     </div>
 
@@ -137,7 +137,7 @@ processed.</p></dd>
 <dt>months</dt>
 <dd><p>A numeric vector to indicate the subset of months for which
 summary is desired (e.g. <code>c(7,8)</code> for July and August). This parameter
-allows studing particular seasons, when combined with <code>freq</code>. For
+allows studying particular seasons, when combined with <code>freq</code>. For
 example <code>freq = "years"</code> and <code>months = 6:8</code> leads to summarizing
 summer months of each year.</p></dd>
 
@@ -213,6 +213,7 @@ all variables with default statistics and returns an object of class
     <div id="ref-examples">
     <h2>Examples</h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># \donttest{</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">examplegridtopography</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">exampleinterpolationdata</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
@@ -274,6 +275,7 @@ all variables with default statistics and returns an object of class
 <span class="r-out co"><span class="r-pr">#&gt;</span>   X2003.12.01</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1          NA</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 2          NA</span>
+<span class="r-in"><span><span class="co"># }</span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -284,7 +286,7 @@ all variables with default statistics and returns an object of class
 
 
       <footer><div class="copyright">
-  <p></p><p>Developed by Miquel De Cáceres, Nicolas Martin, Víctor Granda, Antoine Cabon.</p>
+  <p></p><p>Developed by Miquel De Cáceres, Víctor Granda, Nicolas Martin, Antoine Cabon.</p>
 </div>
 
 <div class="pkgdown">

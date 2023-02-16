@@ -18,7 +18,7 @@ Generates a spatial and/or temporal subset of procedure data"><!-- mathjax --><s
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">meteoland</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.0.3.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.0.0</span>
       </span>
     </div>
 
@@ -117,6 +117,7 @@ area and a subset of dates.</p></dd>
     <div id="ref-examples">
     <h2>Examples</h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># \donttest{</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">exampleinterpolationdata</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">oridates</span> <span class="op">=</span> <span class="va">exampleinterpolationdata</span><span class="op">@</span><span class="va">dates</span></span></span>
@@ -124,6 +125,7 @@ area and a subset of dates.</p></dd>
 <span class="r-in"><span><span class="co">#Interpolation data using the first ten dates (same boundary box)</span></span></span>
 <span class="r-in"><span><span class="va">subdata</span> <span class="op">=</span> <span class="fu">subsample</span><span class="op">(</span><span class="va">exampleinterpolationdata</span>, dates <span class="op">=</span> <span class="va">oridates</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">10</span><span class="op">]</span><span class="op">)</span></span></span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>24 stations had no data after subsetting and were removed.</span>
+<span class="r-in"><span><span class="co"># }</span></span></span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
@@ -135,7 +137,7 @@ area and a subset of dates.</p></dd>
 
 
       <footer><div class="copyright">
-  <p></p><p>Developed by Miquel De Cáceres, Nicolas Martin, Víctor Granda, Antoine Cabon.</p>
+  <p></p><p>Developed by Miquel De Cáceres, Víctor Granda, Nicolas Martin, Antoine Cabon.</p>
 </div>
 
 <div class="pkgdown">

@@ -18,7 +18,7 @@ Summarises an interpolator object by the desired temporal scale."><!-- mathjax -
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">meteoland</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.0.3.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.0.0</span>
       </span>
     </div>
 
@@ -96,7 +96,7 @@ If NULL (default), all dates in the interpolated data are processed.</p></dd>
 <dt>months_to_summary</dt>
 <dd><p>A numeric vector with the month numbers to subset
 the data before summarising. (e.g. <code>c(7,8)</code> for July and August).
-This parameter allows studing particular seasons, when combined with
+This parameter allows studying particular seasons, when combined with
 <code>frequency</code>. For example <code>frequency = "years"</code> and
 <code>months = 6:8</code> leads to summarizing summer months of each year.</p></dd>
 
@@ -126,7 +126,8 @@ temporal dimension aggregated to desired frequency.</p>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># example interpolator</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># \donttest{</span></span></span>
+<span class="r-in"><span><span class="co"># example interpolator</span></span></span>
 <span class="r-in"><span><span class="va">meteoland_interpolator_example</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> stars object with 2 dimensions and 13 attributes</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> attribute(s):</span>
@@ -246,7 +247,7 @@ temporal dimension aggregated to desired frequency.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> date                                                    NULL</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> station POINT (0.95172 41.6566),...,POINT (1.89716 42.32211)</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># TODO other examples</span></span></span>
+<span class="r-in"><span><span class="co"># }</span></span></span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
@@ -258,7 +259,7 @@ temporal dimension aggregated to desired frequency.</p>
 
 
       <footer><div class="copyright">
-  <p></p><p>Developed by Miquel De Cáceres, Nicolas Martin, Víctor Granda, Antoine Cabon.</p>
+  <p></p><p>Developed by Miquel De Cáceres, Víctor Granda, Nicolas Martin, Antoine Cabon.</p>
 </div>
 
 <div class="pkgdown">

@@ -403,10 +403,10 @@ interpolation_temperature <- function(Xp, Yp, Zp, X, Y, Z, T, iniRp = 140000, al
 }
 
 #' Physical utility functions
-#' 
+#'
 #' Set of functions used in the calculation of physical variables.
-#' 
-#' 
+#'
+#'
 #' @aliases utils_airDensity utils_atmosphericPressure utils_averageDailyVP
 #' utils_averageDaylightTemperature utils_latentHeatVaporisation
 #' utils_latentHeatVaporisationMol utils_psychrometricConstant
@@ -432,7 +432,7 @@ interpolation_temperature <- function(Xp, Yp, Zp, X, Y, Z, T, iniRp = 140000, al
 #' @references McMurtrie, R. E., D. A. Rook, and F. M. Kelliher. 1990.
 #' Modelling the yield of Pinus radiata on a site limited by water and
 #' nitrogen. Forest Ecology and Management 30:381–413.
-#' 
+#'
 #' McMahon, T. A., M. C. Peel, L. Lowe, R. Srikanthan, and T. R. McVicar. 2013.
 #' Estimating actual, potential, reference crop and pan evaporation using
 #' standard meteorological data: a pragmatic synthesis. Hydrology & Earth
@@ -492,15 +492,15 @@ utils_saturationVaporPressureCurveSlope <- function(temperature) {
 }
 
 #' Potential evapotranspiration
-#' 
+#'
 #' Functions to calculate potential evapotranspiration using Penman or
 #' Penman-Monteith.
-#' 
+#'
 #' The code was adapted from package `Evapotranspiration', which follows
 #' McMahon et al. (2013). If wind speed is not available, an alternative
 #' formulation for potential evapotranspiration is used as an approximation
 #' (Valiantzas 2006)
-#' 
+#'
 #' @aliases penman penmanmonteith
 #' @param latrad Latitude in radians.
 #' @param elevation Elevation (in m).
@@ -525,13 +525,13 @@ utils_saturationVaporPressureCurveSlope <- function(temperature) {
 #' @references Penman, H. L. 1948. Natural evaporation from open water, bare
 #' soil and grass. Proceedings of the Royal Society of London. Series A.
 #' Mathematical and Physical Sciences, 193, 120-145.
-#' 
+#'
 #' Penman, H. L. 1956. Evaporation: An introductory survey. Netherlands Journal
 #' of Agricultural Science, 4, 9-29.
-#' 
+#'
 #' McMahon, T.A., Peel, M.C., Lowe, L., Srikanthan, R., McVicar, T.R. 2013.
 #' Estimating actual, potential, reference crop and pan evaporation using
-#' standard meteorological data: a pragmatic synthesis. Hydrology \& Earth
+#' standard meteorological data: a pragmatic synthesis. Hydrology & Earth
 #' System Sciences 17, 1331–1363. doi:10.5194/hess-17-1331-2013.
 #' @export
 penman <- function(latrad, elevation, slorad, asprad, J, Tmin, Tmax, RHmin, RHmax, R_s, u, z = 2.0, z0 = 0.001, alpha = 0.08, windfun = "1956") {

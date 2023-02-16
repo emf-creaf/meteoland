@@ -22,10 +22,10 @@ Useful links: \itemize{ \item{
 \href{https://orcid.org/0000-0001-7132-2080}{ORCID}
 
 Authors: \itemize{
-\item{ Nicolas Martin
-\href{https://orcid.org/0000-0001-7574-0108}{ORCID}}
 \item{ Víctor Granda
 \href{https://orcid.org/0000-0002-0469-1991}{ORCID}}
+\item{ Nicolas Martin
+\href{https://orcid.org/0000-0001-7574-0108}{ORCID}}
 \item{ Antoine Cabon
 \href{https://orcid.org/0000-0001-6426-1726}{ORCID}}
 }

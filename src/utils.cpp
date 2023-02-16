@@ -8,14 +8,14 @@ const double Cp_MJKG = 0.00101386;// MJ * kg^-1 * ºC^-1
 
 /**
  *  Calculates saturation vapour pressure (in kPa)
- *  
- *  temperature - temperature (in degrees Celsius) 
+ *
+ *  temperature - temperature (in degrees Celsius)
  */
 //' Physical utility functions
-//' 
+//'
 //' Set of functions used in the calculation of physical variables.
-//' 
-//' 
+//'
+//'
 //' @aliases utils_airDensity utils_atmosphericPressure utils_averageDailyVP
 //' utils_averageDaylightTemperature utils_latentHeatVaporisation
 //' utils_latentHeatVaporisationMol utils_psychrometricConstant
@@ -41,7 +41,7 @@ const double Cp_MJKG = 0.00101386;// MJ * kg^-1 * ºC^-1
 //' @references McMurtrie, R. E., D. A. Rook, and F. M. Kelliher. 1990.
 //' Modelling the yield of Pinus radiata on a site limited by water and
 //' nitrogen. Forest Ecology and Management 30:381–413.
-//' 
+//'
 //' McMahon, T. A., M. C. Peel, L. Lowe, R. Srikanthan, and T. R. McVicar. 2013.
 //' Estimating actual, potential, reference crop and pan evaporation using
 //' standard meteorological data: a pragmatic synthesis. Hydrology & Earth
@@ -85,9 +85,9 @@ double dewpointTemperatureFromRH(double T, double RH) {
 }
 /**
 *  Calculates average vapour pressure (in kPa)
-*  
-*  Tmin, Tmax - Minimum and maximum temperature (in degrees Celsius) 
-*  RHmin, RHmax - Minimum and maximum relative humidity (in percent) 
+*
+*  Tmin, Tmax - Minimum and maximum temperature (in degrees Celsius)
+*  RHmin, RHmax - Minimum and maximum relative humidity (in percent)
 */
 //' @describeIn utils_saturationVP Average daily VP
 //' @export
@@ -100,8 +100,8 @@ double averageDailyVapourPressure(double Tmin, double Tmax, double RHmin, double
 
 /**
  *  Calculates air atmospheric pressure (in kPa)
- *  
- *  z - Elevation (in m) 
+ *
+ *  z - Elevation (in m)
  */
 //' @describeIn utils_saturationVP Atmospheric pressure
 //' @export
@@ -111,8 +111,8 @@ double atmosphericPressure(double elevation) {
 }
 /**
 *  Calculates air density (in kg/m3)
-*  
-*  temperature - Air temperature (in degrees Celsius) 
+*
+*  temperature - Air temperature (in degrees Celsius)
 *  Patm - air atmospheric pressure (in kPa)
 */
 //' @describeIn utils_saturationVP Air density
@@ -123,8 +123,8 @@ double airDensity(double temperature, double Patm) {
 }
 /**
 *  Calculates average daylight air temperature (in celsius)
-*  
-*  Tmin, Tmax - Minimum and maximum temperature (in degrees Celsius) 
+*
+*  Tmin, Tmax - Minimum and maximum temperature (in degrees Celsius)
 */
 //' @describeIn utils_saturationVP Daylight temperature
 //' @export
@@ -136,9 +136,9 @@ double averageDaylightTemperature(double Tmin, double Tmax) {
 
 /**
 *  Calculates latent heat of vaporisation (lambda)
-*  
+*
 *  temperature - Temperature (in ºC)
-*  
+*
 *  Units: MJ.kg^-1
 */
 //' @describeIn utils_saturationVP latent heat vaporisation
@@ -149,9 +149,9 @@ double latentHeatVaporisation(double temperature) {
 }
 /**
 *  Calculates latent heat of vaporisation (lambda)
-*  
+*
 *  temperature - Temperature (in ºC)
-*  
+*
 *  Units: J.mol^-1
 */
 //' @describeIn utils_saturationVP Heat vaporisation mol
@@ -165,10 +165,10 @@ double latentHeatVaporisationMol(double temperature) {
 
 /**
 *  Calculates psychrometric constant (gamma)
-*  
+*
 *  temperature - Temperature (in ºC)
 *  Patm - air pressure (in kPa)
-*  
+*
 *  Units: kPa*ºC-1
 */
 //' @describeIn utils_saturationVP psychrometric constant
@@ -180,9 +180,9 @@ double psychrometricConstant(double temperature, double Patm) {
 
 /**
 *  Slope of the saturation vapor pressure curve (Delta)
-*  
+*
 *  temperature - Temperature (in ºC)
-*  
+*
 *  Units: kPa*ºC-1
 */
 //' @describeIn utils_saturationVP Saturation VP curve slope
@@ -214,15 +214,15 @@ double saturationVaporPressureCurveSlope(double temperature) {
  * windfun - Wind function version of Penman "1956" or "1948"
  */
 //' Potential evapotranspiration
-//' 
+//'
 //' Functions to calculate potential evapotranspiration using Penman or
 //' Penman-Monteith.
-//' 
+//'
 //' The code was adapted from package `Evapotranspiration', which follows
 //' McMahon et al. (2013). If wind speed is not available, an alternative
 //' formulation for potential evapotranspiration is used as an approximation
 //' (Valiantzas 2006)
-//' 
+//'
 //' @aliases penman penmanmonteith
 //' @param latrad Latitude in radians.
 //' @param elevation Elevation (in m).
@@ -247,13 +247,13 @@ double saturationVaporPressureCurveSlope(double temperature) {
 //' @references Penman, H. L. 1948. Natural evaporation from open water, bare
 //' soil and grass. Proceedings of the Royal Society of London. Series A.
 //' Mathematical and Physical Sciences, 193, 120-145.
-//' 
+//'
 //' Penman, H. L. 1956. Evaporation: An introductory survey. Netherlands Journal
 //' of Agricultural Science, 4, 9-29.
-//' 
+//'
 //' McMahon, T.A., Peel, M.C., Lowe, L., Srikanthan, R., McVicar, T.R. 2013.
 //' Estimating actual, potential, reference crop and pan evaporation using
-//' standard meteorological data: a pragmatic synthesis. Hydrology \& Earth
+//' standard meteorological data: a pragmatic synthesis. Hydrology & Earth
 //' System Sciences 17, 1331–1363. doi:10.5194/hess-17-1331-2013.
 //' @export
 // [[Rcpp::export("penman")]]
@@ -278,7 +278,7 @@ double PenmanPET(double latrad, double elevation, double slorad, double asprad, 
   // double d_r2 = 1.0 + 0.033 * cos(2.0 * PI/365.0 * ((double)J));
   // double w_s = acos(-tan(latitude) * tan(delta2));
   // double N = 24.0/PI*w_s; (N not used)
-  
+
   double PET = 0.0;
   if(!NumericVector::is_na(u)) {
     double u2 = u * log(2.0/z0)/log(z/z0);
@@ -286,8 +286,8 @@ double PenmanPET(double latrad, double elevation, double slorad, double asprad, 
     double vs_Tmin = saturationVapourPressure(Tmin);
     double vas = (vs_Tmax + vs_Tmin)/2.0;
     double vpa = (vs_Tmin * (RHmax/100.0) + vs_Tmax * (RHmin/100.0))/2.0;
-    double R_n = netRadiation(Gsc, latrad, elevation, slorad, asprad, delta2, 
-                              vpa, Tmin, Tmax, R_s, 
+    double R_n = netRadiation(Gsc, latrad, elevation, slorad, asprad, delta2,
+                              vpa, Tmin, Tmax, R_s,
                               alpha);//Net radiation
     double Ea = (vas - vpa); //Saturation vapor deficit
     if(windfun == "1956") {
@@ -320,13 +320,13 @@ double PenmanPET(double latrad, double elevation, double slorad, double asprad, 
 *   (absorbed radiation, wind, temperature, relative humidity) and given a canopy stomatal resistance.
 *   Basically is the Penman-Monteith equation for daily steps, where aerodynamic resistance to heat flux
 *   is calculated internally (from wind and temperature) and the canopy (stomatal) resistance is an input.
-*   
-*  
-*   REF:  McMahon et al. (2013) 
+*
+*
+*   REF:  McMahon et al. (2013)
 *   Estimating actual, potential, reference crop and pan evaporation using standard meteorological data: a pragmatic synthesis
 *   Hydrology & Earth System Sciences
 *   See also:  http://www.fao.org/docrep/x0490e/x0490e06.htm
-*   
+*
 *   rc[s/m] - Canopy vapour flux (stomatal) resistance
 *   elevation [m] - Elevation over sea level
 *   Tmin, Tmax [Celsius] - Minimum and maximum temperature
@@ -337,7 +337,7 @@ double PenmanPET(double latrad, double elevation, double slorad, double asprad, 
 //' @describeIn penman Penman Monteith method
 //' @export
 // [[Rcpp::export("penmanmonteith")]]
-double PenmanMonteithPET(double rc, double elevation, 
+double PenmanMonteithPET(double rc, double elevation,
                          double Tmin, double Tmax,
                          double RHmin, double RHmax,
                          double Rn, double u = NA_REAL) {
@@ -365,7 +365,7 @@ double PenmanMonteithPET(double rc, double elevation,
   double rho = airDensity(Tday, Patm);
   //Unit conversion from s^-1 to day^-1
   double Kt = 86400.0;
-  
+
   //Radiative resistance to heat flux s.m^-1
   // double rr = Kt*(rho*Cp)/(4.0*SIGMA*pow(Tday+273.0,3.0));
   //Convective resistance to heat flux s.m^-1

@@ -480,8 +480,8 @@ test_that("[points] interpolation results are the same", {
   names(interpolated_data_old@data[[1]]) |>
     purrr::set_names(names(interpolated_data_old@data[[1]])) |>
     purrr::walk(.f = function(variable) {
-      # No PET in the new workflow, and WindDirection is not corectly calculated in the old workflow
-      if (variable %in% c('PET', "WindDirection")) {
+      # WindDirection is not corectly calculated in the old workflow
+      if (variable %in% c("WindDirection")) {
         return(invisible(TRUE))
       }
 
@@ -541,8 +541,8 @@ test_that("[raster] interpolation results are the same", {
   names(interpolated_data_old@data[[1]]) |>
     purrr::set_names(names(interpolated_data_old@data[[1]])) |>
     purrr::walk(.f = function(variable) {
-      # No PET in the new workflow, and WindDirection is not correctly calculated in the old workflow
-      if (variable %in% c('PET', "WindDirection", "MeanRelativeHumidity", "MinRelativeHumidity", "MaxRelativeHumidity", "Radiation")) {
+      # WindDirection is not correctly calculated in the old workflow
+      if (variable %in% c("WindDirection", "MeanRelativeHumidity", "MinRelativeHumidity", "MaxRelativeHumidity", "Radiation")) {
         return(invisible(TRUE))
       }
 
@@ -601,9 +601,9 @@ test_that("[points] summarise interpolated data results are the same", {
   "tbl"
   )
 
-  # For each variable (except winddirection, pet and the week and year)
-  names(summarised_data_new$weekly_mean[[1]])[-c(1:2, 12:13)] |>
-    purrr::set_names(names(summarised_data_new$weekly_mean[[1]])[-c(1:2, 12:13)]) |>
+  # For each variable (except winddirection and the week and year)
+  names(summarised_data_new$weekly_mean[[1]])[-c(1:2, 12)] |>
+    purrr::set_names(names(summarised_data_new$weekly_mean[[1]])[-c(1:2, 12)]) |>
     purrr::walk(
       .f = \(var) {
         # correct object
@@ -660,9 +660,9 @@ test_that("[raster]  summarise interpolated data results are the same", {
     "stars"
   )
 
-  # For each variable (except winddirection, pet and the week and year)
-  names(summarised_data_new)[-c(10:11)] |>
-    purrr::set_names(names(summarised_data_new)[-c(10:11)]) |>
+  # For each variable (except winddirection and the week and year)
+  names(summarised_data_new)[-c(10)] |>
+    purrr::set_names(names(summarised_data_new)[-c(10)]) |>
     purrr::walk(
       .f = \(var) {
         # correct object

@@ -122,6 +122,8 @@
   DOY <- as.numeric(format(dates, "%j"))
   J <- radiation_dateStringToJulianDays(as.character(dates))
   latrad <- sf::st_coordinates(sf::st_transform(sf, 4326))[,2] * (pi/180)
+  slorad <- sf[["slope"]] * (pi/180)
+  asprad <- sf[["aspect"]] * (pi/180)
 
   .as_interpolator_res_array <- function(vector, ref_dim) {
     return(array(vector, dim = ref_dim))
@@ -137,11 +139,12 @@
   rhmax <- NULL
   rad <- NULL
   wind <- NULL
+  pet <- NULL
 
   # temperature (needed also if interpolating relative humidity and radiation)
-  if (is_null_or_variable(variables, c("Temperature", "RelativeHumidity", "Radiation"))) {
+  if (is_null_or_variable(variables, c("Temperature", "RelativeHumidity", "Radiation", "PET"))) {
 
-    if (is_null_or_variable(variables, c("RelativeHumidity", "Radiation"))) {
+    if (is_null_or_variable(variables, c("RelativeHumidity", "Radiation", "PET"))) {
       .verbosity_control(
         cli::cli_alert_info("Temperature interpolation is needed also..."),
         verbose
@@ -184,8 +187,8 @@
   }
 
   # precipitation (needed also if interpolating radiation)
-  if (is_null_or_variable(variables, c("Precipitation", "Radiation"))) {
-    if (is_null_or_variable(variables, c("Radiation"))) {
+  if (is_null_or_variable(variables, c("Precipitation", "Radiation", "PET"))) {
+    if (is_null_or_variable(variables, c("Radiation", "PET"))) {
       .verbosity_control(
         cli::cli_alert_info("Precipitation interpolation is needed also..."),
         verbose
@@ -217,8 +220,8 @@
   }
 
   # relative humidity (needed also if interpolating radiation)
-  if (is_null_or_variable(variables, c("RelativeHumidity", "Radiation"))) {
-    if (is_null_or_variable(variables, c("Radiation"))) {
+  if (is_null_or_variable(variables, c("RelativeHumidity", "Radiation", "PET"))) {
+    if (is_null_or_variable(variables, c("Radiation", "PET"))) {
       .verbosity_control(
         cli::cli_alert_info("Relative humidity interpolation is needed also..."),
         verbose
@@ -275,9 +278,16 @@
   }
 
   # radiation
-  if (is_null_or_variable(variables, "Radiation")) {
+  if (is_null_or_variable(variables, c("Radiation", "PET"))) {
+
+    if (is_null_or_variable(variables, c("PET"))) {
+      .verbosity_control(
+        cli::cli_alert_info("Radiation calculation is needed also..."),
+        verbose
+      )
+    }
     .verbosity_control(
-      cli::cli_ul("Interpolating radiation..."),
+      cli::cli_ul("Calculating radiation..."),
       verbose
     )
     diffTemp <- abs(tmax - tmin)
@@ -295,8 +305,6 @@
       debug = get_interpolation_params(interpolator)$debug
     )
 
-    slorad <- sf[["slope"]] * (pi/180)
-    asprad <- sf[["aspect"]] * (pi/180)
     rad <- array(dim = dim(tmin))
     points_wo_precip <- numeric(0)
     for (i in 1:length(latrad)) {
@@ -318,7 +326,14 @@
   }
 
   # Wind
-  if (is_null_or_variable(variables, "Wind")) {
+  if (is_null_or_variable(variables, c("Wind", "PET"))) {
+
+    if (is_null_or_variable(variables, c("PET"))) {
+      .verbosity_control(
+        cli::cli_alert_info("Wind interpolation is needed also..."),
+        verbose
+      )
+    }
     .verbosity_control(
       cli::cli_ul("Interpolating wind..."),
       verbose
@@ -336,8 +351,27 @@
     )
   }
 
-  # PET, not sure if implement or not
-  pet <- NULL
+  # PET
+  if (is_null_or_variable(variables, c("PET"))) {
+    .verbosity_control(
+      cli::cli_ul("Calculating PET..."),
+      verbose
+    )
+
+    pet <- array(dim = dim(tmin))
+
+    for (i in 1:length(latrad)) {
+      # .penmanpoint(latrad, elevation, slorad, asprad, J, tmin, tmax,
+      #              rhmin, rhmax, rad, Wsp, mPar$wind_height,
+      #              0.001, 0.25)
+      pet[i,] <- .penmanpoint(
+        latrad[i], sf$elevation[i], slorad[i], asprad[i], J,
+        tmin[i,], tmax[i,], rhmin[i,], rhmax[i,], rad[i,],
+        wind$WS[i,], get_interpolation_params(interpolator)$wind_height,
+        0.001, 0.25
+      )
+    }
+  }
 
   # return the res df
   res <- purrr::map(
@@ -607,7 +641,7 @@
 #' a better interpolation process, though this two variables are not mandatory.
 #'
 #' @examples
-#' 
+#'
 #' \donttest{
 #' # example of data to interpolate and example interpolator
 #' data("points_to_interpolate_example")
@@ -661,7 +695,7 @@ interpolate_data <- function(
   # variables
   if (!is.null(variables)) {
     assertthat::assert_that(
-      all(variables %in% c("Temperature", "Precipitation", "RelativeHumidity", "Wind", "Radiation")),
+      all(variables %in% c("Temperature", "Precipitation", "RelativeHumidity", "Wind", "Radiation", "PET")),
       msg = "variables argument must be NULL (all variables) or a character vector with one o more of the following: 'Temperture', 'Precipitation', 'RelativeHumidity', 'Wind', 'Radiation'"
     )
   }

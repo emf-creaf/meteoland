@@ -78,6 +78,11 @@ test_that("interpolation process works as intended", {
   ))
   expect_identical(sf::st_geometry(points_res), sf::st_geometry(points_to_interpolate_example))
   expect_identical(sf::st_crs(points_res), sf::st_crs(points_to_interpolate_example))
+  # we expect all vars with data, as we have everything we need to interpolate/calculate any
+  # variable
+  expect_true(
+    (points_res$interpolated_data[[1]] |> dplyr::select(where(\(x) {all(is.na(x))})) |> ncol()) < 1
+  )
 
   # raster
   expect_s3_class(
@@ -88,6 +93,12 @@ test_that("interpolation process works as intended", {
   expect_true(all(names(raster_to_interpolate_example) %in% names(raster_res)))
   expect_true(all(interpolation_var_names %in% names(raster_res)))
   expect_identical(sf::st_crs(raster_res), sf::st_crs(raster_to_interpolate_example))
+  # we expect all vars with data, as we have everything we need to interpolate/calculate any
+  # variable
+  purrr::map(
+    purrr::set_names(names(raster_res)),
+    .f = \(x) {expect_false(all(is.na(raster_res[[x]])))}
+  )
 
   # date checks
   dates_all_ok <- as.Date(c("2022-04-24", "2022-04-25", "2022-04-26"))
@@ -170,6 +181,9 @@ test_that("interpolation process works as intended", {
   expect_true(
     all(is.na(points_radiation_res$interpolated_data[[1]]$WindDirection))
   )
+  expect_true(
+    all(is.na(points_radiation_res$interpolated_data[[1]]$PET))
+  )
 
   expect_s3_class(
     (points_twovars_res <-
@@ -192,6 +206,9 @@ test_that("interpolation process works as intended", {
   )
   expect_true(
     all(is.na(points_twovars_res$interpolated_data[[1]]$MeanRelativeHumidity))
+  )
+  expect_true(
+    all(is.na(points_twovars_res$interpolated_data[[1]]$PET))
   )
 
   # variables argument raster
@@ -219,6 +236,9 @@ test_that("interpolation process works as intended", {
   expect_true(
     all(is.na(raster_radiation_res[["WindDirection"]]))
   )
+  expect_true(
+    all(is.na(raster_radiation_res[["PET"]]))
+  )
 
   expect_s3_class(
     (raster_twovars_res <-
@@ -242,7 +262,10 @@ test_that("interpolation process works as intended", {
   expect_true(
     all(is.na(raster_twovars_res[["Radiation"]]))
   )
-  
+  expect_true(
+    all(is.na(raster_twovars_res[["PET"]]))
+  )
+
   # testing that missing variables in the interpolator behaves as they should
   #   - no relative humidity, then it is interpolated with temperatures, so the
   #     variable has data in the res
@@ -254,7 +277,7 @@ test_that("interpolation process works as intended", {
   interpolator_test_no_precipitation[["Precipitation"]] <- NA_real_
   interpolator_test_no_precipitation[["SmoothedPrecipitation"]] <- NA_real_
   interpolator_test_no_precipitation[["Radiation"]] <- NA_real_
-  
+
   expect_s3_class(
     points_res_no_relative_humidity <-
       interpolate_data(points_to_interpolate_example, interpolator_test_no_relative_humidity),
@@ -274,13 +297,13 @@ test_that("interpolation process works as intended", {
         )
       }
     )
-  
+
   expect_warning(
     points_res_no_precipitation <-
       interpolate_data(points_to_interpolate_example, interpolator_test_no_precipitation),
     "assuming clear days"
   )
-  
+
   1:length(unique(points_res_no_precipitation$plot_id)) |>
     purrr::walk(
       .f = \(point) {
@@ -292,7 +315,7 @@ test_that("interpolation process works as intended", {
         )
       }
     )
-  
+
 
 })
 

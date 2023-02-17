@@ -538,16 +538,14 @@ test_that("[raster] interpolation results are the same", {
   )
 
   # testing differences in the interpolated data for each variable
-  names(interpolated_data_old@data[[1]]) |>
-    purrr::set_names(names(interpolated_data_old@data[[1]])) |>
+  purrr::set_names(names(interpolated_data_old@data[[1]])) |>
     purrr::walk(.f = function(variable) {
       # WindDirection is not correctly calculated in the old workflow
-      if (variable %in% c("WindDirection", "MeanRelativeHumidity", "MinRelativeHumidity", "MaxRelativeHumidity", "Radiation")) {
+      if (variable %in% c("WindDirection")) {
         return(invisible(TRUE))
       }
 
-      names(interpolated_data_old@data) |>
-        purrr::set_names(names(interpolated_data_old@data)) |>
+      purrr::set_names(names(interpolated_data_old@data)) |>
         purrr::walk(
           .f = \(date_index) {
             expect_true(

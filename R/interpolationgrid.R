@@ -155,51 +155,51 @@ interpolationgrid<-function(object, grid, dates = NULL,
     Interpolation is performed with interpolate_data()"
   )
 
-  if(!inherits(object,"MeteorologyInterpolationData")) stop("'object' has to be of class 'MeteorologyInterpolationData'.")
-  if(!inherits(grid,"SpatialGridTopography")) stop("'grid' has to be of class 'SpatialGridTopography'.")
-  if(!is.null(dates)) {
-    if(!inherits(dates,"Date")) stop("'dates' has to be of class 'Date'.")
-    if(sum(as.character(dates) %in% as.character(object@dates))<length(dates))
-      stop("At least one of the dates is outside the time period for which interpolation is possible.")
-  }
-  else dates = object@dates
-  bbox = object@bbox
-  if(proj4string(grid)!=proj4string(object))  {
-    warning("CRS projection in 'grid' adapted to that of 'object'.")
-    sp = spTransform(SpatialPoints(coordinates(grid), grid@proj4string), object@proj4string)
-    gbbox = sp@bbox
-  } else {
-    gbbox = grid@bbox
-  }
-  insidebox = (gbbox[1,1]>=bbox[1,1]) && (gbbox[1,2]<=bbox[1,2]) && (gbbox[2,1]>=bbox[2,1]) && (gbbox[2,2]<=bbox[2,2])
-  if(!insidebox) warning("Boundary box of target grid is not within boundary box of interpolation data object.")
-  longlat = spTransform(as(grid,"SpatialPoints"),CRS(SRS_string = "EPSG:4326"))
-  latitude = longlat@coords[,2]
-  ndates = length(dates)
-  #Is export?
-  export = !is.null(exportFile)
-  if((ndates==1) && !export) return(.interpolateGridDay(object, grid, latitude, dates))
-  # Define vector of data frames
-  l = vector("list", ndates)
-
-  if(export) nc =  .openwritegridNetCDF(grid@grid, proj4string(grid), vars = NULL,
-                                    dates = dates, file = exportFile, add = add, overwrite = overwrite, verbose = verbose)
-  for(i in 1:ndates) {
-    if(verbose) cat(paste("Interpolating day '", dates[i], "' (",i,"/",ndates,") - ",sep=""))
-    m = .interpolateGridDay(object, grid, latitude, dates[i])
-    if(export) {
-      dl = list(m@data)
-      names(dl) = as.character(dates[i])
-      .writemeteorologygridNetCDF(dl,m@grid, proj4string(m), nc, byPixel = F, verbose = verbose)
-    } else {
-      l[[i]] = m@data
-      if(verbose) cat("done.\n")
-    }
-  }
-  if(!export) {
-    names(l) = dates
-    return(SpatialGridMeteorology(grid@grid, grid@proj4string, l, dates))
-  } else {
-    .closeNetCDF(exportFile,nc, verbose = verbose)
-  }
+  # if(!inherits(object,"MeteorologyInterpolationData")) stop("'object' has to be of class 'MeteorologyInterpolationData'.")
+  # if(!inherits(grid,"SpatialGridTopography")) stop("'grid' has to be of class 'SpatialGridTopography'.")
+  # if(!is.null(dates)) {
+  #   if(!inherits(dates,"Date")) stop("'dates' has to be of class 'Date'.")
+  #   if(sum(as.character(dates) %in% as.character(object@dates))<length(dates))
+  #     stop("At least one of the dates is outside the time period for which interpolation is possible.")
+  # }
+  # else dates = object@dates
+  # bbox = object@bbox
+  # if(proj4string(grid)!=proj4string(object))  {
+  #   warning("CRS projection in 'grid' adapted to that of 'object'.")
+  #   sp = spTransform(SpatialPoints(coordinates(grid), grid@proj4string), object@proj4string)
+  #   gbbox = sp@bbox
+  # } else {
+  #   gbbox = grid@bbox
+  # }
+  # insidebox = (gbbox[1,1]>=bbox[1,1]) && (gbbox[1,2]<=bbox[1,2]) && (gbbox[2,1]>=bbox[2,1]) && (gbbox[2,2]<=bbox[2,2])
+  # if(!insidebox) warning("Boundary box of target grid is not within boundary box of interpolation data object.")
+  # longlat = spTransform(as(grid,"SpatialPoints"),CRS(SRS_string = "EPSG:4326"))
+  # latitude = longlat@coords[,2]
+  # ndates = length(dates)
+  # #Is export?
+  # export = !is.null(exportFile)
+  # if((ndates==1) && !export) return(.interpolateGridDay(object, grid, latitude, dates))
+  # # Define vector of data frames
+  # l = vector("list", ndates)
+  #
+  # if(export) nc =  .openwritegridNetCDF(grid@grid, proj4string(grid), vars = NULL,
+  #                                   dates = dates, file = exportFile, add = add, overwrite = overwrite, verbose = verbose)
+  # for(i in 1:ndates) {
+  #   if(verbose) cat(paste("Interpolating day '", dates[i], "' (",i,"/",ndates,") - ",sep=""))
+  #   m = .interpolateGridDay(object, grid, latitude, dates[i])
+  #   if(export) {
+  #     dl = list(m@data)
+  #     names(dl) = as.character(dates[i])
+  #     .writemeteorologygridNetCDF(dl,m@grid, proj4string(m), nc, byPixel = F, verbose = verbose)
+  #   } else {
+  #     l[[i]] = m@data
+  #     if(verbose) cat("done.\n")
+  #   }
+  # }
+  # if(!export) {
+  #   names(l) = dates
+  #   return(SpatialGridMeteorology(grid@grid, grid@proj4string, l, dates))
+  # } else {
+  #   .closeNetCDF(exportFile,nc, verbose = verbose)
+  # }
 }

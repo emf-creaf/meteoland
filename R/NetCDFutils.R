@@ -1,11 +1,11 @@
 #' Utility functions for NetCDFs
-#' 
+#'
 #' @description
 #' `r lifecycle::badge("deprecated")`
-#' 
+#'
 #' Functions to read spatial and temporal coordinates from NetCDFs.
-#' 
-#' 
+#'
+#'
 #' @aliases readNetCDFdates readNetCDFpoints readNetCDFgridtopology
 #' readNetCDFproj4string
 #' @param file String of the NetCDF whose spatial/temporal coordinates are
@@ -28,11 +28,11 @@ readNetCDFpoints<-function(file) {
     NetCDF files can be managed with more recent and up to date R packages (ncmeta, stars...)"
   )
 
-  ncin = .openreadpointsNetCDF(file)
-  crs <- .readCRSNetCDF(ncin)
-  cc <- .readpointcoordinatesNetCDF(ncin, crs)
-  .closeNetCDF(file,ncin)
-  return(SpatialPoints(cc, crs))
+  # ncin = .openreadpointsNetCDF(file)
+  # crs <- .readCRSNetCDF(ncin)
+  # cc <- .readpointcoordinatesNetCDF(ncin, crs)
+  # .closeNetCDF(file,ncin)
+  # return(SpatialPoints(cc, crs))
 }
 #' @describeIn readNetCDFpoints `r lifecycle::badge("deprecated")`
 #' @export
@@ -44,10 +44,10 @@ readNetCDFdates<-function(file) {
     NetCDF files can be managed with more recent and up to date R packages (ncmeta, stars...)"
   )
 
-  ncin = .openreadpointsNetCDF(file)
-  dates <- .readdatesNetCDF(ncin)
-  .closeNetCDF(file,ncin)
-  return(dates)
+  # ncin = .openreadpointsNetCDF(file)
+  # dates <- .readdatesNetCDF(ncin)
+  # .closeNetCDF(file,ncin)
+  # return(dates)
 }
 #' @describeIn readNetCDFpoints `r lifecycle::badge("deprecated")`
 #' @export
@@ -59,10 +59,10 @@ readNetCDFgridtopology<-function(file) {
     NetCDF files can be managed with more recent and up to date R packages (ncmeta, stars...)"
   )
 
-  ncin = .openreadpointsNetCDF(file)
-  gt <- .readgridtopologyNetCDF(ncin)
-  .closeNetCDF(file,ncin)
-  return(gt)
+  # ncin = .openreadpointsNetCDF(file)
+  # gt <- .readgridtopologyNetCDF(ncin)
+  # .closeNetCDF(file,ncin)
+  # return(gt)
 }
 #' @describeIn readNetCDFpoints `r lifecycle::badge("deprecated")`
 #' @export
@@ -74,8 +74,8 @@ readNetCDFproj4string<-function(file) {
     NetCDF files can be managed with more recent and up to date R packages (ncmeta, stars...)"
   )
 
-  ncin = .openreadpointsNetCDF(file)
-  crs <- .readCRSNetCDF(ncin)
-  .closeNetCDF(file,ncin)
-  return(crs)
+  # ncin = .openreadpointsNetCDF(file)
+  # crs <- .readCRSNetCDF(ncin)
+  # .closeNetCDF(file,ncin)
+  # return(crs)
 }

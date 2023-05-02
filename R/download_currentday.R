@@ -158,10 +158,10 @@ downloadAEMETcurrentday <- function(api, daily = TRUE, verbose=TRUE){
     details = "Weather download functions are now provided by `meteospain` package"
   )
 
-  if(verbose) cat("Downloading hourly data from all available stations")
-  api_options <- meteospain::aemet_options(resolution = 'current_day', api_key = api)
-  data_ms <- meteospain::get_meteo_from("aemet", api_options)
-  return(.reshapemeteospain_current(data_ms, daily = daily, service = "aemet", verbose = verbose))
+  # if(verbose) cat("Downloading hourly data from all available stations")
+  # api_options <- meteospain::aemet_options(resolution = 'current_day', api_key = api)
+  # data_ms <- meteospain::get_meteo_from("aemet", api_options)
+  # return(.reshapemeteospain_current(data_ms, daily = daily, service = "aemet", verbose = verbose))
 }
 
 
@@ -241,11 +241,11 @@ downloadSMCcurrentday <- function(api, daily=TRUE, station_id=NULL,
     when = "2.0.0", what = "downloadSMCcurrentday()", with = "meteospain::get_meteo_from()",
     details = "Weather download functions are now provided by `meteospain` package"
   )
-  api_options <- meteospain::meteocat_options(resolution = 'hourly', api_key = api,
-                                  start_date = date, stations = station_id)
-  if(verbose)cat("Downloading hourly data from all available stations\n")
-  data_ms <- meteospain::get_meteo_from("meteocat", api_options)
-  return(.reshapemeteospain_current(data_ms, daily = daily,  service = "meteocat",verbose = verbose))
+  # api_options <- meteospain::meteocat_options(resolution = 'hourly', api_key = api,
+  #                                 start_date = date, stations = station_id)
+  # if(verbose)cat("Downloading hourly data from all available stations\n")
+  # data_ms <- meteospain::get_meteo_from("meteocat", api_options)
+  # return(.reshapemeteospain_current(data_ms, daily = daily,  service = "meteocat",verbose = verbose))
 }
 
 
@@ -300,10 +300,10 @@ downloadMGcurrentday <- function(station_id=NULL, daily = TRUE, verbose = TRUE) 
     details = "Weather download functions are now provided by `meteospain` package"
   )
 
-  if(verbose) cat("Downloading hourly data from all available stations")
-  api_options <- meteospain::meteogalicia_options(resolution = 'current_day', stations = station_id)
-  data_ms <- meteospain::get_meteo_from("meteogalicia", api_options)
-  return(.reshapemeteospain_current(data_ms, daily = daily,  service = "meteogalicia", verbose = verbose))
+  # if(verbose) cat("Downloading hourly data from all available stations")
+  # api_options <- meteospain::meteogalicia_options(resolution = 'current_day', stations = station_id)
+  # data_ms <- meteospain::get_meteo_from("meteogalicia", api_options)
+  # return(.reshapemeteospain_current(data_ms, daily = daily,  service = "meteogalicia", verbose = verbose))
 }
 
 #### Meteoclimatic
@@ -354,12 +354,12 @@ downloadMETEOCLIMATICcurrentday <- function(station_id = "ESCAT") {
     when = "2.0.0", what = "downloadMETEOCLIMATICcurrentday()", with = "meteospain::get_meteo_from()",
     details = "Weather download functions are now provided by `meteospain` package"
   )
-  api_options <- meteospain::meteoclimatic_options(stations = station_id, resolution = "current_day")
-  data_ms <- meteospain::get_meteo_from("meteoclimatic", api_options)
-  data_sp <- as(data_ms, "Spatial")
-  data_sp@data <- data_sp@data[,c("station_id", "station_name", "min_temperature", "max_temperature", "min_relative_humidity",
-                                  "max_relative_humidity", "precipitation")]
-  names(data_sp@data)<-c("ID", "name", "MinimumTemperature", "MaximumTemperature", "MinimumRelativeHumidity",
-                         "MaximumRelativeHumidity", "Precipitation")
-  return(data_sp)
+  # api_options <- meteospain::meteoclimatic_options(stations = station_id, resolution = "current_day")
+  # data_ms <- meteospain::get_meteo_from("meteoclimatic", api_options)
+  # data_sp <- as(data_ms, "Spatial")
+  # data_sp@data <- data_sp@data[,c("station_id", "station_name", "min_temperature", "max_temperature", "min_relative_humidity",
+  #                                 "max_relative_humidity", "precipitation")]
+  # names(data_sp@data)<-c("ID", "name", "MinimumTemperature", "MaximumTemperature", "MinimumRelativeHumidity",
+  #                        "MaximumRelativeHumidity", "Precipitation")
+  # return(data_sp)
 }

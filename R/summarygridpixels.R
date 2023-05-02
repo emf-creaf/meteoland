@@ -34,7 +34,7 @@
     nt <- length(gdates)
     crs = .readCRSNetCDF(ncin)
     points = SpatialPoints(coordinates(gt), proj4string = crs)
-    npoints = nx*ny  
+    npoints = nx*ny
     cat(paste("  Summarizing ", var, " in ", npoints," grid pixels...\n", sep=""))
     dfvec = vector("list",npoints)
     cnt = 1
@@ -55,7 +55,7 @@
         dfvec[[cnt]] = .summaryvarpoint(vals, fun = fun, freq=freq, dates = dates, months = months,...)
         cnt = cnt+1
       }
-    }  
+    }
     cat("\n")
     .closeNetCDF(file, ncin)
     if(pixels) {
@@ -65,7 +65,7 @@
       dfvec = dfvec[sel]
       npoints = length(points)
     }
-  } 
+  }
   noutvars = length(dfvec[[1]])
   dfout = data.frame(matrix(NA,nrow=npoints, ncol=noutvars))
   outvarnames = names(dfvec[[1]])
@@ -76,7 +76,7 @@
     setTxtProgressBar(pb, i)
     dfout[i,] = as.numeric(dfvec[[i]])
   }
-  
+
   if(!pixels) {
     return(SpatialGridDataFrame(gt,dfout, proj4string=crs))
   } else {
@@ -86,28 +86,28 @@
 #' @describeIn summarypoints `r lifecycle::badge("deprecated")`
 #' @export
 summarypixels<-function(pixels, var, fun=mean, freq=NULL, dates = NULL, months = NULL, ...) {
-  
+
   # deprecation notice
   lifecycle::deprecate_stop(
     when = "2.0.0", what = "summarypixels()", with = "summarise_interpolated_data()",
     details = "Spatial_*_Meteorology classes are soft deprecated.
     Interpolation results are now sf or stars objects and can be summarised with summarise_interpolated_data()"
   )
-  
-  if(!inherits(pixels,"SpatialPixelsMeteorology") && !inherits(pixels,"character")) stop("'pixels' has to be of class 'SpatialPixelsMeteorology' or a 'character'.")
-  return(.summarygridpixels(pixels, var=var, fun=fun, freq=freq, dates=dates, months=months, pixels = TRUE, ...))
+
+  # if(!inherits(pixels,"SpatialPixelsMeteorology") && !inherits(pixels,"character")) stop("'pixels' has to be of class 'SpatialPixelsMeteorology' or a 'character'.")
+  # return(.summarygridpixels(pixels, var=var, fun=fun, freq=freq, dates=dates, months=months, pixels = TRUE, ...))
 }
 #' @describeIn summarypoints `r lifecycle::badge("deprecated")`
 #' @export
 summarygrid<-function(grid, var, fun=mean, freq=NULL, dates = NULL, months = NULL, ...) {
-  
+
   # deprecation notice
   lifecycle::deprecate_stop(
     when = "2.0.0", what = "summarygrid()", with = "summarise_interpolated_data()",
     details = "Spatial_*_Meteorology classes are soft deprecated.
     Interpolation results are now sf or stars objects and can be summarised with summarise_interpolated_data()"
   )
-  
-  if(!inherits(grid,"SpatialGridMeteorology") && !inherits(grid,"character")) stop("'grid' has to be of class 'SpatialPixelsMeteorology' or a 'character'.")
-  return(.summarygridpixels(grid, var=var, fun=fun, freq=freq, dates=dates, months=months, pixels = FALSE, ...))
+
+  # if(!inherits(grid,"SpatialGridMeteorology") && !inherits(grid,"character")) stop("'grid' has to be of class 'SpatialPixelsMeteorology' or a 'character'.")
+  # return(.summarygridpixels(grid, var=var, fun=fun, freq=freq, dates=dates, months=months, pixels = FALSE, ...))
 }

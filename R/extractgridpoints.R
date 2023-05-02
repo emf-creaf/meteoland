@@ -27,24 +27,24 @@ extractgridindex<-function(grid, index) {
     Extraction of indexes is not needed as the meteo objects are now sf objects"
   )
 
-  if(!inherits(grid,"SpatialGridMeteorology") && !inherits(grid,"SpatialPixelsMeteorology") && !inherits(grid,"character"))
-    stop("'grid' has to be of class 'SpatialGridMeteorology', 'SpatialPixelsMeteorology' or 'character'.")
-  if(inherits(grid,"SpatialGridMeteorology") || inherits(grid,"SpatialPixelsMeteorology")) {
-    return(.extractSGMSPMindexdata(grid, index))
-  } else {
-    ncin = .openreadgridNetCDF(grid, verbose=FALSE)
-    gt = .readgridtopologyNetCDF(ncin)
-    gdates = .readdatesNetCDF(ncin)
-    ny = gt@cells.dim[2]
-    nt = length(gdates)
-    cv = coordinatevalues(gt)
-    cci = coordinates(gt)[index,]
-    i = which(cv[[1]]==cci[1])
-    j = which(cv[[2]]==cci[2])
-    df = .readgriddatapixel(ncin, ny, nt, i,j)
-    .closeNetCDF(grid, ncin, verbose=FALSE)
-    return(df)
-  }
+  # if(!inherits(grid,"SpatialGridMeteorology") && !inherits(grid,"SpatialPixelsMeteorology") && !inherits(grid,"character"))
+  #   stop("'grid' has to be of class 'SpatialGridMeteorology', 'SpatialPixelsMeteorology' or 'character'.")
+  # if(inherits(grid,"SpatialGridMeteorology") || inherits(grid,"SpatialPixelsMeteorology")) {
+  #   return(.extractSGMSPMindexdata(grid, index))
+  # } else {
+  #   ncin = .openreadgridNetCDF(grid, verbose=FALSE)
+  #   gt = .readgridtopologyNetCDF(ncin)
+  #   gdates = .readdatesNetCDF(ncin)
+  #   ny = gt@cells.dim[2]
+  #   nt = length(gdates)
+  #   cv = coordinatevalues(gt)
+  #   cci = coordinates(gt)[index,]
+  #   i = which(cv[[1]]==cci[1])
+  #   j = which(cv[[2]]==cci[2])
+  #   df = .readgriddatapixel(ncin, ny, nt, i,j)
+  #   .closeNetCDF(grid, ncin, verbose=FALSE)
+  #   return(df)
+  # }
 }
 #' @describeIn extractdates `r lifecycle::badge("deprecated")`
 #' @export
@@ -54,54 +54,54 @@ extractgridpoints<-function(grid, points, verbose = FALSE) {
     details = "Spatial_*_Meteorology classes are soft deprecated.
     Extraction of grid points is not needed as the meteo objects are now sf objects"
   )
-  if(!inherits(points,"SpatialPoints")) stop("'points' has to be of class 'SpatialPoints'.")
-  if(!inherits(grid,"SpatialGridMeteorology") && !inherits(grid,"SpatialPixelsMeteorology") && !inherits(grid,"character"))
-    stop("'grid' has to be of class 'SpatialGridMeteorology', 'SpatialPixelsMeteorology' or 'character'.")
-  points = as(points,"SpatialPoints")
-
-
-  if(inherits(grid,"SpatialGridMeteorology") || inherits(grid,"SpatialPixelsMeteorology")) {
-    gdates = grid@dates
-    gt =  getGridTopology(grid)
-    proj4string = grid@proj4string
-  } else {
-    ncin = .openreadgridNetCDF(grid, verbose=FALSE)
-    gdates = .readdatesNetCDF(ncin)
-    gt = .readgridtopologyNetCDF(ncin)
-    proj4string = .readCRSNetCDF(ncin)
-  }
-
-  indices = getGridIndex(spTransform(points, proj4string)@coords, gt, all.inside = FALSE)
-  if(inherits(grid,"SpatialPixelsMeteorology")) {
-    indices[!(indices %in% grid@grid.index)] = NA
-  }
-  sel = !is.na(indices)
-  if(sum(sel)==0) stop("All points are outside the grid cells with data.")
-  else if(sum(sel)<length(sel)) if(verbose) cat(paste0(length(sel)- sum(sel)," point(s) fall(s) into grid cells that lack meteorology data and will be discarded.\n"))
-  indices = indices[sel]
-  points = points[sel]
-  npoints = length(points)
-  res = vector("list",npoints)
-  nt = length(gdates)
-  ny = gt@cells.dim[2]
-
-  cv = coordinatevalues(gt)
-  ccind = coordinates(gt)[indices,, drop=FALSE]
-
-  if(verbose) pb = txtProgressBar(0, npoints, 0, style = 3)
-  for(i in 1:npoints) {
-    if(verbose) setTxtProgressBar(pb, i)
-    if(inherits(grid,"SpatialGridMeteorology") || inherits(grid,"SpatialPixelsMeteorology")) {
-      res[[i]] = .extractSGMSPMindexdata(grid, indices[i])
-    } else {
-      j = which(cv[[1]]==ccind[i,1])
-      k = which(cv[[2]]==ccind[i,2])
-      res[[i]] = .readgriddatapixel(ncin, ny, nt, j,k)
-    }
-  }
-  if(!inherits(grid,"SpatialGridMeteorology") && !inherits(grid,"SpatialPixelsMeteorology")) {
-    .closeNetCDF(grid, ncin, verbose=FALSE)
-  }
-
-  return(SpatialPointsMeteorology(points, res, gdates))
+  # if(!inherits(points,"SpatialPoints")) stop("'points' has to be of class 'SpatialPoints'.")
+  # if(!inherits(grid,"SpatialGridMeteorology") && !inherits(grid,"SpatialPixelsMeteorology") && !inherits(grid,"character"))
+  #   stop("'grid' has to be of class 'SpatialGridMeteorology', 'SpatialPixelsMeteorology' or 'character'.")
+  # points = as(points,"SpatialPoints")
+  #
+  #
+  # if(inherits(grid,"SpatialGridMeteorology") || inherits(grid,"SpatialPixelsMeteorology")) {
+  #   gdates = grid@dates
+  #   gt =  getGridTopology(grid)
+  #   proj4string = grid@proj4string
+  # } else {
+  #   ncin = .openreadgridNetCDF(grid, verbose=FALSE)
+  #   gdates = .readdatesNetCDF(ncin)
+  #   gt = .readgridtopologyNetCDF(ncin)
+  #   proj4string = .readCRSNetCDF(ncin)
+  # }
+  #
+  # indices = getGridIndex(spTransform(points, proj4string)@coords, gt, all.inside = FALSE)
+  # if(inherits(grid,"SpatialPixelsMeteorology")) {
+  #   indices[!(indices %in% grid@grid.index)] = NA
+  # }
+  # sel = !is.na(indices)
+  # if(sum(sel)==0) stop("All points are outside the grid cells with data.")
+  # else if(sum(sel)<length(sel)) if(verbose) cat(paste0(length(sel)- sum(sel)," point(s) fall(s) into grid cells that lack meteorology data and will be discarded.\n"))
+  # indices = indices[sel]
+  # points = points[sel]
+  # npoints = length(points)
+  # res = vector("list",npoints)
+  # nt = length(gdates)
+  # ny = gt@cells.dim[2]
+  #
+  # cv = coordinatevalues(gt)
+  # ccind = coordinates(gt)[indices,, drop=FALSE]
+  #
+  # if(verbose) pb = txtProgressBar(0, npoints, 0, style = 3)
+  # for(i in 1:npoints) {
+  #   if(verbose) setTxtProgressBar(pb, i)
+  #   if(inherits(grid,"SpatialGridMeteorology") || inherits(grid,"SpatialPixelsMeteorology")) {
+  #     res[[i]] = .extractSGMSPMindexdata(grid, indices[i])
+  #   } else {
+  #     j = which(cv[[1]]==ccind[i,1])
+  #     k = which(cv[[2]]==ccind[i,2])
+  #     res[[i]] = .readgriddatapixel(ncin, ny, nt, j,k)
+  #   }
+  # }
+  # if(!inherits(grid,"SpatialGridMeteorology") && !inherits(grid,"SpatialPixelsMeteorology")) {
+  #   .closeNetCDF(grid, ncin, verbose=FALSE)
+  # }
+  #
+  # return(SpatialPointsMeteorology(points, res, gdates))
 }

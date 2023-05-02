@@ -146,14 +146,14 @@
 
 
 #' Interpolate daily meteorology over a landscape
-#' 
+#'
 #' @description
 #' `r lifecycle::badge("deprecated")`
-#' 
+#'
 #' Functions to interpolate meteorological data for spatial locations (at
 #' points, grid pixels or full grids) using an object of class
 #' \code{\link{MeteorologyInterpolationData-class}}.
-#' 
+#'
 #' @details
 #' CRS projection needs to be defined for both \code{object} and
 #' \code{points}/\code{pixels}/\code{grid}. If CRS projection is different
@@ -161,7 +161,7 @@
 #' function transforms the coordinates of
 #' \code{points}/\code{pixels}/\code{grid} to adapt them to the CRS of
 #' \code{object}.
-#' 
+#'
 #' @aliases interpolationpoints interpolationpixels interpolationgrid
 #' @param object An object of class
 #' \code{\link{MeteorologyInterpolationData-class}}.
@@ -197,12 +197,12 @@
 #' \code{export = TRUE} files and written in the disk. For text/rds format the
 #' function returns an object of class
 #' \code{\link{SpatialPointsDataFrame-class}} containing point meta data.
-#' 
+#'
 #' If \code{export = FALSE}, function \code{interpolationpixels} returns an
 #' object of \code{\link{SpatialPixelsMeteorology-class}}, or an object of
 #' \code{\link{SpatialPixelsDataFrame-class}} if a single date is interpolated.
 #' If \code{export = TRUE}, the function writes the results in a NetCDF.
-#' 
+#'
 #' If \code{export = FALSE}, function \code{interpolationgrid} returns an
 #' object of \code{\link{SpatialGridMeteorology-class}}, or an object of
 #' \code{\link{SpatialGridDataFrame-class}} if a single date is interpolated.
@@ -215,52 +215,52 @@
 #' @references Thornton, P.E., Running, S.W., White, M. A., 1997. Generating
 #' surfaces of daily meteorological variables over large regions of complex
 #' terrain. J. Hydrol. 190, 214–251. doi:10.1016/S0022-1694(96)03128-9.
-#' 
+#'
 #' De Caceres M, Martin-StPaul N, Turco M, Cabon A, Granda V (2018) Estimating
 #' daily meteorological data and downscaling climate models over landscapes.
 #' Environmental Modelling and Software 108: 186-196.
 #' @examples
-#' 
+#'
 #' \donttest{
 #' data(examplegridtopography)
 #' data(exampleinterpolationdata)
-#' 
-#' ####### INTERPOLATION on particular POINTS 
-#' 
+#'
+#' ####### INTERPOLATION on particular POINTS
+#'
 #' #Creates spatial topography points from the grid
 #' p = 1:2
 #' spt = as(examplegridtopography, "SpatialPointsTopography")[p]
-#' 
+#'
 #' #Interpolation of two points for the whole time period (2000-2003)
 #' mp = interpolationpoints(exampleinterpolationdata, spt)
-#' 
+#'
 #' #Plot interpolated meteorological series
 #' meteoplot(mp,1, ylab="Mean temperature")
-#' 
-#' ####### INTERPOLATION on PIXELS 
+#'
+#' ####### INTERPOLATION on PIXELS
 #' # Creates spatial topography pixels as a subset of grid pixels
 #' # and select pixels at maximum distance of 2km from center
 #' spt = as(examplegridtopography,"SpatialPointsTopography")
 #' cc = spt@coords
 #' center = 5160
 #' d = sqrt((cc[,1]-cc[center,1])^2+(cc[,2]-cc[center,2])^2)
-#' spxt = as(spt[which(d<2000)], "SpatialPixelsTopography") 
-#' 
+#' spxt = as(spt[which(d<2000)], "SpatialPixelsTopography")
+#'
 #' # Interpolation of meteorology over pixels for two days
 #' ml = interpolationpixels(exampleinterpolationdata, spxt,
 #'                        as.Date(c("2001-02-03", "2001-06-03")))
-#'                        
+#'
 #' #Plot PET corresponding to 2001-06-03
 #' spplot(ml,2,"PET")
-#' 
-#' ####### INTERPOLATION over a complete GRID 
+#'
+#' ####### INTERPOLATION over a complete GRID
 #' #Interpolation of meteorology over a grid for two days
 #' ml = interpolationgrid(exampleinterpolationdata, examplegridtopography,
 #'                        as.Date(c("2001-02-03", "2001-06-03")))
 #' #Plot PET corresponding to 2001-06-03
 #' spplot(ml,2,"PET")
 #' }
-#' 
+#'
 #' @export
 interpolationpoints<-function(object, points, dates = NULL,
                               export=FALSE, exportDir = getwd(), exportFile = NULL,
@@ -275,90 +275,90 @@ interpolationpoints<-function(object, points, dates = NULL,
     Interpolation is performed with interpolate_data()"
   )
 
-  if(export) exportFormat = match.arg(exportFormat, c("meteoland/txt", "meteoland/rds", "castanea/txt", "castanea/rds", "netCDF"))
-
-  if(!inherits(object,"MeteorologyInterpolationData")) stop("'object' has to be of class 'MeteorologyInterpolationData'.")
-  if(!inherits(points,"SpatialPointsTopography")) stop("'points' has to be of class 'SpatialPointsTopography'.")
-  intpoints = as(points, "SpatialPoints")
-  if(!identicalCRS(intpoints,object)) {
-    warning("CRS projection of 'points' adapted to that of 'object'.")
-    intpoints = spTransform(intpoints, object@proj4string)
-  }
-  if(!is.null(dates)) {
-    if(!inherits(dates,"Date")) stop("'dates' has to be of class 'Date'.")
-    if(sum(as.character(dates) %in% as.character(object@dates))<length(dates))
-      stop("At least one of the dates is outside the time period for which interpolation is possible.")
-  }
-  cc = coordinates(intpoints) #
-  ids = row.names(cc)
-  npoints = nrow(cc)
-  if(is.null(ids) || length(ids)==0) {
-    ids = 1:npoints
-    rownames(points@coords) = ids
-  }
-  elevation = points@data$elevation
-  slope = points@data$slope
-  aspect = points@data$aspect
-  longlat = spTransform(points,CRS(SRS_string = "EPSG:4326"))
-  latitude = longlat@coords[,2]
-  bbox = object@bbox
-
-
-  if(exportFormat %in% c("meteoland/txt","castanea/txt")) formatType = "txt"
-  else if (exportFormat %in% c("meteoland/rds","castanea/rds")) formatType = "rds"
-  else if (exportFormat %in% c("netCDF")) formatType = "netCDF"
-
-  # Define vector of data frames
-
-  if(export & exportFormat %in% c("meteoland/txt","castanea/txt", "meteoland/rds","castanea/rds")) {
-    dfout = data.frame(dir = rep(exportDir, npoints), filename=paste0(ids,".", formatType))
-    dfout$dir = as.character(dfout$dir)
-    dfout$filename = as.character(dfout$filename)
-    dfout$format = exportFormat
-    rownames(dfout) = ids
-    spdf = SpatialPointsDataFrame(as(points,"SpatialPoints"), dfout)
-    colnames(spdf@coords)<-c("x","y")
-  }
-  else if(export & exportFormat=="netCDF") {
-    if(is.null(exportFile)) stop("File 'exportFile' cannot be null when exporting to netCDF!")
-    ncfile = exportFile
-    if(is.null(dates)) dates = object@dates
-    nc <-.openwritepointNetCDF(coordinates(points), proj4string(points), dates = dates,  vars = NULL,
-                               file = ncfile, overwrite = TRUE, verbose = verbose)
-  }
-  else {
-    dfvec = vector("list",npoints)
-  }
-  for(i in 1:npoints) {
-    if(verbose) cat(paste("Processing point '",ids[i],"' (",i,"/",npoints,") -",sep=""))
-    insidebox = (cc[i,1]>=bbox[1,1] && cc[i,1]<=bbox[1,2]) && (cc[i,2]>=bbox[2,1] && cc[i,2]<=bbox[2,2])
-    if(!insidebox) warning(paste("Point '",ids[i],"' outside the boundary box of interpolation data object.",sep=""))
-    df = .interpolatePointSeries(object, latitude[i],cc[i,1], cc[i,2], elevation[i], slope[i], aspect[i], dates)
-    if(is.null(dates)) dates = as.Date(rownames(df))
-    if(!export) {
-      dfvec[[i]] =df
-      if(verbose) cat(paste(" done"))
-    }
-    else {
-      if(exportFormat!="netCDF") {
-        if(dfout$dir[i]!="") f = paste(dfout$dir[i],dfout$filename[i], sep="/")
-        else f = dfout$filename[i]
-        writemeteorologypoint(df, f, exportFormat)
-        if(verbose) cat(paste(" written to ",f, sep=""))
-        if(exportDir!="") f = paste(exportDir,metadataFile, sep="/")
-        else f = metadataFile
-        write.table(as.data.frame(spdf),file= f,sep="\t", quote=FALSE)
-      } else {
-        if(verbose) cat(paste0(" written to netCDF"))
-        .writemeteorologypointNetCDF(df,nc,i)
-      }
-    }
-    if(verbose) cat(".\n")
-  }
-  if(!export) return(SpatialPointsMeteorology(points, dfvec, dates))
-  if(exportFormat!="netCDF") {
-    invisible(spdf)
-  } else {
-    .closeNetCDF(ncfile, nc)
-  }
+  # if(export) exportFormat = match.arg(exportFormat, c("meteoland/txt", "meteoland/rds", "castanea/txt", "castanea/rds", "netCDF"))
+  #
+  # if(!inherits(object,"MeteorologyInterpolationData")) stop("'object' has to be of class 'MeteorologyInterpolationData'.")
+  # if(!inherits(points,"SpatialPointsTopography")) stop("'points' has to be of class 'SpatialPointsTopography'.")
+  # intpoints = as(points, "SpatialPoints")
+  # if(!identicalCRS(intpoints,object)) {
+  #   warning("CRS projection of 'points' adapted to that of 'object'.")
+  #   intpoints = spTransform(intpoints, object@proj4string)
+  # }
+  # if(!is.null(dates)) {
+  #   if(!inherits(dates,"Date")) stop("'dates' has to be of class 'Date'.")
+  #   if(sum(as.character(dates) %in% as.character(object@dates))<length(dates))
+  #     stop("At least one of the dates is outside the time period for which interpolation is possible.")
+  # }
+  # cc = coordinates(intpoints) #
+  # ids = row.names(cc)
+  # npoints = nrow(cc)
+  # if(is.null(ids) || length(ids)==0) {
+  #   ids = 1:npoints
+  #   rownames(points@coords) = ids
+  # }
+  # elevation = points@data$elevation
+  # slope = points@data$slope
+  # aspect = points@data$aspect
+  # longlat = spTransform(points,CRS(SRS_string = "EPSG:4326"))
+  # latitude = longlat@coords[,2]
+  # bbox = object@bbox
+  #
+  #
+  # if(exportFormat %in% c("meteoland/txt","castanea/txt")) formatType = "txt"
+  # else if (exportFormat %in% c("meteoland/rds","castanea/rds")) formatType = "rds"
+  # else if (exportFormat %in% c("netCDF")) formatType = "netCDF"
+  #
+  # # Define vector of data frames
+  #
+  # if(export & exportFormat %in% c("meteoland/txt","castanea/txt", "meteoland/rds","castanea/rds")) {
+  #   dfout = data.frame(dir = rep(exportDir, npoints), filename=paste0(ids,".", formatType))
+  #   dfout$dir = as.character(dfout$dir)
+  #   dfout$filename = as.character(dfout$filename)
+  #   dfout$format = exportFormat
+  #   rownames(dfout) = ids
+  #   spdf = SpatialPointsDataFrame(as(points,"SpatialPoints"), dfout)
+  #   colnames(spdf@coords)<-c("x","y")
+  # }
+  # else if(export & exportFormat=="netCDF") {
+  #   if(is.null(exportFile)) stop("File 'exportFile' cannot be null when exporting to netCDF!")
+  #   ncfile = exportFile
+  #   if(is.null(dates)) dates = object@dates
+  #   nc <-.openwritepointNetCDF(coordinates(points), proj4string(points), dates = dates,  vars = NULL,
+  #                              file = ncfile, overwrite = TRUE, verbose = verbose)
+  # }
+  # else {
+  #   dfvec = vector("list",npoints)
+  # }
+  # for(i in 1:npoints) {
+  #   if(verbose) cat(paste("Processing point '",ids[i],"' (",i,"/",npoints,") -",sep=""))
+  #   insidebox = (cc[i,1]>=bbox[1,1] && cc[i,1]<=bbox[1,2]) && (cc[i,2]>=bbox[2,1] && cc[i,2]<=bbox[2,2])
+  #   if(!insidebox) warning(paste("Point '",ids[i],"' outside the boundary box of interpolation data object.",sep=""))
+  #   df = .interpolatePointSeries(object, latitude[i],cc[i,1], cc[i,2], elevation[i], slope[i], aspect[i], dates)
+  #   if(is.null(dates)) dates = as.Date(rownames(df))
+  #   if(!export) {
+  #     dfvec[[i]] =df
+  #     if(verbose) cat(paste(" done"))
+  #   }
+  #   else {
+  #     if(exportFormat!="netCDF") {
+  #       if(dfout$dir[i]!="") f = paste(dfout$dir[i],dfout$filename[i], sep="/")
+  #       else f = dfout$filename[i]
+  #       writemeteorologypoint(df, f, exportFormat)
+  #       if(verbose) cat(paste(" written to ",f, sep=""))
+  #       if(exportDir!="") f = paste(exportDir,metadataFile, sep="/")
+  #       else f = metadataFile
+  #       write.table(as.data.frame(spdf),file= f,sep="\t", quote=FALSE)
+  #     } else {
+  #       if(verbose) cat(paste0(" written to netCDF"))
+  #       .writemeteorologypointNetCDF(df,nc,i)
+  #     }
+  #   }
+  #   if(verbose) cat(".\n")
+  # }
+  # if(!export) return(SpatialPointsMeteorology(points, dfvec, dates))
+  # if(exportFormat!="netCDF") {
+  #   invisible(spdf)
+  # } else {
+  #   .closeNetCDF(ncfile, nc)
+  # }
 }

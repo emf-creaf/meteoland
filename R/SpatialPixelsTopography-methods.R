@@ -1,13 +1,13 @@
 #' Creates a 'SpatialPixelsTopography'
-#' 
+#'
 #' @description
 #' `r lifecycle::badge("deprecated")`
-#' 
+#'
 #' Function \code{SpatialPixelsTopography} creates an object of class
 #' \code{\link{SpatialPixelsTopography-class}} containing topographic variables
 #' for a set of points.
-#' 
-#' 
+#'
+#'
 #' @param points An object of class \code{\link{SpatialPoints-class}} or a
 #' numeric matrix of coordinates.
 #' @param elevation Elevation values (in m) of the points.
@@ -28,9 +28,9 @@
 #' @author Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF
 #' @seealso \code{\link{SpatialPixelsTopography-class}}
 #' @examples
-#' 
+#'
 #' data(examplegridtopography)
-#' 
+#'
 #' #Creates spatial topography pixels as a subset of points in the grid
 #' spt = as(examplegridtopography,"SpatialPointsTopography")
 #' cc = spt@coords
@@ -40,46 +40,46 @@
 #' spxt = SpatialPixelsTopography(spt[p], spt$elevation[p],
 #'                               spt$slope[p],
 #'                               spt$aspect[p])
-#' 
-#' #Alternatively, use coercing and subsetting (drop = TRUE causes grid to be recalculated) 
-#' spxt = as(examplegridtopography, "SpatialPixelsTopography")[p, drop=TRUE]          
-#'                               
+#'
+#' #Alternatively, use coercing and subsetting (drop = TRUE causes grid to be recalculated)
+#' spxt = as(examplegridtopography, "SpatialPixelsTopography")[p, drop=TRUE]
+#'
 #' #Display data
 #' spplot(spxt, variable="elevation", scales=list(draw=TRUE))
 #' spplot(spxt, variable="slope", scales=list(draw=TRUE))
 #' spplot(spxt, variable="aspect", scales=list(draw=TRUE))
-#' 
+#'
 #' @export
-SpatialPixelsTopography<-function(points, elevation, slope, aspect, tolerance = sqrt(.Machine$double.eps), 
+SpatialPixelsTopography<-function(points, elevation, slope, aspect, tolerance = sqrt(.Machine$double.eps),
                                   proj4string = CRS(as.character(NA)), round = NULL, grid = NULL) {
-  
+
   # deprecation notice
   lifecycle::deprecate_stop(
     when = "2.0.0", what = "SpatialPixelsTopography()", with = NULL,
     details = "Spatial_*_Topography classes are soft deprecated.
     User topography now can be provided as sf or stars objects"
   )
-  
-  if(!(inherits(points,"SpatialPoints")|| inherits(points,"matrix"))) stop("'points' has to be of class 'matrix' or 'SpatialPoints'.")
-  if(inherits(points,"SpatialPoints")) {
-    npoints = nrow(points@coords)
-  } else {
-    npoints = nrow(as.matrix(points))
-  }
-  if(length(elevation)!=npoints) stop("'elevation' has to be of length equal to the number of points")
-  if(length(slope)!=npoints) stop("'slope' has to be of length equal to the number of points")
-  if(length(aspect)!=npoints) stop("'aspect' has to be of length equal to the number of points")
-  data = data.frame(elevation = elevation, slope = slope, aspect = aspect)
-  spdf = SpatialPixelsDataFrame(points, data, tolerance, proj4string, round, grid)
-  lt = new("SpatialPixelsTopography",
-          coords = spdf@coords,
-          coords.nrs = spdf@coords.nrs,
-          bbox = spdf@bbox,
-          grid = spdf@grid,
-          grid.index = spdf@grid.index,
-          proj4string = spdf@proj4string,
-          data = spdf@data)
-  return(lt)
+
+  # if(!(inherits(points,"SpatialPoints")|| inherits(points,"matrix"))) stop("'points' has to be of class 'matrix' or 'SpatialPoints'.")
+  # if(inherits(points,"SpatialPoints")) {
+  #   npoints = nrow(points@coords)
+  # } else {
+  #   npoints = nrow(as.matrix(points))
+  # }
+  # if(length(elevation)!=npoints) stop("'elevation' has to be of length equal to the number of points")
+  # if(length(slope)!=npoints) stop("'slope' has to be of length equal to the number of points")
+  # if(length(aspect)!=npoints) stop("'aspect' has to be of length equal to the number of points")
+  # data = data.frame(elevation = elevation, slope = slope, aspect = aspect)
+  # spdf = SpatialPixelsDataFrame(points, data, tolerance, proj4string, round, grid)
+  # lt = new("SpatialPixelsTopography",
+  #         coords = spdf@coords,
+  #         coords.nrs = spdf@coords.nrs,
+  #         bbox = spdf@bbox,
+  #         grid = spdf@grid,
+  #         grid.index = spdf@grid.index,
+  #         proj4string = spdf@proj4string,
+  #         data = spdf@data)
+  # return(lt)
 }
 
 #' @export
@@ -126,7 +126,7 @@ setMethod("[", "SpatialPixelsTopography",
 )
 
 as.SpPixTop.SpPoiTop = function(from) {
-  
+
   sp <- as(from, "SpatialPoints")
   new("SpatialPointsTopography",
       coords = sp@coords,
@@ -136,14 +136,14 @@ as.SpPixTop.SpPoiTop = function(from) {
 }
 setAs("SpatialPixelsTopography", "SpatialPointsTopography", as.SpPixTop.SpPoiTop)
 
-as.SpPixTop.SpGrdTop = function(from) { 
+as.SpPixTop.SpGrdTop = function(from) {
   sgdf = as(from, "SpatialGridDataFrame")
   new("SpatialGridTopography",
       grid = sgdf@grid,
       bbox = sgdf@bbox,
       proj4string = sgdf@proj4string,
       data = sgdf@data)
-  
+
 }
 setAs("SpatialPixelsTopography", "SpatialGridTopography", as.SpPixTop.SpGrdTop)
 
@@ -175,7 +175,7 @@ print.SpatialPixelsTopography = function(x, ...) {
   cat("SpatialPoints:\n")
   print(coordinates(x))
   pst <- paste(strwrap(paste(
-    "Coordinate Reference System (CRS) arguments:", 
+    "Coordinate Reference System (CRS) arguments:",
     proj4string(x))), collapse="\n")
   cat(pst, "\n")
   if (length(x) > 0) {
@@ -188,5 +188,5 @@ print.SpatialPixelsTopography = function(x, ...) {
 }
 
 #' @export
-setMethod("show", "SpatialPixelsTopography", 
+setMethod("show", "SpatialPixelsTopography",
           function(object) print.SpatialPixelsTopography(object))

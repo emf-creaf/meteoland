@@ -2,12 +2,12 @@
 
 
 #' Reads gridded meteorology from the disk
-#' 
+#'
 #' @description
 #' `r lifecycle::badge("deprecated")`
-#' 
+#'
 #' Functions to read gridded meteorological data from the disk.
-#' 
+#'
 #' @details
 #' Function \code{readmeteorologygrid} reads one or several files containing
 #' the meteorology over a grid for a set of days. Function
@@ -16,19 +16,19 @@
 #' missing data. If more than one file is specified, the functions read all
 #' of them and then try to merge the data into a single meteorology object (see
 #' function \code{\link{mergegrids}}).
-#' 
+#'
 #' Function \code{readmeteorologygridpoints} is similar to the preceding ones,
 #' but is meant to extract specific grid pixels and return them as spatial
 #' points. If more than one file is specified, the function reads all of
 #' them and then tries to merge the data into a single meteorology object (see
 #' function \code{\link{mergepoints}}).
-#' 
+#'
 #' The functions are primarily meant to read NetCDF written by package
 #' meteoland, but also to import data written by other software. In this case,
 #' a mapping can be supplied to map variable names in the netCDF to variables
 #' used in meteoland. Rotated grids should not be read using functions
 #' \code{readmeteorologygrid} or \code{readmeteorologypixels}.
-#' 
+#'
 #' @aliases readmeteorologygrid readmeteorologypixels readmeteorologygridpoints
 #' @param files Character vector with the file names to be read.
 #' @param format Format of meteorological data. Currently, the only accepted
@@ -61,7 +61,7 @@
 #' @export
 readmeteorologygrid<-function(files, format = "netCDF", varmapping = NULL,
                               dates = NULL, bbox = NULL, offset = 0, verbose = FALSE) {
-  
+
   # deprecation notice
   lifecycle::deprecate_stop(
     when = "2.0.0", what = "readmeteorologygrid()", with = NULL,
@@ -69,23 +69,23 @@ readmeteorologygrid<-function(files, format = "netCDF", varmapping = NULL,
     Read of meteorology source data must be done with the corresponding package (sf, terra, stars...)
     and meteorology data converted to a sf points object"
   )
-  
-  nfiles = length(files)
-  l = vector("list", nfiles)
-  for(i in 1:nfiles) {
-    nc = .openreadgridNetCDF(files[i], verbose = verbose)
-    if(!is.null(dates)) {
-      if((!inherits(dates,"Date"))&&(!inherits(dates,"character"))) stop("'dates' must be a 'character' or 'Date'")
-      sgm = .readmeteorologygridNetCDF(nc, dates = as.Date(dates), varmapping = varmapping, bbox = bbox, offset = offset, verbose = verbose)
-    } else {
-      sgm = .readmeteorologygridNetCDF(nc, varmapping = varmapping, bbox = bbox, offset = offset, verbose = verbose)
-    }
-    .closeNetCDF(files[i],nc, verbose = verbose)
-    l[[i]] = sgm
-  }
-  if(nfiles==1) return(l[[1]])
-  if(verbose) cat("\nMerging gridded data...\n")
-  return(mergegrids(l, verbose = verbose))
+
+  # nfiles = length(files)
+  # l = vector("list", nfiles)
+  # for(i in 1:nfiles) {
+  #   nc = .openreadgridNetCDF(files[i], verbose = verbose)
+  #   if(!is.null(dates)) {
+  #     if((!inherits(dates,"Date"))&&(!inherits(dates,"character"))) stop("'dates' must be a 'character' or 'Date'")
+  #     sgm = .readmeteorologygridNetCDF(nc, dates = as.Date(dates), varmapping = varmapping, bbox = bbox, offset = offset, verbose = verbose)
+  #   } else {
+  #     sgm = .readmeteorologygridNetCDF(nc, varmapping = varmapping, bbox = bbox, offset = offset, verbose = verbose)
+  #   }
+  #   .closeNetCDF(files[i],nc, verbose = verbose)
+  #   l[[i]] = sgm
+  # }
+  # if(nfiles==1) return(l[[1]])
+  # if(verbose) cat("\nMerging gridded data...\n")
+  # return(mergegrids(l, verbose = verbose))
 }
 # Reads one or many gridded data, subsets pixels with non missing data, and merges the result into a SpatialPixelsMeteorology
 #' @describeIn readmeteorologygrid `r lifecycle::badge("deprecated")`
@@ -99,29 +99,29 @@ readmeteorologypixels<-function(files, format = "netCDF", varmapping = NULL,
     Read of meteorology source data must be done with the corresponding package (sf, terra, stars...)
     and meteorology data converted to a sf points object"
   )
-  
-  nfiles = length(files)
-  l = vector("list", nfiles)
-  for(i in 1:nfiles) {
-    nc = .openreadgridNetCDF(files[i], verbose = verbose)
-    if(!is.null(dates)) {
-      if((!inherits(dates,"Date"))&&(!inherits(dates,"character"))) stop("'dates' must be a 'character' or 'Date'")
-      spm = .readmeteorologygridNetCDF(nc, dates = as.Date(dates), pixels=T, varmapping = varmapping, bbox = bbox, offset = offset, verbose = verbose)
-    } else {
-      spm = .readmeteorologygridNetCDF(nc, pixels=T, varmapping = varmapping, bbox = bbox, offset = offset, verbose = verbose)
-    }
-    .closeNetCDF(files[i],nc, verbose = verbose)
-    l[[i]] = spm
-  }
-  if(nfiles==1) return(l[[1]])
-  if(verbose) cat("\nMerging gridded data...\n")
-  return(mergegrids(l, verbose = verbose))
+
+  # nfiles = length(files)
+  # l = vector("list", nfiles)
+  # for(i in 1:nfiles) {
+  #   nc = .openreadgridNetCDF(files[i], verbose = verbose)
+  #   if(!is.null(dates)) {
+  #     if((!inherits(dates,"Date"))&&(!inherits(dates,"character"))) stop("'dates' must be a 'character' or 'Date'")
+  #     spm = .readmeteorologygridNetCDF(nc, dates = as.Date(dates), pixels=T, varmapping = varmapping, bbox = bbox, offset = offset, verbose = verbose)
+  #   } else {
+  #     spm = .readmeteorologygridNetCDF(nc, pixels=T, varmapping = varmapping, bbox = bbox, offset = offset, verbose = verbose)
+  #   }
+  #   .closeNetCDF(files[i],nc, verbose = verbose)
+  #   l[[i]] = spm
+  # }
+  # if(nfiles==1) return(l[[1]])
+  # if(verbose) cat("\nMerging gridded data...\n")
+  # return(mergegrids(l, verbose = verbose))
 }
 # Reads a subset of grid cells from one or many files and merges the result as a SpatialPointsMeteorology
 #' @describeIn readmeteorologygrid `r lifecycle::badge("deprecated")`
 #' @export
 readmeteorologygridpoints<-function(files, format = "netCDF", varmapping = NULL,
-                                    dates = NULL, bbox = NULL, offset = 0, 
+                                    dates = NULL, bbox = NULL, offset = 0,
                                     relativehumidity = FALSE, verbose = FALSE) {
   # deprecation notice
   lifecycle::deprecate_stop(
@@ -130,40 +130,40 @@ readmeteorologygridpoints<-function(files, format = "netCDF", varmapping = NULL,
     Read of meteorology source data must be done with the corresponding package (sf, terra, stars...)
     and meteorology data converted to a sf points object"
   )
-  
-  nfiles = length(files)
-  l = vector("list", nfiles)
-  for(i in 1:nfiles) {
-    nc = .openreadgridNetCDF(files[i], verbose = verbose)
-    if(!is.null(dates)) {
-      if((!inherits(dates,"Date"))&&(!inherits(dates,"character"))) stop("'dates' must be a 'character' or 'Date'")
-      sgm = .readmeteorologygridpointsNetCDF(nc, dates = as.Date(dates), varmapping = varmapping, bbox = bbox, offset = offset, verbose = verbose)
-    } else {
-      sgm = .readmeteorologygridpointsNetCDF(nc, varmapping = varmapping, bbox = bbox, offset = offset, verbose = verbose)
-    }
-    .closeNetCDF(files[i],nc, verbose = verbose)
-    l[[i]] = sgm
-  }
-  if(nfiles==1) return(l[[1]])
-  if(verbose) cat("\nMerging point data...\n")
-  mp = mergepoints(l, verbose = verbose)
-  if(relativehumidity) {
-    if(verbose) cat("\nCompleting relative humidity...\n")
-    for(i in 1:length(mp@data)) {
-      df = mp@data[[i]]
-      if(!("MeanRelativeHumidity" %in% names(df)) && ("SpecificHumidity" %in% names(df)) && ("MeanTemperature" %in% names(df))) {
-        df$MeanRelativeHumidity = humidity_specific2relative(df$MeanTemperature, df$SpecificHumidity)
-      }
-      if(!("MinRelativeHumidity" %in% names(df)) && ("SpecificHumidity" %in% names(df)) && ("MaxTemperature" %in% names(df))) {
-        df$MinRelativeHumidity = humidity_specific2relative(df$MaxTemperature, df$SpecificHumidity)
-      }
-      if(!("MaxRelativeHumidity" %in% names(df)) && ("SpecificHumidity" %in% names(df)) && ("MinTemperature" %in% names(df))) {
-        df$MaxRelativeHumidity = humidity_specific2relative(df$MinTemperature, df$SpecificHumidity)
-      }
-      mp@data[[i]] = df
-    }
-  }
-  return(mp)
+
+  # nfiles = length(files)
+  # l = vector("list", nfiles)
+  # for(i in 1:nfiles) {
+  #   nc = .openreadgridNetCDF(files[i], verbose = verbose)
+  #   if(!is.null(dates)) {
+  #     if((!inherits(dates,"Date"))&&(!inherits(dates,"character"))) stop("'dates' must be a 'character' or 'Date'")
+  #     sgm = .readmeteorologygridpointsNetCDF(nc, dates = as.Date(dates), varmapping = varmapping, bbox = bbox, offset = offset, verbose = verbose)
+  #   } else {
+  #     sgm = .readmeteorologygridpointsNetCDF(nc, varmapping = varmapping, bbox = bbox, offset = offset, verbose = verbose)
+  #   }
+  #   .closeNetCDF(files[i],nc, verbose = verbose)
+  #   l[[i]] = sgm
+  # }
+  # if(nfiles==1) return(l[[1]])
+  # if(verbose) cat("\nMerging point data...\n")
+  # mp = mergepoints(l, verbose = verbose)
+  # if(relativehumidity) {
+  #   if(verbose) cat("\nCompleting relative humidity...\n")
+  #   for(i in 1:length(mp@data)) {
+  #     df = mp@data[[i]]
+  #     if(!("MeanRelativeHumidity" %in% names(df)) && ("SpecificHumidity" %in% names(df)) && ("MeanTemperature" %in% names(df))) {
+  #       df$MeanRelativeHumidity = humidity_specific2relative(df$MeanTemperature, df$SpecificHumidity)
+  #     }
+  #     if(!("MinRelativeHumidity" %in% names(df)) && ("SpecificHumidity" %in% names(df)) && ("MaxTemperature" %in% names(df))) {
+  #       df$MinRelativeHumidity = humidity_specific2relative(df$MaxTemperature, df$SpecificHumidity)
+  #     }
+  #     if(!("MaxRelativeHumidity" %in% names(df)) && ("SpecificHumidity" %in% names(df)) && ("MinTemperature" %in% names(df))) {
+  #       df$MaxRelativeHumidity = humidity_specific2relative(df$MinTemperature, df$SpecificHumidity)
+  #     }
+  #     mp@data[[i]] = df
+  #   }
+  # }
+  # return(mp)
 }
 
 # readmeteorologygridfiles<-function(files, format="netCDF") {
@@ -212,11 +212,11 @@ readmeteorologygridpoints<-function(files, format = "netCDF", varmapping = NULL,
 #     nfiles = length(files)
 #   }
 #   ncells = length(cellIndices)
-# 
+#
 #   #List of data frames
 #   l = vector("list", ncells)
 #   for(i in 1:ncells) l[[i]] = matrix(NA, nrow= nfiles, ncol=11)
-# 
+#
 #   dates = rep("", nfiles)
 #   x = NULL
 #   y = NULL

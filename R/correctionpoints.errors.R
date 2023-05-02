@@ -127,164 +127,164 @@ correctionpoints.errors<-function(object, points, topodata = NULL,
     Better bias correction methods are provided by other packages (see package `MBC` for example)"
   )
 
-  #Check input classes
-  if(!inherits(object,"MeteorologyUncorrectedData")) stop("'object' has to be of class 'MeteorologyUncorrectedData'.")
-  if(!inherits(points,"SpatialPointsMeteorology") && !inherits(points,"SpatialPointsDataFrame")) stop("'points' has to be of class 'SpatialPointsMeteorology' or 'SpatialPointsDataFrame'.")
-
-  error.type = match.arg(error.type, c("before","residuals", "residuals.cv"))
-
-  mPar = object@params
-
-  npoints = length(points)
-
-  if(verbose) {
-    cat(paste("Points to evaluate: ", npoints,"\n", sep=""))
-    cat(paste("Error type: ", error.type,"\n", sep=""))
-  }
-  #Project points into long/lat coordinates to check if they are inside the boundary box
-  cchist = spTransform(points, object@proj4string)
-  sel = (cchist@coords[,1] >= object@bbox[1,1] & cchist@coords[,1] <=object@bbox[1,2]) &
-    (cchist@coords[,2] >= object@bbox[2,1] & cchist@coords[,2] <=object@bbox[2,2])
-  if(sum(sel)<npoints) {
-    warning("At least one target point is outside the boundary box of 'object'.\n", call. = FALSE, immediate.=TRUE)
-  } else if(verbose) cat(paste("All points inside boundary box.\n", sep=""))
-
-  longlat = spTransform(points, CRS(SRS_string = "EPSG:4326"))
-  latitude = longlat@coords[,2]
-
-  #Project long/lat coordinates of predicted climatic objects into the projection of points
-  xypred = spTransform(SpatialPoints(object@coords,object@proj4string,object@bbox), points@proj4string)
-  colnames(xypred@coords)<-c("x","y")
-  if(!is.null(topodata)) {
-    latrad = latitude*(pi/180)
-    elevation = topodata$elevation
-    slorad = topodata$slope*(pi/180)
-    asprad = topodata$aspect*(pi/180)
-  }
-
-  if(inherits(points,"SpatialPointsMeteorology")) {
-    if(!is.null(names(points@data))) ids = names(points@data)
-    else ids = 1:npoints
-  } else {
-    if(!is.null(rownames(points@data))) ids = rownames(points@data)
-    else ids = 1:npoints
-  }
-
-  if(keep.data) {
-    dataout = vector("list", npoints)
-  }
-  res = data.frame(matrix(NA, nrow=npoints, ncol= 22))
-  names(res) = c("MeanTemperature-Bias", "MeanTemperature-MAE",
-                   "MinTemperature-Bias", "MinTemperature-MAE",
-                   "MaxTemperature-Bias", "MaxTemperature-MAE",
-                   "Precipitation-Total", "Precipitation-DPD","Precipitation-Bias", "Precipitation-MAE",
-                   "MeanRelativeHumidity-Bias", "MeanRelativeHumidity-MAE",
-                   "MinRelativeHumidity-Bias", "MinRelativeHumidity-MAE",
-                   "MaxRelativeHumidity-Bias", "MaxRelativeHumidity-MAE",
-                   "Radiation-Bias", "Radiation-MAE",
-                   "WindSpeed-Bias", "WindSpeed-MAE",
-                   "PET-Bias", "PET-MAE")
-  row.names(res) = ids
-
-  #Loop over all points
-  for(i in 1:npoints) {
-    if(verbose) cat(paste("Evaluating error for point '",ids[i],"' (",i,"/",npoints,") -",sep=""))
-    xy = points@coords[i,]
-    #observed data frame
-    if(inherits(points,"SpatialPointsMeteorology")) {
-      obs = points@data[[i]]
-    } else {
-      f = paste(points@data$dir[i], points@data$filename[i],sep="/")
-      if(!file.exists(f)) stop(paste("Observed file '", f,"' does not exist!", sep=""))
-      if("format" %in% names(points@data)) { ##Format specified
-        obs = readmeteorologypoint(f, format=points@data$format[i])
-      } else {
-        obs = readmeteorologypoint(f)
-      }
-    }
-    #Find closest predicted climatic cell for reference/projection periods (ideally the same)
-    d = sqrt(rowSums(sweep(xypred@coords,2,xy,"-")^2))
-    ipred = which.min(d)[1]
-    if(verbose) cat(paste(" ipred = ",ipred, sep=""))
-    #predicted climatic data frames
-    if(inherits(object@reference_data,"list")) {
-      rcmhist = object@reference_data[[ipred]]
-    } else {
-      if(("dir" %in% names(object@reference_data))&&("filename" %in% names(object@reference_data))) {
-        f = paste(object@reference_data$dir[ipred], object@reference_data$filename[ipred],sep="/")
-        if(!file.exists(f)) stop(paste("Reference meteorology file '", f,"' does not exist!", sep=""))
-        rcmhist = readmeteorologypoint(f)
-      } else if(nrow(object@coords)==1) {
-        rcmhist = object@reference_data
-      } else {
-        stop("Cannot access reference meteorology data")
-      }
-    }
-
-    #subset compatible data
-    sel1 = rownames(rcmhist) %in% rownames(obs)
-    sel2 = rownames(obs) %in% rownames(rcmhist)
-    rcmhist = rcmhist[sel1,]
-    obs = obs[sel2,]
-
-
-    if(error.type=="before") {#Errors before correction
-      dataone = rcmhist
-      #Fill minimum and maximum relative humidity if missing
-      if(!("MinRelativeHumidity" %in% names(dataone))) {
-        dataone$MinRelativeHumidity=humidity_specific2relative(dataone$MaxTemperature, dataone$SpecificHumidity, mPar$allow_saturated)
-      }
-      if(!("MaxRelativeHumidity" %in% names(dataone))) {
-        dataone$MaxRelativeHumidity=humidity_specific2relative(dataone$MinTemperature, dataone$SpecificHumidity, mPar$allow_saturated)
-      }
-    }else if(error.type=="residuals") {#Residuals before correction
-      mbias = .monthbiasonepoint(obs,rcmhist, mPar$varmethods, verbose)
-      dataone = .correctiononepoint(mbias, rcmhist, fill_wind = mPar$fill_wind, allow_saturated = mPar$allow_saturated, verbose = verbose)
-    } else if(error.type == "residuals.cv") {#Residuals before correction (including cross-validation)
-      dataone = .residualonepoint(obs,rcmhist, mPar$varmethods,
-                                  allow_saturated = mPar$allow_saturated,
-                                  qstep = mPar$qstep, verbose)
-    }
-
-    #Calculate PET
-    if(!is.null(topodata) && ("PET" %in% names(obs))) {
-      J = radiation_dateStringToJulianDays(row.names(obs))
-      dataone$PET = .penmanpoint(latrad[i], elevation[i],slorad[i], asprad[i], J,
-                                    dataone$MinTemperature, dataone$MaxTemperature,
-                                    dataone$MinRelativeHumidity, dataone$MaxRelativeHumidity, dataone$Radiation,
-                                    dataone$WindSpeed, mPar$wind_height,
-                                    0.001, 0.25);
-    }
-
-    res[i, "MeanTemperature-Bias"] = mean(dataone$MeanTemperature-obs$MeanTemperature, na.rm=T)
-    res[i, "MeanTemperature-MAE"] = mean(abs(dataone$MeanTemperature-obs$MeanTemperature), na.rm=T)
-    res[i, "MinTemperature-Bias"] = mean(dataone$MinTemperature-obs$MinTemperature, na.rm=T)
-    res[i, "MinTemperature-MAE"] = mean(abs(dataone$MinTemperature-obs$MinTemperature), na.rm=T)
-    res[i, "MaxTemperature-Bias"] = mean(dataone$MaxTemperature-obs$MaxTemperature, na.rm=T)
-    res[i, "MaxTemperature-MAE"] = mean(abs(dataone$MaxTemperature-obs$MaxTemperature), na.rm=T)
-    res[i, "Precipitation-Total"] = sum(dataone$Precipitation, na.rm=T)-sum(obs$Precipitation, na.rm=T)
-    res[i, "Precipitation-DPD"] = sum(dataone$Precipitation>0, na.rm=T)/sum(!is.na(dataone$Precipitation))-sum(obs$Precipitation>0, na.rm=T)/sum(!is.na(obs$Precipitation))
-    res[i, "Precipitation-Bias"] = mean(dataone$Precipitation[dataone$Precipitation>0]-obs$Precipitation[dataone$Precipitation>0], na.rm=T)
-    res[i, "Precipitation-MAE"] = mean(abs(dataone$Precipitation[dataone$Precipitation>0]-obs$Precipitation[dataone$Precipitation>0]), na.rm=T)
-    res[i, "MeanRelativeHumidity-Bias"] = mean(dataone$MeanRelativeHumidity-obs$MeanRelativeHumidity, na.rm=T)
-    res[i, "MeanRelativeHumidity-MAE"] = mean(abs(dataone$MeanRelativeHumidity-obs$MeanRelativeHumidity), na.rm=T)
-    res[i, "MinRelativeHumidity-Bias"] = mean(dataone$MinRelativeHumidity-obs$MinRelativeHumidity, na.rm=T)
-    res[i, "MinRelativeHumidity-MAE"] = mean(abs(dataone$MinRelativeHumidity-obs$MinRelativeHumidity), na.rm=T)
-    res[i, "MaxRelativeHumidity-Bias"] = mean(dataone$MaxRelativeHumidity-obs$MaxRelativeHumidity, na.rm=T)
-    res[i, "MaxRelativeHumidity-MAE"] = mean(abs(dataone$MaxRelativeHumidity-obs$MaxRelativeHumidity), na.rm=T)
-    res[i, "Radiation-Bias"] = mean(dataone$Radiation-obs$Radiation, na.rm=T)
-    res[i, "Radiation-MAE"] = mean(abs(dataone$Radiation-obs$Radiation), na.rm=T)
-    res[i, "WindSpeed-Bias"] = mean(dataone$WindSpeed-obs$WindSpeed, na.rm=T)
-    res[i, "WindSpeed-MAE"] = mean(abs(dataone$WindSpeed-obs$WindSpeed), na.rm=T)
-    if(!is.null(topodata) && ("PET" %in% names(obs))) {
-      res[i, "PET-Bias"] = mean(dataone$PET-obs$PET, na.rm=T)
-      res[i, "PET-MAE"] = mean(abs(dataone$PET-obs$PET), na.rm=T)
-    }
-    #Store cross validation data if required
-    if(keep.data) dataout[[i]] = dataone
-
-    if(verbose) cat(".\n")
-  }
-  if(keep.data) return(list(data = dataout, evaluation = res))
-  else return(res)
+  # #Check input classes
+  # if(!inherits(object,"MeteorologyUncorrectedData")) stop("'object' has to be of class 'MeteorologyUncorrectedData'.")
+  # if(!inherits(points,"SpatialPointsMeteorology") && !inherits(points,"SpatialPointsDataFrame")) stop("'points' has to be of class 'SpatialPointsMeteorology' or 'SpatialPointsDataFrame'.")
+  #
+  # error.type = match.arg(error.type, c("before","residuals", "residuals.cv"))
+  #
+  # mPar = object@params
+  #
+  # npoints = length(points)
+  #
+  # if(verbose) {
+  #   cat(paste("Points to evaluate: ", npoints,"\n", sep=""))
+  #   cat(paste("Error type: ", error.type,"\n", sep=""))
+  # }
+  # #Project points into long/lat coordinates to check if they are inside the boundary box
+  # cchist = spTransform(points, object@proj4string)
+  # sel = (cchist@coords[,1] >= object@bbox[1,1] & cchist@coords[,1] <=object@bbox[1,2]) &
+  #   (cchist@coords[,2] >= object@bbox[2,1] & cchist@coords[,2] <=object@bbox[2,2])
+  # if(sum(sel)<npoints) {
+  #   warning("At least one target point is outside the boundary box of 'object'.\n", call. = FALSE, immediate.=TRUE)
+  # } else if(verbose) cat(paste("All points inside boundary box.\n", sep=""))
+  #
+  # longlat = spTransform(points, CRS(SRS_string = "EPSG:4326"))
+  # latitude = longlat@coords[,2]
+  #
+  # #Project long/lat coordinates of predicted climatic objects into the projection of points
+  # xypred = spTransform(SpatialPoints(object@coords,object@proj4string,object@bbox), points@proj4string)
+  # colnames(xypred@coords)<-c("x","y")
+  # if(!is.null(topodata)) {
+  #   latrad = latitude*(pi/180)
+  #   elevation = topodata$elevation
+  #   slorad = topodata$slope*(pi/180)
+  #   asprad = topodata$aspect*(pi/180)
+  # }
+  #
+  # if(inherits(points,"SpatialPointsMeteorology")) {
+  #   if(!is.null(names(points@data))) ids = names(points@data)
+  #   else ids = 1:npoints
+  # } else {
+  #   if(!is.null(rownames(points@data))) ids = rownames(points@data)
+  #   else ids = 1:npoints
+  # }
+  #
+  # if(keep.data) {
+  #   dataout = vector("list", npoints)
+  # }
+  # res = data.frame(matrix(NA, nrow=npoints, ncol= 22))
+  # names(res) = c("MeanTemperature-Bias", "MeanTemperature-MAE",
+  #                  "MinTemperature-Bias", "MinTemperature-MAE",
+  #                  "MaxTemperature-Bias", "MaxTemperature-MAE",
+  #                  "Precipitation-Total", "Precipitation-DPD","Precipitation-Bias", "Precipitation-MAE",
+  #                  "MeanRelativeHumidity-Bias", "MeanRelativeHumidity-MAE",
+  #                  "MinRelativeHumidity-Bias", "MinRelativeHumidity-MAE",
+  #                  "MaxRelativeHumidity-Bias", "MaxRelativeHumidity-MAE",
+  #                  "Radiation-Bias", "Radiation-MAE",
+  #                  "WindSpeed-Bias", "WindSpeed-MAE",
+  #                  "PET-Bias", "PET-MAE")
+  # row.names(res) = ids
+  #
+  # #Loop over all points
+  # for(i in 1:npoints) {
+  #   if(verbose) cat(paste("Evaluating error for point '",ids[i],"' (",i,"/",npoints,") -",sep=""))
+  #   xy = points@coords[i,]
+  #   #observed data frame
+  #   if(inherits(points,"SpatialPointsMeteorology")) {
+  #     obs = points@data[[i]]
+  #   } else {
+  #     f = paste(points@data$dir[i], points@data$filename[i],sep="/")
+  #     if(!file.exists(f)) stop(paste("Observed file '", f,"' does not exist!", sep=""))
+  #     if("format" %in% names(points@data)) { ##Format specified
+  #       obs = readmeteorologypoint(f, format=points@data$format[i])
+  #     } else {
+  #       obs = readmeteorologypoint(f)
+  #     }
+  #   }
+  #   #Find closest predicted climatic cell for reference/projection periods (ideally the same)
+  #   d = sqrt(rowSums(sweep(xypred@coords,2,xy,"-")^2))
+  #   ipred = which.min(d)[1]
+  #   if(verbose) cat(paste(" ipred = ",ipred, sep=""))
+  #   #predicted climatic data frames
+  #   if(inherits(object@reference_data,"list")) {
+  #     rcmhist = object@reference_data[[ipred]]
+  #   } else {
+  #     if(("dir" %in% names(object@reference_data))&&("filename" %in% names(object@reference_data))) {
+  #       f = paste(object@reference_data$dir[ipred], object@reference_data$filename[ipred],sep="/")
+  #       if(!file.exists(f)) stop(paste("Reference meteorology file '", f,"' does not exist!", sep=""))
+  #       rcmhist = readmeteorologypoint(f)
+  #     } else if(nrow(object@coords)==1) {
+  #       rcmhist = object@reference_data
+  #     } else {
+  #       stop("Cannot access reference meteorology data")
+  #     }
+  #   }
+  #
+  #   #subset compatible data
+  #   sel1 = rownames(rcmhist) %in% rownames(obs)
+  #   sel2 = rownames(obs) %in% rownames(rcmhist)
+  #   rcmhist = rcmhist[sel1,]
+  #   obs = obs[sel2,]
+  #
+  #
+  #   if(error.type=="before") {#Errors before correction
+  #     dataone = rcmhist
+  #     #Fill minimum and maximum relative humidity if missing
+  #     if(!("MinRelativeHumidity" %in% names(dataone))) {
+  #       dataone$MinRelativeHumidity=humidity_specific2relative(dataone$MaxTemperature, dataone$SpecificHumidity, mPar$allow_saturated)
+  #     }
+  #     if(!("MaxRelativeHumidity" %in% names(dataone))) {
+  #       dataone$MaxRelativeHumidity=humidity_specific2relative(dataone$MinTemperature, dataone$SpecificHumidity, mPar$allow_saturated)
+  #     }
+  #   }else if(error.type=="residuals") {#Residuals before correction
+  #     mbias = .monthbiasonepoint(obs,rcmhist, mPar$varmethods, verbose)
+  #     dataone = .correctiononepoint(mbias, rcmhist, fill_wind = mPar$fill_wind, allow_saturated = mPar$allow_saturated, verbose = verbose)
+  #   } else if(error.type == "residuals.cv") {#Residuals before correction (including cross-validation)
+  #     dataone = .residualonepoint(obs,rcmhist, mPar$varmethods,
+  #                                 allow_saturated = mPar$allow_saturated,
+  #                                 qstep = mPar$qstep, verbose)
+  #   }
+  #
+  #   #Calculate PET
+  #   if(!is.null(topodata) && ("PET" %in% names(obs))) {
+  #     J = radiation_dateStringToJulianDays(row.names(obs))
+  #     dataone$PET = .penmanpoint(latrad[i], elevation[i],slorad[i], asprad[i], J,
+  #                                   dataone$MinTemperature, dataone$MaxTemperature,
+  #                                   dataone$MinRelativeHumidity, dataone$MaxRelativeHumidity, dataone$Radiation,
+  #                                   dataone$WindSpeed, mPar$wind_height,
+  #                                   0.001, 0.25);
+  #   }
+  #
+  #   res[i, "MeanTemperature-Bias"] = mean(dataone$MeanTemperature-obs$MeanTemperature, na.rm=T)
+  #   res[i, "MeanTemperature-MAE"] = mean(abs(dataone$MeanTemperature-obs$MeanTemperature), na.rm=T)
+  #   res[i, "MinTemperature-Bias"] = mean(dataone$MinTemperature-obs$MinTemperature, na.rm=T)
+  #   res[i, "MinTemperature-MAE"] = mean(abs(dataone$MinTemperature-obs$MinTemperature), na.rm=T)
+  #   res[i, "MaxTemperature-Bias"] = mean(dataone$MaxTemperature-obs$MaxTemperature, na.rm=T)
+  #   res[i, "MaxTemperature-MAE"] = mean(abs(dataone$MaxTemperature-obs$MaxTemperature), na.rm=T)
+  #   res[i, "Precipitation-Total"] = sum(dataone$Precipitation, na.rm=T)-sum(obs$Precipitation, na.rm=T)
+  #   res[i, "Precipitation-DPD"] = sum(dataone$Precipitation>0, na.rm=T)/sum(!is.na(dataone$Precipitation))-sum(obs$Precipitation>0, na.rm=T)/sum(!is.na(obs$Precipitation))
+  #   res[i, "Precipitation-Bias"] = mean(dataone$Precipitation[dataone$Precipitation>0]-obs$Precipitation[dataone$Precipitation>0], na.rm=T)
+  #   res[i, "Precipitation-MAE"] = mean(abs(dataone$Precipitation[dataone$Precipitation>0]-obs$Precipitation[dataone$Precipitation>0]), na.rm=T)
+  #   res[i, "MeanRelativeHumidity-Bias"] = mean(dataone$MeanRelativeHumidity-obs$MeanRelativeHumidity, na.rm=T)
+  #   res[i, "MeanRelativeHumidity-MAE"] = mean(abs(dataone$MeanRelativeHumidity-obs$MeanRelativeHumidity), na.rm=T)
+  #   res[i, "MinRelativeHumidity-Bias"] = mean(dataone$MinRelativeHumidity-obs$MinRelativeHumidity, na.rm=T)
+  #   res[i, "MinRelativeHumidity-MAE"] = mean(abs(dataone$MinRelativeHumidity-obs$MinRelativeHumidity), na.rm=T)
+  #   res[i, "MaxRelativeHumidity-Bias"] = mean(dataone$MaxRelativeHumidity-obs$MaxRelativeHumidity, na.rm=T)
+  #   res[i, "MaxRelativeHumidity-MAE"] = mean(abs(dataone$MaxRelativeHumidity-obs$MaxRelativeHumidity), na.rm=T)
+  #   res[i, "Radiation-Bias"] = mean(dataone$Radiation-obs$Radiation, na.rm=T)
+  #   res[i, "Radiation-MAE"] = mean(abs(dataone$Radiation-obs$Radiation), na.rm=T)
+  #   res[i, "WindSpeed-Bias"] = mean(dataone$WindSpeed-obs$WindSpeed, na.rm=T)
+  #   res[i, "WindSpeed-MAE"] = mean(abs(dataone$WindSpeed-obs$WindSpeed), na.rm=T)
+  #   if(!is.null(topodata) && ("PET" %in% names(obs))) {
+  #     res[i, "PET-Bias"] = mean(dataone$PET-obs$PET, na.rm=T)
+  #     res[i, "PET-MAE"] = mean(abs(dataone$PET-obs$PET), na.rm=T)
+  #   }
+  #   #Store cross validation data if required
+  #   if(keep.data) dataout[[i]] = dataone
+  #
+  #   if(verbose) cat(".\n")
+  # }
+  # if(keep.data) return(list(data = dataout, evaluation = res))
+  # else return(res)
 }

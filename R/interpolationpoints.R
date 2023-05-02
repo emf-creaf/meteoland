@@ -267,7 +267,7 @@ interpolationpoints<-function(object, points, dates = NULL,
                               exportFormat = "meteoland/txt",
                               metadataFile = "MP.txt", verbose=TRUE) {
   # deprecation warning
-  lifecycle::deprecate_warn(
+  lifecycle::deprecate_stop(
     when = "2.0.0", what = "interpolationpoints()", with = "interpolate_data()",
     details = "Spatial_*_Topography and MetereologyInterpolationData classes are soft deprecated.
     Interpolator should be created with create_meteo_interpolator(),

@@ -42,7 +42,7 @@
 #' @export
 meteocomplete<-function(x, latitude, elevation, slope, aspect) {
   # deprecation warning
-  lifecycle::deprecate_warn(
+  lifecycle::deprecate_stop(
     when = "2.0.0", what = "meteocomplete()", with = "complete_meteo()",
     details = "Meteo objects complying with the new standard (see with_meteo()) can be completed
     with complete_meteo()"

@@ -15,7 +15,6 @@ URL: https://emf-creaf.github.io/meteoland/index.html
 LazyData: TRUE
 Depends:
     R (>= 3.5.0),
-    sp,
     sf,
     stars
 Imports: 
@@ -44,6 +43,7 @@ Suggests:
     rmarkdown,
     testthat (>= 3.0.0),
     worldmet,
+    sp,
     rgdal,
     keyring,
     tibble

@@ -153,7 +153,7 @@
 downloadAEMETcurrentday <- function(api, daily = TRUE, verbose=TRUE){
 
   # deprecation warning
-  lifecycle::deprecate_warn(
+  lifecycle::deprecate_stop(
     when = "2.0.0", what = "downloadAEMETcurrentday()", with = "meteospain::get_meteo_from()",
     details = "Weather download functions are now provided by `meteospain` package"
   )
@@ -237,7 +237,7 @@ downloadSMCcurrentday <- function(api, daily=TRUE, station_id=NULL,
                                   date = Sys.Date(), verbose=TRUE){
 
   # deprecation warning
-  lifecycle::deprecate_warn(
+  lifecycle::deprecate_stop(
     when = "2.0.0", what = "downloadSMCcurrentday()", with = "meteospain::get_meteo_from()",
     details = "Weather download functions are now provided by `meteospain` package"
   )
@@ -295,7 +295,7 @@ downloadSMCcurrentday <- function(api, daily=TRUE, station_id=NULL,
 #' @export
 downloadMGcurrentday <- function(station_id=NULL, daily = TRUE, verbose = TRUE) {
   # deprecation warning
-  lifecycle::deprecate_warn(
+  lifecycle::deprecate_stop(
     when = "2.0.0", what = "downloadMGcurrentday()", with = "meteospain::get_meteo_from()",
     details = "Weather download functions are now provided by `meteospain` package"
   )
@@ -350,7 +350,7 @@ downloadMGcurrentday <- function(station_id=NULL, daily = TRUE, verbose = TRUE) 
 #' @export
 downloadMETEOCLIMATICcurrentday <- function(station_id = "ESCAT") {
   # deprecation warning
-  lifecycle::deprecate_warn(
+  lifecycle::deprecate_stop(
     when = "2.0.0", what = "downloadMETEOCLIMATICcurrentday()", with = "meteospain::get_meteo_from()",
     details = "Weather download functions are now provided by `meteospain` package"
   )

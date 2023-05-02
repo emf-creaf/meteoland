@@ -37,7 +37,7 @@
 #' 
 #' @export
 interpolation.coverage<-function(object, type="spatial", percent = FALSE) {
-  lifecycle::deprecate_warn(
+  lifecycle::deprecate_stop(
     when = "2.0.0", what = "interpolation.coverage()", with = "create_meteo_interpolator()",
     details = "MeteorologyInterpolationData class is soft deprecated.
     A summary of the variables can be glanced calling the interpolator object"

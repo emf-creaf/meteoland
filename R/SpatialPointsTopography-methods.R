@@ -43,7 +43,7 @@
 SpatialPointsTopography<-function(points, elevation, slope = NULL, aspect = NULL, proj4string = CRS(as.character(NA))) {
   
   # deprecation notice
-  lifecycle::deprecate_warn(
+  lifecycle::deprecate_stop(
     when = "2.0.0", what = "SpatialPointsTopography()", with = NULL,
     details = "Spatial_*_Topography classes are soft deprecated.
     User topography now can be provided as sf or stars objects"

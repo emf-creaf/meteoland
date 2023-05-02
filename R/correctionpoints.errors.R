@@ -121,7 +121,7 @@ correctionpoints.errors<-function(object, points, topodata = NULL,
                                   error.type = "residuals.cv", keep.data = FALSE, verbose = FALSE) {
 
   # deprecation warning
-  lifecycle::deprecate_warn(
+  lifecycle::deprecate_stop(
     when = "2.0.0", what = "correctionpoints.errors()", with = NULL,
     details = "Correction methods and data classes are soft deprecated.
     Better bias correction methods are provided by other packages (see package `MBC` for example)"

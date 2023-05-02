@@ -21,7 +21,7 @@
 summarypoint <- function(x, var, fun="mean", freq=NULL, dates = NULL, months= NULL, ...) {
   
   # deprecation notice
-  lifecycle::deprecate_warn(
+  lifecycle::deprecate_stop(
     when = "2.0.0", what = "summarypoint()", with = "summarise_interpolated_data()",
     details = "Spatial_*_Meteorology classes are soft deprecated.
     Interpolation results are now sf or stars objects and can be summarised with summarise_interpolated_data()"
@@ -120,7 +120,7 @@ summarypoint <- function(x, var, fun="mean", freq=NULL, dates = NULL, months= NU
 summarypoints<-function(points, var, fun=mean, freq=NULL, dates = NULL, months = NULL, ...) {
   
   # deprecation notice
-  lifecycle::deprecate_warn(
+  lifecycle::deprecate_stop(
     when = "2.0.0", what = "summarypoints()", with = "summarise_interpolated_data()",
     details = "Spatial_*_Meteorology classes are soft deprecated.
     Interpolation results are now sf or stars objects and can be summarised with summarise_interpolated_data()"

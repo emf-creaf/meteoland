@@ -3,7 +3,7 @@
 reshapeworldmet<-function(hourly_data, output="SpatialPointsMeteorology",
                           proj4string = NULL, complete=TRUE, verbose = TRUE) {
   # deprecation notice
-  lifecycle::deprecate_warn(
+  lifecycle::deprecate_stop(
     when = "2.0.0", what = "reshapeworldmet()", with = "worldmet2meteoland()",
     details = "Spatial_*_Meteorology classes are soft deprecated.
     Adapting worldmet meteo output to meteoland can be done with worldmet2meteoland()"

@@ -19,7 +19,7 @@
 precipitation_concentration <- function(p) {
   
   # deprecation notice
-  lifecycle::deprecate_warn(
+  lifecycle::deprecate_stop(
     when = "2.0.0", what = "precipitation_concentration()", with = NULL,
     details = "precipitation_concentration utility is deprecated and will be removed in future versions"
   )

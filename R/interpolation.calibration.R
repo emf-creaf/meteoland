@@ -2,7 +2,7 @@
 #' @export
 interpolation.calibration<-function(object, stations = NULL, variable="Tmin", N_seq = seq(5,30, by=5), alpha_seq = seq(0.25,10, by=0.25), verbose = FALSE) {
 
-  lifecycle::deprecate_warn(
+  lifecycle::deprecate_stop(
     when = "2.0.0", what = "interpolation.calibration()", with = "interpolator_calibration()",
     details = "MeteorologyInterpolationData class is soft deprecated.
     Interpolator object should be created with create_meteo_interpolator() and the calibration
@@ -203,7 +203,7 @@ interpolation.calibration<-function(object, stations = NULL, variable="Tmin", N_
 #' @describeIn interpolation.cv `r lifecycle::badge("deprecated")`
 #' @export
 interpolation.calibration.fmax<-function(object, stations = NULL, fmax_seq = seq(0.05,0.95, by=0.05), verbose = FALSE) {
-  lifecycle::deprecate_warn(
+  lifecycle::deprecate_stop(
     when = "2.0.0", what = "interpolation.calibration.fmax()", with = "interpolator_calibration()",
     details = "MeteorologyInterpolationData class is soft deprecated.
     Interpolator object should be created with create_meteo_interpolator() and the calibration

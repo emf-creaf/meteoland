@@ -63,7 +63,7 @@ readmeteorologygrid<-function(files, format = "netCDF", varmapping = NULL,
                               dates = NULL, bbox = NULL, offset = 0, verbose = FALSE) {
   
   # deprecation notice
-  lifecycle::deprecate_warn(
+  lifecycle::deprecate_stop(
     when = "2.0.0", what = "readmeteorologygrid()", with = NULL,
     details = "Spatial_*_Meteorology classes are soft deprecated.
     Read of meteorology source data must be done with the corresponding package (sf, terra, stars...)
@@ -93,7 +93,7 @@ readmeteorologygrid<-function(files, format = "netCDF", varmapping = NULL,
 readmeteorologypixels<-function(files, format = "netCDF", varmapping = NULL,
                                 dates = NULL, bbox = NULL, offset = 0, verbose = FALSE) {
   # deprecation notice
-  lifecycle::deprecate_warn(
+  lifecycle::deprecate_stop(
     when = "2.0.0", what = "readmeteorologypixels()", with = NULL,
     details = "Spatial_*_Meteorology classes are soft deprecated.
     Read of meteorology source data must be done with the corresponding package (sf, terra, stars...)
@@ -124,7 +124,7 @@ readmeteorologygridpoints<-function(files, format = "netCDF", varmapping = NULL,
                                     dates = NULL, bbox = NULL, offset = 0, 
                                     relativehumidity = FALSE, verbose = FALSE) {
   # deprecation notice
-  lifecycle::deprecate_warn(
+  lifecycle::deprecate_stop(
     when = "2.0.0", what = "readmeteorologygridpoints()", with = NULL,
     details = "Spatial_*_Meteorology classes are soft deprecated.
     Read of meteorology source data must be done with the corresponding package (sf, terra, stars...)

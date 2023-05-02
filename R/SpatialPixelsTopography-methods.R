@@ -54,7 +54,7 @@ SpatialPixelsTopography<-function(points, elevation, slope, aspect, tolerance = 
                                   proj4string = CRS(as.character(NA)), round = NULL, grid = NULL) {
   
   # deprecation notice
-  lifecycle::deprecate_warn(
+  lifecycle::deprecate_stop(
     when = "2.0.0", what = "SpatialPixelsTopography()", with = NULL,
     details = "Spatial_*_Topography classes are soft deprecated.
     User topography now can be provided as sf or stars objects"

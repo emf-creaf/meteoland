@@ -49,7 +49,7 @@
 writemeteorologygrid<-function(object, file, dates = NULL, format = "netCDF",
                                byPixel = FALSE, chunksizes = NA,
                                add=FALSE, overwrite = FALSE, verbose = FALSE) {
-  lifecycle::deprecate_warn(
+  lifecycle::deprecate_stop(
     when = "2.0.0", what = "writemeteorologygrid()", with = NULL,
     details = "meteoland NetCDF utils are deprecated.
     NetCDF files can be managed with more recent and up to date R packages (ncmeta, stars...)"
@@ -74,7 +74,7 @@ writemeteorologygrid<-function(object, file, dates = NULL, format = "netCDF",
 writemeteorologypixels<-function(object, file, dates = NULL, format = "netCDF",
                                  byPixel = FALSE, chunksizes = NA,
                                  add=FALSE, overwrite = FALSE, verbose = FALSE) {
-  lifecycle::deprecate_warn(
+  lifecycle::deprecate_stop(
     when = "2.0.0", what = "writemeteorologypixels()", with = NULL,
     details = "meteoland NetCDF utils are deprecated.
     NetCDF files can be managed with more recent and up to date R packages (ncmeta, stars...)"
@@ -95,7 +95,7 @@ writemeteorologypixels<-function(object, file, dates = NULL, format = "netCDF",
 #' @describeIn writemeteorologygrid `r lifecycle::badge("deprecated")`
 #' @export
 writeemptymeteorologygrid<-function(file, grid, proj4string, dates, byPixel = FALSE, chunksizes = NA, overwrite = FALSE, verbose = FALSE) {
-  lifecycle::deprecate_warn(
+  lifecycle::deprecate_stop(
     when = "2.0.0", what = "writeemptymeteorologygrid()", with = NULL,
     details = "meteoland NetCDF utils are deprecated.
     NetCDF files can be managed with more recent and up to date R packages (ncmeta, stars...)"
@@ -112,7 +112,7 @@ writeemptymeteorologygrid<-function(file, grid, proj4string, dates, byPixel = FA
 #' @describeIn writemeteorologygrid `r lifecycle::badge("deprecated")`
 #' @export
 writemeteorologygridpixel<-function(file, index, data, verbose = FALSE) {
-  lifecycle::deprecate_warn(
+  lifecycle::deprecate_stop(
     when = "2.0.0", what = "writemeteorologygridpixel()", with = NULL,
     details = "meteoland NetCDF utils are deprecated.
     NetCDF files can be managed with more recent and up to date R packages (ncmeta, stars...)"

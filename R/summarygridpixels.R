@@ -88,7 +88,7 @@
 summarypixels<-function(pixels, var, fun=mean, freq=NULL, dates = NULL, months = NULL, ...) {
   
   # deprecation notice
-  lifecycle::deprecate_warn(
+  lifecycle::deprecate_stop(
     when = "2.0.0", what = "summarypixels()", with = "summarise_interpolated_data()",
     details = "Spatial_*_Meteorology classes are soft deprecated.
     Interpolation results are now sf or stars objects and can be summarised with summarise_interpolated_data()"
@@ -102,7 +102,7 @@ summarypixels<-function(pixels, var, fun=mean, freq=NULL, dates = NULL, months =
 summarygrid<-function(grid, var, fun=mean, freq=NULL, dates = NULL, months = NULL, ...) {
   
   # deprecation notice
-  lifecycle::deprecate_warn(
+  lifecycle::deprecate_stop(
     when = "2.0.0", what = "summarygrid()", with = "summarise_interpolated_data()",
     details = "Spatial_*_Meteorology classes are soft deprecated.
     Interpolation results are now sf or stars objects and can be summarised with summarise_interpolated_data()"

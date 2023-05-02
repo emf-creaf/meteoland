@@ -60,7 +60,7 @@
 extractNetCDF<-function(ncdf_files, bbox = NULL, offset = 0, cells = NULL, export = TRUE,
                         exportDir = getwd(), exportFormat = "meteoland/txt", mpfilename = "MP.txt") {
 
-  lifecycle::deprecate_warn(
+  lifecycle::deprecate_stop(
     when = "2.0.0", what = "extractNetCDF()", with = NULL,
     details = "Extraction of variables or dates can be done as in a normal data.frame as the meteo objects are now sf objects"
   )

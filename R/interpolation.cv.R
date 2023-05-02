@@ -155,7 +155,7 @@
 #'
 #' @export
 interpolation.cv<-function(object, stations = NULL, verbose = FALSE) {
-  lifecycle::deprecate_warn(
+  lifecycle::deprecate_stop(
     when = "2.0.0", what = "interpolation.cv()", with = "interpolation_cross_validation()",
     details = "MeteorologyInterpolationData class is soft deprecated.
     Interpolator object should be created with create_meteo_interpolator() and the cross validation

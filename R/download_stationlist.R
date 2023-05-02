@@ -4,7 +4,7 @@
 #' @export
 downloadAEMETstationlist <- function(api){
   # deprecation warning
-  lifecycle::deprecate_warn(
+  lifecycle::deprecate_stop(
     when = "2.0.0", what = "downloadAEMETstationlist()", with = "meteospain::get_stations_info_from()",
     details = "Weather download functions are now provided by `meteospain` package"
   )
@@ -25,7 +25,7 @@ downloadAEMETstationlist <- function(api){
 #' @export
 downloadSMCstationlist <- function(api, date = NULL){
   # deprecation warning
-  lifecycle::deprecate_warn(
+  lifecycle::deprecate_stop(
     when = "2.0.0", what = "downloadSMCstationlist()", with = "meteospain::get_stations_info_from()",
     details = "Weather download functions are now provided by `meteospain` package"
   )
@@ -48,7 +48,7 @@ downloadSMCstationlist <- function(api, date = NULL){
 #' @export
 downloadMGstationlist <- function() {
   # deprecation warning
-  lifecycle::deprecate_warn(
+  lifecycle::deprecate_stop(
     when = "2.0.0", what = "downloadMGstationlist()", with = "meteospain::get_stations_info_from()",
     details = "Weather download functions are now provided by `meteospain` package"
   )
@@ -68,7 +68,7 @@ downloadMGstationlist <- function() {
 #' @export
 downloadMETEOCLIMATICstationlist <- function(station_id = 'ESCAT') {
   # deprecation warning
-  lifecycle::deprecate_warn(
+  lifecycle::deprecate_stop(
     when = "2.0.0", what = "downloadMETEOCLIMATICstationlist()", with = "meteospain::get_stations_info_from()",
     details = "Weather download functions are now provided by `meteospain` package"
   )

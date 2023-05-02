@@ -348,7 +348,7 @@ weathergeneration<-function(object,
                             verbose = TRUE) {
 
   # deprecation notice
-  lifecycle::deprecate_warn(
+  lifecycle::deprecate_stop(
     when = "2.0.0", what = "weathergeneration()", with = NULL,
     details = "Current weather generation methods are currently deprecated because they operate with classes that are deprecated themselves, but for future versions, we plan to keep the functionality in new functions."
   )

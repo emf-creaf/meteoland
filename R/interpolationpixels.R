@@ -147,7 +147,7 @@ interpolationpixels<-function(object, pixels, dates = NULL,
                               exportFile = NULL, exportFormat = "netCDF", add = FALSE, overwrite = FALSE,
                               verbose = TRUE) {
   # deprecation warning
-  lifecycle::deprecate_warn(
+  lifecycle::deprecate_stop(
     when = "2.0.0", what = "interpolationpixels()", with = "interpolate_data()",
     details = "Spatial_*_Topography and MetereologyInterpolationData classes are soft deprecated.
     Interpolator should be created with create_meteo_interpolator(),

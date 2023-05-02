@@ -22,7 +22,7 @@
 #' @export
 readNetCDFpoints<-function(file) {
 
-  lifecycle::deprecate_warn(
+  lifecycle::deprecate_stop(
     when = "2.0.0", what = "readNetCDFpoints()", with = NULL,
     details = "meteoland NetCDF utils are deprecated.
     NetCDF files can be managed with more recent and up to date R packages (ncmeta, stars...)"
@@ -38,7 +38,7 @@ readNetCDFpoints<-function(file) {
 #' @export
 readNetCDFdates<-function(file) {
 
-  lifecycle::deprecate_warn(
+  lifecycle::deprecate_stop(
     when = "2.0.0", what = "readNetCDFdates()", with = NULL,
     details = "meteoland NetCDF utils are deprecated.
     NetCDF files can be managed with more recent and up to date R packages (ncmeta, stars...)"
@@ -53,7 +53,7 @@ readNetCDFdates<-function(file) {
 #' @export
 readNetCDFgridtopology<-function(file) {
 
-  lifecycle::deprecate_warn(
+  lifecycle::deprecate_stop(
     when = "2.0.0", what = "readNetCDFgridtopology()", with = NULL,
     details = "meteoland NetCDF utils are deprecated.
     NetCDF files can be managed with more recent and up to date R packages (ncmeta, stars...)"
@@ -68,7 +68,7 @@ readNetCDFgridtopology<-function(file) {
 #' @export
 readNetCDFproj4string<-function(file) {
 
-  lifecycle::deprecate_warn(
+  lifecycle::deprecate_stop(
     when = "2.0.0", what = "readNetCDFproj4string()", with = NULL,
     details = "meteoland NetCDF utils are deprecated.
     NetCDF files can be managed with more recent and up to date R packages (ncmeta, stars...)"

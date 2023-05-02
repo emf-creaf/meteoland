@@ -56,7 +56,7 @@
 readmeteorologypoint<-function(file, dates = NULL, format="meteoland/txt", sep="\t") {
   
   # deprecation notice
-  lifecycle::deprecate_warn(
+  lifecycle::deprecate_stop(
     when = "2.0.0", what = "readmeteorologypoint()", with = NULL,
     details = "Spatial_*_Meteorology classes are soft deprecated.
     Read of meteorology source data must be done with the corresponding package (sf, terra, stars...)
@@ -101,7 +101,7 @@ readmeteorologypoint<-function(file, dates = NULL, format="meteoland/txt", sep="
 readmeteorologypointfiles<-function(points, files=NULL, dates = NULL, format="meteoland/txt", sep="\t") {
   
   # deprecation notice
-  lifecycle::deprecate_warn(
+  lifecycle::deprecate_stop(
     when = "2.0.0", what = "readmeteorologypointfiles()", with = NULL,
     details = "Spatial_*_Meteorology classes are soft deprecated.
     Read of meteorology source data must be done with the corresponding package (sf, terra, stars...)
@@ -140,7 +140,7 @@ readmeteorologypointfiles<-function(points, files=NULL, dates = NULL, format="me
 readmeteorologypoints<-function(files, dates = NULL, stations = NULL, format = "netCDF", varmapping = NULL, verbose = FALSE) {
   
   # deprecation notice
-  lifecycle::deprecate_warn(
+  lifecycle::deprecate_stop(
     when = "2.0.0", what = "readmeteorologypoints()", with = NULL,
     details = "Spatial_*_Meteorology classes are soft deprecated.
     Read of meteorology source data must be done with the corresponding package (sf, terra, stars...)

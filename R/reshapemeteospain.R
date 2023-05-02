@@ -131,7 +131,7 @@ reshapemeteospain<-function(weather_data, output="SpatialPointsMeteorology",
                             proj4string = NULL, complete=TRUE, verbose = TRUE) {
   
   # deprecation notice
-  lifecycle::deprecate_warn(
+  lifecycle::deprecate_stop(
     when = "2.0.0", what = "reshapemeteospain()", with = "meteospain2meteoland()",
     details = "Spatial_*_Meteorology classes are soft deprecated.
     Adapting meteospain meteo output to meteoland can be done with meteospain2meteoland()"

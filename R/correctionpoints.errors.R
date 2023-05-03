@@ -1,119 +1,119 @@
-.residualonepoint<-function(Data, MODHist, varmethods, allow_saturated = FALSE, qstep = 0.01, verbose=TRUE){
-
-  # if(verbose) cat(paste(", # historic records = ", nrow(MODHist), sep=""))
-
-  corrPrec<-vector("list",12)
-  corrRad<-vector("list",12)
-  corrTmean<-vector("list",12)
-  corrTmin<-vector("list",12)
-  corrTmax<-vector("list",12)
-  corrWS<-vector("list",12) #WindSpeed
-  corrHS<-vector("list",12) #SpecificHumidity
-
-  Data.months = as.numeric(format(as.Date(rownames(Data)),"%m"))
-  MODHist.months = as.numeric(format(as.Date(rownames(MODHist)),"%m"))
-
-  #Copy original data
-  DataCV = Data
-  DataCV[,2:ncol(DataCV)]= NA
-
-  for (m in 1:12){
-    if(verbose) cat(".")
-    indices = which(Data.months==m)
-    DatTempMonth<-Data[Data.months==m,]
-    ModelTempHistMonth<-MODHist[MODHist.months==m,]
-
-    for(i in 1:length(indices)) {
-      #Remove day of interest
-      DatTemp = DatTempMonth[-i,]
-      ModelTempHist = ModelTempHistMonth[-i, ]
-      #Calculate correction params depending on the correction method
-      corrTmean = .corrParam(DatTemp, ModelTempHist, varmethods, "MeanTemperature", qstep = qstep)
-      if(varmethods["MinTemperature"]=="unbias" && varmethods["MeanTemperature"]=="unbias") {#for unbias use tmean delta (to avoid tmin > tmean)
-        corrTmin = corrTmean
-      } else {
-        corrTmin = .corrParam(DatTemp, ModelTempHist, varmethods, "MinTemperature", "MeanTemperature", qstep = qstep)
-      }
-      if(varmethods["MaxTemperature"]=="unbias" && varmethods["MeanTemperature"]=="unbias") {#for unbias use tmean delta (to avoid tmax < tmean)
-        corrTmax = corrTmean
-      } else {
-        corrTmax = .corrParam(DatTemp, ModelTempHist, varmethods, "MaxTemperature", "MeanTemperature", qstep = qstep)
-      }
-      corrPrec = .corrParam(DatTemp, ModelTempHist, varmethods, "Precipitation", qstep = qstep)
-      corrRad = .corrParam(DatTemp, ModelTempHist, varmethods, "Radiation", qstep = qstep)
-      corrWS = .corrParam(DatTemp, ModelTempHist, varmethods, "WindSpeed", qstep = qstep)
-      HSData<-humidity_relative2specific(Tc=DatTemp[,"MeanTemperature"] ,HR=DatTemp[,"MeanRelativeHumidity"])
-      HSmodelHist<-humidity_relative2specific(Tc=ModelTempHist[,"MeanTemperature"] ,HR=ModelTempHist[,"MeanRelativeHumidity"])
-      if(varmethods["MeanRelativeHumidity"]=="unbias") {
-        corrHS<-mean(HSmodelHist-HSData, na.rm=TRUE)
-      } else if(varmethods["MeanRelativeHumidity"]=="scaling") {
-        corrHS<- as.numeric(lm(HSData~HSmodelHist-1)$coefficients) #slope of a regression through the origin
-      } else if(varmethods["MeanRelativeHumidity"]=="quantmap") {
-        corrHS<-fitQmapDeque(HSData,HSmodelHist, isPrec = FALSE, qstep = qstep)
-      } else if(varmethods["MeanRelativeHumidity"]=="none") {
-        corrHS<-0
-      } else {
-        stop(paste("Wrong correction method for variable:", "MeanRelativeHumidity"))
-      }
-
-      #Apply correction
-      #Correction Tmean
-      DataCV$MeanTemperature[indices[i]] <-.corrApply(ModelTempHistMonth$MeanTemperature[i], corrTmean, varmethods["MeanTemperature"])
-
-      #Correction Tmin
-      if(varmethods["MinTemperature"]=="scaling") {
-        DataCV$MinTemperature[indices[i]]<-DataCV$MeanTemperature[indices[i]] + (pmin(ModelTempHistMonth$MinTemperature[i]-ModelTempHistMonth$MeanTemperature[i],0)*corrTmin)
-      } else if(varmethods["MinTemperature"]=="quantmap") {
-        DataCV$MinTemperature[indices[i]]<-DataCV$MeanTemperature[indices[i]] + .corrApply(pmin(ModelTempHistMonth$MinTemperature[i]-ModelTempHistMonth$MeanTemperature[i],0),
-                                                              corrTmin, varmethods["MinTemperature"])
-      } else {#unbias/none
-        DataCV$MinTemperature[indices[i]]<-.corrApply(ModelTempHistMonth$MinTemperature[i], corrTmin, varmethods["MinTemperature"])
-      }
-
-      #Correction Tmax
-      if(varmethods["MaxTemperature"]=="scaling") {
-        DataCV$MaxTemperature[indices[i]]<-DataCV$MeanTemperature[indices[i]] + (pmax(ModelTempHistMonth$MaxTemperature[i]-ModelTempHistMonth$MeanTemperature[i],0)*corrTmax)
-      } else if(varmethods["MaxTemperature"]=="quantmap") {
-        DataCV$MaxTemperature[indices[i]]<-DataCV$MeanTemperature[indices[i]] + .corrApply(pmax(ModelTempHistMonth$MaxTemperature[i]-ModelTempHistMonth$MeanTemperature[i],0),
-                                                                                           corrTmax, varmethods["MaxTemperature"])
-      } else {#unbias/none
-        DataCV$MaxTemperature[indices[i]]<-.corrApply(ModelTempHistMonth$MaxTemperature[i], corrTmax, varmethods["MaxTemperature"])
-      }
-
-      #Correction Precipitation
-      DataCV$Precipitation[indices[i]]<-.corrApply(ModelTempHistMonth$Precipitation[i], corrPrec, varmethods["Precipitation"])
-
-
-      #Correction Rg
-      DataCV$Radiation[indices[i]]<-.corrApply(ModelTempHistMonth$Radiation[i], corrRad, varmethods["Radiation"])
-      if(DataCV$Radiation[indices[i]]<0)  DataCV$Radiation[indices[i]]=0
-
-
-      #Correction WS (if NA then use input WS)
-      if(!(is.na(corrWS)[1])) {
-        DataCV$WindSpeed[indices[i]]<-.corrApply(ModelTempHistMonth$WindSpeed[i], corrWS, varmethods["WindSpeed"])
-      }
-      if(DataCV$WindSpeed[indices[i]]<0)  DataCV$WindSpeed[indices[i]]=0
-
-      #Correction RH
-      #First transform RH into specific humidity
-      HSmodelFut<-humidity_relative2specific(Tc=ModelTempHistMonth$MeanTemperature[i] ,HR=ModelTempHistMonth$MeanRelativeHumidity[i])
-      #Second apply the bias to specific humidity
-      HSmodelFut.cor<-.corrApply(HSmodelFut, corrHS, varmethods["MeanRelativeHumidity"])
-      #Back transform to relative humidity (mean, max, min)
-      DataCV$MeanRelativeHumidity[indices[i]]<-min(100,max(0,humidity_specific2relative(Tc=DataCV$MeanTemperature[indices[i]] ,HS=HSmodelFut.cor, allow_saturated)))
-      DataCV$MaxRelativeHumidity[indices[i]]<-min(100,max(0,humidity_specific2relative(Tc=DataCV$MinTemperature[indices[i]] ,HS=HSmodelFut.cor, allow_saturated)))
-      DataCV$MinRelativeHumidity[indices[i]]<-min(100,max(0,humidity_specific2relative(Tc=DataCV$MaxTemperature[indices[i]] ,HS=HSmodelFut.cor, allow_saturated)))
-
-      #Check RHmin <= RHmean <= RHmax
-      DataCV$MinRelativeHumidity[indices[i]] = pmin(DataCV$MinRelativeHumidity[indices[i]], DataCV$MaxRelativeHumidity[indices[i]])
-      DataCV$MaxRelativeHumidity[indices[i]] = pmax(DataCV$MinRelativeHumidity[indices[i]], DataCV$MaxRelativeHumidity[indices[i]])
-      DataCV$MeanRelativeHumidity[indices[i]] = pmin(pmax(DataCV$MeanRelativeHumidity[indices[i]], DataCV$MinRelativeHumidity[indices[i]]),DataCV$MaxRelativeHumidity[indices[i]])
-
-    }
-  }
-  return(DataCV)
-}
+# .residualonepoint<-function(Data, MODHist, varmethods, allow_saturated = FALSE, qstep = 0.01, verbose=TRUE){
+#
+#   # if(verbose) cat(paste(", # historic records = ", nrow(MODHist), sep=""))
+#
+#   corrPrec<-vector("list",12)
+#   corrRad<-vector("list",12)
+#   corrTmean<-vector("list",12)
+#   corrTmin<-vector("list",12)
+#   corrTmax<-vector("list",12)
+#   corrWS<-vector("list",12) #WindSpeed
+#   corrHS<-vector("list",12) #SpecificHumidity
+#
+#   Data.months = as.numeric(format(as.Date(rownames(Data)),"%m"))
+#   MODHist.months = as.numeric(format(as.Date(rownames(MODHist)),"%m"))
+#
+#   #Copy original data
+#   DataCV = Data
+#   DataCV[,2:ncol(DataCV)]= NA
+#
+#   for (m in 1:12){
+#     if(verbose) cat(".")
+#     indices = which(Data.months==m)
+#     DatTempMonth<-Data[Data.months==m,]
+#     ModelTempHistMonth<-MODHist[MODHist.months==m,]
+#
+#     for(i in 1:length(indices)) {
+#       #Remove day of interest
+#       DatTemp = DatTempMonth[-i,]
+#       ModelTempHist = ModelTempHistMonth[-i, ]
+#       #Calculate correction params depending on the correction method
+#       corrTmean = .corrParam(DatTemp, ModelTempHist, varmethods, "MeanTemperature", qstep = qstep)
+#       if(varmethods["MinTemperature"]=="unbias" && varmethods["MeanTemperature"]=="unbias") {#for unbias use tmean delta (to avoid tmin > tmean)
+#         corrTmin = corrTmean
+#       } else {
+#         corrTmin = .corrParam(DatTemp, ModelTempHist, varmethods, "MinTemperature", "MeanTemperature", qstep = qstep)
+#       }
+#       if(varmethods["MaxTemperature"]=="unbias" && varmethods["MeanTemperature"]=="unbias") {#for unbias use tmean delta (to avoid tmax < tmean)
+#         corrTmax = corrTmean
+#       } else {
+#         corrTmax = .corrParam(DatTemp, ModelTempHist, varmethods, "MaxTemperature", "MeanTemperature", qstep = qstep)
+#       }
+#       corrPrec = .corrParam(DatTemp, ModelTempHist, varmethods, "Precipitation", qstep = qstep)
+#       corrRad = .corrParam(DatTemp, ModelTempHist, varmethods, "Radiation", qstep = qstep)
+#       corrWS = .corrParam(DatTemp, ModelTempHist, varmethods, "WindSpeed", qstep = qstep)
+#       HSData<-humidity_relative2specific(Tc=DatTemp[,"MeanTemperature"] ,HR=DatTemp[,"MeanRelativeHumidity"])
+#       HSmodelHist<-humidity_relative2specific(Tc=ModelTempHist[,"MeanTemperature"] ,HR=ModelTempHist[,"MeanRelativeHumidity"])
+#       if(varmethods["MeanRelativeHumidity"]=="unbias") {
+#         corrHS<-mean(HSmodelHist-HSData, na.rm=TRUE)
+#       } else if(varmethods["MeanRelativeHumidity"]=="scaling") {
+#         corrHS<- as.numeric(lm(HSData~HSmodelHist-1)$coefficients) #slope of a regression through the origin
+#       } else if(varmethods["MeanRelativeHumidity"]=="quantmap") {
+#         corrHS<-fitQmapDeque(HSData,HSmodelHist, isPrec = FALSE, qstep = qstep)
+#       } else if(varmethods["MeanRelativeHumidity"]=="none") {
+#         corrHS<-0
+#       } else {
+#         stop(paste("Wrong correction method for variable:", "MeanRelativeHumidity"))
+#       }
+#
+#       #Apply correction
+#       #Correction Tmean
+#       DataCV$MeanTemperature[indices[i]] <-.corrApply(ModelTempHistMonth$MeanTemperature[i], corrTmean, varmethods["MeanTemperature"])
+#
+#       #Correction Tmin
+#       if(varmethods["MinTemperature"]=="scaling") {
+#         DataCV$MinTemperature[indices[i]]<-DataCV$MeanTemperature[indices[i]] + (pmin(ModelTempHistMonth$MinTemperature[i]-ModelTempHistMonth$MeanTemperature[i],0)*corrTmin)
+#       } else if(varmethods["MinTemperature"]=="quantmap") {
+#         DataCV$MinTemperature[indices[i]]<-DataCV$MeanTemperature[indices[i]] + .corrApply(pmin(ModelTempHistMonth$MinTemperature[i]-ModelTempHistMonth$MeanTemperature[i],0),
+#                                                               corrTmin, varmethods["MinTemperature"])
+#       } else {#unbias/none
+#         DataCV$MinTemperature[indices[i]]<-.corrApply(ModelTempHistMonth$MinTemperature[i], corrTmin, varmethods["MinTemperature"])
+#       }
+#
+#       #Correction Tmax
+#       if(varmethods["MaxTemperature"]=="scaling") {
+#         DataCV$MaxTemperature[indices[i]]<-DataCV$MeanTemperature[indices[i]] + (pmax(ModelTempHistMonth$MaxTemperature[i]-ModelTempHistMonth$MeanTemperature[i],0)*corrTmax)
+#       } else if(varmethods["MaxTemperature"]=="quantmap") {
+#         DataCV$MaxTemperature[indices[i]]<-DataCV$MeanTemperature[indices[i]] + .corrApply(pmax(ModelTempHistMonth$MaxTemperature[i]-ModelTempHistMonth$MeanTemperature[i],0),
+#                                                                                            corrTmax, varmethods["MaxTemperature"])
+#       } else {#unbias/none
+#         DataCV$MaxTemperature[indices[i]]<-.corrApply(ModelTempHistMonth$MaxTemperature[i], corrTmax, varmethods["MaxTemperature"])
+#       }
+#
+#       #Correction Precipitation
+#       DataCV$Precipitation[indices[i]]<-.corrApply(ModelTempHistMonth$Precipitation[i], corrPrec, varmethods["Precipitation"])
+#
+#
+#       #Correction Rg
+#       DataCV$Radiation[indices[i]]<-.corrApply(ModelTempHistMonth$Radiation[i], corrRad, varmethods["Radiation"])
+#       if(DataCV$Radiation[indices[i]]<0)  DataCV$Radiation[indices[i]]=0
+#
+#
+#       #Correction WS (if NA then use input WS)
+#       if(!(is.na(corrWS)[1])) {
+#         DataCV$WindSpeed[indices[i]]<-.corrApply(ModelTempHistMonth$WindSpeed[i], corrWS, varmethods["WindSpeed"])
+#       }
+#       if(DataCV$WindSpeed[indices[i]]<0)  DataCV$WindSpeed[indices[i]]=0
+#
+#       #Correction RH
+#       #First transform RH into specific humidity
+#       HSmodelFut<-humidity_relative2specific(Tc=ModelTempHistMonth$MeanTemperature[i] ,HR=ModelTempHistMonth$MeanRelativeHumidity[i])
+#       #Second apply the bias to specific humidity
+#       HSmodelFut.cor<-.corrApply(HSmodelFut, corrHS, varmethods["MeanRelativeHumidity"])
+#       #Back transform to relative humidity (mean, max, min)
+#       DataCV$MeanRelativeHumidity[indices[i]]<-min(100,max(0,humidity_specific2relative(Tc=DataCV$MeanTemperature[indices[i]] ,HS=HSmodelFut.cor, allow_saturated)))
+#       DataCV$MaxRelativeHumidity[indices[i]]<-min(100,max(0,humidity_specific2relative(Tc=DataCV$MinTemperature[indices[i]] ,HS=HSmodelFut.cor, allow_saturated)))
+#       DataCV$MinRelativeHumidity[indices[i]]<-min(100,max(0,humidity_specific2relative(Tc=DataCV$MaxTemperature[indices[i]] ,HS=HSmodelFut.cor, allow_saturated)))
+#
+#       #Check RHmin <= RHmean <= RHmax
+#       DataCV$MinRelativeHumidity[indices[i]] = pmin(DataCV$MinRelativeHumidity[indices[i]], DataCV$MaxRelativeHumidity[indices[i]])
+#       DataCV$MaxRelativeHumidity[indices[i]] = pmax(DataCV$MinRelativeHumidity[indices[i]], DataCV$MaxRelativeHumidity[indices[i]])
+#       DataCV$MeanRelativeHumidity[indices[i]] = pmin(pmax(DataCV$MeanRelativeHumidity[indices[i]], DataCV$MinRelativeHumidity[indices[i]]),DataCV$MaxRelativeHumidity[indices[i]])
+#
+#     }
+#   }
+#   return(DataCV)
+# }
 
 #' @describeIn correctionpoints `r lifecycle::badge('deprecated')`
 #' @export

@@ -25,18 +25,19 @@
 "_PACKAGE"
 
 ## usethis namespace: start
+# #' @importFrom utils head tail
+# #' @importFrom methods as new is slot .valueClassTest coerce
+# #' @importFrom grDevices topo.colors colorRampPalette
+# #' @importFrom graphics lines par hist abline
+# #' @import stars sf
 #' @importFrom lifecycle deprecated
 #' @importFrom Rcpp evalCpp
 #' @importFrom Rcpp sourceCpp
 #' @importFrom cubelyr tbl_cube
-#' @importFrom stats aggregate lm complete.cases cor approx na.omit quantile sd dist var rlnorm
-#' @importFrom utils setTxtProgressBar txtProgressBar write.table read.table head tail
-#' @importFrom methods as new is slot .valueClassTest coerce
-#' @importFrom grDevices topo.colors colorRampPalette
-#' @importFrom graphics lines par hist abline
+#' @importFrom stats aggregate complete.cases cor
 #' @importFrom dplyr .data
 #' @importFrom rlang :=
+#' @importFrom methods .valueClassTest
 #' @useDynLib meteoland, .registration = TRUE
-#' @import stars sf
 ## usethis namespace: end
 NULL

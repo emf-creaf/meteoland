@@ -15,20 +15,20 @@
 #' }
 #' @noRd
 .mc_fit<-function(states, months) {
-  stopifnot(length(states) == length(months))
-  ns <- 3
-  s  <- c('d','w','e')
-  states <- as.character(states)
-  states_next <- c(states[2:length(states)],NA)
-  transitions <- lapply(seq(1, 12), function(m) {
-    idx <- which(months==m)
-    t = matrix(0, 3,3,dimnames = list(s,s))
-    for(i in 1:ns) for(j in 1:ns) t[i,j] = sum(states[idx]==s[i] & states_next[idx]==s[j], na.rm=T)
-    t<-sweep(t, 1, rowSums(t, na.rm=T),"/")
-    t[is.na(t)] <- 0
-    t
-  })
-  transitions
+  # stopifnot(length(states) == length(months))
+  # ns <- 3
+  # s  <- c('d','w','e')
+  # states <- as.character(states)
+  # states_next <- c(states[2:length(states)],NA)
+  # transitions <- lapply(seq(1, 12), function(m) {
+  #   idx <- which(months==m)
+  #   t = matrix(0, 3,3,dimnames = list(s,s))
+  #   for(i in 1:ns) for(j in 1:ns) t[i,j] = sum(states[idx]==s[i] & states_next[idx]==s[j], na.rm=T)
+  #   t<-sweep(t, 1, rowSums(t, na.rm=T),"/")
+  #   t[is.na(t)] <- 0
+  #   t
+  # })
+  # transitions
 }
 
 
@@ -49,18 +49,18 @@
 #'
 #' @noRd
 .mc_sim<-function(months, initial, transitions) {
-  n <- length(months)
-
-  states <- as.character(rownames(transitions[[1]]))
-  chain <- as.character(rep(NA, times=n))
-  chain[1] <- as.character(initial)
-
-  for (i in 2:n) {
-    tm <- transitions[[months[i-1]]]
-    p <- as.numeric(tm[which(states==chain[i-1]), ])
-    chain[i] <- sample(states, size=1, prob=p)
-  }
-  return(chain)
+  # n <- length(months)
+  #
+  # states <- as.character(rownames(transitions[[1]]))
+  # chain <- as.character(rep(NA, times=n))
+  # chain[1] <- as.character(initial)
+  #
+  # for (i in 2:n) {
+  #   tm <- transitions[[months[i-1]]]
+  #   p <- as.numeric(tm[which(states==chain[i-1]), ])
+  #   chain[i] <- sample(states, size=1, prob=p)
+  # }
+  # return(chain)
 }
 
 
@@ -82,25 +82,25 @@
 #' threshold amount between wet/extreme)
 #' @noRd
 .mc_state_threshold <- function(x, months, dry_wet_threshold=0.3, wet_extreme_quantile_threshold=0.8) {
-  stopifnot(any(!is.na(x)))
-  stopifnot(any(!is.na(months)))
-  stopifnot(length(x) == length(months))
-
-  thresh <- lapply(seq(1, 12), function(month) {
-    idx <- which(months == month)
-    if (length(idx) > 0) {
-      x.month <- x[idx]
-      x.month <- x.month[x.month>dry_wet_threshold]
-      if(length(x.month)>0) wet_extreme_threshold <- as.numeric(quantile(x.month, probs=wet_extreme_quantile_threshold))
-      else wet_extreme_threshold = dry_wet_threshold + 0.1
-      res <- c(dry_wet=dry_wet_threshold, wet_extreme = wet_extreme_threshold)
-    } else {
-      res <- c(dry_wet=NA, wet_extreme=NA)
-    }
-    res
-  })
-
-  thresh
+  # stopifnot(any(!is.na(x)))
+  # stopifnot(any(!is.na(months)))
+  # stopifnot(length(x) == length(months))
+  #
+  # thresh <- lapply(seq(1, 12), function(month) {
+  #   idx <- which(months == month)
+  #   if (length(idx) > 0) {
+  #     x.month <- x[idx]
+  #     x.month <- x.month[x.month>dry_wet_threshold]
+  #     if(length(x.month)>0) wet_extreme_threshold <- as.numeric(quantile(x.month, probs=wet_extreme_quantile_threshold))
+  #     else wet_extreme_threshold = dry_wet_threshold + 0.1
+  #     res <- c(dry_wet=dry_wet_threshold, wet_extreme = wet_extreme_threshold)
+  #   } else {
+  #     res <- c(dry_wet=NA, wet_extreme=NA)
+  #   }
+  #   res
+  # })
+  #
+  # thresh
 }
 
 
@@ -117,21 +117,21 @@
 #' @param states character list of markov states
 #' @noRd
 .mc_assign_states <- function(x, months, thresholds) {
-  stopifnot(length(x)==length(months))
-  stopifnot(length(thresholds)==12)
-
-  states <- c('d','w','e')
-  state <- lapply(seq(1, 12), function(month) {
-    idx <- which(months == month)
-    if (length(idx) > 0) {
-      x.month <- x[idx]
-      res <- cut(x.month, breaks=c(0, thresholds[[month]], Inf), include.lowest=TRUE, right=TRUE, labels=states)
-    } else {
-      res <- character()
-    }
-    res
-  })
-  return(as.character(unlist(state)))
+  # stopifnot(length(x)==length(months))
+  # stopifnot(length(thresholds)==12)
+  #
+  # states <- c('d','w','e')
+  # state <- lapply(seq(1, 12), function(month) {
+  #   idx <- which(months == month)
+  #   if (length(idx) > 0) {
+  #     x.month <- x[idx]
+  #     res <- cut(x.month, breaks=c(0, thresholds[[month]], Inf), include.lowest=TRUE, right=TRUE, labels=states)
+  #   } else {
+  #     res <- character()
+  #   }
+  #   res
+  # })
+  # return(as.character(unlist(state)))
 }
 
 # Apipattanavis, S., G. Podesta, B. Rajagopalan, and R. W. Katz (2007), A
@@ -139,65 +139,65 @@
 # Resour. Res., 43, W11401, doi:10.1029/2006WR005714.
 .mcknn_weathergeneration<-function(x, ndays = NULL, params = defaultGenerationParams()) {
 
-  months = x$Month
-  # print(sum(is.na(months)))
-  if(is.null(ndays)) ndays = length(months)
-  prec = x$Precipitation
-  sd_prec = sd(prec)
-  meantemp = x$MeanTemperature
-  sd_meantemp = sd(meantemp)
-  thresh <- .mc_state_threshold(prec, months,
-                                dry_wet_threshold = params$dry_wet_threshold,
-                                wet_extreme_quantile_threshold = params$wet_extreme_quantile_threshold)
-  states <- .mc_assign_states(prec, months, thresh)
-  # print(thresh)
-  statePrev <- c(NA, states[1:(length(states)-1)])
-  transition <- .mc_fit(states, months)
-  # print(transition)
-  #Set variable weights
-  w_prec = 100/sd_prec
-  w_meantemp = 10/sd_meantemp
-
-  #Initialize selected days
-  initial <- sample(which(months == months[1]),1)
-  #Generate Precipitation State Series of M day length
-  pss <- .mc_sim(months[1:ndays], states[initial], transition)
-
-  #Initialize vector of selected days
-  days <-initial
-
-  prevSelectedDay <- initial
-  for(ic in 2:length(pss)) {
-    # cat(paste0("ic", ic,":\n"))
-    #Select days centered on the same DOY that have the same sequence of states simulated by the MC for day t and t-1
-    rangeSize = params$range_size_days -1
-    sel = rep(FALSE, length(states))
-    while(sum(sel)==0) {
-      rangeSize = rangeSize+1
-      doyIC = x$DOY[ic]
-      doyrange <- (doyIC-rangeSize):(doyIC+rangeSize)
-      doyrange[doyrange<0] <- (365 + doyrange[doyrange<0])
-      sel = (x$DOY %in% doyrange) & (states == pss[ic]) & (statePrev == states[ic-1])
-      sel[1] = FALSE
-    }
-    selDays <- which(sel)
-    Q <- sum(sel)
-    # cat(paste0("Q", Q,"rs", rangeSize,"\n"))
-    k <- ceiling(sqrt(Q))
-    #Calculate weighted euclidean distances
-    dq <- sqrt(w_prec*((prec[prevSelectedDay] - prec[selDays-1])^2)+
-                 w_meantemp*((meantemp[prevSelectedDay] - meantemp[selDays-1])^2))
-    o <- order(dq)
-    sel_knn <- (dq <= dq[o[k]])
-    selDays = selDays[sel_knn]
-    dq = dq[sel_knn]
-    o = order(dq)
-    w_kernel <- (1/o)/sum(1/o)
-    d <- selDays[sample(1:length(selDays), size=1, prob=w_kernel)]
-    days = c(days, d)
-    prevSelectedDay = d
-  }
-  return(days)
+  # months = x$Month
+  # # print(sum(is.na(months)))
+  # if(is.null(ndays)) ndays = length(months)
+  # prec = x$Precipitation
+  # sd_prec = sd(prec)
+  # meantemp = x$MeanTemperature
+  # sd_meantemp = sd(meantemp)
+  # thresh <- .mc_state_threshold(prec, months,
+  #                               dry_wet_threshold = params$dry_wet_threshold,
+  #                               wet_extreme_quantile_threshold = params$wet_extreme_quantile_threshold)
+  # states <- .mc_assign_states(prec, months, thresh)
+  # # print(thresh)
+  # statePrev <- c(NA, states[1:(length(states)-1)])
+  # transition <- .mc_fit(states, months)
+  # # print(transition)
+  # #Set variable weights
+  # w_prec = 100/sd_prec
+  # w_meantemp = 10/sd_meantemp
+  #
+  # #Initialize selected days
+  # initial <- sample(which(months == months[1]),1)
+  # #Generate Precipitation State Series of M day length
+  # pss <- .mc_sim(months[1:ndays], states[initial], transition)
+  #
+  # #Initialize vector of selected days
+  # days <-initial
+  #
+  # prevSelectedDay <- initial
+  # for(ic in 2:length(pss)) {
+  #   # cat(paste0("ic", ic,":\n"))
+  #   #Select days centered on the same DOY that have the same sequence of states simulated by the MC for day t and t-1
+  #   rangeSize = params$range_size_days -1
+  #   sel = rep(FALSE, length(states))
+  #   while(sum(sel)==0) {
+  #     rangeSize = rangeSize+1
+  #     doyIC = x$DOY[ic]
+  #     doyrange <- (doyIC-rangeSize):(doyIC+rangeSize)
+  #     doyrange[doyrange<0] <- (365 + doyrange[doyrange<0])
+  #     sel = (x$DOY %in% doyrange) & (states == pss[ic]) & (statePrev == states[ic-1])
+  #     sel[1] = FALSE
+  #   }
+  #   selDays <- which(sel)
+  #   Q <- sum(sel)
+  #   # cat(paste0("Q", Q,"rs", rangeSize,"\n"))
+  #   k <- ceiling(sqrt(Q))
+  #   #Calculate weighted euclidean distances
+  #   dq <- sqrt(w_prec*((prec[prevSelectedDay] - prec[selDays-1])^2)+
+  #                w_meantemp*((meantemp[prevSelectedDay] - meantemp[selDays-1])^2))
+  #   o <- order(dq)
+  #   sel_knn <- (dq <= dq[o[k]])
+  #   selDays = selDays[sel_knn]
+  #   dq = dq[sel_knn]
+  #   o = order(dq)
+  #   w_kernel <- (1/o)/sum(1/o)
+  #   d <- selDays[sample(1:length(selDays), size=1, prob=w_kernel)]
+  #   days = c(days, d)
+  #   prevSelectedDay = d
+  # }
+  # return(days)
 }
 
 
@@ -212,22 +212,22 @@
 #' @importFrom stats arima.sim coef
 #' @noRd
 .arima_simulate <- function(model, n) {
-  sim <- arima.sim(n=n,
-                   list(ar=coef(model)[grepl('ar', names(coef(model)))],
-                        ma=coef(model)[grepl('ma', names(coef(model)))]),
-                   sd = sqrt(model$sigma2[[1]]))
-
-  # extract intercept
-  if ('intercept' %in% names(model$coef)) {
-    intercept <- model$coef['intercept']
-  } else {
-    intercept <- 0
-  }
-
-  # add intercept (mean) to current simulation
-  sim <- sim + intercept
-
-  return(as.numeric(sim))
+  # sim <- arima.sim(n=n,
+  #                  list(ar=coef(model)[grepl('ar', names(coef(model)))],
+  #                       ma=coef(model)[grepl('ma', names(coef(model)))]),
+  #                  sd = sqrt(model$sigma2[[1]]))
+  #
+  # # extract intercept
+  # if ('intercept' %in% names(model$coef)) {
+  #   intercept <- model$coef['intercept']
+  # } else {
+  #   intercept <- 0
+  # }
+  #
+  # # add intercept (mean) to current simulation
+  # sim <- sim + intercept
+  #
+  # return(as.numeric(sim))
 }
 
 
@@ -243,29 +243,29 @@
 #' @return vector of sampled years of length n
 #' @noRd
 .knn_annual <- function(prcp, obs_prcp, n=100) {
-  stopifnot(length(prcp)==1)
-  stopifnot(all(!is.na(obs_prcp)))
-
-  k <- round(max(sqrt(length(obs_prcp)), 0.5*length(obs_prcp)), 0)
-  stopifnot(k > 0)
-
-  df <- data.frame(YEAR=as.numeric(format(as.Date(names(obs_prcp)),"%Y")),
-                   PRCP=as.numeric(obs_prcp))
-
-  # compute distances
-  df[, 'DISTANCE'] <- sqrt((prcp - df[['PRCP']])^2)
-  df <- df[order(df[['DISTANCE']]), ]
-
-  # select k nearest
-  df <- df[1:min(nrow(df), k), ]
-
-  # compute sampling probabilities
-  df[, 'ROW'] <- 1:nrow(df)
-  df[, 'PROB'] <- (1/df[, 'ROW'])/(sum(1/df[, 'ROW']))
-  stopifnot(abs(sum(df[['PROB']])-1) < 1e-7)
-
-  selection <- sample(1:nrow(df), size=n, prob=df[['PROB']], replace=TRUE)
-  as.numeric(df[['YEAR']][selection])
+  # stopifnot(length(prcp)==1)
+  # stopifnot(all(!is.na(obs_prcp)))
+  #
+  # k <- round(max(sqrt(length(obs_prcp)), 0.5*length(obs_prcp)), 0)
+  # stopifnot(k > 0)
+  #
+  # df <- data.frame(YEAR=as.numeric(format(as.Date(names(obs_prcp)),"%Y")),
+  #                  PRCP=as.numeric(obs_prcp))
+  #
+  # # compute distances
+  # df[, 'DISTANCE'] <- sqrt((prcp - df[['PRCP']])^2)
+  # df <- df[order(df[['DISTANCE']]), ]
+  #
+  # # select k nearest
+  # df <- df[1:min(nrow(df), k), ]
+  #
+  # # compute sampling probabilities
+  # df[, 'ROW'] <- 1:nrow(df)
+  # df[, 'PROB'] <- (1/df[, 'ROW'])/(sum(1/df[, 'ROW']))
+  # stopifnot(abs(sum(df[['PROB']])-1) < 1e-7)
+  #
+  # selection <- sample(1:nrow(df), size=n, prob=df[['PROB']], replace=TRUE)
+  # as.numeric(df[['YEAR']][selection])
 }
 
 

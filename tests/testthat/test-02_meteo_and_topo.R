@@ -1,3 +1,4 @@
+library(sf)
 ### TODO
 ### This tests should be done with more than meteospain meteo, as we accept also worldmet and
 ### issues from that data can be hidden in these tests. The idea is to create a mixture of

@@ -14,11 +14,11 @@ License: GPL (>= 2)
 URL: https://emf-creaf.github.io/meteoland/index.html
 LazyData: TRUE
 Depends:
-    R (>= 3.5.0),
-    sf,
-    stars
+    R (>= 3.5.0)
 Imports: 
     methods,
+    sf,
+    stars,
     stats,
     Rcpp,
     units,
@@ -32,8 +32,7 @@ Imports:
     ncdfgeom,
     ncmeta,
     lubridate,
-    cubelyr,
-    grDevices
+    cubelyr
 Suggests: 
     knitr,
     rmarkdown,

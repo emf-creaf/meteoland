@@ -3,14 +3,6 @@
 \docType{class}
 \name{SpatialPointsTopography-class}
 \alias{SpatialPointsTopography-class}
-\alias{[,SpatialPointsTopography-method}
-\alias{[,SpatialPointsTopography,ANY,ANY-method}
-\alias{[,SpatialPointsTopography,ANY,ANY,ANY-method}
-\alias{show,SpatialPointsTopography-method}
-\alias{head,SpatialPointsTopography-method}
-\alias{print,SpatialPointsTopography-method}
-\alias{spTransform,SpatialPointsTopography,CRS-method}
-\alias{tail,SpatialPointsTopography-method}
 \title{Class \code{"SpatialPointsTopography"}}
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}

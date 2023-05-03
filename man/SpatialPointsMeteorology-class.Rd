@@ -3,13 +3,6 @@
 \docType{class}
 \name{SpatialPointsMeteorology-class}
 \alias{SpatialPointsMeteorology-class}
-\alias{[,SpatialPointsMeteorology-method}
-\alias{[,SpatialPointsMeteorology,ANY,ANY-method}
-\alias{[,SpatialPointsMeteorology,ANY,ANY,ANY-method}
-\alias{show,SpatialPointsMeteorology-method}
-\alias{head,SpatialPointsMeteorology-method}
-\alias{print,SpatialPointsMeteorology-method}
-\alias{tail,SpatialPointsMeteorology-method}
 \title{Class \code{"SpatialPointsMeteorology"}}
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}

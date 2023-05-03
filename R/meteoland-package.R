@@ -37,6 +37,6 @@
 #' @importFrom dplyr .data
 #' @importFrom rlang :=
 #' @useDynLib meteoland, .registration = TRUE
-#' @import sp stars sf
+#' @import stars sf
 ## usethis namespace: end
 NULL

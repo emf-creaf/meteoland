@@ -64,9 +64,9 @@ spxt = SpatialPixelsTopography(spt[p], spt$elevation[p],
                               spt$slope[p],
                               spt$aspect[p])
 
-#Alternatively, use coercing and subsetting (drop = TRUE causes grid to be recalculated) 
-spxt = as(examplegridtopography, "SpatialPixelsTopography")[p, drop=TRUE]          
-                              
+#Alternatively, use coercing and subsetting (drop = TRUE causes grid to be recalculated)
+spxt = as(examplegridtopography, "SpatialPixelsTopography")[p, drop=TRUE]
+
 #Display data
 spplot(spxt, variable="elevation", scales=list(draw=TRUE))
 spplot(spxt, variable="slope", scales=list(draw=TRUE))

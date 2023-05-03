@@ -3,10 +3,6 @@
 \docType{class}
 \name{SpatialPixelsTopography-class}
 \alias{SpatialPixelsTopography-class}
-\alias{[,SpatialPixelsTopography-method}
-\alias{[,SpatialPixelsTopography,ANY,ANY-method}
-\alias{[,SpatialPixelsTopography,ANY,ANY,ANY-method}
-\alias{show,SpatialPixelsTopography-method}
 \title{Class \code{"SpatialPixelsTopography"}}
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}

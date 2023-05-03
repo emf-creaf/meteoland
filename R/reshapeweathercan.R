@@ -5,7 +5,7 @@ reshapeweathercan<-function(hourly_data, daily_data = NULL, output="SpatialPoint
 
   lifecycle::deprecate_stop(
     when = "2.0.0", what = "reshapeweathercan()", with = NULL,
-    details = "reshapeweathercan is deprecated and will dissapear from future versions of meteoland"
+    details = "reshapeweathercan is deprecated"
   )
 
   # output <- match.arg(output, c("SpatialPointsMeteorology", "SpatialPointsTopography", "MeteorologyInterpolationData"))

@@ -49,7 +49,7 @@ meteoplot<-function(object, index=1, var="MeanTemperature",
   # deprecation warning
   lifecycle::deprecate_stop(
     when = "2.0.0", what = "meteoplot()", with = NULL,
-    details = "Spatial_*_Meteorology classes are soft deprecated.
+    details = "Spatial_*_Meteorology classes are deprecated.
     Meteo objects are now sf objects and can be plotted as any other data.frame"
   )
 

@@ -149,7 +149,7 @@ interpolationpixels<-function(object, pixels, dates = NULL,
   # deprecation warning
   lifecycle::deprecate_stop(
     when = "2.0.0", what = "interpolationpixels()", with = "interpolate_data()",
-    details = "Spatial_*_Topography and MetereologyInterpolationData classes are soft deprecated.
+    details = "Spatial_*_Topography and MetereologyInterpolationData classes are deprecated.
     Interpolator should be created with create_meteo_interpolator(),
     and spatial objects to interpolate should be from sf (vector) or star (raster) classes.
     Interpolation is performed with interpolate_data()"

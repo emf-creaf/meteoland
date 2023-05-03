@@ -43,7 +43,7 @@ readWindNinjaWindFields<-function(filebase, resolution = "100m",
 
   lifecycle::deprecate_stop(
     when = "2.0.0", what = "readWindNinjaWindFields()", with = NULL,
-    details = "readWindNinjaWindFields is deprecated and will dissapear from future versions of meteoland"
+    details = "readWindNinjaWindFields is deprecated"
   )
 
   # nraster = (8*length(speedClasses))

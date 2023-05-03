@@ -35,7 +35,7 @@ MeteorologyUncorrectedData<-function(points, reference_data, projection_data, da
 
   lifecycle::deprecate_stop(
     when = "2.0.0", what = "MeteorologyUncorrectedData()", with = NULL,
-    details = "Correction methods and data classes are soft deprecated.
+    details = "Correction methods and data classes are deprecated.
     Better bias correction methods are provided by other packages (see package `MBC` for example)"
   )
 #

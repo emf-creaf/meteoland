@@ -30,7 +30,7 @@ mergegrids<-function(..., verbose = TRUE) {
   # deprecation warning
   lifecycle::deprecate_stop(
     when = "2.0.0", what = "mergegrids()", with = NULL,
-    details = "Spatial_*_Meteorology classes are soft deprecated.
+    details = "Spatial_*_Meteorology classes are deprecated.
     Meteo objects are now sf objects and can be merged, joined or filtered as any data.frame"
   )
   # l <- list(...)
@@ -93,7 +93,7 @@ mergepoints<-function(..., verbose = TRUE) {
   # deprecation warning
   lifecycle::deprecate_stop(
     when = "2.0.0", what = "mergegrids()", with = NULL,
-    details = "Spatial_*_Meteorology classes are soft deprecated.
+    details = "Spatial_*_Meteorology classes are deprecated.
     Meteo objects are now sf objects and can be merged, joined or filtered as any data.frame"
   )
 

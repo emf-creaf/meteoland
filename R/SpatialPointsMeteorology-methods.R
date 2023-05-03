@@ -38,7 +38,7 @@ SpatialPointsMeteorology<-function(points, data, dates, dataByDate = FALSE) {
   # deprecation notice
   lifecycle::deprecate_stop(
     when = "2.0.0", what = "SpatialPointsMeteorology()", with = NULL,
-    details = "Spatial_*_Meteorology classes are soft deprecated.
+    details = "Spatial_*_Meteorology classes are deprecated.
     Meteorology objects are now normal sf points objects"
   )
 

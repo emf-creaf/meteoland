@@ -56,7 +56,7 @@ writemeteorologypoint<-function(data, file, format = "meteoland/txt") {
 
   lifecycle::deprecate_stop(
     when = "2.0.0", what = "writemeteorologypoint()", with = NULL,
-    details = "writemeteorologypoint is deprecated and will dissapear from future versions of meteoland"
+    details = "writemeteorologypoint is deprecated"
   )
 
   # format = match.arg(format, c("meteoland/txt", "meteoland/rds", "castanea/txt", "castanea/rds"))
@@ -88,7 +88,7 @@ writemeteorologypointfiles<-function(object, dir=getwd(), format ="meteoland/txt
 
   lifecycle::deprecate_stop(
     when = "2.0.0", what = "writemeteorologypointfiles()", with = NULL,
-    details = "writemeteorologypointfiles is deprecated and will dissapear from future versions of meteoland"
+    details = "writemeteorologypointfiles is deprecated"
   )
 
   # format = match.arg(format, c("meteoland/txt", "meteoland/rds", "castanea/txt", "castanea/rds"))
@@ -126,7 +126,7 @@ writemeteorologypoints<-function(object, file, format = "netCDF", add = FALSE,
 
   lifecycle::deprecate_stop(
     when = "2.0.0", what = "writemeteorologypoints()", with = NULL,
-    details = "writemeteorologypoints is deprecated and will dissapear from future versions of meteoland"
+    details = "writemeteorologypoints is deprecated"
   )
 
   # if(!inherits(object,"SpatialPointsMeteorology")) stop("'object' has to be of class 'SpatialGridMeteorology'.")

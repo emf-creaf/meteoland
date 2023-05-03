@@ -29,7 +29,7 @@ correction_series<-function(obs, mod, proj = NULL, method = "unbias", isPrec=TRU
   # deprecation warning
   lifecycle::deprecate_stop(
     when = "2.0.0", what = "correction_series()", with = NULL,
-    details = "Correction methods and data classes are soft deprecated.
+    details = "Correction methods and data classes are deprecated.
     Better bias correction methods are provided by other packages (see package `MBC` for example)"
   )
 
@@ -51,7 +51,7 @@ correctionpoint<-function(obs, mod, proj, dates = NULL, params = defaultCorrecti
   # deprecation warning
   lifecycle::deprecate_stop(
     when = "2.0.0", what = "correctionpoint()", with = NULL,
-    details = "Correction methods and data classes are soft deprecated.
+    details = "Correction methods and data classes are deprecated.
     Better bias correction methods are provided by other packages (see package `MBC` for example)"
   )
 
@@ -217,7 +217,7 @@ correctionpoints<-function(object, points, topodata = NULL, dates = NULL, export
   # deprecation warning
   lifecycle::deprecate_stop(
     when = "2.0.0", what = "correctionpoints()", with = NULL,
-    details = "Correction methods and data classes are soft deprecated.
+    details = "Correction methods and data classes are deprecated.
     Better bias correction methods are provided by other packages (see package `MBC` for example)"
   )
 

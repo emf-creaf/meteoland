@@ -20,7 +20,7 @@ SpatialGridMeteorology<-function(grid, proj4string=as.character(NA), data, dates
   # deprecation notice
   lifecycle::deprecate_stop(
     when = "2.0.0", what = "SpatialGridMeteorology()", with = NULL,
-    details = "Spatial_*_Meteorology classes are soft deprecated.
+    details = "Spatial_*_Meteorology classes are deprecated.
     Meteorology objects are now normal sf points objects"
   )
 

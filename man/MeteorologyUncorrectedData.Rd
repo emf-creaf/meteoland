@@ -48,7 +48,7 @@ See correction details in vignettes or in \code{\link{correctionpoints}}.
 }
 \seealso{
 \code{\linkS4class{MeteorologyUncorrectedData}},
-\code{\link{examplecorrectiondata}}, \code{\link{defaultCorrectionParams}}.
+\code{\link{defaultCorrectionParams}}.
 }
 \author{
 Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF

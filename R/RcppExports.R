@@ -371,28 +371,6 @@ interpolation_dewtemperature <- function(Xp, Yp, Zp, X, Y, Z, T, iniRp = 140000,
 #'   iterations, popcrit, fmax, debug
 #' )
 #'
-#' data("exampleinterpolationdata")
-#' mxt100 = exampleinterpolationdata@MaxTemperature[,100]
-#' Psmooth100 = exampleinterpolationdata@SmoothedPrecipitation[,100]
-#' P100 = exampleinterpolationdata@Precipitation[,100]
-#' mismxt = is.na(mxt100)
-#' misP = is.na(P100)
-#' Z = exampleinterpolationdata@elevation
-#' X = exampleinterpolationdata@coords[,1]
-#' Y = exampleinterpolationdata@coords[,2]
-#' Zpv = seq(0,1000, by=100)
-#' xp = 360000
-#' yp = 4640000
-#' xpv = rep(xp, 11)
-#' ypv = rep(yp, 11)
-#'
-#' interpolation_temperature(xpv, ypv, Zpv,
-#'                           X[!mismxt], Y[!mismxt], Z[!mismxt],
-#'                           mxt100[!mismxt])
-#' interpolation_precipitation(xpv, ypv, Zpv,
-#'                            X[!misP], Y[!misP], Z[!misP],
-#'                            P100[!misP], Psmooth100[!misP])
-#'
 #' @export
 interpolation_temperature <- function(Xp, Yp, Zp, X, Y, Z, T, iniRp = 140000, alpha = 3.0, N = 30L, iterations = 3L, debug = FALSE) {
     .Call(`_meteoland_interpolateTemperaturePoints`, Xp, Yp, Zp, X, Y, Z, T, iniRp, alpha, N, iterations, debug)

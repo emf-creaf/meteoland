@@ -38,7 +38,7 @@ setClass("MeteorologyProcedureData", slots = list(dates = "Date"), contains= cha
 #' @author Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF
 #' @seealso \code{\link{MeteorologyUncorrectedData}},
 #' \code{\link{MeteorologyProcedureData-class}},
-#' \code{\link{examplecorrectiondata}}, \code{\link{subsample}}
+#' \code{\link{subsample}}
 #' @keywords classes
 #' @examples
 #'

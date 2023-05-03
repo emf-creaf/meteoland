@@ -25,7 +25,7 @@ showClass("MeteorologyUncorrectedData")
 \seealso{
 \code{\link{MeteorologyUncorrectedData}},
 \code{\link{MeteorologyProcedureData-class}},
-\code{\link{examplecorrectiondata}}, \code{\link{subsample}}
+\code{\link{subsample}}
 }
 \author{
 Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF

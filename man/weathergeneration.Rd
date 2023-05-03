@@ -49,30 +49,6 @@ the target year. Annual precipitation is conditioned using a lognormal
 random trial of the precipitation corresponding to the selected years.
 Recommended to generate stochastic series from climate change projections. }
 }
-\examples{
-
-\donttest{
-data(examplegridtopography)
-data(exampleinterpolationdata)
-
-#Creates spatial topography points from the grid
-p = 1:2
-spt = as(examplegridtopography, "SpatialPointsTopography")[p]
-
-#Interpolation of two points for the whole time period (2000-2003)
-mp = interpolationpoints(exampleinterpolationdata, spt)
-
-#Plot interpolated meteorological series
-meteoplot(mp,1, ylab="Mean temperature")
-
-#Generate a stochastic series using interpolated data as template
-y = weathergeneration(mp)
-
-#Plot generated meteorological series
-meteoplot(y,1, ylab="Mean temperature")
-}
-
-}
 \references{
 Apipattanavis, S., G. Podesta, B. Rajagopalan, and R. W. Katz
 (2007), A semiparametric multivariate and multisite weather generator, Water

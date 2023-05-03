@@ -23,7 +23,7 @@ showClass("SpatialPointsTopography")
 }
 \seealso{
 \code{\link{SpatialPointsTopography}},
-\code{\link{SpatialPointsDataFrame-class}}
+\code{SpatialPointsDataFrame}
 }
 \author{
 Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF

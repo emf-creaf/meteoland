@@ -25,15 +25,6 @@
 #' @references De Caceres M, Martin-StPaul N, Turco M, Cabon A, Granda V (2018)
 #' Estimating daily meteorological data and downscaling climate models over
 #' landscapes. Environmental Modelling and Software 108: 186-196.
-#' @examples
-#'
-#' data(exampleinterpolationdata)
-#'
-#' #Number of days with data per station
-#' head(interpolation.coverage(exampleinterpolationdata))
-#'
-#' #Number of stations with data per day
-#' head(interpolation.coverage(exampleinterpolationdata, type = "temporal"))
 #'
 #' @export
 interpolation.coverage<-function(object, type="spatial", percent = FALSE) {

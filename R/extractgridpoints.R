@@ -1,23 +1,23 @@
-.extractSGMSPMindexdata<-function(grid, index) {
-  gdates = grid@dates
-  ndates = length(gdates)
-  varnames = names(grid@data[[1]])
-  df = data.frame(matrix(NA, nrow = ndates, ncol=length(varnames)))
-  colnames(df)= varnames
-  rownames(df)=as.character(gdates)
-  ng = nrow(grid@data[[1]])
-  if(inherits(grid,"SpatialPixelsMeteorology")) {
-    index = which(grid@grid.index==index)
-    if(length(index)==0) stop("This grid index does not have data.")
-  } else {
-    if(!(index %in% 1:ng)) stop(paste("Supplied grid index outside ", ng, " grid cells."))
-  }
-  for(i in 1:ndates) {
-    obs = grid@data[[i]]
-    df[i,] = obs[index,]
-  }
-  return(df)
-}
+# .extractSGMSPMindexdata<-function(grid, index) {
+#   gdates = grid@dates
+#   ndates = length(gdates)
+#   varnames = names(grid@data[[1]])
+#   df = data.frame(matrix(NA, nrow = ndates, ncol=length(varnames)))
+#   colnames(df)= varnames
+#   rownames(df)=as.character(gdates)
+#   ng = nrow(grid@data[[1]])
+#   if(inherits(grid,"SpatialPixelsMeteorology")) {
+#     index = which(grid@grid.index==index)
+#     if(length(index)==0) stop("This grid index does not have data.")
+#   } else {
+#     if(!(index %in% 1:ng)) stop(paste("Supplied grid index outside ", ng, " grid cells."))
+#   }
+#   for(i in 1:ndates) {
+#     obs = grid@data[[i]]
+#     df[i,] = obs[index,]
+#   }
+#   return(df)
+# }
 #' @describeIn extractdates `r lifecycle::badge("deprecated")`
 #' @export
 extractgridindex<-function(grid, index) {

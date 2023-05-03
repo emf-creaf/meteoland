@@ -50,7 +50,7 @@ describing all written files.}
 }
 \value{
 Function \code{downloadAEMETstationlist} returns a
-\code{\link{SpatialPointsDataFrame-class}} object containing the list of
+\code{SpatialPointsDataFrame} object containing the list of
 AEMET weather stations for which historical climatic series are available
 and can be retrieved using \code{downloadAEMEThistorical}.
 
@@ -61,12 +61,12 @@ current date. If \code{export = FALSE}, function
 \code{\link{SpatialPointsMeteorology-class}} object with the downloaded
 meteorology for each station (point). Otherwise the function writes on the
 disk at the location specified by \code{exportDir} and solely returns a
-\code{\link{SpatialPointsDataFrame-class}} object containing the files
+\code{SpatialPointsDataFrame} object containing the files
 metadata.
 
 Function \code{downloadAEMETcurrentday} downloads recent weather (the last
 24h) from all currently available stations and returns data frame if
-\code{daily = FALSE} or a \code{\link{SpatialPointsDataFrame-class}} object
+\code{daily = FALSE} or a \code{SpatialPointsDataFrame} object
 with observations aggregated at the daily scale if else.
 }
 \description{

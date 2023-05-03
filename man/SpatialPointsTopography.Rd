@@ -13,7 +13,7 @@ SpatialPointsTopography(
 )
 }
 \arguments{
-\item{points}{An object of class \code{\link{SpatialPoints-class}}.}
+\item{points}{An object of class \code{SpatialPoints}.}
 
 \item{elevation}{Elevation values (in m) of the points.}
 
@@ -21,9 +21,9 @@ SpatialPointsTopography(
 
 \item{aspect}{Aspect values (in degrees from North) of the points.}
 
-\item{proj4string}{Object of class \code{\linkS4class{CRS}} in the first
+\item{proj4string}{Object of class \code{CRS} in the first
 form only used when points does not inherit from
-\code{\linkS4class{Spatial}}.}
+\code{Spatial}.}
 }
 \value{
 Function \code{SpatialPointsTopography} returns an object
@@ -40,23 +40,6 @@ for a set of points.
 If either \code{slope = NULL} or \code{aspect = NULL} then when estimating
 weather on the object locations radiation will be calculated assuming a flat
 surface.
-}
-\examples{
-
-data(examplegridtopography)
-
-#Creates spatial topography points from the grid
-p = 1:2
-points = as(examplegridtopography,"SpatialPoints")[p]
-spt = SpatialPointsTopography(points, examplegridtopography$elevation[p],
-                              examplegridtopography$slope[p],
-                              examplegridtopography$aspect[p])
-spt
-
-#Alternatively, use coercing and subsetting
-spt = as(examplegridtopography, "SpatialPointsTopography")[p]
-spt
-
 }
 \seealso{
 \code{\link{SpatialPointsTopography-class}}

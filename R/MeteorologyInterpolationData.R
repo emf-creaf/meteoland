@@ -22,7 +22,7 @@
 #' weather stations in rows and days in columns, but \code{Precipitation},
 #' \code{RelativeHumidity}, \code{Radiation}, \code{WindSpeed} and
 #' \code{WindDirection} may be left as \code{NULL}.} \item{The third way is using
-#' an object of \code{\link{SpatialPoints}} containing the coordinates of
+#' an object of \code{SpatialPoints} containing the coordinates of
 #' stations only. In this case \code{elevation} has to be provided, but
 #' \code{aspect} and \code{slope} may be omitted. As in the second case,
 #' parameters \code{MinTemperature} and \code{MaxTemperature} will need to be
@@ -31,7 +31,7 @@
 #'
 #' @param points An object of class \code{\link{SpatialPointsMeteorology}}, an
 #' object of \code{\link{SpatialPointsTopography}} or an object of class
-#' \code{\link{SpatialPoints}} (see 'Details'').
+#' \code{SpatialPoints} (see 'Details'').
 #' @param elevation A numeric vector with elevation values of weather stations
 #' (in meters).
 #' @param slope A numeric vector with slope values of weather stations (in

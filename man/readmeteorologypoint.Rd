@@ -41,13 +41,13 @@ read from files is kept.}
 \item{sep}{The field separator character for ascii text files (see
 \code{\link{read.table}}).}
 
-\item{points}{An object of class \code{\link{SpatialPoints-class}} (in this
+\item{points}{An object of class \code{SpatialPoints} (in this
 case \code{files} cannot be \code{NULL}) or object of class
-\code{\link{SpatialPointsDataFrame-class}} with two data columns:
+\code{SpatialPointsDataFrame} with two data columns:
 '\code{dir}' and '\code{filename}' (and possibly '\code{format}').}
 
 \item{files}{A vector of strings to be read (when \code{points} is of class
-\code{\link{SpatialPoints-class}}). Length and order must match
+\code{SpatialPoints}). Length and order must match
 \code{points}.}
 
 \item{stations}{An integer vector or string vector identifying point indices

@@ -43,8 +43,8 @@
 #' The aspect value is then converted to compass direction values (0-360
 #' degrees).
 #'
-#' @param grid An object of class \code{\link{GridTopology-class}} or
-#' \code{\link{SpatialGrid-class}}.
+#' @param grid An object of class \code{GridTopology} or
+#' \code{SpatialGrid}.
 #' @param elevation A vector of elevation values for all cells of the grid (in
 #' m.a.s.l.).
 #' @param slope A vector of slope angles for all cells of the grid (in
@@ -52,7 +52,7 @@
 #' @param aspect A vector of aspect angles for all cells of the grid (in
 #' degrees from North clockwise ). \code{aspect=NULL}, aspect values are
 #' calculated as indicated in details.
-#' @param proj4string An object of class \code{\link{CRS-class}}.
+#' @param proj4string An object of class \code{CRS}.
 #' @return Function \code{SpatialGridTopography} returns an object
 #' '\code{\link{SpatialGridTopography-class}}'.
 #' @author Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF

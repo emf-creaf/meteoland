@@ -23,7 +23,7 @@ showClass("SpatialPointsMeteorology")
 }
 \seealso{
 \code{\link{SpatialPointsTopography-class}},
-\code{\link{SpatialPoints-class}}
+\code{SpatialPoints}
 }
 \author{
 Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF

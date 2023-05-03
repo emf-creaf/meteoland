@@ -21,7 +21,7 @@
 #' \code{\link{SpatialPointsMeteorology}}.
 #' @author Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF
 #' @seealso \code{\link{SpatialPointsTopography-class}},
-#' \code{\link{SpatialPoints-class}}
+#' \code{SpatialPoints}
 #' @keywords classes
 #' @examples
 #'
@@ -55,7 +55,7 @@ setClass("SpatialPointsMeteorology", slots = list(dates = "Date", data="vector")
 #' \code{\link{SpatialPointsTopography}}.
 #' @author Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF
 #' @seealso \code{\link{SpatialPointsTopography}},
-#' \code{\link{SpatialPointsDataFrame-class}}
+#' \code{SpatialPointsDataFrame}
 #' @keywords classes
 #' @examples
 #'
@@ -86,7 +86,7 @@ setClass("SpatialPointsTopography", contains=character())
 #' \code{\link{SpatialGridMeteorology}}.
 #' @author Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF
 #' @seealso \code{\link{SpatialGridTopography}},
-#' \code{\link{SpatialGridDataFrame-class}}
+#' \code{SpatialGridDataFrame}
 #' @keywords classes
 #' @examples
 #'
@@ -117,7 +117,7 @@ setClass("SpatialGridMeteorology", slots = list(dates = "Date", data="vector"), 
 #' \code{\link{SpatialGridTopography}}.
 #' @author Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF
 #' @seealso \code{\link{SpatialGridTopography}},
-#' \code{\link{SpatialGridDataFrame-class}}
+#' \code{SpatialGridDataFrame}
 #' @keywords classes
 #' @examples
 #'
@@ -149,7 +149,7 @@ setClass("SpatialGridTopography", contains=character())
 #' \code{\link{SpatialPixelsMeteorology}}.
 #' @author Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF
 #' @seealso \code{\link{SpatialPixelsTopography}},
-#' \code{\link{SpatialPixelsDataFrame-class}}
+#' \code{SpatialPixelsDataFrame}
 #' @keywords classes
 #' @examples
 #'
@@ -179,7 +179,7 @@ setClass("SpatialPixelsMeteorology", slots = list(dates = "Date", data="vector")
 #' \code{\link{SpatialPixelsTopography}}.
 #' @author Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF
 #' @seealso \code{\link{SpatialPixelsTopography}},
-#' \code{\link{SpatialPixelsDataFrame-class}}
+#' \code{SpatialPixelsDataFrame}
 #' @keywords classes
 #' @examples
 #'

@@ -20,13 +20,13 @@ meteoplot(
 \item{object}{A data frame with daily meteorological data (in this case
 \code{index} is not used) or an object of class
 \code{\linkS4class{SpatialPointsMeteorology}}. Alternatively, an object of
-class \code{\linkS4class{SpatialPointsDataFrame}} containing the meta data
+class \code{SpatialPointsDataFrame} containing the meta data
 (columns \code{dir}, \code{filename} and possibly \code{format}) of
 meteorological files.}
 
 \item{index}{An integer to indicate the point in the
 \code{\linkS4class{SpatialPointsMeteorology}} object (or the
-\code{\linkS4class{SpatialPointsDataFrame}} object).}
+\code{SpatialPointsDataFrame} object).}
 
 \item{var}{The meteorological variable to be plotted.}
 
@@ -61,28 +61,8 @@ Simple plotting of a meteorological series for a given point.
 Daily precipitation is plotted using bars (i.e. \code{type = "h"} when
 calling \code{\link{plot}}). Otherwise the function draws lines (i.e.
 \code{type = "l"} when calling \code{\link{plot}}). If \code{object} is of
-class \code{\link{SpatialPointsDataFrame-class}} then the function reads the
+class \code{SpatialPointsDataFrame} then the function reads the
 meteorological data to be plotted from the disk.
-}
-\examples{
-
-\donttest{
-data(examplegridtopography)
-data(exampleinterpolationdata)
-
-#Creates spatial topography points from the grid
-p = 1:2
-spt = as(examplegridtopography, "SpatialPointsTopography")[p]
-
-#Interpolation of two points for the whole time period (2000-2003)
-mp = interpolationpoints(exampleinterpolationdata, spt)
-
-#Plot interpolated meteorological series
-meteoplot(mp,1, ylab="Daily mean temperature")
-
-meteoplot(mp,1, ylab="Monthly mean temperature", fun=mean, freq="months")
-}
-
 }
 \seealso{
 \code{\link{summarypoints}}

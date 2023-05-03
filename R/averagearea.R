@@ -19,25 +19,6 @@
 #' the spatial average of the input.
 #' @author Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF
 #' @seealso \code{\link{weathergeneration}}
-#' @examples
-#'
-#' \donttest{
-#' data(examplegridtopography)
-#' data(exampleinterpolationdata)
-#'
-#' #Interpolation of meteorology over a grid for two days
-#' ml = interpolationgrid(exampleinterpolationdata, examplegridtopography,
-#'                        as.Date(c("2001-02-03", "2001-06-03")))
-#'
-#' #Call averaging function
-#' pa = averagearea(ml)
-#'
-#' #Spatial information
-#' pa
-#'
-#' #Weather data
-#' pa@data[[1]]
-#' }
 #'
 #' @export
 averagearea<-function(object, na.rm=TRUE) {

@@ -168,40 +168,6 @@ station from the predictive set).
 \item \code{interpolation.calibration.fmax()}: \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}
 
 }}
-\examples{
-
-\donttest{
-data(exampleinterpolationdata)
-
-#Calibration procedure
-precEv_cal = interpolation.calibration(exampleinterpolationdata, variable="PrecEvent",
-                                       stations = 1:5,
-                                       N_seq=c(5,10,15), alpha_seq=seq(0.25,1.0, by=0.25),
-                                       verbose = TRUE)
-
-precAm_cal = interpolation.calibration(exampleinterpolationdata, variable="PrecAmount",
-                                       stations = 1:5,
-                                       N_seq=c(5,10,15), alpha_seq=seq(0.25,1.0, by=0.25),
-                                       verbose = TRUE)
-
-#Set 'alpha' and 'N' parameters to values found in calibration
-exampleinterpolationdata@params$N_PrecipitationEvent = precEv_cal$N
-exampleinterpolationdata@params$alpha_PrecipitationEvent = precEv_cal$alpha
-
-exampleinterpolationdata@params$N_PrecipitationAmount = precAm_cal$N
-exampleinterpolationdata@params$alpha_PrecipitationAmount = precAm_cal$alpha
-
-#Run cross validation
-cv = interpolation.cv(exampleinterpolationdata, stations = 1:5, verbose = TRUE)
-
-#Print cross validation summaries
-summary(cv)
-
-#Plot results
-plot(cv)
-}
-
-}
 \references{
 Thornton, P.E., Running, S.W., 1999. An improved algorithm for
 estimating incident daily solar radiation from measurements of temperature,

@@ -31,17 +31,6 @@ variable, the number of stations with data per date or the number of dates
 with data per station in an object of class
 \code{\link{MeteorologyInterpolationData-class}}.
 }
-\examples{
-
-data(exampleinterpolationdata)
-
-#Number of days with data per station
-head(interpolation.coverage(exampleinterpolationdata))
-
-#Number of stations with data per day
-head(interpolation.coverage(exampleinterpolationdata, type = "temporal"))
-
-}
 \references{
 De Caceres M, Martin-StPaul N, Turco M, Cabon A, Granda V (2018)
 Estimating daily meteorological data and downscaling climate models over

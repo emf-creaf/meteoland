@@ -13,7 +13,7 @@ MeteorologyUncorrectedData(
 )
 }
 \arguments{
-\item{points}{An object of class \code{\link{SpatialPoints}}.}
+\item{points}{An object of class \code{SpatialPoints}.}
 
 \item{reference_data}{Reference (historic) meteorological data used to
 calibrate correction factors when compared with observations. A vector of

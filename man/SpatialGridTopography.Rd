@@ -13,8 +13,8 @@ SpatialGridTopography(
 )
 }
 \arguments{
-\item{grid}{An object of class \code{\link{GridTopology-class}} or
-\code{\link{SpatialGrid-class}}.}
+\item{grid}{An object of class \code{GridTopology} or
+\code{SpatialGrid}.}
 
 \item{elevation}{A vector of elevation values for all cells of the grid (in
 m.a.s.l.).}
@@ -26,7 +26,7 @@ degrees). If \code{slope=NULL}, slope is calculated as indicated in details.}
 degrees from North clockwise ). \code{aspect=NULL}, aspect values are
 calculated as indicated in details.}
 
-\item{proj4string}{An object of class \code{\link{CRS-class}}.}
+\item{proj4string}{An object of class \code{CRS}.}
 }
 \value{
 Function \code{SpatialGridTopography} returns an object
@@ -74,18 +74,6 @@ is calculated using:
 
 The aspect value is then converted to compass direction values (0-360
 degrees).
-}
-\examples{
-
-data(examplegridtopography)
-
-#Display data
-spplot(examplegridtopography, variable="elevation", scales=list(draw=TRUE))
-
-#Grids can be subsetted
-sgt = examplegridtopography[1:50, 1:50]
-spplot(sgt, variable="elevation", scales=list(draw=TRUE))
-
 }
 \references{
 Burrough, P. A. and McDonell, R.A., 1998. Principles of

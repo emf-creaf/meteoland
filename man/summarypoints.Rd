@@ -97,7 +97,7 @@ columns.}
 \item{points}{An object of class
 \code{\link{SpatialPointsMeteorology-class}} with the coordinates and
 meteorological data of the locations for which summaries are desired.
-Alternatively, an object of class \code{\link{SpatialPointsDataFrame-class}}
+Alternatively, an object of class \code{SpatialPointsDataFrame}
 containing the meta data (columns \code{dir}, \code{filename} and possibly
 \code{format}) of meteorological files that will be sequentially read from
 the disk. Finally, \code{points} can also be a string pointing to a netCDF.}
@@ -106,10 +106,10 @@ the disk. Finally, \code{points} can also be a string pointing to a netCDF.}
 \itemize{ \item{Function \code{summarypoint} returns a named vector
 of values with dates as names.} \item{Functions \code{summarypoints} and
 \code{summaryinterpolationdata} return an object of class
-\code{\link{SpatialPointsDataFrame}} containing summaries (either one
+\code{SpatialPointsDataFrame} containing summaries (either one
 variable or several if \code{freq} is specified).} \item{Functions
 \code{summarygrid} and \code{summarypixels} return an object of class
-\code{\link{SpatialGridDataFrame}} and \code{\link{SpatialPixelsDataFrame}},
+\code{SpatialGridDataFrame} and \code{SpatialPixelsDataFrame},
 respectively, containing the summaries analogously to \code{summarypoints}.}
 }
 }
@@ -135,25 +135,6 @@ all variables with default statistics and returns an object of class
 \item \code{summarypoint()}: \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}
 
 }}
-\examples{
-
-\donttest{
-data(examplegridtopography)
-data(exampleinterpolationdata)
-
-#Creates spatial topography points from the grid
-p = 1:2
-spt = as(examplegridtopography, "SpatialPointsTopography")[p]
-
-#Interpolation of two points for the whole time period (2000-2003)
-mp = interpolationpoints(exampleinterpolationdata, spt)
-
-#PET sums by months
-mp.sum = summarypoints(mp, var="PET", freq="months", fun=sum)
-
-mp.sum
-}
-}
 \seealso{
 \code{\link{SpatialPointsMeteorology-class}}
 }

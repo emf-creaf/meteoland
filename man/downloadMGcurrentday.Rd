@@ -28,7 +28,7 @@ specifying first and last date of the desired period.}
 }
 \value{
 Function \code{downloadMGstationlist} returns a
-\code{\link{SpatialPointsDataFrame-class}} object containing the list of
+\code{SpatialPointsDataFrame} object containing the list of
 MeteoGalicia weather stations currently operative.  Function
 \code{downloadMGhistorical} downloads data for the specified MG weather
 stations (or all) and dates and returns a
@@ -37,7 +37,7 @@ meteorology for each station (point).
 
 Function \code{downloadMGcurrentday} downloads recent weather data (the last
 24h) from all currently available stations and returns data frame if
-\code{daily = FALSE} or a \code{\link{SpatialPointsDataFrame-class}} object
+\code{daily = FALSE} or a \code{SpatialPointsDataFrame} object
 with observations aggregated at the daily scale otherwise.
 }
 \description{

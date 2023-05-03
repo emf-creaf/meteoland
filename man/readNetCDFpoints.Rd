@@ -22,10 +22,10 @@ desired.}
 \value{
 \itemize{ \item{Function \code{readNetCDFdates} returns a
 \code{\link{Date}} vector.} \item{Function \code{readNetCDFpoints} returns an
-object \code{\link{SpatialPoints-class}}.} \item{Function
+object \code{SpatialPoints}.} \item{Function
 \code{readNetCDFgridtopology} returns an object
-\code{\link{GridTopology-class}}.} \item{Function \code{readNetCDFproj4string}
-returns an object \code{\link{CRS-class}}.} }
+\code{GridTopology}.} \item{Function \code{readNetCDFproj4string}
+returns an object \code{CRS}.} }
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}

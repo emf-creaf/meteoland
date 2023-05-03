@@ -132,16 +132,6 @@ setGeneric("subsample", valueClass=c("MeteorologyProcedureData"), function(objec
 #' Generates a \code{\link{MeteorologyInterpolationData}} object for a smaller
 #' area and a subset of dates. } }
 #' @keywords methods
-#' @examples
-#'
-#' \donttest{
-#' data(exampleinterpolationdata)
-#'
-#' oridates = exampleinterpolationdata@dates
-#'
-#' #Interpolation data using the first ten dates (same boundary box)
-#' subdata = subsample(exampleinterpolationdata, dates = oridates[1:10])
-#' }
 #'
 #' @export
 setMethod("subsample", signature("MeteorologyInterpolationData"), definition =

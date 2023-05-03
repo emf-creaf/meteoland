@@ -12,13 +12,13 @@
 #' weather on the object locations radiation will be calculated assuming a flat
 #' surface.
 #'
-#' @param points An object of class \code{\link{SpatialPoints-class}}.
+#' @param points An object of class \code{SpatialPoints}.
 #' @param elevation Elevation values (in m) of the points.
 #' @param slope Slope values (in degrees) of the points.
 #' @param aspect Aspect values (in degrees from North) of the points.
-#' @param proj4string Object of class \code{\linkS4class{CRS}} in the first
+#' @param proj4string Object of class \code{CRS} in the first
 #' form only used when points does not inherit from
-#' \code{\linkS4class{Spatial}}.
+#' \code{Spatial}.
 #' @return Function \code{SpatialPointsTopography} returns an object
 #' '\code{\link{SpatialPointsTopography-class}}'.
 #' @author Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF

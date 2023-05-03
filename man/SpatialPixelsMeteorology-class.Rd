@@ -24,7 +24,7 @@ showClass("SpatialPixelsMeteorology")
 }
 \seealso{
 \code{\link{SpatialPixelsTopography}},
-\code{\link{SpatialPixelsDataFrame-class}}
+\code{SpatialPixelsDataFrame}
 }
 \author{
 Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF

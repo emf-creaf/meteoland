@@ -34,20 +34,20 @@ string specifying a NetCDF to be read from the disk.}
 
 \item{index}{An integer with a grid index.}
 
-\item{points}{An object of class \code{\link{SpatialPoints}}.}
+\item{points}{An object of class \code{SpatialPoints}.}
 }
 \value{
 \itemize{ \item{Function \code{extractdates()}, returns a \code{list}
 with the same length as \code{dates}. Each element of the list is a spatial
-object (\code{\link{SpatialPointsDataFrame}},
-\code{\link{SpatialGridDataFrame}} or \code{\link{SpatialPixelsDataFrame}},
+object (\code{SpatialPointsDataFrame},
+\code{SpatialGridDataFrame} or \code{SpatialPixelsDataFrame},
 depending on the input) with the meteorological data for all the spatial
 elements. If only one date is asked, the function returns directly the
 spatial object, without embedding it into a list.} \item{Function
 \code{extractvars()}, returns a \code{list} with the same length as
 \code{vars}. Each element of the list is a spatial object
-(\code{\link{SpatialPointsDataFrame}}, \code{\link{SpatialGridDataFrame}} or
-\code{\link{SpatialPixelsDataFrame}}, depending on the input) with the
+(\code{SpatialPointsDataFrame}, \code{SpatialGridDataFrame} or
+\code{SpatialPixelsDataFrame}, depending on the input) with the
 meteorological data for all the spatial elements. If only one variable is
 asked, the function returns directly the spatial object, without embedding
 it into a list.} \item{Function \code{extractgridindex()} returns a data

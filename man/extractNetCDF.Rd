@@ -43,7 +43,7 @@ describing all written files.}
 If \code{export = FALSE}, the function returns an object of class
 \code{\link{SpatialPointsMeteorology-class}} with the meteorological series
 for each cell (represented by a spatial point). Otherwise the function
-returns an object of class \code{\link{SpatialPointsDataFrame-class}}
+returns an object of class \code{SpatialPointsDataFrame}
 containing the meta data of the files written in the disk.
 }
 \description{

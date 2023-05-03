@@ -89,16 +89,16 @@ If \code{export = FALSE}, function \code{interpolationpoints}
 returns an object of \code{\link{SpatialPointsMeteorology-class}}. If
 \code{export = TRUE} files and written in the disk. For text/rds format the
 function returns an object of class
-\code{\link{SpatialPointsDataFrame-class}} containing point meta data.
+\code{SpatialPointsDataFrame} containing point meta data.
 
 If \code{export = FALSE}, function \code{interpolationpixels} returns an
 object of \code{\link{SpatialPixelsMeteorology-class}}, or an object of
-\code{\link{SpatialPixelsDataFrame-class}} if a single date is interpolated.
+\code{SpatialPixelsDataFrame} if a single date is interpolated.
 If \code{export = TRUE}, the function writes the results in a NetCDF.
 
 If \code{export = FALSE}, function \code{interpolationgrid} returns an
 object of \code{\link{SpatialGridMeteorology-class}}, or an object of
-\code{\link{SpatialGridDataFrame-class}} if a single date is interpolated.
+\code{SpatialGridDataFrame} if a single date is interpolated.
 If \code{export = TRUE}, the function writes the results in files and a
 \code{data.frame} with columns 'dir' and 'filename' is returned.
 }
@@ -124,49 +124,6 @@ function transforms the coordinates of
 \item \code{interpolationpixels()}: \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}
 
 }}
-\examples{
-
-\donttest{
-data(examplegridtopography)
-data(exampleinterpolationdata)
-
-####### INTERPOLATION on particular POINTS
-
-#Creates spatial topography points from the grid
-p = 1:2
-spt = as(examplegridtopography, "SpatialPointsTopography")[p]
-
-#Interpolation of two points for the whole time period (2000-2003)
-mp = interpolationpoints(exampleinterpolationdata, spt)
-
-#Plot interpolated meteorological series
-meteoplot(mp,1, ylab="Mean temperature")
-
-####### INTERPOLATION on PIXELS
-# Creates spatial topography pixels as a subset of grid pixels
-# and select pixels at maximum distance of 2km from center
-spt = as(examplegridtopography,"SpatialPointsTopography")
-cc = spt@coords
-center = 5160
-d = sqrt((cc[,1]-cc[center,1])^2+(cc[,2]-cc[center,2])^2)
-spxt = as(spt[which(d<2000)], "SpatialPixelsTopography")
-
-# Interpolation of meteorology over pixels for two days
-ml = interpolationpixels(exampleinterpolationdata, spxt,
-                       as.Date(c("2001-02-03", "2001-06-03")))
-
-#Plot PET corresponding to 2001-06-03
-spplot(ml,2,"PET")
-
-####### INTERPOLATION over a complete GRID
-#Interpolation of meteorology over a grid for two days
-ml = interpolationgrid(exampleinterpolationdata, examplegridtopography,
-                       as.Date(c("2001-02-03", "2001-06-03")))
-#Plot PET corresponding to 2001-06-03
-spplot(ml,2,"PET")
-}
-
-}
 \references{
 Thornton, P.E., Running, S.W., White, M. A., 1997. Generating
 surfaces of daily meteorological variables over large regions of complex

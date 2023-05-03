@@ -64,13 +64,13 @@ describing all written files.}
 }
 \value{
 Function \code{downloadSMCstationlist} returns a
-\code{\link{SpatialPointsDataFrame-class}} object containing the list of SMC
+\code{SpatialPointsDataFrame} object containing the list of SMC
 operational weather stations for the date given.
 
 Function \code{downloadSMCcurrentday} downloads recent weather (the last 24h
 or the weather for a given date) from all currently available stations and
 returns data frame if \code{daily_meteoland = FALSE} or a
-\code{\link{SpatialPointsDataFrame-class}} object with observations
+\code{SpatialPointsDataFrame} object with observations
 aggregated at the daily scale otherwise.
 
 Function \code{downloadSMChistorical} downloads historical daily weather

@@ -61,7 +61,7 @@ more than one point.}
 \code{\link{SpatialPointsMeteorology-class}} with the coordinates and
 historical meteorological data of the locations for which correction of
 predicted climatic data has to be done. Alternatively, an object of class
-\code{\link{SpatialPointsDataFrame-class}} containing the meta data (columns
+\code{SpatialPointsDataFrame} containing the meta data (columns
 \code{dir}, \code{filename} and possibly \code{format}) of meteorological
 files that will be read from the disk.}
 
@@ -108,7 +108,7 @@ an object of class \code{\link{SpatialPointsMeteorology-class}} with the
 bias-corrected meteorology for each point. If \code{export=TRUE} then
 bias-corrected data is written into the disk. For txt/rds export formats,
 the function returns an object of class
-\code{\link{SpatialPointsDataFrame-class}} containing the meta data of the
+\code{SpatialPointsDataFrame} containing the meta data of the
 files written in the disk. For netCDF export format the function returns
 \code{NULL}. If \code{corrOut = TRUE} the function returns a list which
 contains any previous output and an object with the calculated correction
@@ -173,63 +173,6 @@ observed (\enc{Boé}{Boe} 2007).
 \item \code{correctionpoints.errors()}: \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}
 
 }}
-\examples{
-
-\donttest{
-data(examplegridtopography)
-data(exampleinterpolationdata)
-data(examplecorrectiondata)
-
-#Creates spatial topography points from the grid
-p = 1:2
-spt = as(examplegridtopography, "SpatialPointsTopography")[p]
-
-
-#Interpolation of two points for the whole time period (2000-2003)
-historical = interpolationpoints(exampleinterpolationdata, spt)
-
-#Downscaling of future predictions (RCM models, year 2023)
-predicted = correctionpoints(examplecorrectiondata, historical, spt@data)
-
-#Plot predicted mean temperature for point 1
-meteoplot(predicted, 1, "MeanTemperature", ylab="Temperature (Celsius)", ylim=c(-5,40))
-meteoplot(predicted, 1, "MinTemperature", add=TRUE, col="blue")
-meteoplot(predicted, 1, "MaxTemperature", add=TRUE, col="red")
-#Add uncorrected mean temperature data (cell #3)
-lines(examplecorrectiondata@dates,
-      examplecorrectiondata@projection_data[[3]]$MeanTemperature,
-      lty=3)
-lines(examplecorrectiondata@dates,
-      examplecorrectiondata@projection_data[[3]]$MinTemperature,
-      col="blue", lty=3)
-lines(examplecorrectiondata@dates,
-      examplecorrectiondata@projection_data[[3]]$MaxTemperature,
-      col="red", lty=3)
-legend("topright", legend=c("corrected","uncorrected", "Maximum", "Mean", "Minimum"),
-       col=c("black","black", "red","black","blue"), lty=c(1,3,1,1,1), bty="n")
-
-#Scatter plot
-plot(examplecorrectiondata@projection_data[[3]]$MeanTemperature,
-     predicted@data[[1]]$MeanTemperature, cex=0.1, asp=1,
-     ylab="Corrected mean temperature", xlab="Uncorrected mean temperature")
-abline(a=0,b=1,col="gray")
-
-#Plot predicted precipitation for point 1
-meteoplot(predicted, 1, "Precipitation", ylab="Precipitation (mm)", ylim=c(0,120))
-#Add uncorrected mean temperature data (cell #3)
-lines(examplecorrectiondata@dates,
-      examplecorrectiondata@projection_data[[3]]$Precipitation,
-      col="red", lty=3)
-legend("topleft", legend=c("corrected","uncorrected"), col=c("black","red"), lty=c(1,3), bty="n")
-
-#Scatter plot
-plot(examplecorrectiondata@projection_data[[3]]$Precipitation,
-     predicted@data[[1]]$Precipitation, cex=0.1, asp=1,
-     ylab="Corrected precipitation (mm)", xlab="Uncorrected precipitation (mm)")
-abline(a=0,b=1,col="gray")
-}
-
-}
 \references{
 \enc{Boé}{Boe} J, Terray L, Habets F, Martin E (2007) Statistical
 and dynamical downscaling of the Seine basin climate for

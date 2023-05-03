@@ -9,7 +9,7 @@
 #' @details
 #' See correction details in vignettes or in \code{\link{correctionpoints}}.
 #'
-#' @param points An object of class \code{\link{SpatialPoints}}.
+#' @param points An object of class \code{SpatialPoints}.
 #' @param reference_data Reference (historic) meteorological data used to
 #' calibrate correction factors when compared with observations. A vector of
 #' data frames (one per point) or a single data frame containing the meta data

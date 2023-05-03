@@ -23,7 +23,7 @@ showClass("SpatialGridTopography")
 }
 \seealso{
 \code{\link{SpatialGridTopography}},
-\code{\link{SpatialGridDataFrame-class}}
+\code{SpatialGridDataFrame}
 }
 \author{
 Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF

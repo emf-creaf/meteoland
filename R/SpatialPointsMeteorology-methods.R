@@ -18,7 +18,7 @@
 #' different rows and different columns. Only the information corresponding to
 #' \code{points} will be taken and some variables may be missing.
 #'
-#' @param points An object of class \code{\link{SpatialPoints-class}}. Row
+#' @param points An object of class \code{SpatialPoints}. Row
 #' names of point coordinates are used to identify points.
 #' @param data A list of data frames. If \code{dataByDate = FALSE} the elements
 #' of \code{data} are assumed to correspond to points. If \code{dataByDate =

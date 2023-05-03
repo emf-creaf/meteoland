@@ -17,13 +17,13 @@ stations in Catalonia.}
 }
 \value{
 Function \code{downloadMETEOCLIMATICstationlist} returns a
-\code{\link{SpatialPointsDataFrame-class}} object containing the list of
+\code{SpatialPointsDataFrame} object containing the list of
 Meteoclimatic weather stations for which data is available based on the
 station_id codes provided.
 
 Function \code{downloadMETEOCLIMATICcurrentday} downloads recent weather
 (for the current day) from all currently available stations and returns a
-\code{\link{SpatialPointsDataFrame-class}} object with observations. Only
+\code{SpatialPointsDataFrame} object with observations. Only
 accumulated precipitation, maximum and minimum temperature and relative
 humidity are returned.
 }

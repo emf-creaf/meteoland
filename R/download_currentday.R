@@ -114,7 +114,7 @@
 #' @param daily Boolean flag. Are data to be returned at a daily or hourly
 #' scale?
 #' @return Function \code{downloadAEMETstationlist} returns a
-#' \code{\link{SpatialPointsDataFrame-class}} object containing the list of
+#' \code{SpatialPointsDataFrame} object containing the list of
 #' AEMET weather stations for which historical climatic series are available
 #' and can be retrieved using \code{downloadAEMEThistorical}.
 #'
@@ -125,12 +125,12 @@
 #' \code{\link{SpatialPointsMeteorology-class}} object with the downloaded
 #' meteorology for each station (point). Otherwise the function writes on the
 #' disk at the location specified by \code{exportDir} and solely returns a
-#' \code{\link{SpatialPointsDataFrame-class}} object containing the files
+#' \code{SpatialPointsDataFrame} object containing the files
 #' metadata.
 #'
 #' Function \code{downloadAEMETcurrentday} downloads recent weather (the last
 #' 24h) from all currently available stations and returns data frame if
-#' \code{daily = FALSE} or a \code{\link{SpatialPointsDataFrame-class}} object
+#' \code{daily = FALSE} or a \code{SpatialPointsDataFrame} object
 #' with observations aggregated at the daily scale if else.
 #' @note Since ver. 1.0.1, weather data download functions included in
 #' \code{meteoland} make internal calls to functions in package
@@ -205,13 +205,13 @@ downloadAEMETcurrentday <- function(api, daily = TRUE, verbose=TRUE){
 #' describing all written files.
 #' @param verbose Boolean flag to print process information.
 #' @return Function \code{downloadSMCstationlist} returns a
-#' \code{\link{SpatialPointsDataFrame-class}} object containing the list of SMC
+#' \code{SpatialPointsDataFrame} object containing the list of SMC
 #' operational weather stations for the date given.
 #'
 #' Function \code{downloadSMCcurrentday} downloads recent weather (the last 24h
 #' or the weather for a given date) from all currently available stations and
 #' returns data frame if \code{daily_meteoland = FALSE} or a
-#' \code{\link{SpatialPointsDataFrame-class}} object with observations
+#' \code{SpatialPointsDataFrame} object with observations
 #' aggregated at the daily scale otherwise.
 #'
 #' Function \code{downloadSMChistorical} downloads historical daily weather
@@ -270,7 +270,7 @@ downloadSMCcurrentday <- function(api, daily=TRUE, station_id=NULL,
 #' @param daily Boolean flag. Are data to be returned at a daily or hourly
 #' scale?
 #' @return Function \code{downloadMGstationlist} returns a
-#' \code{\link{SpatialPointsDataFrame-class}} object containing the list of
+#' \code{SpatialPointsDataFrame} object containing the list of
 #' MeteoGalicia weather stations currently operative.  Function
 #' \code{downloadMGhistorical} downloads data for the specified MG weather
 #' stations (or all) and dates and returns a
@@ -279,7 +279,7 @@ downloadSMCcurrentday <- function(api, daily=TRUE, station_id=NULL,
 #'
 #' Function \code{downloadMGcurrentday} downloads recent weather data (the last
 #' 24h) from all currently available stations and returns data frame if
-#' \code{daily = FALSE} or a \code{\link{SpatialPointsDataFrame-class}} object
+#' \code{daily = FALSE} or a \code{SpatialPointsDataFrame} object
 #' with observations aggregated at the daily scale otherwise.
 #' @note Since ver. 1.0.1, weather data download functions included in
 #' \code{meteoland} make internal calls to functions in package
@@ -326,13 +326,13 @@ downloadMGcurrentday <- function(station_id=NULL, daily = TRUE, verbose = TRUE) 
 #' \code{downloadMETEOCLIMATICstationlist}). By default, returns the list of
 #' stations in Catalonia.
 #' @return Function \code{downloadMETEOCLIMATICstationlist} returns a
-#' \code{\link{SpatialPointsDataFrame-class}} object containing the list of
+#' \code{SpatialPointsDataFrame} object containing the list of
 #' Meteoclimatic weather stations for which data is available based on the
 #' station_id codes provided.
 #'
 #' Function \code{downloadMETEOCLIMATICcurrentday} downloads recent weather
 #' (for the current day) from all currently available stations and returns a
-#' \code{\link{SpatialPointsDataFrame-class}} object with observations. Only
+#' \code{SpatialPointsDataFrame} object with observations. Only
 #' accumulated precipitation, maximum and minimum temperature and relative
 #' humidity are returned.
 #' @note Since ver. 1.0.1, weather data download functions included in

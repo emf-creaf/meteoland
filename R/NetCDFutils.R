@@ -12,10 +12,10 @@
 #' desired.
 #' @return \itemize{ \item{Function \code{readNetCDFdates} returns a
 #' \code{\link{Date}} vector.} \item{Function \code{readNetCDFpoints} returns an
-#' object \code{\link{SpatialPoints-class}}.} \item{Function
+#' object \code{SpatialPoints}.} \item{Function
 #' \code{readNetCDFgridtopology} returns an object
-#' \code{\link{GridTopology-class}}.} \item{Function \code{readNetCDFproj4string}
-#' returns an object \code{\link{CRS-class}}.} }
+#' \code{GridTopology}.} \item{Function \code{readNetCDFproj4string}
+#' returns an object \code{CRS}.} }
 #' @author Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF
 #' @seealso \code{\link{readmeteorologypoints}},
 #' \code{\link{readmeteorologygrid}}

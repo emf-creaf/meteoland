@@ -71,9 +71,9 @@ added/replaced.}
 
 \item{verbose}{A logical flag to output process information in the console.}
 
-\item{grid}{An object of class \code{\link{GridTopology-class}}}
+\item{grid}{An object of class \code{GridTopology}}
 
-\item{proj4string}{Object of class \code{\linkS4class{CRS}}.}
+\item{proj4string}{Object of class \code{CRS}.}
 
 \item{index}{Integer indicating the grid index position to be written.}
 

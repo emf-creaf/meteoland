@@ -36,8 +36,8 @@
 #' set, this must be a vector of three integers corresponding to XYT.
 #' @param add Boolean flag to indicate that NetCDF exists and data should be
 #' added/replaced.
-#' @param grid An object of class \code{\link{GridTopology-class}}
-#' @param proj4string Object of class \code{\linkS4class{CRS}}.
+#' @param grid An object of class \code{GridTopology}
+#' @param proj4string Object of class \code{CRS}.
 #' @param overwrite Boolean flag to force overwriting an existing NetCDF.
 #' @param verbose A logical flag to output process information in the console.
 #' @param index Integer indicating the grid index position to be written.

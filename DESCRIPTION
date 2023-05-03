@@ -21,7 +21,6 @@ Imports:
     ncdf4,
     methods,
     stats,
-    meteospain,
     Rcpp,
     units,
     lifecycle,
@@ -40,6 +39,7 @@ Suggests:
     knitr,
     rmarkdown,
     testthat (>= 3.0.0),
+    meteospain,
     worldmet,
     keyring,
     tibble

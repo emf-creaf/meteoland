@@ -18,7 +18,6 @@ Depends:
     sf,
     stars
 Imports: 
-    ncdf4,
     methods,
     stats,
     Rcpp,
@@ -41,7 +40,6 @@ Suggests:
     testthat (>= 3.0.0),
     meteospain,
     worldmet,
-    keyring,
     tibble
 LinkingTo: Rcpp
 Encoding: UTF-8

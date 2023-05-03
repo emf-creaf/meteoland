@@ -102,76 +102,76 @@ SpatialPointsMeteorology<-function(points, data, dates, dataByDate = FALSE) {
   # return(spm)
 }
 
-#' @export
-setMethod("[", signature("SpatialPointsMeteorology"),definition =
-            function (x, i, j, ..., drop = TRUE)
-            {
-              if (!missing(j))
-                warning("j index ignored")
-              if (is.character(i))
-                i <- match(i, row.names(x))
-              else if (is(i, "Spatial"))
-                i = !is.na(over(x, geometry(i)))
-              if (any(is.na(i)))
-                stop("NAs not permitted in row index")
-              sp = as(x,"SpatialPoints")[i, , drop=drop]
-              SpatialPointsMeteorology(sp, x@data[i], x@dates)
-            }
-)
+# #' @export
+# setMethod("[", signature("SpatialPointsMeteorology"),definition =
+#             function (x, i, j, ..., drop = TRUE)
+#             {
+#               if (!missing(j))
+#                 warning("j index ignored")
+#               if (is.character(i))
+#                 i <- match(i, row.names(x))
+#               else if (is(i, "Spatial"))
+#                 i = !is.na(over(x, geometry(i)))
+#               if (any(is.na(i)))
+#                 stop("NAs not permitted in row index")
+#               sp = as(x,"SpatialPoints")[i, , drop=drop]
+#               SpatialPointsMeteorology(sp, x@data[i], x@dates)
+#             }
+# )
+#
+# head.SpatialPointsMeteorology <- function(x, n=6L, ...) {
+#   n <- min(n, length(x))
+#   ix <- sign(n)*seq(abs(n))
+#   x[ ix , , drop=FALSE]
+# }
 
-head.SpatialPointsMeteorology <- function(x, n=6L, ...) {
-  n <- min(n, length(x))
-  ix <- sign(n)*seq(abs(n))
-  x[ ix , , drop=FALSE]
-}
+# #' @export
+# setMethod("head", "SpatialPointsMeteorology", function(x, n=6L, ...) head.SpatialPointsMeteorology(x,n,...))
+#
+# tail.SpatialPointsMeteorology <- function(x, n=6L, ...) {
+#   n <- min(n, length(x))
+#   ix <- sign(n)*rev(seq(length(x), by=-1L, len=abs(n)))
+#   x[ ix , , drop=FALSE]
+# }
 
-#' @export
-setMethod("head", "SpatialPointsMeteorology", function(x, n=6L, ...) head.SpatialPointsMeteorology(x,n,...))
+# #' @export
+# setMethod("tail", "SpatialPointsMeteorology", function(x, n=6L, ...) tail.SpatialPointsMeteorology(x,n,...))
+#
+# print.SpatialPointsMeteorology <- function(x, ..., digits = getOption("digits"))
+# {
+#   cat("Object of class SpatialPointsMeteorology\n")
+#   cat("Dates: ", paste0(length(x@dates)))
+#   cat(paste0("  (initial: ", x@dates[1], " final: ", x@dates[length(x@dates)],")\n"))
+#   cat("SpatialPoints:\n")
+#   print(x@coords)
+#   pst <- paste(strwrap(paste(
+#     "Coordinate Reference System (CRS) arguments:",
+#     proj4string(x))), collapse="\n")
+#   cat(pst, "\n")
+# }
 
-tail.SpatialPointsMeteorology <- function(x, n=6L, ...) {
-  n <- min(n, length(x))
-  ix <- sign(n)*rev(seq(length(x), by=-1L, len=abs(n)))
-  x[ ix , , drop=FALSE]
-}
+# #' @export
+# setMethod("print", "SpatialPointsMeteorology", function(x, ..., digits = getOption("digits")) print.SpatialPointsMeteorology(x, ..., digits))
 
-#' @export
-setMethod("tail", "SpatialPointsMeteorology", function(x, n=6L, ...) tail.SpatialPointsMeteorology(x,n,...))
-
-print.SpatialPointsMeteorology <- function(x, ..., digits = getOption("digits"))
-{
-  cat("Object of class SpatialPointsMeteorology\n")
-  cat("Dates: ", paste0(length(x@dates)))
-  cat(paste0("  (initial: ", x@dates[1], " final: ", x@dates[length(x@dates)],")\n"))
-  cat("SpatialPoints:\n")
-  print(x@coords)
-  pst <- paste(strwrap(paste(
-    "Coordinate Reference System (CRS) arguments:",
-    proj4string(x))), collapse="\n")
-  cat(pst, "\n")
-}
-
-#' @export
-setMethod("print", "SpatialPointsMeteorology", function(x, ..., digits = getOption("digits")) print.SpatialPointsMeteorology(x, ..., digits))
-
-#' @export
-setMethod("show", "SpatialPointsMeteorology", function(object) print.SpatialPointsMeteorology(object))
-
-as.SpPtsMet.STFDF = function(from) {
-
-  datavec = from@data
-  data = datavec[[1]]
-  if(length(datavec)>1) {
-    for(i in 2:length(datavec)) {
-      data = rbind(data, datavec[[i]])
-    }
-  }
-  time = as.POSIXct(as.Date(from@dates))
-  endTime = as.POSIXct(as.Date(from@dates)+1)
-  sp = as(from, "SpatialPoints")
-  spacetime::STFDF(sp, time, data, endTime = endTime)
-}
-setAs("SpatialPointsMeteorology", "STFDF", as.SpPtsMet.STFDF)
-as.SpPtsMet.stars = function(from) {
-  stars::st_as_stars(as.SpPtsMet.STFDF(from))
-}
-setAs("SpatialPointsMeteorology", "stars", as.SpPtsMet.stars)
+# #' @export
+# setMethod("show", "SpatialPointsMeteorology", function(object) print.SpatialPointsMeteorology(object))
+#
+# as.SpPtsMet.STFDF = function(from) {
+#
+#   datavec = from@data
+#   data = datavec[[1]]
+#   if(length(datavec)>1) {
+#     for(i in 2:length(datavec)) {
+#       data = rbind(data, datavec[[i]])
+#     }
+#   }
+#   time = as.POSIXct(as.Date(from@dates))
+#   endTime = as.POSIXct(as.Date(from@dates)+1)
+#   sp = as(from, "SpatialPoints")
+#   spacetime::STFDF(sp, time, data, endTime = endTime)
+# }
+# setAs("SpatialPointsMeteorology", "STFDF", as.SpPtsMet.STFDF)
+# as.SpPtsMet.stars = function(from) {
+#   stars::st_as_stars(as.SpPtsMet.STFDF(from))
+# }
+# setAs("SpatialPointsMeteorology", "stars", as.SpPtsMet.stars)

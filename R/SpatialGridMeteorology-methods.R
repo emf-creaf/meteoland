@@ -15,7 +15,7 @@
 #' @author Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF
 #' @seealso \code{\link{SpatialGridMeteorology-class}}
 #' @export
-SpatialGridMeteorology<-function(grid, proj4string=CRS(as.character(NA)), data, dates) {
+SpatialGridMeteorology<-function(grid, proj4string=as.character(NA), data, dates) {
 
   # deprecation notice
   lifecycle::deprecate_stop(

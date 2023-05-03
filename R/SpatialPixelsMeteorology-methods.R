@@ -25,7 +25,7 @@
 #' @seealso \code{\link{SpatialPixelsMeteorology-class}}
 #' @export
 SpatialPixelsMeteorology<-function(points, data, dates, tolerance = sqrt(.Machine$double.eps),
-                                   proj4string = CRS(as.character(NA)), round = NULL, grid = NULL) {
+                                   proj4string = as.character(NA), round = NULL, grid = NULL) {
 
   # deprecation notice
   lifecycle::deprecate_stop(

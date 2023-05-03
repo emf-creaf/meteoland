@@ -60,19 +60,9 @@
 #' @references Burrough, P. A. and McDonell, R.A., 1998. Principles of
 #' Geographical Information Systems (Oxford University Press, New York), p.
 #' 190.
-#' @examples
-#'
-#' data(examplegridtopography)
-#'
-#' #Display data
-#' spplot(examplegridtopography, variable="elevation", scales=list(draw=TRUE))
-#'
-#' #Grids can be subsetted
-#' sgt = examplegridtopography[1:50, 1:50]
-#' spplot(sgt, variable="elevation", scales=list(draw=TRUE))
 #'
 #' @export
-SpatialGridTopography<-function(grid, elevation, slope = NULL, aspect = NULL, proj4string = CRS(as.character(NA))) {
+SpatialGridTopography<-function(grid, elevation, slope = NULL, aspect = NULL, proj4string = as.character(NA)) {
 
   # deprecation notice
   lifecycle::deprecate_stop(

@@ -39,7 +39,7 @@
 readWindNinjaWindFields<-function(filebase, resolution = "100m",
                                   directionClasses = c(0,45,90,135,180,225,270,315),
                                   speedClasses = c(5,15,25),
-                                  proj4string = CRS(as.character(NA))) {
+                                  proj4string = as.character(NA)) {
 
   lifecycle::deprecate_stop(
     when = "2.0.0", what = "readWindNinjaWindFields()", with = NULL,

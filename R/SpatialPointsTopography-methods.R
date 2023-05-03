@@ -23,24 +23,9 @@
 #' '\code{\link{SpatialPointsTopography-class}}'.
 #' @author Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF
 #' @seealso \code{\link{SpatialPointsTopography-class}}
-#' @examples
-#'
-#' data(examplegridtopography)
-#'
-#' #Creates spatial topography points from the grid
-#' p = 1:2
-#' points = as(examplegridtopography,"SpatialPoints")[p]
-#' spt = SpatialPointsTopography(points, examplegridtopography$elevation[p],
-#'                               examplegridtopography$slope[p],
-#'                               examplegridtopography$aspect[p])
-#' spt
-#'
-#' #Alternatively, use coercing and subsetting
-#' spt = as(examplegridtopography, "SpatialPointsTopography")[p]
-#' spt
 #'
 #' @export
-SpatialPointsTopography<-function(points, elevation, slope = NULL, aspect = NULL, proj4string = CRS(as.character(NA))) {
+SpatialPointsTopography<-function(points, elevation, slope = NULL, aspect = NULL, proj4string = as.character(NA)) {
 
   # deprecation notice
   lifecycle::deprecate_stop(

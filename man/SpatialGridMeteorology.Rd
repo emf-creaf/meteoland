@@ -4,7 +4,7 @@
 \alias{SpatialGridMeteorology}
 \title{Creates a 'SpatialGridMeteorology'}
 \usage{
-SpatialGridMeteorology(grid, proj4string = CRS(as.character(NA)), data, dates)
+SpatialGridMeteorology(grid, proj4string = as.character(NA), data, dates)
 }
 \arguments{
 \item{grid}{An object of class \code{\link{GridTopology-class}}}

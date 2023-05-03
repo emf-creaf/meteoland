@@ -9,7 +9,7 @@ SpatialPixelsMeteorology(
   data,
   dates,
   tolerance = sqrt(.Machine$double.eps),
-  proj4string = CRS(as.character(NA)),
+  proj4string = as.character(NA),
   round = NULL,
   grid = NULL
 )

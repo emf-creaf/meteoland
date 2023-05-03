@@ -9,7 +9,7 @@ SpatialGridTopography(
   elevation,
   slope = NULL,
   aspect = NULL,
-  proj4string = CRS(as.character(NA))
+  proj4string = as.character(NA)
 )
 }
 \arguments{

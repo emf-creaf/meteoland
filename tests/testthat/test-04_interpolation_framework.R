@@ -23,7 +23,7 @@ test_that(".is_spatial_data, .is_raster works as intended", {
   expect_false(.is_spatial_data(25))
   expect_false(.is_spatial_data("25"))
   # expect_false(.is_spatial_data(terra::rast(raster_to_interpolate_example)))
-  expect_false(.is_spatial_data(sf::as_Spatial(points_to_interpolate_example)))
+  # expect_false(.is_spatial_data(sf::as_Spatial(points_to_interpolate_example)))
   expect_true(.is_spatial_data(points_to_interpolate_example))
   expect_true(.is_spatial_data(raster_to_interpolate_example))
   # .is_raster

@@ -38,13 +38,9 @@ Imports:
     grDevices
 Suggests: 
     knitr,
-    forecast,
-    spacetime,
     rmarkdown,
     testthat (>= 3.0.0),
     worldmet,
-    sp,
-    rgdal,
     keyring,
     tibble
 LinkingTo: Rcpp

@@ -13,3 +13,4 @@ metadata.yml
 ^roxygen_tmp/*$
 tests/testthat/old_rds
 ^cran-comments\.md$
+^CRAN-SUBMISSION$

@@ -2,6 +2,12 @@
  NEWS for R Package "meteoland"
 -------------------------------
 
+# meteoland 2.0.1
+- Hard deprecation of "sp", "raster" and "rgdal" depedencies, including functions and classes using
+  them.
+- Removed old vignettes and old example data
+- meteospain dependency moved to SUGGESTS
+
 # meteoland 2.0.0
 - Added the new workflows to work without `sp`, `raster`, `rgdal` packages.
 **This is a breaking change**, meaning it affects all the package:

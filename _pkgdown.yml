@@ -4,12 +4,6 @@ home:
     href: https://emf-creaf.github.io/meteolandbook/index.html
 
 articles:
-- title: Get started
-  contents:
-  - starts_with("UserGuide")
-- title: Examples
-  contents:
-  - starts_with("examples/InterpolationSenegal")
 - title: Working with meteoland ver. >= 2.0.0
   contents:
   - starts_with("tidy-meteoland")

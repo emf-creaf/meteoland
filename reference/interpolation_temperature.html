@@ -18,7 +18,7 @@ Low-level functions to interpolate meteorology (one day) on a set of points."><!
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">meteoland</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.0.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.0.1</span>
       </span>
     </div>
 
@@ -297,32 +297,6 @@ Environmental Modelling and Software 108: 186-196.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  [1] 0.0000000 0.0000000 0.1049001 0.1724466 1.8571120 0.1968337 2.0475055</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  [8] 0.0000000 0.0000000 0.0000000 0.0000000 0.0000000 0.0000000 2.8098406</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [15] 0.0000000</span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"exampleinterpolationdata"</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">mxt100</span> <span class="op">=</span> <span class="va">exampleinterpolationdata</span><span class="op">@</span><span class="va">MaxTemperature</span><span class="op">[</span>,<span class="fl">100</span><span class="op">]</span></span></span>
-<span class="r-in"><span><span class="va">Psmooth100</span> <span class="op">=</span> <span class="va">exampleinterpolationdata</span><span class="op">@</span><span class="va">SmoothedPrecipitation</span><span class="op">[</span>,<span class="fl">100</span><span class="op">]</span></span></span>
-<span class="r-in"><span><span class="va">P100</span> <span class="op">=</span> <span class="va">exampleinterpolationdata</span><span class="op">@</span><span class="va">Precipitation</span><span class="op">[</span>,<span class="fl">100</span><span class="op">]</span></span></span>
-<span class="r-in"><span><span class="va">mismxt</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">mxt100</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">misP</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">P100</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">Z</span> <span class="op">=</span> <span class="va">exampleinterpolationdata</span><span class="op">@</span><span class="va">elevation</span></span></span>
-<span class="r-in"><span><span class="va">X</span> <span class="op">=</span> <span class="va">exampleinterpolationdata</span><span class="op">@</span><span class="va">coords</span><span class="op">[</span>,<span class="fl">1</span><span class="op">]</span></span></span>
-<span class="r-in"><span><span class="va">Y</span> <span class="op">=</span> <span class="va">exampleinterpolationdata</span><span class="op">@</span><span class="va">coords</span><span class="op">[</span>,<span class="fl">2</span><span class="op">]</span></span></span>
-<span class="r-in"><span><span class="va">Zpv</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">1000</span>, by<span class="op">=</span><span class="fl">100</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">xp</span> <span class="op">=</span> <span class="fl">360000</span></span></span>
-<span class="r-in"><span><span class="va">yp</span> <span class="op">=</span> <span class="fl">4640000</span></span></span>
-<span class="r-in"><span><span class="va">xpv</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="va">xp</span>, <span class="fl">11</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">ypv</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="va">yp</span>, <span class="fl">11</span><span class="op">)</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="fu">interpolation_temperature</span><span class="op">(</span><span class="va">xpv</span>, <span class="va">ypv</span>, <span class="va">Zpv</span>,</span></span>
-<span class="r-in"><span>                          <span class="va">X</span><span class="op">[</span><span class="op">!</span><span class="va">mismxt</span><span class="op">]</span>, <span class="va">Y</span><span class="op">[</span><span class="op">!</span><span class="va">mismxt</span><span class="op">]</span>, <span class="va">Z</span><span class="op">[</span><span class="op">!</span><span class="va">mismxt</span><span class="op">]</span>,</span></span>
-<span class="r-in"><span>                          <span class="va">mxt100</span><span class="op">[</span><span class="op">!</span><span class="va">mismxt</span><span class="op">]</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [1] 22.40368 21.27964 20.15560 19.03156 17.90752 16.78348 15.65944 14.53540</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [9] 13.41136 12.28732 11.16328</span>
-<span class="r-in"><span><span class="fu">interpolation_precipitation</span><span class="op">(</span><span class="va">xpv</span>, <span class="va">ypv</span>, <span class="va">Zpv</span>,</span></span>
-<span class="r-in"><span>                           <span class="va">X</span><span class="op">[</span><span class="op">!</span><span class="va">misP</span><span class="op">]</span>, <span class="va">Y</span><span class="op">[</span><span class="op">!</span><span class="va">misP</span><span class="op">]</span>, <span class="va">Z</span><span class="op">[</span><span class="op">!</span><span class="va">misP</span><span class="op">]</span>,</span></span>
-<span class="r-in"><span>                           <span class="va">P100</span><span class="op">[</span><span class="op">!</span><span class="va">misP</span><span class="op">]</span>, <span class="va">Psmooth100</span><span class="op">[</span><span class="op">!</span><span class="va">misP</span><span class="op">]</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [1] 1.9533075 1.7282254 1.5350844 1.3674476 1.2205184 1.0906441 0.9749912</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [8] 0.8713261 0.7778630 0.6931565 0.6160236</span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>

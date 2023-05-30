@@ -4,12 +4,6 @@
     <loc>/404.html</loc>
   </url>
   <url>
-    <loc>/articles/UserGuide.html</loc>
-  </url>
-  <url>
-    <loc>/articles/examples/InterpolationSenegal.html</loc>
-  </url>
-  <url>
     <loc>/articles/index.html</loc>
   </url>
   <url>
@@ -118,15 +112,6 @@
     <loc>/reference/downloadSMCcurrentday.html</loc>
   </url>
   <url>
-    <loc>/reference/examplecorrectiondata.html</loc>
-  </url>
-  <url>
-    <loc>/reference/examplegridtopography.html</loc>
-  </url>
-  <url>
-    <loc>/reference/exampleinterpolationdata.html</loc>
-  </url>
-  <url>
     <loc>/reference/extractNetCDF.html</loc>
   </url>
   <url>
@@ -227,9 +212,6 @@
   </url>
   <url>
     <loc>/reference/set_interpolation_params.html</loc>
-  </url>
-  <url>
-    <loc>/reference/spplot-SpatialGridMeteorology-method.html</loc>
   </url>
   <url>
     <loc>/reference/subsample.html</loc>

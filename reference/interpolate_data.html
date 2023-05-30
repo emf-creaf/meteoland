@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">meteoland</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.0.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.0.1</span>
       </span>
     </div>
 
@@ -176,23 +176,22 @@ a better interpolation process, though this two variables are not mandatory.</p>
 <span class="r-in"><span><span class="va">res</span><span class="op">[[</span><span class="st">"interpolated_data"</span><span class="op">]</span><span class="op">]</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [[1]]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 30 × 13</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    dates                 DOY MeanTempe…¹ MinTe…² MaxTe…³ Preci…⁴ MeanR…⁵ MinRe…⁶</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dttm&gt;</span>              <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> 2022-04-01 <span style="color: #949494;">00:00:00</span>    91        3.24   -<span style="color: #BB0000;">2.53</span>    6.99   0        45.0    34.6</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span> 2022-04-02 <span style="color: #949494;">00:00:00</span>    92        2.99   -<span style="color: #BB0000;">4.20</span>    7.67   0        45.0    32.5</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span> 2022-04-03 <span style="color: #949494;">00:00:00</span>    93        2.39   -<span style="color: #BB0000;">5.61</span>    7.59   2.79     61.2    42.6</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> 2022-04-04 <span style="color: #949494;">00:00:00</span>    94        4.02   -<span style="color: #BB0000;">3.93</span>    9.20   0        61.5    43.1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> 2022-04-05 <span style="color: #949494;">00:00:00</span>    95        7.38   -<span style="color: #BB0000;">3.29</span>   14.3    0        50.0    31.5</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> 2022-04-06 <span style="color: #949494;">00:00:00</span>    96        8.78    1.31   13.6    0        64.4    46.6</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span> 2022-04-07 <span style="color: #949494;">00:00:00</span>    97       12.1     2.44   18.4    0        58.4    39.0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> 2022-04-08 <span style="color: #949494;">00:00:00</span>    98       12.9     3.32   19.1    0        57.0    38.3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> 2022-04-09 <span style="color: #949494;">00:00:00</span>    99       10.0     3.83   14.1    0        70.0    53.7</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> 2022-04-10 <span style="color: #949494;">00:00:00</span>   100       11.4     4.85   15.6    0.130    67.6    51.3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># … with 20 more rows, 5 more variables: MaxRelativeHumidity &lt;dbl&gt;,</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   Radiation &lt;dbl&gt;, WindSpeed &lt;dbl&gt;, WindDirection &lt;dbl&gt;, PET &lt;dbl&gt;, and</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   abbreviated variable names ¹​MeanTemperature, ²​MinTemperature,</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   ³​MaxTemperature, ⁴​Precipitation, ⁵​MeanRelativeHumidity,</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   ⁶​MinRelativeHumidity</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    dates                 DOY MeanTemperature MinTemperature MaxTemperature</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dttm&gt;</span>              <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>           <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>          <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>          <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> 2022-04-01 <span style="color: #949494;">00:00:00</span>    91            3.24          -<span style="color: #BB0000;">2.53</span>           6.99</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span> 2022-04-02 <span style="color: #949494;">00:00:00</span>    92            2.99          -<span style="color: #BB0000;">4.20</span>           7.67</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span> 2022-04-03 <span style="color: #949494;">00:00:00</span>    93            2.39          -<span style="color: #BB0000;">5.61</span>           7.59</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> 2022-04-04 <span style="color: #949494;">00:00:00</span>    94            4.02          -<span style="color: #BB0000;">3.93</span>           9.20</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> 2022-04-05 <span style="color: #949494;">00:00:00</span>    95            7.38          -<span style="color: #BB0000;">3.29</span>          14.3 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> 2022-04-06 <span style="color: #949494;">00:00:00</span>    96            8.78           1.31          13.6 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span> 2022-04-07 <span style="color: #949494;">00:00:00</span>    97           12.1            2.44          18.4 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> 2022-04-08 <span style="color: #949494;">00:00:00</span>    98           12.9            3.32          19.1 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> 2022-04-09 <span style="color: #949494;">00:00:00</span>    99           10.0            3.83          14.1 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> 2022-04-10 <span style="color: #949494;">00:00:00</span>   100           11.4            4.85          15.6 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 20 more rows</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 8 more variables: Precipitation &lt;dbl&gt;, MeanRelativeHumidity &lt;dbl&gt;,</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   MinRelativeHumidity &lt;dbl&gt;, MaxRelativeHumidity &lt;dbl&gt;, Radiation &lt;dbl&gt;,</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   WindSpeed &lt;dbl&gt;, WindDirection &lt;dbl&gt;, PET &lt;dbl&gt;</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span><span class="co"># unnest results</span></span></span>
 <span class="r-in"><span><span class="fu">tidyr</span><span class="fu">::</span><span class="fu"><a href="https://tidyr.tidyverse.org/reference/unnest.html" class="external-link">unnest</a></span><span class="op">(</span><span class="va">res</span>, cols <span class="op">=</span> <span class="st">"interpolated_data"</span><span class="op">)</span></span></span>
@@ -214,11 +213,11 @@ a better interpolation process, though this two variables are not mandatory.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> P_05284      889.  25.2   313. (2.320167 42.24139) 2022-04-08 <span style="color: #949494;">00:00:00</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> P_05284      889.  25.2   313. (2.320167 42.24139) 2022-04-09 <span style="color: #949494;">00:00:00</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> P_05284      889.  25.2   313. (2.320167 42.24139) 2022-04-10 <span style="color: #949494;">00:00:00</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># … with 440 more rows, and 12 more variables: DOY &lt;dbl&gt;,</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   MeanTemperature &lt;dbl&gt;, MinTemperature &lt;dbl&gt;, MaxTemperature &lt;dbl&gt;,</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   Precipitation &lt;dbl&gt;, MeanRelativeHumidity &lt;dbl&gt;, MinRelativeHumidity &lt;dbl&gt;,</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   MaxRelativeHumidity &lt;dbl&gt;, Radiation &lt;dbl&gt;, WindSpeed &lt;dbl&gt;,</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   WindDirection &lt;dbl&gt;, PET &lt;dbl&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 440 more rows</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 12 more variables: DOY &lt;dbl&gt;, MeanTemperature &lt;dbl&gt;, MinTemperature &lt;dbl&gt;,</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   MaxTemperature &lt;dbl&gt;, Precipitation &lt;dbl&gt;, MeanRelativeHumidity &lt;dbl&gt;,</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   MinRelativeHumidity &lt;dbl&gt;, MaxRelativeHumidity &lt;dbl&gt;, Radiation &lt;dbl&gt;,</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   WindSpeed &lt;dbl&gt;, WindDirection &lt;dbl&gt;, PET &lt;dbl&gt;</span></span>
 <span class="r-in"><span><span class="co"># }</span></span></span>
 <span class="r-in"><span></span></span>
 </code></pre></div>

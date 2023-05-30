@@ -33,7 +33,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">meteoland</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.0.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.0.1</span>
       </span>
     </div>
 
@@ -72,7 +72,9 @@
 </h1>
 <p>Starting on June 2023, <code>rgdal</code>, <code>rgeos</code> and <code>maptools</code> R packages will enter a <em>maintenance</em> mode (meaning no new updates, more info at <a href="https://github.com/r-spatial/evolution" class="external-link uri">https://github.com/r-spatial/evolution</a>). Coincidentally, <code>sp</code> and <code>raster</code> packages are now superseded by the more modern alternatives <code>sf</code>, <code>stars</code> and <code>terra</code>. This means that the <code>meteoland</code> classes, which are based on <code>sp</code>, need to be updated to deal with these changes in the R-spatial ecosystem.</p>
 <p>Starting with version 2.0.0 of <code>meteoland</code> (February 2023) <strong>all functions, methods and classes based on or using the <code>sp</code>, <code>raster</code> and <code>rgdal</code> package are now soft-deprecated</strong>. They still work and can be used, but a warning will appear recommending using the new tidy workflows.</p>
-<blockquote><p><strong>In June 2023, all these functions, methods and classes will be hard-deprecated, meaning they will stop working.</strong></p></blockquote>
+<blockquote>
+<p><strong>In June 2023, all these functions, methods and classes will be hard-deprecated, meaning they will stop working.</strong></p>
+</blockquote>
 <p>See the <a href="https://emf-creaf.github.io/meteoland/articles/tidy-meteoland.html" class="external-link"><em>Tidy meteoland</em></a> vignette (<code><a href="articles/tidy-meteoland.html">vignette("tidy-meteoland", package = "meteoland")</a></code>) for more info about this changes.</p>
 <div class="section level2">
 <h2 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
@@ -107,7 +109,9 @@
 <div class="section level2">
 <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
 </h2>
-<ul><li>De Caceres M, Martin-StPaul N, Turco M, Cabon A, Granda V (2018) Estimating daily meteorological data and downscaling climate models over landscapes. Environmental Modelling and Software 108: 186-196. (<a href="doi:10.1016/j.envsoft.2018.08.003" class="uri">doi:10.1016/j.envsoft.2018.08.003</a>).</li></ul>
+<ul>
+<li>De Caceres M, Martin-StPaul N, Turco M, Cabon A, Granda V (2018) Estimating daily meteorological data and downscaling climate models over landscapes. Environmental Modelling and Software 108: 186-196. (<a href="doi:10.1016/j.envsoft.2018.08.003" class="uri">doi:10.1016/j.envsoft.2018.08.003</a>).</li>
+</ul>
 </div>
 </div>
 

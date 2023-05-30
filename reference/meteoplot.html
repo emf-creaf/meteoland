@@ -18,7 +18,7 @@ Simple plotting of a meteorological series for a given point."><!-- mathjax --><
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">meteoland</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.0.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.0.1</span>
       </span>
     </div>
 
@@ -125,7 +125,7 @@ plot (using function <code>lines</code>).</p></dd>
     <p>Daily precipitation is plotted using bars (i.e. <code>type = "h"</code> when
 calling <code><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></code>). Otherwise the function draws lines (i.e.
 <code>type = "l"</code> when calling <code><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></code>). If <code>object</code> is of
-class <code>SpatialPointsDataFrame-class</code> then the function reads the
+class <code>SpatialPointsDataFrame</code> then the function reads the
 meteorological data to be plotted from the disk.</p>
     </div>
     <div id="see-also">
@@ -137,33 +137,6 @@ meteorological data to be plotted from the disk.</p>
     <p>Miquel De Cáceres Ainsa, CREAF</p>
     </div>
 
-    <div id="ref-examples">
-    <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># \donttest{</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">examplegridtopography</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">exampleinterpolationdata</span><span class="op">)</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co">#Creates spatial topography points from the grid</span></span></span>
-<span class="r-in"><span><span class="va">p</span> <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">2</span></span></span>
-<span class="r-in"><span><span class="va">spt</span> <span class="op">=</span> <span class="fu">as</span><span class="op">(</span><span class="va">examplegridtopography</span>, <span class="st">"SpatialPointsTopography"</span><span class="op">)</span><span class="op">[</span><span class="va">p</span><span class="op">]</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co">#Interpolation of two points for the whole time period (2000-2003)</span></span></span>
-<span class="r-in"><span><span class="va">mp</span> <span class="op">=</span> <span class="fu"><a href="interpolationpoints.html">interpolationpoints</a></span><span class="op">(</span><span class="va">exampleinterpolationdata</span>, <span class="va">spt</span><span class="op">)</span></span></span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>PROJ support is provided by the sf and terra packages among others</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Processing point '1' (1/2) - done.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Processing point '2' (2/2) - done.</span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co">#Plot interpolated meteorological series</span></span></span>
-<span class="r-in"><span><span class="fu">meteoplot</span><span class="op">(</span><span class="va">mp</span>,<span class="fl">1</span>, ylab<span class="op">=</span><span class="st">"Daily mean temperature"</span><span class="op">)</span></span></span>
-<span class="r-plt img"><img src="meteoplot-1.png" alt="" width="700" height="433"></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="fu">meteoplot</span><span class="op">(</span><span class="va">mp</span>,<span class="fl">1</span>, ylab<span class="op">=</span><span class="st">"Monthly mean temperature"</span>, fun<span class="op">=</span><span class="va">mean</span>, freq<span class="op">=</span><span class="st">"months"</span><span class="op">)</span></span></span>
-<span class="r-plt img"><img src="meteoplot-2.png" alt="" width="700" height="433"></span>
-<span class="r-in"><span><span class="co"># }</span></span></span>
-<span class="r-in"><span></span></span>
-</code></pre></div>
-    </div>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top"><h2 data-toc-skip>Contents</h2>

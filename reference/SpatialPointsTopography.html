@@ -20,7 +20,7 @@ for a set of points."><!-- mathjax --><script src="https://cdnjs.cloudflare.com/
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">meteoland</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.0.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.0.1</span>
       </span>
     </div>
 
@@ -61,14 +61,14 @@ for a set of points.</p>
 <span>  <span class="va">elevation</span>,</span>
 <span>  slope <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  aspect <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  proj4string <span class="op">=</span> <span class="fu">CRS</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character</a></span><span class="op">(</span><span class="cn">NA</span><span class="op">)</span><span class="op">)</span></span>
+<span>  proj4string <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character</a></span><span class="op">(</span><span class="cn">NA</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>points</dt>
-<dd><p>An object of class <code>SpatialPoints-class</code>.</p></dd>
+<dd><p>An object of class <code>SpatialPoints</code>.</p></dd>
 
 
 <dt>elevation</dt>
@@ -111,34 +111,6 @@ surface.</p>
     <p>Miquel De Cáceres Ainsa, CREAF</p>
     </div>
 
-    <div id="ref-examples">
-    <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">examplegridtopography</span><span class="op">)</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co">#Creates spatial topography points from the grid</span></span></span>
-<span class="r-in"><span><span class="va">p</span> <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">2</span></span></span>
-<span class="r-in"><span><span class="va">points</span> <span class="op">=</span> <span class="fu">as</span><span class="op">(</span><span class="va">examplegridtopography</span>,<span class="st">"SpatialPoints"</span><span class="op">)</span><span class="op">[</span><span class="va">p</span><span class="op">]</span></span></span>
-<span class="r-in"><span><span class="va">spt</span> <span class="op">=</span> <span class="fu">SpatialPointsTopography</span><span class="op">(</span><span class="va">points</span>, <span class="va">examplegridtopography</span><span class="op">$</span><span class="va">elevation</span><span class="op">[</span><span class="va">p</span><span class="op">]</span>,</span></span>
-<span class="r-in"><span>                              <span class="va">examplegridtopography</span><span class="op">$</span><span class="va">slope</span><span class="op">[</span><span class="va">p</span><span class="op">]</span>,</span></span>
-<span class="r-in"><span>                              <span class="va">examplegridtopography</span><span class="op">$</span><span class="va">aspect</span><span class="op">[</span><span class="va">p</span><span class="op">]</span><span class="op">)</span></span></span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>`SpatialPointsTopography()` was deprecated in meteoland 2.0.0.</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Spatial_*_Topography classes are soft deprecated. User topography now can be</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span>   provided as sf or stars objects</span>
-<span class="r-in"><span><span class="va">spt</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         coordinates elevation     slope   aspect</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1 (360000, 4640900)       548 0.7910155 275.1944</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2 (360100, 4640900)       554 3.1171090 238.1340</span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co">#Alternatively, use coercing and subsetting</span></span></span>
-<span class="r-in"><span><span class="va">spt</span> <span class="op">=</span> <span class="fu">as</span><span class="op">(</span><span class="va">examplegridtopography</span>, <span class="st">"SpatialPointsTopography"</span><span class="op">)</span><span class="op">[</span><span class="va">p</span><span class="op">]</span></span></span>
-<span class="r-in"><span><span class="va">spt</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         coordinates elevation     slope   aspect</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1 (360000, 4640900)       548 0.7910155 275.1944</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2 (360100, 4640900)       554 3.1171090 238.1340</span>
-<span class="r-in"><span></span></span>
-</code></pre></div>
-    </div>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top"><h2 data-toc-skip>Contents</h2>

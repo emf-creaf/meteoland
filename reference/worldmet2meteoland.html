@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">meteoland</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.0.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.0.1</span>
       </span>
     </div>
 
@@ -46,7 +46,7 @@
     </div>
 
     <div class="ref-description">
-    <p>Adapting <code><a href="https://rdrr.io/pkg/worldmet/man/importNOAA.html" class="external-link">importNOAA</a></code> meteo objects to meteoland meteo objects</p>
+    <p>Adapting <code>importNOAA</code> meteo objects to meteoland meteo objects</p>
     </div>
 
     <div id="ref-usage">
@@ -72,7 +72,7 @@ should be calculated (if possible). Default to FALSE.</p></dd>
     </div>
     <div id="details">
     <h2>Details</h2>
-    <p>This function converts <code><a href="https://rdrr.io/pkg/worldmet/man/importNOAA.html" class="external-link">importNOAA</a></code> meteo objects to
+    <p>This function converts <code>importNOAA</code> meteo objects to
 compatible meteoland meteo objects by selecting the needed variables and
 adapting the names to comply with meteoland requirements. Also it aggregates
 subdaily data as well as complete missing variables if possible (setting
@@ -85,9 +85,9 @@ subdaily data as well as complete missing variables if possible (setting
 <span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/interactive.html" class="external-link">interactive</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span></span>
 <span class="r-in"><span>  <span class="co"># worldmet data</span></span></span>
 <span class="r-in"><span>  <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://davidcarslaw.github.io/worldmet/index.html" class="external-link">worldmet</a></span><span class="op">)</span></span></span>
-<span class="r-in"><span>  <span class="va">worldmet_stations</span> <span class="op">&lt;-</span> <span class="fu">worldmet</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/worldmet/man/getMeta.html" class="external-link">getMeta</a></span><span class="op">(</span>lat <span class="op">=</span> <span class="fl">42</span>, lon <span class="op">=</span> <span class="fl">0</span>, n <span class="op">=</span> <span class="fl">2</span>, plot <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="va">worldmet_stations</span> <span class="op">&lt;-</span> <span class="fu">worldmet</span><span class="fu">::</span><span class="fu">getMeta</span><span class="op">(</span>lat <span class="op">=</span> <span class="fl">42</span>, lon <span class="op">=</span> <span class="fl">0</span>, n <span class="op">=</span> <span class="fl">2</span>, plot <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
 <span class="r-in"><span>  <span class="va">worldmet_subdaily_2022</span> <span class="op">&lt;-</span></span></span>
-<span class="r-in"><span>    <span class="fu">worldmet</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/worldmet/man/importNOAA.html" class="external-link">importNOAA</a></span><span class="op">(</span><span class="va">worldmet_stations</span><span class="op">$</span><span class="va">code</span>, year <span class="op">=</span> <span class="fl">2022</span>, hourly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-in"><span>    <span class="fu">worldmet</span><span class="fu">::</span><span class="fu">importNOAA</span><span class="op">(</span><span class="va">worldmet_stations</span><span class="op">$</span><span class="va">code</span>, year <span class="op">=</span> <span class="fl">2022</span>, hourly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span>  <span class="co"># just convert</span></span></span>
 <span class="r-in"><span>  <span class="fu">worldmet2meteoland</span><span class="op">(</span><span class="va">worldmet_subdaily_2022</span><span class="op">)</span></span></span>
@@ -95,6 +95,7 @@ subdaily data as well as complete missing variables if possible (setting
 <span class="r-in"><span>  <span class="fu">worldmet2meteoland</span><span class="op">(</span><span class="va">worldmet_subdaily_2022</span>, complete <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="op">}</span></span></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in library(worldmet):</span> there is no package called ‘worldmet’</span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>

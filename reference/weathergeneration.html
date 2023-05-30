@@ -20,7 +20,7 @@ synthetic data sets of the same length and similar properties."><!-- mathjax -->
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">meteoland</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.0.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.0.1</span>
       </span>
     </div>
 
@@ -126,55 +126,6 @@ doi:10.1002/wrcr.20528.</p>
     <p>Miquel De Cáceres Ainsa, CREAF</p>
     </div>
 
-    <div id="ref-examples">
-    <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># \donttest{</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">examplegridtopography</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">exampleinterpolationdata</span><span class="op">)</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co">#Creates spatial topography points from the grid</span></span></span>
-<span class="r-in"><span><span class="va">p</span> <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">2</span></span></span>
-<span class="r-in"><span><span class="va">spt</span> <span class="op">=</span> <span class="fu">as</span><span class="op">(</span><span class="va">examplegridtopography</span>, <span class="st">"SpatialPointsTopography"</span><span class="op">)</span><span class="op">[</span><span class="va">p</span><span class="op">]</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co">#Interpolation of two points for the whole time period (2000-2003)</span></span></span>
-<span class="r-in"><span><span class="va">mp</span> <span class="op">=</span> <span class="fu"><a href="interpolationpoints.html">interpolationpoints</a></span><span class="op">(</span><span class="va">exampleinterpolationdata</span>, <span class="va">spt</span><span class="op">)</span></span></span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>PROJ support is provided by the sf and terra packages among others</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Processing point '1' (1/2) - done.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Processing point '2' (2/2) - done.</span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co">#Plot interpolated meteorological series</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="meteoplot.html">meteoplot</a></span><span class="op">(</span><span class="va">mp</span>,<span class="fl">1</span>, ylab<span class="op">=</span><span class="st">"Mean temperature"</span><span class="op">)</span></span></span>
-<span class="r-plt img"><img src="weathergeneration-1.png" alt="" width="700" height="433"></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co">#Generate a stochastic series using interpolated data as template</span></span></span>
-<span class="r-in"><span><span class="va">y</span> <span class="op">=</span> <span class="fu">weathergeneration</span><span class="op">(</span><span class="va">mp</span><span class="op">)</span></span></span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>`weathergeneration()` was deprecated in meteoland 2.0.0.</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Current weather generation methods are currently deprecated because they</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span>   operate with classes that are deprecated themselves, but for future versions,</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span>   we plan to keep the functionality in new functions.</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>`correctionpoints.errors()` was deprecated in meteoland 2.0.0.</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Current weather generation methods are currently deprecated because they</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span>   operate with classes that are deprecated themselves, but for future versions,</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span>   we plan to keep the functionality in new functions.</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> The deprecated feature was likely used in the <span style="color: #0000BB;">meteoland</span> package.</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span>   Please report the issue to the authors.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Calculating area-averaged weather...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Generating weather series...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Annual precipitation stats: </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>               average       sd</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> input/target 456.1522 83.63653</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> simulated    449.6392 79.52819</span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co">#Plot generated meteorological series</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="meteoplot.html">meteoplot</a></span><span class="op">(</span><span class="va">y</span>,<span class="fl">1</span>, ylab<span class="op">=</span><span class="st">"Mean temperature"</span><span class="op">)</span></span></span>
-<span class="r-plt img"><img src="weathergeneration-2.png" alt="" width="700" height="433"></span>
-<span class="r-in"><span><span class="co"># }</span></span></span>
-<span class="r-in"><span></span></span>
-</code></pre></div>
-    </div>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top"><h2 data-toc-skip>Contents</h2>

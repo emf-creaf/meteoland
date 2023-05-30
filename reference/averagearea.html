@@ -18,7 +18,7 @@ Averages the weather data series of points or grid pixels."><!-- mathjax --><scr
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">meteoland</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.0.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.0.1</span>
       </span>
     </div>
 
@@ -90,69 +90,6 @@ the spatial average of the input.</p>
     <p>Miquel De Cáceres Ainsa, CREAF</p>
     </div>
 
-    <div id="ref-examples">
-    <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># \donttest{</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">examplegridtopography</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">exampleinterpolationdata</span><span class="op">)</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co">#Interpolation of meteorology over a grid for two days</span></span></span>
-<span class="r-in"><span><span class="va">ml</span> <span class="op">=</span> <span class="fu"><a href="interpolationpoints.html">interpolationgrid</a></span><span class="op">(</span><span class="va">exampleinterpolationdata</span>, <span class="va">examplegridtopography</span>,</span></span>
-<span class="r-in"><span>                       <span class="fu"><a href="https://rdrr.io/r/base/as.Date.html" class="external-link">as.Date</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"2001-02-03"</span>, <span class="st">"2001-06-03"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>`interpolationgrid()` was deprecated in meteoland 2.0.0.</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Please use `interpolate_data()` instead.</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Spatial_*_Topography and MetereologyInterpolationData classes are soft</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span>   deprecated. Interpolator should be created with create_meteo_interpolator(),</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span>   and spatial objects to interpolate should be from sf (vector) or star</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span>   (raster) classes. Interpolation is performed with interpolate_data()</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>PROJ support is provided by the sf and terra packages among others</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Interpolating day '2001-02-03' (1/2) - </span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>PROJ support is provided by the sf and terra packages among others</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> done.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Interpolating day '2001-06-03' (2/2) - </span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>PROJ support is provided by the sf and terra packages among others</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> done.</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>`SpatialGridMeteorology()` was deprecated in meteoland 2.0.0.</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Spatial_*_Meteorology classes are soft deprecated. Meteorology objects are</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span>   now normal sf points objects</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> The deprecated feature was likely used in the <span style="color: #0000BB;">meteoland</span> package.</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span>   Please report the issue to the authors.</span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co">#Call averaging function</span></span></span>
-<span class="r-in"><span><span class="va">pa</span> <span class="op">=</span> <span class="fu">averagearea</span><span class="op">(</span><span class="va">ml</span><span class="op">)</span></span></span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>`averagearea()` was deprecated in meteoland 2.0.0.</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Spatial_*_Meteorology classes are soft deprecated. To average meteo data</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span>   series is better to use the corresponding functions in the sf package</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>`SpatialPointsMeteorology()` was deprecated in meteoland 2.0.0.</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Spatial_*_Meteorology classes are soft deprecated. Meteorology objects are</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span>   now normal sf points objects</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> The deprecated feature was likely used in the <span style="color: #0000BB;">meteoland</span> package.</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span>   Please report the issue to the authors.</span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co">#Spatial information</span></span></span>
-<span class="r-in"><span><span class="va">pa</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> SpatialPoints:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   coords.x1 coords.x2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1    364950   4635950</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Coordinate Reference System (CRS) arguments: +proj=utm +zone=31</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> +datum=WGS84 +units=m +no_defs </span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co">#Weather data</span></span></span>
-<span class="r-in"><span><span class="va">pa</span><span class="op">@</span><span class="va">data</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>            DOY MeanTemperature MinTemperature MaxTemperature Precipitation</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2001-02-03  34        7.036145     -0.6158631       12.01121             0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2001-06-03 154       21.862234     12.2691998       28.09929             0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>            MeanRelativeHumidity MinRelativeHumidity MaxRelativeHumidity</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2001-02-03             79.84105            57.12066                 100</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2001-06-03             58.34324            40.25151                 100</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>            Radiation WindSpeed WindDirection      PET</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2001-02-03  10.71743  1.388889           220 1.046231</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2001-06-03  28.41855  3.611111           240 6.411385</span>
-<span class="r-in"><span><span class="co"># }</span></span></span>
-<span class="r-in"><span></span></span>
-</code></pre></div>
-    </div>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top"><h2 data-toc-skip>Contents</h2>

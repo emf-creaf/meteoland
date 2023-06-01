@@ -33,7 +33,7 @@ library(afrilearndata)
 ## Accessing weather station data
 
 We start by loading package **worldmet**, which provides access to over 30.000 weather stations across the globe:
-```{r, echo = FALSE}
+```{r, echo = TRUE}
 library(worldmet)
 ```
 
@@ -63,25 +63,24 @@ if(params$complete_rebuild) {
 }
 ```
 
-The station data downloaded looks like this:
+The station metadata looks like this:
 ```{r}
 sg_st
 ```
 
 Let's assume that we want to interpolate weather for year 2020. We can download hourly weather station data for the selected stations and year 2020 using function `importNOAA()` and programming a loop over stations:
 
-```{r, eval = params$complete_rebuild, echo = FALSE}
+```{r, eval = params$complete_rebuild, echo = TRUE, include = TRUE}
 hourData <- NULL
 for(i in 1:length(sg_st$code)) {
   cat(paste0(sg_st$code[i]," "))
   tryCatch({
     hi <- worldmet::importNOAA(code = sg_st$code[i], year=2020, quiet=TRUE)
-    if(is.null(hourData))  {hourData = hi}
-    else {hourData = dplyr::bind_rows(hourData,hi)}
+    if(is.null(hourData))  {hourData <- hi}
+    else {hourData <- dplyr::bind_rows(hourData,hi)}
     cat(" [success].")
   }, error = function(e) {cat("[failed].")})
 }
-cat("\n")
 ```
 
 ```{r, eval = TRUE, echo=FALSE}
@@ -115,12 +114,14 @@ An interpolator object needs to be created for interpolation, containing not onl
 interpolator_sen <- meteoland::create_meteo_interpolator(sf_sen, verbose = FALSE)
 ```
 
-The warning message indicates that default interpolation parameters are set and in a serious application we should calibrate the parameters before using the reference data for interpolation. The interpolator object is of class **stars**:
+The warning message indicates that default interpolation parameters are set and in a serious application we should calibrate the parameters before using the reference data for interpolation. 
+
+The interpolator object is of class **stars**:
 ```{r}
 interpolator_sen
 ```
 
-If needed, we can display the location of the weather stations on a map with country limits using:
+If needed, we can display the location of the weather stations on a map with country limits. This is useful to know the station density in the study area. In our case we will use the following code:
 
 ```{r, fig.width=4, fig.height=6}
 data("africountries")

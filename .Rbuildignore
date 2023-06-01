@@ -11,6 +11,7 @@ metadata.yml
 ^\.github$
 ^old_man/*$
 ^roxygen_tmp/*$
+^vignettes/examples/*$
 tests/testthat/old_rds
 ^cran-comments\.md$
 ^CRAN-SUBMISSION$

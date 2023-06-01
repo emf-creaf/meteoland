@@ -1,0 +1,179 @@
+---
+title: "Daily weather interpolation over Senegal"
+author: "Miquel De Cáceres"
+date: "`r Sys.Date()`"
+output: 
+  rmarkdown::html_document:
+    toc: false
+params:
+  complete_rebuild: FALSE
+---
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+In this document we show how to obtain and process the topographic and weather data needed by package **meteoland** to conduct weather interpolation over a given country, using package **worldmet** as source for reference weather station data. We'll use Senegal as case study.
+
+We begin by loading necessary libraries:
+```{r, include=TRUE}
+library(meteoland)
+library(ggplot2)
+library(terra)
+library(stars)
+library(tidyterra)
+```
+## Accessing weather station data
+
+We start by loading package **worldmet**, which provides access to over 30.000 weather stations across the globe:
+```{r, echo = FALSE}
+library(worldmet)
+```
+In order to download weather data, we must first obtain the codes of the weather stations available for our study area. This can be done using function `getMeta()` from worldmet, which we use to know available weather stations for Senegal and neighbouring countries:
+```{r, eval = params$complete_rebuild}
+# Country codes:
+#   Senegal - SG
+#   Gambia - GA 
+#   Guinea - GV
+#   Mali - ML 
+#   Mauritania - MR
+#   Guinea bissau - PU
+sg_st <- dplyr::bind_rows(worldmet::getMeta(country="SG", plot = FALSE),
+                          worldmet::getMeta(country="GA", plot = FALSE),
+                          worldmet::getMeta(country="GV", plot = FALSE),
+                          worldmet::getMeta(country="ML", plot = FALSE),
+                          worldmet::getMeta(country="MR", plot = FALSE),
+                          worldmet::getMeta(country="PU", plot = FALSE))
+```
+
+```{r, eval = TRUE, echo=FALSE}
+if(params$complete_rebuild) {
+  saveRDS(sg_st, file="sg_st.rds")
+} else {
+  sg_st <- readRDS("sg_st.rds")
+}
+```
+Here are the stations downloaded:
+```{r}
+sg_st
+```
+
+Let's assume that we want to interpolate weather for year 2020. We can download hourly weather station data for the selected stations and year 2020 using function `importNOAA()`:
+```{r, eval = params$complete_rebuild, echo = FALSE}
+hourData <- NULL
+for(i in 1:length(sg_st$code)) {
+  cat(paste0(sg_st$code[i]," "))
+  tryCatch({
+    hi <- worldmet::importNOAA(code = sg_st$code[i], year=2020, quiet=TRUE)
+    if(is.null(hourData))  {hourData = hi}
+    else {hourData = dplyr::bind_rows(hourData,hi)}
+    cat(" [success].")
+  }, error = function(e) {cat("[failed].")})
+}
+cat("\n")
+```
+```{r, eval = TRUE, echo=FALSE}
+if(params$complete_rebuild) {
+  saveRDS(hourData, file="hourData.rds")
+} else {
+  hourData <- readRDS("hourData.rds")  
+}
+```
+
+Some stations had missing data for year 2020 and were excluded from the output. Using function `worldmet2meteoland()` from **meteoland**, we can reshape the hourly data of the remaining stations into daily data in form of an `sf` object:
+```{r, eval = params$complete_rebuild, echo = FALSE}
+sf_sen <- worldmet2meteoland(hourData, complete = TRUE)
+sf_sen
+```
+
+```{r, eval = TRUE, echo=FALSE}
+if(params$complete_rebuild) {
+  saveRDS(sf_sen, file="sf_sen.rds")
+} else {
+  sf_sen <- readRDS("sf_sen.rds")  
+}
+```
+
+An interpolator object needs to be created for interpolation, containing not only station weather and topographic data but also interpolation parameters. This can be obtained using function `create_meteo_interpolator()`:
+
+```{r}
+interpolator_sen <- meteoland::create_meteo_interpolator(sf_sen)
+interpolator_sen
+```
+
+```{r}
+senegal_sf <- sf::st_as_sf(rnaturalearth::ne_countries(country=c("Senegal"), scale="medium"))
+all_sf <- sf::st_as_sf(rnaturalearth::ne_countries(country=c("Senegal", "Gambia",
+                                                                 "Mali", "Mauritania",
+                                                                 "Guinea Bissau", "Guinea"), scale="medium"))
+ggplot()+
+  geom_sf(data = sf::st_geometry(all_sf))+
+  geom_sf(data = sf::st_geometry(senegal_sf), fill= "red")+
+  geom_sf(data = sf_sen[1])+
+  theme_bw()
+```
+## Accessing elevation data
+
+To perform weather interpolation, we need the topography (elevation, slope, aspect) of the target area. We can use function `getData()` from package **raster** to download elevation data for Senegal:
+```{r, echo=FALSE}
+elev_raster <- geodata::elevation_30s(country="SEN", path = tempdir())
+elev_raster
+```
+The previous function returns a `SpatRaster` object (package **terra**), which we can plot using:
+
+```{r}
+ggplot()+
+  tidyterra::geom_spatraster(data = elev_raster)
+```
+
+
+
+In order to estimate slope and aspect it is important that the spatial reference system is in coordinates that have meters as units. We can reproject our raster to 28N UTM using function `projectRaster()` from package **raster**:
+```{r}
+slope_raster <- terra::terrain(elev_raster, v = "slope", unit="degrees")
+ggplot()+
+  tidyterra::geom_spatraster(data = slope_raster)
+```
+
+```{r}
+aspect_raster <- terra::terrain(elev_raster, v = "aspect", unit="degrees")
+ggplot()+
+  tidyterra::geom_spatraster(data = aspect_raster)
+```
+
+
+```{r}
+fact <- 10
+names(elev_raster) <- "elevation"
+topo_spatraster_agg <- c(terra::aggregate(elev_raster, fact = fact), 
+                         terra::aggregate(slope_raster, fact = fact), 
+                         terra::aggregate(aspect_raster, fact = fact))
+```
+
+```{r}
+topo_stars_agg <- stars::st_as_stars(topo_spatraster_agg, as_attributes=TRUE)
+```
+
+
+
+## Performing interpolation
+
+We are now ready to perform the interpolation of weather over the study area. Since our spatial target are grid pixels, we need to call function `interpolationpixels` with: (a) our object `MeteorologyInterpolationData`; (b) our target topography (i.e. in this case `SpatialPixelsTopography`); and (c) a vector of dates (here two distinct days) among the period with available data (year 2020):
+```{r}
+raster_interpolated <- topo_stars_agg |>
+  interpolate_data(interpolator_sen, dates = c(as.Date("2020-01-01"), as.Date("2020-07-01")), 
+                   verbose = FALSE)
+```
+A warning is launched because some grid points (hopefully not many) are outside the boundary box of the station data. At this point the resulting data can be exported via netCDF, displayed using function `spplot` or transformed into other spatio-temporal spatial structures. Here we will first transform the output to package `stars`:
+
+```{r, fig.width=7, fig.height=8}
+p1 <- ggplot()+
+      geom_stars(data = raster_interpolated["MeanTemperature",,,1])+
+      scale_fill_viridis_c()+
+      labs(title = "2020-01-01")
+p2 <- ggplot()+
+      geom_stars(data = raster_interpolated["MeanTemperature",,,2])+
+      scale_fill_viridis_c()+
+      labs(title = "2020-07-01")
+cowplot::plot_grid(p1, p2, nrow = 2)
+```
+

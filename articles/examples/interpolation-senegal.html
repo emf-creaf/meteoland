@@ -80,7 +80,7 @@ and weather data needed by package <strong>meteoland</strong> to conduct
 weather interpolation over a given country, using package
 <strong>worldmet</strong> as source for reference weather station data.
 We’ll use Senegal as case study.</p>
-<p>We begin by loading necessary libraries:</p>
+<p>We begin by loading necessary libraries, available in CRAN:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://emf-creaf.github.io/meteoland/index.html" class="external-link">meteoland</a></span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## Package 'meteoland' [ver. 2.0.1]</span></span></code></pre>
@@ -100,6 +100,11 @@ We’ll use Senegal as case study.</p>
 <pre><code><span><span class="co">## The following object is masked from 'package:stats':</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">##     filter</span></span></code></pre>
+<p>We will also use package <strong>afrilearndata</strong> from GitHub,
+to display African country limits:</p>
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># remotes::install_github("afrimapr/afrilearndata")</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">afrilearndata</span><span class="op">)</span></span></code></pre></div>
 <div class="section level2">
 <h2 id="accessing-weather-station-data">Accessing weather station data<a class="anchor" aria-label="anchor" href="#accessing-weather-station-data"></a>
 </h2>
@@ -110,7 +115,7 @@ the weather stations available for our study area. This can be done
 using function <code><a href="https://rdrr.io/pkg/worldmet/man/getMeta.html" class="external-link">getMeta()</a></code> from worldmet, which we use to
 know available weather stations for Senegal and neighbouring
 countries:</p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Country codes:</span></span>
 <span><span class="co">#   Senegal - SG</span></span>
 <span><span class="co">#   Gambia - GA </span></span>
@@ -124,8 +129,8 @@ countries:</p>
 <span>                          <span class="fu">worldmet</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/worldmet/man/getMeta.html" class="external-link">getMeta</a></span><span class="op">(</span>country<span class="op">=</span><span class="st">"ML"</span>, plot <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>,</span>
 <span>                          <span class="fu">worldmet</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/worldmet/man/getMeta.html" class="external-link">getMeta</a></span><span class="op">(</span>country<span class="op">=</span><span class="st">"MR"</span>, plot <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>,</span>
 <span>                          <span class="fu">worldmet</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/worldmet/man/getMeta.html" class="external-link">getMeta</a></span><span class="op">(</span>country<span class="op">=</span><span class="st">"PU"</span>, plot <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p>Here are the stations downloaded:</p>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<p>Here are the station data downloaded:</p>
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sg_st</span></span></code></pre></div>
 <pre><code><span><span class="co">## <span style="color: #949494;"># A tibble: 57 × 12</span></span></span>
 <span><span class="co">##    usaf  wban  station ctry  st    call  latitude longitude `elev(m)` begin     </span></span>
@@ -154,7 +159,7 @@ object:</p>
 containing not only station weather and topographic data but also
 interpolation parameters. This can be obtained using function
 <code><a href="../../reference/create_meteo_interpolator.html">create_meteo_interpolator()</a></code>:</p>
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">interpolator_sen</span> <span class="op">&lt;-</span> <span class="fu">meteoland</span><span class="fu">::</span><span class="fu"><a href="../../reference/create_meteo_interpolator.html">create_meteo_interpolator</a></span><span class="op">(</span><span class="va">sf_sen</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## <span style="color: #00BBBB;">ℹ</span> Creating interpolator...</span></span></code></pre>
 <pre><code><span><span class="co">## Warning: No interpolation parameters provided, using defaults</span></span>
@@ -162,7 +167,7 @@ interpolation parameters. This can be obtained using function
 <pre><code><span><span class="co">## • Calculating smoothed variables...</span></span></code></pre>
 <pre><code><span><span class="co">## • Updating intial_Rp parameter with the actual stations mean distance...</span></span></code></pre>
 <pre><code><span><span class="co">## <span style="color: #00BB00;">✔</span> Interpolator created.</span></span></code></pre>
-<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">interpolator_sen</span></span></code></pre></div>
 <pre><code><span><span class="co">## stars object with 2 dimensions and 13 attributes</span></span>
 <span><span class="co">## attribute(s):</span></span>
@@ -201,22 +206,14 @@ interpolation parameters. This can be obtained using function
 <span><span class="co">##                                                        values</span></span>
 <span><span class="co">## date                                                     NULL</span></span>
 <span><span class="co">## station POINT (-9.35 15.23333),...,POINT (-8.833333 7.733333)</span></span></code></pre>
-<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">senegal_sf</span> <span class="op">&lt;-</span> <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_as_sf.html" class="external-link">st_as_sf</a></span><span class="op">(</span><span class="fu">rnaturalearth</span><span class="fu">::</span><span class="fu"><a href="https://docs.ropensci.org/rnaturalearth/reference/ne_countries.html" class="external-link">ne_countries</a></span><span class="op">(</span>country<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Senegal"</span><span class="op">)</span>, scale<span class="op">=</span><span class="st">"medium"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## The legacy packages maptools, rgdal, and rgeos, underpinning this package</span></span>
-<span><span class="co">## will retire shortly. Please refer to R-spatial evolution reports on</span></span>
-<span><span class="co">## https://r-spatial.org/r/2023/05/15/evolution4.html for details.</span></span>
-<span><span class="co">## This package is now running under evolution status 0</span></span></code></pre>
-<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">all_sf</span> <span class="op">&lt;-</span> <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_as_sf.html" class="external-link">st_as_sf</a></span><span class="op">(</span><span class="fu">rnaturalearth</span><span class="fu">::</span><span class="fu"><a href="https://docs.ropensci.org/rnaturalearth/reference/ne_countries.html" class="external-link">ne_countries</a></span><span class="op">(</span>country<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Senegal"</span>, <span class="st">"Gambia"</span>,</span>
-<span>                                                                 <span class="st">"Mali"</span>, <span class="st">"Mauritania"</span>,</span>
-<span>                                                                 <span class="st">"Guinea Bissau"</span>, <span class="st">"Guinea"</span><span class="op">)</span>, scale<span class="op">=</span><span class="st">"medium"</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="op">)</span><span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html" class="external-link">geom_sf</a></span><span class="op">(</span>data <span class="op">=</span> <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html" class="external-link">st_geometry</a></span><span class="op">(</span><span class="va">all_sf</span><span class="op">)</span><span class="op">)</span><span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html" class="external-link">geom_sf</a></span><span class="op">(</span>data <span class="op">=</span> <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html" class="external-link">st_geometry</a></span><span class="op">(</span><span class="va">senegal_sf</span><span class="op">)</span>, fill<span class="op">=</span> <span class="st">"red"</span><span class="op">)</span><span class="op">+</span></span>
+<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="op">)</span><span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html" class="external-link">geom_sf</a></span><span class="op">(</span>data <span class="op">=</span> <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html" class="external-link">st_geometry</a></span><span class="op">(</span><span class="va">africountries</span><span class="op">)</span><span class="op">)</span><span class="op">+</span></span>
+<span>  <span class="co"># geom_sf(data = sf::st_geometry(senegal_sf), fill= "red")+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html" class="external-link">geom_sf</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">sf_sen</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span><span class="op">)</span><span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/lims.html" class="external-link">xlim</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">20</span>,<span class="fl">0</span><span class="op">)</span><span class="op">)</span><span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/lims.html" class="external-link">ylim</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">30</span><span class="op">)</span><span class="op">)</span><span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_bw</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<p><img src="interpolation-senegal_files/figure-html/unnamed-chunk-11-1.png" width="700">
+<p><img src="interpolation-senegal_files/figure-html/unnamed-chunk-12-1.png" width="384">
 ## Accessing elevation data</p>
 <p>To perform weather interpolation, we need the topography (elevation,
 slope, aspect) of the target area. We can use function
@@ -233,31 +230,31 @@ elevation data for Senegal:</p>
 <span><span class="co">## max value   :         542</span></span></code></pre>
 <p>The previous function returns a <code>SpatRaster</code> object
 (package <strong>terra</strong>), which we can plot using:</p>
-<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="op">)</span><span class="op">+</span></span>
 <span>  <span class="fu">tidyterra</span><span class="fu">::</span><span class="fu"><a href="https://dieghernan.github.io/tidyterra/reference/geom_spatraster.html" class="external-link">geom_spatraster</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">elev_raster</span><span class="op">)</span></span></code></pre></div>
-<p><img src="interpolation-senegal_files/figure-html/unnamed-chunk-13-1.png" width="700"></p>
+<p><img src="interpolation-senegal_files/figure-html/unnamed-chunk-14-1.png" width="700"></p>
 <p>In order to estimate slope and aspect it is important that the
 spatial reference system is in coordinates that have meters as units. We
 can reproject our raster to 28N UTM using function
 <code>projectRaster()</code> from package <strong>raster</strong>:</p>
-<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">slope_raster</span> <span class="op">&lt;-</span> <span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/terra/man/terrain.html" class="external-link">terrain</a></span><span class="op">(</span><span class="va">elev_raster</span>, v <span class="op">=</span> <span class="st">"slope"</span>, unit<span class="op">=</span><span class="st">"degrees"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="op">)</span><span class="op">+</span></span>
 <span>  <span class="fu">tidyterra</span><span class="fu">::</span><span class="fu"><a href="https://dieghernan.github.io/tidyterra/reference/geom_spatraster.html" class="external-link">geom_spatraster</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">slope_raster</span><span class="op">)</span></span></code></pre></div>
-<p><img src="interpolation-senegal_files/figure-html/unnamed-chunk-14-1.png" width="700"></p>
-<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
+<p><img src="interpolation-senegal_files/figure-html/unnamed-chunk-15-1.png" width="700"></p>
+<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">aspect_raster</span> <span class="op">&lt;-</span> <span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/terra/man/terrain.html" class="external-link">terrain</a></span><span class="op">(</span><span class="va">elev_raster</span>, v <span class="op">=</span> <span class="st">"aspect"</span>, unit<span class="op">=</span><span class="st">"degrees"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="op">)</span><span class="op">+</span></span>
 <span>  <span class="fu">tidyterra</span><span class="fu">::</span><span class="fu"><a href="https://dieghernan.github.io/tidyterra/reference/geom_spatraster.html" class="external-link">geom_spatraster</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">aspect_raster</span><span class="op">)</span></span></code></pre></div>
-<p><img src="interpolation-senegal_files/figure-html/unnamed-chunk-15-1.png" width="700"></p>
-<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
+<p><img src="interpolation-senegal_files/figure-html/unnamed-chunk-16-1.png" width="700"></p>
+<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">fact</span> <span class="op">&lt;-</span> <span class="fl">10</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">elev_raster</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="st">"elevation"</span></span>
 <span><span class="va">topo_spatraster_agg</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/terra/man/aggregate.html" class="external-link">aggregate</a></span><span class="op">(</span><span class="va">elev_raster</span>, fact <span class="op">=</span> <span class="va">fact</span><span class="op">)</span>, </span>
 <span>                         <span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/terra/man/aggregate.html" class="external-link">aggregate</a></span><span class="op">(</span><span class="va">slope_raster</span>, fact <span class="op">=</span> <span class="va">fact</span><span class="op">)</span>, </span>
 <span>                         <span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/terra/man/aggregate.html" class="external-link">aggregate</a></span><span class="op">(</span><span class="va">aspect_raster</span>, fact <span class="op">=</span> <span class="va">fact</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">topo_stars_agg</span> <span class="op">&lt;-</span> <span class="fu">stars</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/stars/reference/st_as_stars.html" class="external-link">st_as_stars</a></span><span class="op">(</span><span class="va">topo_spatraster_agg</span>, as_attributes<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
@@ -270,7 +267,7 @@ function <code>interpolationpixels</code> with: (a) our object
 (i.e. in this case <code>SpatialPixelsTopography</code>); and (c) a
 vector of dates (here two distinct days) among the period with available
 data (year 2020):</p>
-<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">raster_interpolated</span> <span class="op">&lt;-</span> <span class="va">topo_stars_agg</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="../../reference/interpolate_data.html">interpolate_data</a></span><span class="op">(</span><span class="va">interpolator_sen</span>, dates <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/as.Date.html" class="external-link">as.Date</a></span><span class="op">(</span><span class="st">"2020-01-01"</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/as.Date.html" class="external-link">as.Date</a></span><span class="op">(</span><span class="st">"2020-07-01"</span><span class="op">)</span><span class="op">)</span>, </span>
 <span>                   verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
@@ -287,7 +284,7 @@ resulting data can be exported via netCDF, displayed using function
 <code>spplot</code> or transformed into other spatio-temporal spatial
 structures. Here we will first transform the output to package
 <code>stars</code>:</p>
-<div class="sourceCode" id="cb35"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">p1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="op">)</span><span class="op">+</span></span>
 <span>      <span class="fu"><a href="https://r-spatial.github.io/stars/reference/geom_stars.html" class="external-link">geom_stars</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">raster_interpolated</span><span class="op">[</span><span class="st">"MeanTemperature"</span>,,,<span class="fl">1</span><span class="op">]</span><span class="op">)</span><span class="op">+</span></span>
 <span>      <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_viridis.html" class="external-link">scale_fill_viridis_c</a></span><span class="op">(</span><span class="op">)</span><span class="op">+</span></span>
@@ -297,7 +294,7 @@ structures. Here we will first transform the output to package
 <span>      <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_viridis.html" class="external-link">scale_fill_viridis_c</a></span><span class="op">(</span><span class="op">)</span><span class="op">+</span></span>
 <span>      <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>title <span class="op">=</span> <span class="st">"2020-07-01"</span><span class="op">)</span></span>
 <span><span class="fu">cowplot</span><span class="fu">::</span><span class="fu"><a href="https://wilkelab.org/cowplot/reference/plot_grid.html" class="external-link">plot_grid</a></span><span class="op">(</span><span class="va">p1</span>, <span class="va">p2</span>, nrow <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></code></pre></div>
-<p><img src="interpolation-senegal_files/figure-html/unnamed-chunk-19-1.png" width="672"></p>
+<p><img src="interpolation-senegal_files/figure-html/unnamed-chunk-20-1.png" width="672"></p>
 </div>
   </div>
 

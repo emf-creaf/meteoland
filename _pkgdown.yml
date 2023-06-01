@@ -8,8 +8,10 @@ articles:
   contents:
   - starts_with("tidy-meteoland")
   - starts_with("reshaping-meteo")
+  
 - title: Examples
-  - starts_with("interpolation-senegal")
+  contents:
+  - starts_with("examples/interpolation-senegal")
 
 reference:
 - title: Daily weather classes

@@ -98,7 +98,7 @@ if(params$complete_rebuild) {
 
 Some stations had missing data for year 2020 and were excluded from the output. Using function `worldmet2meteoland()` from **meteoland**, we can reshape the hourly data of the remaining stations into daily data in form of an `sf` object:
 
-```{r, eval = params$complete_rebuild, echo = FALSE}
+```{r, eval = params$complete_rebuild, echo = TRUE}
 sf_sen <- worldmet2meteoland(hourData, complete = TRUE)
 sf_sen
 ```

@@ -14,14 +14,17 @@ knitr::opts_chunk$set(echo = TRUE)
 
 In this document we show how to obtain and process the topographic and weather data needed by package **meteoland** to conduct weather interpolation over a given country, using package **worldmet** as source for reference weather station data. We'll use Senegal as case study.
 
-We begin by loading necessary libraries, available in CRAN:
+We begin by loading necessary libraries, all available from CRAN:
 ```{r, include=TRUE, message= FALSE, echo = TRUE}
-library(meteoland)
-library(ggplot2)
+library(sf)
+library(dplyr)
 library(terra)
 library(stars)
 library(geodata)
 library(tidyterra)
+library(meteoland)
+library(ggplot2)
+library(cowplot)
 ```
 
 We will also use package **afrilearndata** from GitHub, to display African country limits:

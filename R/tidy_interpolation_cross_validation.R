@@ -51,7 +51,7 @@
   suppressMessages(suppressWarnings(
     .interpolation_point(
       station_sf, interpolator_station_removed, verbose = FALSE,
-      .ignore_convex_hull_check = TRUE
+      ignore_convex_hull_check = TRUE
     )
   ))[[1]] |>
     dplyr::mutate(

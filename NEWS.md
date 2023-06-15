@@ -2,6 +2,10 @@
  NEWS for R Package "meteoland"
 -------------------------------
 
+# meteoland 2.0.2
+- Modification of default variables for interpolator_calibration
+- Avoiding interpolation in cells with missing elevation
+
 # meteoland 2.0.1
 - Hard deprecation of "sp", "raster" and "rgdal" depedencies, including functions and classes using
   them.

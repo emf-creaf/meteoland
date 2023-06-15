@@ -17,13 +17,13 @@
 #' Default value checks \code{"meteoland_verbosity"} option and if not set, defaults
 #' to TRUE. It can be turned off for the function with FALSE, or session wide with
 #' \code{options(meteoland_verbosity = FALSE)}
-#' @param .ignore_convex_hull_check Logical indicating if convex hull check for points
+#' @param ignore_convex_hull_check Logical indicating if convex hull check for points
 #' must be honoured. This is useful (and needed) for the
 #' \code{\link{interpolation_cross_validation}} function, because when removing stations
 #' from the vertices of the convex hull, the latter is reduced and the station removed can
 #' be outside the buffered convex hull, triggering an error (100 % of points lay outside
-#' the convex hull buffer). This parameter is only accesed internally, as the user can not
-#' set it in the \code{\link{interpolate_data}} call.
+#' the convex hull buffer). It can also be useful to users interpolating on a few points close 
+#' but outside of the convex hull.
 #'
 #' @family interpolator functions
 #' @return A tibble for each point, with the dates as rows and the interpolated
@@ -32,7 +32,7 @@
 #' @noRd
 .interpolation_point <- function(
     sf, interpolator, dates = NULL, variables = NULL, verbose,
-    .ignore_convex_hull_check = FALSE
+    ignore_convex_hull_check = FALSE
 ) {
   ## debug
   # browser()
@@ -92,7 +92,7 @@
     sf::st_buffer(dist = 10000)
 
   sf_contained <- sf::st_contains(interpolator_convex_hull, sf, sparse = FALSE)
-  if (any(!sf_contained) & !.ignore_convex_hull_check) {
+  if (any(!sf_contained) & !ignore_convex_hull_check) {
 
     # if less than 10% go ahead
     if (sum(!sf_contained)/length(sf_contained) < 0.1) {
@@ -141,6 +141,10 @@
   wind <- NULL
   pet <- NULL
 
+  # Logical vector excluding points with no elevation values (e.g. incomplete rasters)
+  target_filter <- !is.na(sf$elevation)
+  dim_out <- c(length(latrad), ncol(tmin_interpolator))
+  
   # temperature (needed also if interpolating relative humidity and radiation)
   if (is_null_or_variable(variables, c("Temperature", "RelativeHumidity", "Radiation", "PET"))) {
 
@@ -155,9 +159,13 @@
       cli::cli_ul("Interpolating temperature..."),
       verbose
     )
-    tmin <- .interpolateTemperatureSeriesPoints(
-      Xp = sf::st_coordinates(sf)[,1], Yp = sf::st_coordinates(sf)[,2],
-      Zp = sf$elevation,
+
+    tmin <- array(NA, dim_out)
+    tmax <- array(NA, dim_out)
+
+    tmin[target_filter,] <- .interpolateTemperatureSeriesPoints(
+      Xp = sf::st_coordinates(sf)[target_filter,1], Yp = sf::st_coordinates(sf)[target_filter,2],
+      Zp = sf$elevation[target_filter],
       X = sf::st_coordinates(stars::st_get_dimension_values(interpolator, "station"))[,1],
       Y = sf::st_coordinates(stars::st_get_dimension_values(interpolator, "station"))[,2],
       Z = interpolator$elevation[1,],
@@ -169,9 +177,9 @@
       debug = get_interpolation_params(interpolator)$debug
     )
 
-    tmax <- .interpolateTemperatureSeriesPoints(
-      Xp = sf::st_coordinates(sf)[,1], Yp = sf::st_coordinates(sf)[,2],
-      Zp = sf$elevation,
+    tmax[target_filter, ] <- .interpolateTemperatureSeriesPoints(
+      Xp = sf::st_coordinates(sf)[target_filter,1], Yp = sf::st_coordinates(sf)[target_filter,2],
+      Zp = sf$elevation[target_filter],
       X = sf::st_coordinates(stars::st_get_dimension_values(interpolator, "station"))[,1],
       Y = sf::st_coordinates(stars::st_get_dimension_values(interpolator, "station"))[,2],
       Z = interpolator$elevation[1,],
@@ -199,9 +207,11 @@
       cli::cli_ul("Interpolating precipitation..."),
       verbose
     )
-    prec <- .interpolatePrecipitationSeriesPoints(
-      Xp = sf::st_coordinates(sf)[,1], Yp = sf::st_coordinates(sf)[,2],
-      Zp = sf$elevation,
+    
+    prec <- array(NA, dim = dim_out)
+    prec[target_filter,] <- .interpolatePrecipitationSeriesPoints(
+      Xp = sf::st_coordinates(sf)[target_filter,1], Yp = sf::st_coordinates(sf)[target_filter,2],
+      Zp = sf$elevation[target_filter],
       X = sf::st_coordinates(stars::st_get_dimension_values(interpolator, "station"))[,1],
       Y = sf::st_coordinates(stars::st_get_dimension_values(interpolator, "station"))[,2],
       Z = interpolator$elevation[1,],
@@ -236,13 +246,13 @@
     if (all(is.na(filtered_interpolator[["RelativeHumidity"]]))) {
 
       rhmean <- .relativeHumidityFromMinMaxTemp(tmin, tmax) |>
-        .as_interpolator_res_array(dim(tmin))
+        .as_interpolator_res_array(dim_out)
       VP <- .temp2SVP(tmin) |> #kPA
-        .as_interpolator_res_array(dim(tmin))
+        .as_interpolator_res_array(dim_out)
       rhmax <- rep(100, length(rhmean)) |>
-        .as_interpolator_res_array(dim(tmin))
+        .as_interpolator_res_array(dim_out)
       rhmin <- pmax(0, .relativeHumidityFromDewpointTemp(tmax, tmin)) |>
-        .as_interpolator_res_array(dim(tmin))
+        .as_interpolator_res_array(dim_out)
 
     } else {
 
@@ -252,9 +262,10 @@
         filtered_interpolator[["RelativeHumidity"]]
       )
 
-      tdew <- .interpolateTdewSeriesPoints(
-        Xp = sf::st_coordinates(sf)[,1], Yp = sf::st_coordinates(sf)[,2],
-        Zp = sf$elevation,
+      tdew <- array(NA, dim = dim_out)
+      tdew[target_filter, ] <- .interpolateTdewSeriesPoints(
+        Xp = sf::st_coordinates(sf)[target_filter,1], Yp = sf::st_coordinates(sf)[target_filter,2],
+        Zp = sf$elevation[target_filter],
         X = sf::st_coordinates(stars::st_get_dimension_values(interpolator, "station"))[,1],
         Y = sf::st_coordinates(stars::st_get_dimension_values(interpolator, "station"))[,2],
         Z = interpolator$elevation[1,],
@@ -267,13 +278,13 @@
       )
 
       rhmean <- .relativeHumidityFromDewpointTemp(tmean, tdew) |>
-        .as_interpolator_res_array(dim(tmin))
+        .as_interpolator_res_array(dim_out)
       VP <- .temp2SVP(tdew) |>
-        .as_interpolator_res_array(dim(tmin)) #kPa
+        .as_interpolator_res_array(dim_out) #kPa
       rhmax = pmin(100, .relativeHumidityFromDewpointTemp(tmin, tdew)) |>
-        .as_interpolator_res_array(dim(tmin))
+        .as_interpolator_res_array(dim_out)
       rhmin = pmax(0, .relativeHumidityFromDewpointTemp(tmax, tdew)) |>
-        .as_interpolator_res_array(dim(tmin))
+        .as_interpolator_res_array(dim_out)
     }
   }
 
@@ -291,9 +302,10 @@
       verbose
     )
     diffTemp <- abs(tmax - tmin)
-    diffTempMonth <- .interpolateTemperatureSeriesPoints(
-      Xp = sf::st_coordinates(sf)[,1], Yp = sf::st_coordinates(sf)[,2],
-      Zp = sf$elevation,
+    diffTempMonth <- array(NA, dim = dim_out)
+    diffTempMonth[target_filter,] <- .interpolateTemperatureSeriesPoints(
+      Xp = sf::st_coordinates(sf)[target_filter,1], Yp = sf::st_coordinates(sf)[target_filter,2],
+      Zp = sf$elevation[target_filter],
       X = sf::st_coordinates(stars::st_get_dimension_values(interpolator, "station"))[,1],
       Y = sf::st_coordinates(stars::st_get_dimension_values(interpolator, "station"))[,2],
       Z = interpolator$elevation[1,],
@@ -305,9 +317,9 @@
       debug = get_interpolation_params(interpolator)$debug
     )
 
-    rad <- array(dim = dim(tmin))
+    rad <- array(NA, dim = dim_out)
     points_wo_precip <- numeric(0)
-    for (i in 1:length(latrad)) {
+    for (i in which(target_filter)) {
       if (any(is.na(prec[i,]))) {
         points_wo_precip <- c(points_wo_precip, i)
       }
@@ -338,8 +350,10 @@
       cli::cli_ul("Interpolating wind..."),
       verbose
     )
+    wind_speed <- array(NA, dim_out)
+    wind_direction <- array(NA, dim_out)
     wind <- .interpolateWindStationSeriesPoints(
-      Xp = sf::st_coordinates(sf)[,1], Yp = sf::st_coordinates(sf)[,2],
+      Xp = sf::st_coordinates(sf)[target_filter,1], Yp = sf::st_coordinates(sf)[target_filter,2],
       WS = t(filtered_interpolator[["WindSpeed"]]),
       WD = t(filtered_interpolator[["WindDirection"]]),
       X = sf::st_coordinates(stars::st_get_dimension_values(interpolator, "station"))[,1],
@@ -349,6 +363,9 @@
       N = get_interpolation_params(interpolator)$N_Wind,
       iterations = get_interpolation_params(interpolator)$iterations
     )
+    wind_speed[target_filter, ] <- wind[["WS"]]
+    wind_direction[target_filter, ] <- wind[["WD"]]
+    wind <- list("WS" = wind_speed, "WD" = wind_direction)
   }
 
   # PET
@@ -358,9 +375,9 @@
       verbose
     )
 
-    pet <- array(dim = dim(tmin))
+    pet <- array(NA, dim = dim_out)
 
-    for (i in 1:length(latrad)) {
+    for (i in which(target_filter)) {
       # .penmanpoint(latrad, elevation, slorad, asprad, J, tmin, tmax,
       #              rhmin, rhmax, rad, Wsp, mPar$wind_height,
       #              0.001, 0.25)
@@ -419,6 +436,11 @@
 #' @param variables vector with variable names to be interpolated. NULL (default),
 #' will interpolate all variables. Accepted names are "Temperature", "Precipitation",
 #' "RelativeHumidity", "Radiation" and "Wind"
+#' @param ignore_convex_hull_check Logical indicating whether errors in convex hull checks should be ignored. 
+#' Checking for points to be inside the convex hull will normally raise an error
+#' if >10% of points are outside. Setting \code{ignore_convex_hull_check = TRUE} means
+#' that a warning is raised but interpolation is performed, which can be useful to users interpolating 
+#' on a few points close but outside of the convex hull.
 #' @param verbose Logical indicating if the function must show messages and info.
 #' Default value checks \code{"meteoland_verbosity"} option and if not set, defaults
 #' to TRUE. It can be turned off for the function with FALSE, or session wide with
@@ -428,7 +450,8 @@
 #'
 #' @noRd
 .interpolation_spatial_dispatcher <- function(
-    spatial_data, interpolator, dates = NULL, variables = NULL, verbose
+    spatial_data, interpolator, dates = NULL, variables = NULL, 
+    ignore_convex_hull_check = FALSE, verbose
 ) {
 
   # sf
@@ -446,7 +469,9 @@
     return(
       spatial_data |>
         sf::st_transform(sf::st_crs(interpolator)) |>
-        .interpolation_point(interpolator, dates, variables, verbose = verbose)
+        .interpolation_point(interpolator, dates, variables, 
+                             ignore_convex_hull_check = ignore_convex_hull_check, 
+                             verbose = verbose)
     )
 
   }
@@ -457,7 +482,9 @@
       spatial_data |>
         .stars2sf() |>
         sf::st_transform(sf::st_crs(interpolator)) |>
-        .interpolation_point(interpolator, dates, variables, verbose = verbose)
+        .interpolation_point(interpolator, dates, variables, 
+                             ignore_convex_hull_check = ignore_convex_hull_check, 
+                             verbose = verbose)
     )
   }
 
@@ -622,6 +649,11 @@
 #' @param variables vector with variable names to be interpolated. NULL (default),
 #' will interpolate all variables. Accepted names are "Temperature", "Precipitation",
 #' "RelativeHumidity", "Radiation" and "Wind"
+#' @param ignore_convex_hull_check Logical indicating whether errors in convex hull checks should be ignored. 
+#' Checking for points to be inside the convex hull will normally raise an error
+#' if >10% of points are outside. Setting \code{ignore_convex_hull_check = TRUE} means
+#' that a warning is raised but interpolation is performed, which can be useful to users interpolating 
+#' on a few points close but outside of the convex hull.
 #' @param verbose Logical indicating if the function must show messages and info.
 #' Default value checks \code{"meteoland_verbosity"} option and if not set, defaults
 #' to TRUE. It can be turned off for the function with FALSE, or session wide with
@@ -665,6 +697,7 @@
 interpolate_data <- function(
     spatial_data, interpolator,
     dates = NULL, variables = NULL,
+    ignore_convex_hull_check = FALSE,
     verbose = getOption("meteoland_verbosity", TRUE)
 ) {
   # debug
@@ -714,7 +747,9 @@ interpolate_data <- function(
 
   # Interpolation
   res <-
-    .interpolation_spatial_dispatcher(spatial_data, interpolator, dates, variables, verbose = verbose) |>
+    .interpolation_spatial_dispatcher(spatial_data, interpolator, dates, variables, 
+                                      ignore_convex_hull_check = ignore_convex_hull_check, 
+                                      verbose = verbose) |>
     # results binding
     .binding_interpolation_results(spatial_data, verbose = verbose)
 

@@ -23,11 +23,10 @@ double interpolatePrecipitationPoint(double xp, double yp, double zp, NumericVec
     }
   }
   pop = pop/Weventsum;
-  int i_closest = which_min(r);
   // Rcout<<" Rp "<<Rp<<" Weventsum "<<Weventsum<<" pop "<< pop<<"\n";
-  //Precipitation occurs if pop > popcrit or P[i_closest] > 0.0
+  //Precipitation occurs if pop > popcrit
   //If precipitation occurs then calculate amount
-  if((pop >=popcrit) || (P[i_closest]>0.0)) {
+  if((pop >=popcrit)) {
     Rp = estimateRp(r, iniRp, alpha_amount, N_amount, iterations);
     NumericVector Wamount = gaussianFilter(r, Rp, alpha_amount);
     //Weights for weighted regression
@@ -79,9 +78,8 @@ double interpolatePrecipitationEventPoint(double xp, double yp, double zp, Numer
     }
   }
   pop = pop/Wsum;
-  //Precipitation occurs if pop > popcrit or P[i_closest] > 0.0
-  int i_closest = which_min(r);
-  if((pop >=popcrit) || (Pevent[i_closest]>0.0)) return(1.0);
+  //Precipitation occurs if pop > popcrit
+  if((pop >=popcrit)) return(1.0);
   return(0.0);
 }
 

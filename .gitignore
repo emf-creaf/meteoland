@@ -13,8 +13,5 @@ vignettes/examples/*.nc
 interpolator_test*
 *.nc
 inst/doc
-<<<<<<< HEAD
 CRAN-SUBMISSION
-=======
 revdep/
->>>>>>> origin/main

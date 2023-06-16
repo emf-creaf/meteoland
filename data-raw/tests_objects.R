@@ -11,7 +11,7 @@ meteo_cat <- get_meteo_from(
   meteocat_options(
     "daily",
     as.Date("2022-01-01"),
-    api_key = keyring::key_get('meteocat', keyring = "malditobarbudo")
+    api_key = Sys.getenv('meteocat')
   )
 )
 
@@ -20,7 +20,7 @@ meteo_aemet <- get_meteo_from(
   aemet_options(
     "daily",
     as.Date("2022-01-01"), as.Date("2022-01-31"),
-    api_key = keyring::key_get('aemet', keyring = "malditobarbudo")
+    api_key = Sys.getenv('aemet')
   )
 )
 
@@ -36,7 +36,7 @@ meteo_cat_subdaily <- get_meteo_from(
   "meteocat",
   meteocat_options(
     "hourly",
-    api_key = keyring::key_get('meteocat', keyring = "malditobarbudo")
+    api_key = Sys.getenv('meteocat')
   )
 )
 
@@ -45,7 +45,7 @@ meteo_aemet_subdaily <- get_meteo_from(
   aemet_options(
     "current_day",
     as.Date("2022-01-01"), as.Date("2022-01-31"),
-    api_key = keyring::key_get('aemet', keyring = "malditobarbudo")
+    api_key = Sys.getenv('aemet')
   )
 )
 
@@ -75,7 +75,8 @@ worldmet_completed <- worldmet_test |>
 
 meteo_and_topo_test <- meteospain_completed |>
   dplyr::bind_rows(worldmet_completed) |>
-  dplyr::arrange(dates, stationID) |>
+  dplyr::arrange(dates, stationID)
+meteo_and_topo_test <- meteo_and_topo_test |>
   sf::st_set_crs(sf::st_crs(sf::st_crs(meteo_and_topo_test)$wkt))
 
 saveRDS(meteo_and_topo_test, "tests/testthat/meteo_and_topo_test.rds")

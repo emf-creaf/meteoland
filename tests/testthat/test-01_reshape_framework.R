@@ -1,3 +1,24 @@
+# complete meteo
+test_that("complete_meteo works", {
+  meteo_test <- readRDS('meteospain_daily_test.rds') |> meteospain2meteoland(complete = FALSE)
+  meteo_test_no_precip <- meteo_test |> dplyr::select(!"Precipitation")
+  meteo_test_no_rad <- meteo_test |> dplyr::select(!"Radiation")
+
+  expect_s3_class(completed_ok <- complete_meteo(meteo_test), "sf")
+  expect_s3_class(completed_no_precip <- complete_meteo(meteo_test_no_precip), "sf")
+  expect_s3_class(completed_no_rad <- complete_meteo(meteo_test_no_rad), "sf")
+
+  expect_true(sum(is.na(completed_ok$MeanRelativeHumidity)) < sum(is.na(meteo_test$MeanRelativeHumidity)))
+  expect_true(sum(is.na(completed_ok$Radiation)) < sum(is.na(meteo_test$Radiation)))
+
+  expect_true(sum(is.na(completed_no_precip$MeanRelativeHumidity)) < sum(is.na(meteo_test_no_precip$MeanRelativeHumidity)))
+  expect_true(sum(is.na(completed_no_precip$Radiation)) < sum(is.na(meteo_test_no_precip$Radiation)))
+
+  expect_true(sum(is.na(completed_no_rad$MeanRelativeHumidity)) < sum(is.na(meteo_test_no_rad$MeanRelativeHumidity)))
+  expect_true(any(!is.na(completed_no_rad$Radiation)))
+})
+
+
 # worldmet2meteoland
 test_that("worldmet2meteoland works", {
 
@@ -211,6 +232,4 @@ test_that("meteospain2meteoland works with subdaily fringe cases", {
     identical(test_subdaily$MeanRelativeHumidity, test_subdaily_complete$MeanRelativeHumidity)
   )
   expect_true(sum(duplicated(test_subdaily_complete)) < 1)
-
-
 })

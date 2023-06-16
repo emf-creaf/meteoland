@@ -368,13 +368,26 @@ create_meteo_interpolator <- function(meteo_with_topo, params = NULL, verbose = 
     cli::cli_ul("Updating intial_Rp parameter with the actual stations mean distance..."),
     verbose
   )
+
   params$initial_Rp <-
-    sf::st_geometry(meteo_arranged) |>
-    unique() |>
-    sf::st_as_sfc() |>
+    meteo_arranged |>
+    dplyr::select(attr(meteo_arranged, "sf_column")) |>
+    dplyr::distinct() |>
+    # now, is calculated in meters yes or yes, because we have units :)
     sf::st_distance() |>
     as.numeric() |>
     mean(na.rm = TRUE)
+
+  # give a warning if mean distance is bigger than 100 km
+  if (params$initial_Rp > 100000) {
+    cli::cli_alert_danger(
+      "initial_Rp value (mean distance between meteorological stations) is {.strong {round(params$initial_Rp / 1000, 2)}km}"
+    )
+    cli::cli_alert_info(c(
+      "Please check the meteorological data. ",
+      "Interpolation results can be affected when stations are scattered and with great distances between them."
+    ))
+  }
 
   # set the params as an attribute of stars_interpolator
   attr(stars_interpolator, "params") <- params
@@ -668,7 +681,7 @@ read_interpolator <- function(filename) {
 #'     \item{\code{MaxTemperature} (kernel for maximum temperature)}
 #'     \item{\code{DewTemperature} (kernel for dew-temperature (i.e. relative humidity))}
 #'     \item{\code{Precipitation} (to calibrate the same
-#'           kernel for both precipitation events and regression of precipitation amounts; 
+#'           kernel for both precipitation events and regression of precipitation amounts;
 #'           not recommended)}
 #'     \item{\code{PrecipitationAmount} (kernel for regression of precipitation amounts)}
 #'     \item{\code{PrecipitationEvent} (kernel for precipitation events)}

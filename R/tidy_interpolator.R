@@ -371,23 +371,34 @@ create_meteo_interpolator <- function(meteo_with_topo, params = NULL, verbose = 
 
   params$initial_Rp <-
     meteo_arranged |>
-    dplyr::select(attr(meteo_arranged, "sf_column")) |>
-    dplyr::distinct() |>
-    # now, is calculated in meters yes or yes, because we have units :)
+    # We need to pass the Rp in the same units the coordinates are,
+    # because the C++ methods calculate distances with the points as
+    # planar/cartesian distances. i.e. If Rp are in meters (which happens
+    # if we have a CRS setted), but coordinates are lat/long, C++ methods will
+    # calculate distance with points wrongly (as coordinates are in degrees)
+    # For this, we extract the coordinates and pass unique. This ensures the
+    # CRS is lost, so distances are calculated in the arbitrary units (the
+    # same as coordinates).
+    # dplyr::select(attr(meteo_arranged, "sf_column")) |>
+    sf::st_geometry(meteo_arranged) |>
+    unique() |>
+    sf::st_as_sfc() |>
     sf::st_distance() |>
     as.numeric() |>
     mean(na.rm = TRUE)
 
+  ### We cannot give a warning now, because we don't know the units a priori
+  ### (Unless we recalculate the distance again, this time with units)
   # give a warning if mean distance is bigger than 100 km
-  if (params$initial_Rp > 100000) {
-    cli::cli_alert_danger(
-      "initial_Rp value (mean distance between meteorological stations) is {.strong {round(params$initial_Rp / 1000, 2)}km}"
-    )
-    cli::cli_alert_info(c(
-      "Please check the meteorological data. ",
-      "Interpolation results can be affected when stations are scattered and with great distances between them."
-    ))
-  }
+  # if (params$initial_Rp > 100000) {
+  #   cli::cli_alert_danger(
+  #     "initial_Rp value (mean distance between meteorological stations) is {.strong {round(params$initial_Rp / 1000, 2)}km}"
+  #   )
+  #   cli::cli_alert_info(c(
+  #     "Please check the meteorological data. ",
+  #     "Interpolation results can be affected when stations are scattered and with great distances between them."
+  #   ))
+  # }
 
   # set the params as an attribute of stars_interpolator
   attr(stars_interpolator, "params") <- params

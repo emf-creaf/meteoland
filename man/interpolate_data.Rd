@@ -9,6 +9,7 @@ interpolate_data(
   interpolator,
   dates = NULL,
   variables = NULL,
+  ignore_convex_hull_check = FALSE,
   verbose = getOption("meteoland_verbosity", TRUE)
 )
 }
@@ -25,6 +26,12 @@ interpolator object)}
 \item{variables}{vector with variable names to be interpolated. NULL (default),
 will interpolate all variables. Accepted names are "Temperature", "Precipitation",
 "RelativeHumidity", "Radiation" and "Wind"}
+
+\item{ignore_convex_hull_check}{Logical indicating whether errors in convex hull checks should be ignored.
+Checking for points to be inside the convex hull will normally raise an error
+if >10\% of points are outside. Setting \code{ignore_convex_hull_check = TRUE} means
+that a warning is raised but interpolation is performed, which can be useful to users interpolating
+on a few points close but outside of the convex hull.}
 
 \item{verbose}{Logical indicating if the function must show messages and info.
 Default value checks \code{"meteoland_verbosity"} option and if not set, defaults

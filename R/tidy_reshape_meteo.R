@@ -604,33 +604,18 @@ complete_meteo <- function(meteo, verbose = getOption("meteoland_verbosity", TRU
     )
   }
 
-  if (is.null(meteo[["MeanTemperature"]])) {
-    meteo[["MeanTemperature"]] <- NA_real_
-  }
-
-  if (is.null(meteo[["MeanRelativeHumidity"]])) {
-    meteo[["MeanRelativeHumidity"]] <- NA_real_
-  }
-
-  if (is.null(meteo[["MinRelativeHumidity"]])) {
-    meteo[["MinRelativeHumidity"]] <- NA_real_
-  }
-
-  if (is.null(meteo[["MaxRelativeHumidity"]])) {
-    meteo[["MaxRelativeHumidity"]] <- NA_real_
-  }
-
-  if (is.null(meteo[["Radiation"]])) {
-    meteo[["Radiation"]] <- NA_real_
-  }
-
-  if (is.null(meteo[["aspect"]])) {
-    meteo[["aspect"]] <- NA_real_
-  }
-
-  if (is.null(meteo[["slope"]])) {
-    meteo[["slope"]] <- NA_real_
-  }
+  # fill missong vars in meteo with NA
+  c(
+    "MeanTemperature", "MeanRelativeHumidity", "MinRelativeHumidity", "MaxRelativeHumidity",
+    "Precipitation", "Radiation", "aspect", "slope"
+  ) |>
+    purrr::walk(
+      \(variable) {
+        if (is.null(meteo[[variable]])) {
+          meteo[[variable]] <<- NA_real_
+        }
+      }
+    )
 
   meteo_completed <- meteo |>
     dplyr::mutate(

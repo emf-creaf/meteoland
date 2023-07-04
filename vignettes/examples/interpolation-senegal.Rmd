@@ -1,0 +1,217 @@
+---
+title: "Daily weather interpolation over Senegal"
+author: "Miquel De Cáceres"
+date: "`r Sys.Date()`"
+output: 
+  rmarkdown::html_document:
+    toc: false
+params:
+  complete_rebuild: FALSE
+---
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+In this document we show how to obtain and process the topographic and weather data needed by package **meteoland** to conduct weather interpolation over a given country, using package **worldmet** as source for reference weather station data. We'll use Senegal as case study.
+
+We begin by loading necessary libraries, all available from CRAN:
+```{r, include=TRUE, message= FALSE, echo = TRUE}
+library(sf)
+library(dplyr)
+library(terra)
+library(stars)
+library(geodata)
+library(tidyterra)
+library(meteoland)
+library(ggplot2)
+library(cowplot)
+```
+
+We will also use package **afrilearndata** from GitHub, to display African country limits:
+```{r, message= FALSE, echo = TRUE}
+# remotes::install_github("afrimapr/afrilearndata")
+library(afrilearndata)
+```
+
+## Accessing weather station data
+
+We start by loading package **worldmet**, which provides access to over 30.000 weather stations across the globe:
+```{r, echo = TRUE}
+library(worldmet)
+```
+
+In order to download weather data, we must first obtain the codes of the weather stations available for our study area. This can be done using function `getMeta()` from worldmet, which we use to know available weather stations for Senegal and neighbouring countries:
+
+```{r, eval = params$complete_rebuild}
+# Country codes:
+#   Senegal - SG
+#   Gambia - GA 
+#   Guinea - GV
+#   Mali - ML 
+#   Mauritania - MR
+#   Guinea bissau - PU
+sg_st <- dplyr::bind_rows(worldmet::getMeta(country="SG", plot = FALSE),
+                          worldmet::getMeta(country="GA", plot = FALSE),
+                          worldmet::getMeta(country="GV", plot = FALSE),
+                          worldmet::getMeta(country="ML", plot = FALSE),
+                          worldmet::getMeta(country="MR", plot = FALSE),
+                          worldmet::getMeta(country="PU", plot = FALSE))
+```
+
+```{r, eval = TRUE, echo=FALSE}
+if(params$complete_rebuild) {
+  saveRDS(sg_st, file="sg_st.rds")
+} else {
+  sg_st <- readRDS("sg_st.rds")
+}
+```
+
+The station metadata looks like this:
+```{r}
+sg_st
+```
+
+Let's assume that we want to interpolate weather for year 2020. We can download hourly weather station data for the selected stations and year 2020 using function `importNOAA()` and programming a loop over stations:
+
+```{r, eval = params$complete_rebuild, echo = TRUE, include = TRUE}
+hourData <- NULL
+for(i in 1:length(sg_st$code)) {
+  cat(paste0(sg_st$code[i]," "))
+  tryCatch({
+    hi <- worldmet::importNOAA(code = sg_st$code[i], year=2020, quiet=TRUE)
+    if(is.null(hourData))  {hourData <- hi}
+    else {hourData <- dplyr::bind_rows(hourData,hi)}
+    cat(" [success].")
+  }, error = function(e) {cat("[failed].")})
+}
+```
+
+```{r, eval = TRUE, echo=FALSE}
+if(params$complete_rebuild) {
+  saveRDS(hourData, file="hourData.rds")
+} else {
+  hourData <- readRDS("hourData.rds")  
+}
+```
+
+## Processing weather station data for interpolation
+
+Some stations had missing data for year 2020 and were excluded from the output. Using function `worldmet2meteoland()` from **meteoland**, we can reshape the hourly data of the remaining stations into daily data in form of an `sf` object:
+
+```{r, eval = params$complete_rebuild, echo = TRUE}
+sf_sen <- worldmet2meteoland(hourData, complete = TRUE)
+sf_sen
+```
+
+```{r, eval = TRUE, echo=FALSE}
+if(params$complete_rebuild) {
+  saveRDS(sf_sen, file="sf_sen.rds")
+} else {
+  sf_sen <- readRDS("sf_sen.rds")  
+}
+```
+
+An interpolator object needs to be created for interpolation, containing not only station weather and topographic data but also interpolation parameters. This can be obtained using function `create_meteo_interpolator()`:
+
+```{r}
+interpolator_sen <- meteoland::create_meteo_interpolator(sf_sen, verbose = FALSE)
+```
+
+The warning message indicates that default interpolation parameters are set and in a serious application we should calibrate the parameters before using the reference data for interpolation. 
+
+The interpolator object is of class **stars**:
+```{r}
+interpolator_sen
+```
+
+If needed, we can display the location of the weather stations on a map with country limits. This is useful to know the station density in the study area. In our case we will use the following code:
+
+```{r, fig.width=4, fig.height=6}
+data("africountries")
+senegal <- africountries[africountries$name=="Senegal",]
+ggplot()+
+  geom_sf(data = sf::st_geometry(africountries))+
+  geom_sf(data = sf::st_geometry(senegal), fill= "red")+
+  geom_sf(data = sf_sen[1], size = 0.5)+
+  xlim(c(-20,0))+ ylim(c(0,30))+
+  theme_bw()
+```
+
+
+## Accessing and arranging topographic data
+
+To perform weather interpolation, we need the topography (elevation, slope, aspect) of the target area. We can use function `elevation_30s()` from package **geodata** to download elevation data for Senegal:
+
+```{r, echo=FALSE}
+elev_raster <- geodata::elevation_30s(country="SEN", path = tempdir())
+names(elev_raster) <- "elevation"
+elev_raster
+```
+
+The previous function return `SpatRaster` object (package **terra**). In order to estimate slope and aspect we can use function `terrain()` from the **terra** package:
+```{r}
+slope_raster <- terra::terrain(elev_raster, v = "slope", unit="degrees")
+aspect_raster <- terra::terrain(elev_raster, v = "aspect", unit="degrees")
+```
+
+We can plot the three rasters using with `ggplot()` using `geom_spatraster()` from package **tidyterra**:
+
+```{r, fig.width=4, fig.height=8}
+p1 <- ggplot()+
+  tidyterra::geom_spatraster(data = elev_raster)
+p2 <- ggplot()+
+  tidyterra::geom_spatraster(data = slope_raster)
+p3 <- ggplot()+
+  tidyterra::geom_spatraster(data = aspect_raster)
+cowplot::plot_grid(p1, p2, p3, nrow=3)
+```
+
+
+
+We now assemble the three rasters into a single object:
+
+```{r}
+topo_spatraster <- c(elev_raster, slope_raster, aspect_raster)
+```
+
+The resolution of the raster is quite high, which would make interpolation quite slow. For this reason,
+we use function `aggregate()` from package **terra** to lower the resolution and speed-up calculations, but one may skip this step.
+```{r}
+fact <- 10
+topo_spatraster_agg <- terra::aggregate(topo_spatraster, fact = fact)
+```
+
+Finally, we reshape the raster into an object of package **stars**:
+
+```{r}
+topo_stars_agg <- stars::st_as_stars(topo_spatraster_agg, as_attributes=TRUE)
+```
+
+## Performing interpolation
+
+We are now ready to perform the interpolation of weather over the study area. We can simply call function `interpolate_data()` from **meteoland**. Here we restrict the interpolation to two dates in 2020 to speed up calculations:
+```{r}
+raster_interpolated <- topo_stars_agg |>
+  interpolate_data(interpolator_sen, dates = c(as.Date("2020-01-01"), as.Date("2020-07-01")), 
+                   verbose = FALSE)
+```
+Warnings are raised because some raster locations (those over the ocean) are outside the convex hull of the stations in the interpolator object. 
+
+The result of the interpolation is a raster object of class **stars**:
+```{r}
+raster_interpolated
+```
+
+We can display the maps for specific dates and variables using:
+```{r, fig.width=7, fig.height=8}
+p1 <- ggplot()+
+      geom_stars(data = raster_interpolated["MeanTemperature",,,1])+
+      scale_fill_viridis_c()+
+      labs(title = "2020-01-01")
+p2 <- ggplot()+
+      geom_stars(data = raster_interpolated["MeanTemperature",,,2])+
+      scale_fill_viridis_c()+
+      labs(title = "2020-07-01")
+cowplot::plot_grid(p1, p2, nrow = 2)
+```
+

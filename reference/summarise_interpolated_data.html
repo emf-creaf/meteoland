@@ -19,7 +19,7 @@ temporal scale"><!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/l
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">meteoland</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.0.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.0.2</span>
       </span>
     </div>
 
@@ -153,24 +153,23 @@ by <code><a href="interpolate_data.html">interpolate_data</a></code>, temporal s
 <span class="r-out co"><span class="r-pr">#&gt;</span> Bounding box:  xmin: 0.7578958 ymin: 41.31541 xmax: 2.98657 ymax: 42.6336</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Geodetic CRS:  WGS 84</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 15 × 7</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    plot_id elevation slope aspect             geometry interpolated_data </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  <span style="color: #BCBCBC;">*</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>          <span style="color: #949494; font-style: italic;">&lt;POINT [°]&gt;</span> <span style="color: #949494; font-style: italic;">&lt;list&gt;</span>            </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> P_05284      889. 25.2   313.   (2.320167 42.24139) <span style="color: #949494;">&lt;tibble [30 × 13]&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span> P_06572      680. 18.0    79.9  (2.552233 42.02596) <span style="color: #949494;">&lt;tibble [30 × 13]&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span> P_07201      141.  4.17   52.9  (2.721874 41.88258) <span style="color: #949494;">&lt;tibble [30 × 13]&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> P_07512      254. 14.3   261.     (2.98657 41.9006) <span style="color: #949494;">&lt;tibble [30 × 13]&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> P_08207     <span style="text-decoration: underline;">1</span>860. 36.4   293.   (2.209903 42.33968) <span style="color: #949494;">&lt;tibble [30 × 13]&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> P_08299      183.  4.12   92.9  (2.817143 42.24325) <span style="color: #949494;">&lt;tibble [30 × 13]&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span> P_09341      819  23.4   128.   (1.126766 42.42612) <span style="color: #949494;">&lt;tibble [30 × 13]&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> P_10272      860  34.8   347.   (1.398528 42.26791) <span style="color: #949494;">&lt;tibble [30 × 13]&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> P_10861      706  22.4    22.6 (0.9314126 42.04226) <span style="color: #949494;">&lt;tibble [30 × 13]&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> P_11651      585  22.0   199.   (0.7578958 41.8612) <span style="color: #949494;">&lt;tibble [30 × 13]&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">11</span> P_12150      674. 30.3   154.   (1.481719 41.81838) <span style="color: #949494;">&lt;tibble [30 × 13]&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">12</span> P_12227      752.  6.04   27.7    (1.283161 41.591) <span style="color: #949494;">&lt;tibble [30 × 13]&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">13</span> P_12417      702  11.6    63.1 (0.8727224 41.35875) <span style="color: #949494;">&lt;tibble [30 × 13]&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">14</span> P_13007      972.  4.21  338.    (1.120383 42.6336) <span style="color: #949494;">&lt;tibble [30 × 13]&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">15</span> P_14029      556. 14.1    41.4  (1.480716 41.31541) <span style="color: #949494;">&lt;tibble [30 × 13]&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 1 more variable: all_mean &lt;list&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    plot_id elevation slope aspect             geometry interpolated_data  all_mean         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  <span style="color: #BCBCBC;">*</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>          <span style="color: #949494; font-style: italic;">&lt;POINT [°]&gt;</span> <span style="color: #949494; font-style: italic;">&lt;list&gt;</span>             <span style="color: #949494; font-style: italic;">&lt;list&gt;</span>           </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> P_05284      889. 25.2   313.   (2.320167 42.24139) <span style="color: #949494;">&lt;tibble [30 × 13]&gt;</span> <span style="color: #949494;">&lt;tibble [1 × 11]&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span> P_06572      680. 18.0    79.9  (2.552233 42.02596) <span style="color: #949494;">&lt;tibble [30 × 13]&gt;</span> <span style="color: #949494;">&lt;tibble [1 × 11]&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span> P_07201      141.  4.17   52.9  (2.721874 41.88258) <span style="color: #949494;">&lt;tibble [30 × 13]&gt;</span> <span style="color: #949494;">&lt;tibble [1 × 11]&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> P_07512      254. 14.3   261.     (2.98657 41.9006) <span style="color: #949494;">&lt;tibble [30 × 13]&gt;</span> <span style="color: #949494;">&lt;tibble [1 × 11]&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> P_08207     <span style="text-decoration: underline;">1</span>860. 36.4   293.   (2.209903 42.33968) <span style="color: #949494;">&lt;tibble [30 × 13]&gt;</span> <span style="color: #949494;">&lt;tibble [1 × 11]&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> P_08299      183.  4.12   92.9  (2.817143 42.24325) <span style="color: #949494;">&lt;tibble [30 × 13]&gt;</span> <span style="color: #949494;">&lt;tibble [1 × 11]&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span> P_09341      819  23.4   128.   (1.126766 42.42612) <span style="color: #949494;">&lt;tibble [30 × 13]&gt;</span> <span style="color: #949494;">&lt;tibble [1 × 11]&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> P_10272      860  34.8   347.   (1.398528 42.26791) <span style="color: #949494;">&lt;tibble [30 × 13]&gt;</span> <span style="color: #949494;">&lt;tibble [1 × 11]&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> P_10861      706  22.4    22.6 (0.9314126 42.04226) <span style="color: #949494;">&lt;tibble [30 × 13]&gt;</span> <span style="color: #949494;">&lt;tibble [1 × 11]&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> P_11651      585  22.0   199.   (0.7578958 41.8612) <span style="color: #949494;">&lt;tibble [30 × 13]&gt;</span> <span style="color: #949494;">&lt;tibble [1 × 11]&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">11</span> P_12150      674. 30.3   154.   (1.481719 41.81838) <span style="color: #949494;">&lt;tibble [30 × 13]&gt;</span> <span style="color: #949494;">&lt;tibble [1 × 11]&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">12</span> P_12227      752.  6.04   27.7    (1.283161 41.591) <span style="color: #949494;">&lt;tibble [30 × 13]&gt;</span> <span style="color: #949494;">&lt;tibble [1 × 11]&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">13</span> P_12417      702  11.6    63.1 (0.8727224 41.35875) <span style="color: #949494;">&lt;tibble [30 × 13]&gt;</span> <span style="color: #949494;">&lt;tibble [1 × 11]&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">14</span> P_13007      972.  4.21  338.    (1.120383 42.6336) <span style="color: #949494;">&lt;tibble [30 × 13]&gt;</span> <span style="color: #949494;">&lt;tibble [1 × 11]&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">15</span> P_14029      556. 14.1    41.4  (1.480716 41.31541) <span style="color: #949494;">&lt;tibble [30 × 13]&gt;</span> <span style="color: #949494;">&lt;tibble [1 × 11]&gt;</span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># raster interpolation aggregation</span></span></span>
 <span class="r-in"><span><span class="va">raster_to_interpolate_example</span> <span class="op">|&gt;</span></span></span>
@@ -178,30 +177,18 @@ by <code><a href="interpolate_data.html">interpolate_data</a></code>, temporal s
 <span class="r-in"><span>  <span class="fu">summarise_interpolated_data</span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> stars object with 3 dimensions and 11 attributes</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> attribute(s):</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                             Min.   1st Qu.    Median      Mean   3rd Qu.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> MeanTemperature       11.5704340 13.085384 13.580366 13.471788 14.000217</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> MinTemperature         5.4241252  5.723106  5.834485  5.860040  6.015028</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> MaxTemperature        15.4618660 17.809716 18.593723 18.420680 19.205037</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Precipitation          1.0384680  1.131101  1.199751  1.217155  1.293790</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> MeanRelativeHumidity  60.7962965 63.361941 65.087755 65.520741 67.043155</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> MinRelativeHumidity   43.3452715 46.019400 48.149531 48.591400 50.195214</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> MaxRelativeHumidity   96.2942503 96.710474 96.899356 96.878881 97.036136</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Radiation             13.9846077 18.365970 20.168242 19.595816 21.198293</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> WindSpeed              0.9485546  1.032881  1.262741  1.385929  1.680294</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> WindDirection                 NA        NA        NA       NaN        NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> PET                    1.9918440  2.851873  3.153198  3.087621  3.402888</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                            Max. NA's</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> MeanTemperature       14.659490    0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> MinTemperature         6.280687    0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> MaxTemperature        20.321977    0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Precipitation          1.445986    0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> MeanRelativeHumidity  73.956489    0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> MinRelativeHumidity   58.061458    0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> MaxRelativeHumidity   97.482022    0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Radiation             22.812720    0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> WindSpeed              2.382469    1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> WindDirection                NA  121</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> PET                    4.214379    0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                             Min.   1st Qu.    Median      Mean   3rd Qu.      Max. NA's</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> MeanTemperature       11.5704340 13.085384 13.580366 13.471788 14.000217 14.659490    0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> MinTemperature         5.4241252  5.723106  5.834485  5.860040  6.015028  6.280687    0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> MaxTemperature        15.4618660 17.809716 18.593723 18.420680 19.205037 20.321977    0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Precipitation          1.0384680  1.131101  1.199751  1.217155  1.293790  1.445986    0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> MeanRelativeHumidity  60.7962965 63.361941 65.087755 65.520741 67.043155 73.956489    0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> MinRelativeHumidity   43.3452715 46.019400 48.149531 48.591400 50.195214 58.061458    0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> MaxRelativeHumidity   96.2942503 96.710474 96.899356 96.878881 97.036136 97.482022    0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Radiation             13.9846077 18.365970 20.168242 19.595816 21.198293 22.812720    0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> WindSpeed              0.9485546  1.032881  1.262741  1.385929  1.680294  2.382469    1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> WindDirection                 NA        NA        NA       NaN        NA        NA  121</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> PET                    1.9918440  2.851873  3.153198  3.087621  3.402888  4.214379    0</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> dimension(s):</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>      from to  offset      delta  refsys point          values x/y</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> time    1  1      NA         NA POSIXct    NA 2022-04-01 CEST    </span>

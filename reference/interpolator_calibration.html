@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">meteoland</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.0.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.0.2</span>
       </span>
     </div>
 
@@ -60,8 +60,7 @@
 <span>  <span class="va">interpolator</span>,</span>
 <span>  stations <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  update_interpolation_params <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>  variable <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"MinTemperature"</span>, <span class="st">"MaxTemperature"</span>, <span class="st">"DewTemperature"</span>, <span class="st">"Precipitation"</span>,</span>
-<span>    <span class="st">"PrecipitationAmount"</span>, <span class="st">"PrecipitationEvent"</span><span class="op">)</span>,</span>
+<span>  variable <span class="op">=</span> <span class="st">"MinTemperature"</span>,</span>
 <span>  N_seq <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">5</span>, <span class="fl">30</span>, by <span class="op">=</span> <span class="fl">5</span><span class="op">)</span>,</span>
 <span>  alpha_seq <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">0.25</span>, <span class="fl">10</span>, by <span class="op">=</span> <span class="fl">0.25</span><span class="op">)</span>,</span>
 <span>  verbose <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">getOption</a></span><span class="op">(</span><span class="st">"meteoland_verbosity"</span>, <span class="cn">TRUE</span><span class="op">)</span></span>
@@ -99,11 +98,15 @@ object must be updated with the calculated parameters. Default to FALSE</p></dd>
 <dt>variable</dt>
 <dd><p>A string indicating the meteorological variable for which
 interpolation parameters <code>"N"</code> and <code>"alpha"</code> will be calibrated.
-Accepted values are <code>MinTemperature</code>, <code>MaxTemperature</code>,
-<code>DewTemperature</code>, <code>Precipitation</code> (for precipitation with the same
-values for precipitation events an regression of precipitation amounts),
-<code>PrecipitationAmount</code> (for regression of precipitation amounts) and
-<code>PrecipitationEvent</code> (for precipitation events).</p></dd>
+Accepted values are:</p><ul><li><p><code>MinTemperature</code> (kernel for minimum temperature)</p></li>
+<li><p><code>MaxTemperature</code> (kernel for maximum temperature)</p></li>
+<li><p><code>DewTemperature</code> (kernel for dew-temperature (i.e. relative humidity))</p></li>
+<li><p><code>Precipitation</code> (to calibrate the same
+kernel for both precipitation events and regression of precipitation amounts;
+not recommended)</p></li>
+<li><p><code>PrecipitationAmount</code> (kernel for regression of precipitation amounts)</p></li>
+<li><p><code>PrecipitationEvent</code> (kernel for precipitation events)</p></li>
+</ul></dd>
 
 
 <dt>N_seq</dt>
@@ -325,6 +328,7 @@ after excluding the station from the predictive set).</p>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> • Evaluating N: <span style="color: #0000BB;">20</span>, alpha: <span style="color: #0000BB;">8.75</span>...</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> • Evaluating N: <span style="color: #0000BB;">20</span>, alpha: <span style="color: #0000BB;">9</span>...</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Calibration done: Minimum MAE: <span style="color: #0000BB;">0.558727762077721</span>; N: <span style="color: #0000BB;">10</span>; alpha: <span style="color: #0000BB;">9</span></span>
+<span class="r-in"><span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># check the new interpolator have the parameters updated</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="get_interpolation_params.html">get_interpolation_params</a></span><span class="op">(</span><span class="va">updated_interpolator</span><span class="op">)</span><span class="op">$</span><span class="va">N_MaxTemperature</span></span></span>

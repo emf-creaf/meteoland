@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">meteoland</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.0.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.0.2</span>
       </span>
     </div>
 
@@ -55,6 +55,7 @@
 <span>  <span class="va">interpolator</span>,</span>
 <span>  dates <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  variables <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  ignore_convex_hull_check <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  verbose <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">getOption</a></span><span class="op">(</span><span class="st">"meteoland_verbosity"</span>, <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -80,6 +81,14 @@ interpolator object)</p></dd>
 <dd><p>vector with variable names to be interpolated. NULL (default),
 will interpolate all variables. Accepted names are "Temperature", "Precipitation",
 "RelativeHumidity", "Radiation" and "Wind"</p></dd>
+
+
+<dt>ignore_convex_hull_check</dt>
+<dd><p>Logical indicating whether errors in convex hull checks should be ignored.
+Checking for points to be inside the convex hull will normally raise an error
+if &gt;10% of points are outside. Setting <code>ignore_convex_hull_check = TRUE</code> means
+that a warning is raised but interpolation is performed, which can be useful to users interpolating
+on a few points close but outside of the convex hull.</p></dd>
 
 
 <dt>verbose</dt>

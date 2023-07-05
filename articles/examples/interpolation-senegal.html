@@ -33,7 +33,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../../index.html">meteoland</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.0.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.0.2</span>
       </span>
     </div>
 
@@ -66,7 +66,7 @@
                         <h4 data-toc-skip class="author">Miquel De
 Cáceres</h4>
             
-            <h4 data-toc-skip class="date">2023-06-01</h4>
+            <h4 data-toc-skip class="date">2023-07-05</h4>
       
       
       <div class="hidden name"><code>interpolation-senegal.Rmd</code></div>
@@ -298,9 +298,10 @@ two dates in 2020 to speed up calculations:</p>
 <span><span class="co">## <span style="color: #BB0000;">✖</span> Indexes of outside points are <span style="color: #0000BB;">"1"</span>, <span style="color: #0000BB;">"2"</span>, <span style="color: #0000BB;">"3"</span>, <span style="color: #0000BB;">"79"</span>, <span style="color: #0000BB;">"80"</span>, <span style="color: #0000BB;">"81"</span>, <span style="color: #0000BB;">"157"</span>, <span style="color: #0000BB;">"158"</span>,</span></span>
 <span><span class="co">##   <span style="color: #0000BB;">"159"</span>, <span style="color: #0000BB;">"235"</span>, <span style="color: #0000BB;">"236"</span>, <span style="color: #0000BB;">"237"</span>, <span style="color: #0000BB;">"313"</span>, <span style="color: #0000BB;">"314"</span>, <span style="color: #0000BB;">"315"</span>, <span style="color: #0000BB;">"391"</span>, <span style="color: #0000BB;">"392"</span>, <span style="color: #0000BB;">"393"</span>, …,</span></span>
 <span><span class="co">##   <span style="color: #0000BB;">"4381"</span>, and <span style="color: #0000BB;">"4382"</span></span></span></code></pre>
-<pre><code><span><span class="co">## Warning: Some/All dates for points <span style="color: #0000BB;">1</span>, <span style="color: #0000BB;">2</span>, <span style="color: #0000BB;">3</span>, <span style="color: #0000BB;">4</span>, <span style="color: #0000BB;">5</span>, <span style="color: #0000BB;">6</span>, <span style="color: #0000BB;">7</span>, <span style="color: #0000BB;">8</span>, <span style="color: #0000BB;">9</span>, <span style="color: #0000BB;">10</span>, <span style="color: #0000BB;">11</span>, <span style="color: #0000BB;">12</span>, <span style="color: #0000BB;">13</span>, <span style="color: #0000BB;">14</span>, <span style="color: #0000BB;">15</span>,</span></span>
-<span><span class="co">## <span style="color: #0000BB;">16</span>, <span style="color: #0000BB;">17</span>, <span style="color: #0000BB;">18</span>, …, <span style="color: #0000BB;">4445</span>, and <span style="color: #0000BB;">4446</span> have missing precipitation values, assuming clear</span></span>
-<span><span class="co">## days when interpolating radiation for these days</span></span></code></pre>
+<pre><code><span><span class="co">## Warning: Some/All dates for points <span style="color: #0000BB;">189</span>, <span style="color: #0000BB;">190</span>, <span style="color: #0000BB;">191</span>, <span style="color: #0000BB;">196</span>, <span style="color: #0000BB;">263</span>, <span style="color: #0000BB;">264</span>, <span style="color: #0000BB;">265</span>, <span style="color: #0000BB;">266</span>, <span style="color: #0000BB;">267</span>, <span style="color: #0000BB;">268</span>,</span></span>
+<span><span class="co">## <span style="color: #0000BB;">269</span>, <span style="color: #0000BB;">270</span>, <span style="color: #0000BB;">271</span>, <span style="color: #0000BB;">272</span>, <span style="color: #0000BB;">273</span>, <span style="color: #0000BB;">274</span>, <span style="color: #0000BB;">275</span>, <span style="color: #0000BB;">330</span>, …, <span style="color: #0000BB;">4121</span>, and <span style="color: #0000BB;">4122</span> have missing</span></span>
+<span><span class="co">## precipitation values, assuming clear days when interpolating radiation for</span></span>
+<span><span class="co">## these days</span></span></code></pre>
 <p>Warnings are raised because some raster locations (those over the
 ocean) are outside the convex hull of the stations in the interpolator
 object.</p>
@@ -310,21 +311,21 @@ object.</p>
 <code class="sourceCode R"><span><span class="va">raster_interpolated</span></span></code></pre></div>
 <pre><code><span><span class="co">## stars object with 3 dimensions and 14 attributes</span></span>
 <span><span class="co">## attribute(s):</span></span>
-<span><span class="co">##                               Min.      1st Qu.     Median        Mean</span></span>
-<span><span class="co">## MeanTemperature       2.565365e+01  26.23864756  28.345599  28.7768531</span></span>
-<span><span class="co">## MinTemperature        1.780179e+01  18.59377204  22.771621  22.6439269</span></span>
-<span><span class="co">## MaxTemperature        3.054606e+01  31.19507875  32.304597  32.7642672</span></span>
-<span><span class="co">## Precipitation         3.215852e+00   3.52096659   3.978737   4.3363956</span></span>
-<span><span class="co">## MeanRelativeHumidity  2.825355e+01  32.85716167  51.729265  51.1044770</span></span>
-<span><span class="co">## MinRelativeHumidity   2.121382e+01  24.69259011  41.347453  41.6214869</span></span>
-<span><span class="co">## MaxRelativeHumidity   4.486208e+01  52.05561466  74.291399  71.4489409</span></span>
-<span><span class="co">## Radiation             2.801955e+00  15.55513556  16.100066  16.8713725</span></span>
-<span><span class="co">## WindSpeed             0.000000e+00   1.93919118   2.698219   2.7965086</span></span>
-<span><span class="co">## WindDirection         8.060414e-04  45.04598690  56.436659  65.4985776</span></span>
-<span><span class="co">## PET                   1.126321e+00   4.29583587   4.646448   4.8194632</span></span>
-<span><span class="co">## elevation             1.310000e+00  34.45750000  48.660000  54.0612085</span></span>
-<span><span class="co">## slope                 1.792378e-02   0.09556268   0.188352   0.2429773</span></span>
-<span><span class="co">## aspect                6.735251e+01 168.39402989 192.848440 189.9267863</span></span>
+<span><span class="co">##                              Min.      1st Qu.     Median        Mean</span></span>
+<span><span class="co">## MeanTemperature       25.65364684  26.23864756  28.345599  28.7768531</span></span>
+<span><span class="co">## MinTemperature        17.80178919  18.59377204  22.771621  22.6439269</span></span>
+<span><span class="co">## MaxTemperature        30.54605716  31.19507875  32.304597  32.7642672</span></span>
+<span><span class="co">## Precipitation          3.21585191   3.52096659   3.978737   4.3363956</span></span>
+<span><span class="co">## MeanRelativeHumidity  28.25354806  32.85716167  51.729265  51.1044770</span></span>
+<span><span class="co">## MinRelativeHumidity   21.21382417  24.69259011  41.347453  41.6214869</span></span>
+<span><span class="co">## MaxRelativeHumidity   44.86207590  52.05561466  74.291399  71.4489409</span></span>
+<span><span class="co">## Radiation              2.80195474  15.55513556  16.100066  16.8713725</span></span>
+<span><span class="co">## WindSpeed              0.41014585   2.10398623   2.703641   2.8029064</span></span>
+<span><span class="co">## WindDirection          0.14994145  47.96274583  59.838221  63.5942582</span></span>
+<span><span class="co">## PET                    1.12632050   4.29583587   4.646448   4.8194632</span></span>
+<span><span class="co">## elevation              1.31000000  34.45750000  48.660000  54.0612085</span></span>
+<span><span class="co">## slope                  0.01792378   0.09556268   0.188352   0.2429773</span></span>
+<span><span class="co">## aspect                67.35251383 168.39402989 192.848440 189.9267863</span></span>
 <span><span class="co">##                           3rd Qu.       Max. NA's</span></span>
 <span><span class="co">## MeanTemperature        31.4373275  32.148596 4556</span></span>
 <span><span class="co">## MinTemperature         26.7186160  27.303999 4556</span></span>
@@ -334,8 +335,8 @@ object.</p>
 <span><span class="co">## MinRelativeHumidity    58.1442049  65.381005 4556</span></span>
 <span><span class="co">## MaxRelativeHumidity    89.7925874  94.773621 4556</span></span>
 <span><span class="co">## Radiation              18.5510236  20.952236 4556</span></span>
-<span><span class="co">## WindSpeed               3.4308832   6.867714    0</span></span>
-<span><span class="co">## WindDirection          76.6790590 359.999997 4446</span></span>
+<span><span class="co">## WindSpeed               3.2935873   5.768750 4556</span></span>
+<span><span class="co">## WindDirection          74.5020305 359.999997 6724</span></span>
 <span><span class="co">## PET                     5.2584016   7.192732 4556</span></span>
 <span><span class="co">## elevation              62.6900000 215.770000 4556</span></span>
 <span><span class="co">## slope                   0.3307207   2.613510 4616</span></span>

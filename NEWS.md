@@ -6,8 +6,8 @@
 - Modification of default variables for interpolator_calibration
 - Avoiding interpolation in cells with missing elevation
 - Fixed #21. Now `meteo_complete` works with missing Precipitation
-- Fixed #22. `initial_Rp` parameter is now calculated in meters no matter which crs the meteo object
-  has.
+- Option 'ignore_convex_hull_check' allows ignoring when target point is outside the convex hull
+
 
 # meteoland 2.0.1
 - Hard deprecation of "sp", "raster" and "rgdal" depedencies, including functions and classes using

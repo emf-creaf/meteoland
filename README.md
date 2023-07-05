@@ -17,12 +17,10 @@ in the R-spatial ecosystem.
 
 Starting with version 2.0.0 of `meteoland` (February 2023) **all
 functions, methods and classes based on or using the `sp`, `raster` and
-`rgdal` package are now soft-deprecated**. They still work and can be
-used, but a warning will appear recommending using the new tidy
-workflows.
+`rgdal` package were soft-deprecated**.
 
-> **In June 2023, all these functions, methods and classes will be
-> hard-deprecated, meaning they will stop working.**
+> **Since June 2023 (ver. 2.0.1), these functions, methods and classes
+> have been hard-deprecated, meaning they stopped working.**
 
 See the [*Tidy
 meteoland*](https://emf-creaf.github.io/meteoland/articles/tidy-meteoland.html)

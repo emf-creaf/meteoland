@@ -224,9 +224,9 @@ degrees) as attributes, such as:</p>
 <span><span class="co">#&gt; slope        1.432096   5.720433  11.34812  13.07343  19.75851  31.0719</span></span>
 <span><span class="co">#&gt; aspect       5.194427  74.744881 174.36932 181.67923 291.03751 360.0000</span></span>
 <span><span class="co">#&gt; dimension(s):</span></span>
-<span><span class="co">#&gt;   from  to    offset      delta refsys x/y</span></span>
-<span><span class="co">#&gt; x  155 165 0.0364777  0.0105789 WGS 84 [x]</span></span>
-<span><span class="co">#&gt; y  110 120   42.9208 -0.0105789 WGS 84 [y]</span></span></code></pre></div>
+<span><span class="co">#&gt;   from  to  offset    delta refsys x/y</span></span>
+<span><span class="co">#&gt; x  155 165 0.03648  0.01058 WGS 84 [x]</span></span>
+<span><span class="co">#&gt; y  110 120   42.92 -0.01058 WGS 84 [y]</span></span></code></pre></div>
 <p>Both, <code>sf</code> and <code>stars</code> R packages have the
 necessary functions to read most spatial formats, the only thing to
 consider is ensuring that the topographical variables are included, have
@@ -1046,9 +1046,9 @@ attributes:</p>
 <span><span class="co">#&gt; slope        1.432096   5.720433  11.34812  13.07343  19.75851  31.0719</span></span>
 <span><span class="co">#&gt; aspect       5.194427  74.744881 174.36932 181.67923 291.03751 360.0000</span></span>
 <span><span class="co">#&gt; dimension(s):</span></span>
-<span><span class="co">#&gt;   from  to    offset      delta refsys x/y</span></span>
-<span><span class="co">#&gt; x  155 165 0.0364777  0.0105789 WGS 84 [x]</span></span>
-<span><span class="co">#&gt; y  110 120   42.9208 -0.0105789 WGS 84 [y]</span></span></code></pre></div>
+<span><span class="co">#&gt;   from  to  offset    delta refsys x/y</span></span>
+<span><span class="co">#&gt; x  155 165 0.03648  0.01058 WGS 84 [x]</span></span>
+<span><span class="co">#&gt; y  110 120   42.92 -0.01058 WGS 84 [y]</span></span></code></pre></div>
 <p>In this case, the raster is a 0.01 degree grid (10x10 cells) in
 central Catalonia. As the raster is inside the area covered by the
 interpolator object we created before, we will use it.</p>
@@ -1105,10 +1105,10 @@ interpolator object we created before, we will use it.</p>
 <span><span class="co">#&gt; slope                  19.7585106  31.071896    0</span></span>
 <span><span class="co">#&gt; aspect                291.0375061 360.000000    0</span></span>
 <span><span class="co">#&gt; dimension(s):</span></span>
-<span><span class="co">#&gt;      from to         offset      delta  refsys point x/y</span></span>
-<span><span class="co">#&gt; x       1 11        1.67091  0.0105789  WGS 84 FALSE [x]</span></span>
-<span><span class="co">#&gt; y       1 11        41.7624 -0.0105789  WGS 84 FALSE [y]</span></span>
-<span><span class="co">#&gt; date    1 30 2022-04-01 UTC     1 days POSIXct FALSE</span></span></code></pre></div>
+<span><span class="co">#&gt;      from to         offset    delta  refsys point x/y</span></span>
+<span><span class="co">#&gt; x       1 11          1.671  0.01058  WGS 84 FALSE [x]</span></span>
+<span><span class="co">#&gt; y       1 11          41.76 -0.01058  WGS 84 FALSE [y]</span></span>
+<span><span class="co">#&gt; date    1 30 2022-04-01 UTC   1 days POSIXct FALSE</span></span></code></pre></div>
 <p>As we can see, the returned object is the same <code>stars</code>
 raster provided to the function, with the interpolated meteorological
 variables as new attributes. Dimensions now include the date, besides
@@ -1151,10 +1151,10 @@ format can also be aggregated temporally.</p>
 <span><span class="co">#&gt; WindDirection         234.5482210 246.486142  365</span></span>
 <span><span class="co">#&gt; PET                     3.4728443   5.069591    0</span></span>
 <span><span class="co">#&gt; dimension(s):</span></span>
-<span><span class="co">#&gt;      from to          offset      delta  refsys point x/y</span></span>
-<span><span class="co">#&gt; time    1  5 2022-03-28 CEST     7 days POSIXct    NA    </span></span>
-<span><span class="co">#&gt; x       1 11         1.67091  0.0105789  WGS 84 FALSE [x]</span></span>
-<span><span class="co">#&gt; y       1 11         41.7624 -0.0105789  WGS 84 FALSE [y]</span></span></code></pre></div>
+<span><span class="co">#&gt;      from to          offset    delta  refsys point x/y</span></span>
+<span><span class="co">#&gt; time    1  5 2022-03-28 CEST   7 days POSIXct    NA    </span></span>
+<span><span class="co">#&gt; x       1 11           1.671  0.01058  WGS 84 FALSE [x]</span></span>
+<span><span class="co">#&gt; y       1 11           41.76 -0.01058  WGS 84 FALSE [y]</span></span></code></pre></div>
 <p>In this case the result is the aggregated variables as attributes,
 and the time dimension is aggregated in the desired frequency.</p>
 </div>

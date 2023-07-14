@@ -119,24 +119,41 @@ https://cfconventions.org/cf-conventions/cf-conventions.html</p>
 <span class="r-in"><span><span class="fu"><a href="read_interpolator.html">read_interpolator</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">tmp_dir</span>, <span class="st">"meteoland_interpolator_example.nc"</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> stars object with 2 dimensions and 13 attributes</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> attribute(s):</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                                 Min.    1st Qu.    Median       Mean   3rd Qu.       Max. NA's</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Temperature               -14.200000   8.800000  12.60000  11.324991  14.80000   23.40000  148</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> MinTemperature            -15.900000   3.300000   6.90000   5.883189   9.40000   20.10000  138</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> MaxTemperature            -13.000000  13.900000  18.30000  17.364292  21.80000   29.90000  139</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> RelativeHumidity           18.000000  57.000000  67.00000  67.720000  78.00000  100.00000  145</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Precipitation               0.000000   0.000000   0.00000   1.925434   0.10000  160.90000   79</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Radiation                   7.707484  17.717235  22.04597  20.762628  23.61352   28.10878  139</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> WindDirection               0.000000 116.000000 217.00000 196.861908 275.00000  359.00000 4171</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> WindSpeed                   0.200000   0.900000   1.30000   1.603907   2.00000    6.90000 4160</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> elevation                   0.000000 147.000000 317.00000 515.629630 668.00000 2535.00000    0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> aspect                      0.000000   0.000000   0.00000   0.000000   0.00000    0.00000    0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> slope                       0.000000   0.000000   0.00000   0.000000   0.00000    0.00000    0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> SmoothedPrecipitation       0.100000   1.862500   5.55000   6.197496   9.07500   65.10000  818</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> SmoothedTemperatureRange    4.695000   9.863542  11.66307  11.400932  13.26868   17.72778  124</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                 Min.    1st Qu.    Median       Mean   3rd Qu.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Temperature               -14.200000   8.800000  12.60000  11.324991  14.80000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> MinTemperature            -15.900000   3.300000   6.90000   5.883189   9.40000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> MaxTemperature            -13.000000  13.900000  18.30000  17.364292  21.80000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> RelativeHumidity           18.000000  57.000000  67.00000  67.720000  78.00000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Precipitation               0.000000   0.000000   0.00000   1.925434   0.10000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Radiation                   7.707484  17.717235  22.04597  20.762628  23.61352</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> WindDirection               0.000000 116.000000 217.00000 196.861908 275.00000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> WindSpeed                   0.200000   0.900000   1.30000   1.603907   2.00000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> elevation                   0.000000 147.000000 317.00000 515.629630 668.00000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> aspect                      0.000000   0.000000   0.00000   0.000000   0.00000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> slope                       0.000000   0.000000   0.00000   0.000000   0.00000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> SmoothedPrecipitation       0.100000   1.862500   5.55000   6.197496   9.07500</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> SmoothedTemperatureRange    4.695000   9.863542  11.66307  11.400932  13.26868</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                 Max. NA's</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Temperature                 23.40000  148</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> MinTemperature              20.10000  138</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> MaxTemperature              29.90000  139</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> RelativeHumidity           100.00000  145</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Precipitation              160.90000   79</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Radiation                   28.10878  139</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> WindDirection              359.00000 4171</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> WindSpeed                    6.90000 4160</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> elevation                 2535.00000    0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> aspect                       0.00000    0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> slope                        0.00000    0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> SmoothedPrecipitation       65.10000  818</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> SmoothedTemperatureRange    17.72778  124</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> dimension(s):</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         from  to         offset  delta  refsys point                                               values</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> date       1  30 2022-04-01 UTC 1 days POSIXct FALSE                                                 NULL</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> station    1 189             NA     NA  WGS 84  TRUE POINT (0.95172 41.6566),...,POINT (1.89716 42.32211)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         from  to         offset  delta  refsys point</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> date       1  30 2022-04-01 UTC 1 days POSIXct FALSE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> station    1 189             NA     NA  WGS 84  TRUE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                                       values</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> date                                                    NULL</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> station POINT (0.95172 41.6566),...,POINT (1.89716 42.32211)</span>
 <span class="r-in"><span><span class="co"># }</span></span></span>
 <span class="r-in"><span></span></span>
 </code></pre></div>

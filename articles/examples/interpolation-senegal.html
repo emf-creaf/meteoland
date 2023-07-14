@@ -66,7 +66,7 @@
                         <h4 data-toc-skip class="author">Miquel De
 Cáceres</h4>
             
-            <h4 data-toc-skip class="date">2023-07-05</h4>
+            <h4 data-toc-skip class="date">2023-07-14</h4>
       
       
       <div class="hidden name"><code>interpolation-senegal.Rmd</code></div>
@@ -239,6 +239,10 @@ the study area. In our case we will use the following code:</p>
 slope, aspect) of the target area. We can use function
 <code><a href="https://rdrr.io/pkg/geodata/man/elevation.html" class="external-link">elevation_30s()</a></code> from package <strong>geodata</strong> to
 download elevation data for Senegal:</p>
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">elev_raster</span> <span class="op">&lt;-</span> <span class="fu">geodata</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/geodata/man/elevation.html" class="external-link">elevation_30s</a></span><span class="op">(</span>country<span class="op">=</span><span class="st">"SEN"</span>, path <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">elev_raster</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="st">"elevation"</span></span>
+<span><span class="va">elev_raster</span></span></code></pre></div>
 <pre><code><span><span class="co">## class       : SpatRaster </span></span>
 <span><span class="co">## dimensions  : 564, 780, 1  (nrow, ncol, nlyr)</span></span>
 <span><span class="co">## resolution  : 0.008333333, 0.008333333  (x, y)</span></span>
@@ -252,13 +256,13 @@ download elevation data for Senegal:</p>
 <strong>terra</strong>). In order to estimate slope and aspect we can
 use function <code><a href="https://rdrr.io/pkg/terra/man/terrain.html" class="external-link">terrain()</a></code> from the <strong>terra</strong>
 package:</p>
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">slope_raster</span> <span class="op">&lt;-</span> <span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/terra/man/terrain.html" class="external-link">terrain</a></span><span class="op">(</span><span class="va">elev_raster</span>, v <span class="op">=</span> <span class="st">"slope"</span>, unit<span class="op">=</span><span class="st">"degrees"</span><span class="op">)</span></span>
 <span><span class="va">aspect_raster</span> <span class="op">&lt;-</span> <span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/terra/man/terrain.html" class="external-link">terrain</a></span><span class="op">(</span><span class="va">elev_raster</span>, v <span class="op">=</span> <span class="st">"aspect"</span>, unit<span class="op">=</span><span class="st">"degrees"</span><span class="op">)</span></span></code></pre></div>
 <p>We can plot the three rasters using with <code><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot()</a></code> using
 <code><a href="https://dieghernan.github.io/tidyterra/reference/geom_spatraster.html" class="external-link">geom_spatraster()</a></code> from package
 <strong>tidyterra</strong>:</p>
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">p1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="op">)</span><span class="op">+</span></span>
 <span>  <span class="fu">tidyterra</span><span class="fu">::</span><span class="fu"><a href="https://dieghernan.github.io/tidyterra/reference/geom_spatraster.html" class="external-link">geom_spatraster</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">elev_raster</span><span class="op">)</span></span>
 <span><span class="va">p2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="op">)</span><span class="op">+</span></span>
@@ -268,19 +272,19 @@ package:</p>
 <span><span class="fu">cowplot</span><span class="fu">::</span><span class="fu"><a href="https://wilkelab.org/cowplot/reference/plot_grid.html" class="external-link">plot_grid</a></span><span class="op">(</span><span class="va">p1</span>, <span class="va">p2</span>, <span class="va">p3</span>, nrow<span class="op">=</span><span class="fl">3</span><span class="op">)</span></span></code></pre></div>
 <p><img src="interpolation-senegal_files/figure-html/unnamed-chunk-16-1.png" width="384"></p>
 <p>We now assemble the three rasters into a single object:</p>
-<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">topo_spatraster</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">elev_raster</span>, <span class="va">slope_raster</span>, <span class="va">aspect_raster</span><span class="op">)</span></span></code></pre></div>
 <p>The resolution of the raster is quite high, which would make
 interpolation quite slow. For this reason, we use function
 <code><a href="https://rdrr.io/pkg/terra/man/aggregate.html" class="external-link">aggregate()</a></code> from package <strong>terra</strong> to lower
 the resolution and speed-up calculations, but one may skip this
 step.</p>
-<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">fact</span> <span class="op">&lt;-</span> <span class="fl">10</span></span>
 <span><span class="va">topo_spatraster_agg</span> <span class="op">&lt;-</span> <span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/terra/man/aggregate.html" class="external-link">aggregate</a></span><span class="op">(</span><span class="va">topo_spatraster</span>, fact <span class="op">=</span> <span class="va">fact</span><span class="op">)</span></span></code></pre></div>
 <p>Finally, we reshape the raster into an object of package
 <strong>stars</strong>:</p>
-<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">topo_stars_agg</span> <span class="op">&lt;-</span> <span class="fu">stars</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/stars/reference/st_as_stars.html" class="external-link">st_as_stars</a></span><span class="op">(</span><span class="va">topo_spatraster_agg</span>, as_attributes<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
@@ -290,7 +294,7 @@ step.</p>
 study area. We can simply call function <code><a href="../../reference/interpolate_data.html">interpolate_data()</a></code>
 from <strong>meteoland</strong>. Here we restrict the interpolation to
 two dates in 2020 to speed up calculations:</p>
-<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">raster_interpolated</span> <span class="op">&lt;-</span> <span class="va">topo_stars_agg</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="../../reference/interpolate_data.html">interpolate_data</a></span><span class="op">(</span><span class="va">interpolator_sen</span>, dates <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/as.Date.html" class="external-link">as.Date</a></span><span class="op">(</span><span class="st">"2020-01-01"</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/as.Date.html" class="external-link">as.Date</a></span><span class="op">(</span><span class="st">"2020-07-01"</span><span class="op">)</span><span class="op">)</span>, </span>
 <span>                   verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
@@ -307,7 +311,7 @@ ocean) are outside the convex hull of the stations in the interpolator
 object.</p>
 <p>The result of the interpolation is a raster object of class
 <strong>stars</strong>:</p>
-<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">raster_interpolated</span></span></code></pre></div>
 <pre><code><span><span class="co">## stars object with 3 dimensions and 14 attributes</span></span>
 <span><span class="co">## attribute(s):</span></span>
@@ -342,12 +346,12 @@ object.</p>
 <span><span class="co">## slope                   0.3307207   2.613510 4616</span></span>
 <span><span class="co">## aspect                213.6666970 287.613543 4616</span></span>
 <span><span class="co">## dimension(s):</span></span>
-<span><span class="co">##      from to     offset      delta refsys point x/y</span></span>
-<span><span class="co">## x       1 78   -17.6583  0.0833333 WGS 84 FALSE [x]</span></span>
-<span><span class="co">## y       1 57    16.7583 -0.0833333 WGS 84 FALSE [y]</span></span>
-<span><span class="co">## date    1  2 2020-01-01   182 days   Date FALSE</span></span></code></pre>
+<span><span class="co">##      from to     offset    delta refsys point x/y</span></span>
+<span><span class="co">## x       1 78     -17.66  0.08333 WGS 84 FALSE [x]</span></span>
+<span><span class="co">## y       1 57      16.76 -0.08333 WGS 84 FALSE [y]</span></span>
+<span><span class="co">## date    1  2 2020-01-01 182 days   Date FALSE</span></span></code></pre>
 <p>We can display the maps for specific dates and variables using:</p>
-<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">p1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="op">)</span><span class="op">+</span></span>
 <span>      <span class="fu"><a href="https://r-spatial.github.io/stars/reference/geom_stars.html" class="external-link">geom_stars</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">raster_interpolated</span><span class="op">[</span><span class="st">"MeanTemperature"</span>,,,<span class="fl">1</span><span class="op">]</span><span class="op">)</span><span class="op">+</span></span>
 <span>      <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_viridis.html" class="external-link">scale_fill_viridis_c</a></span><span class="op">(</span><span class="op">)</span><span class="op">+</span></span>

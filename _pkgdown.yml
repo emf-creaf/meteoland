@@ -4,7 +4,7 @@ home:
     href: https://emf-creaf.github.io/meteolandbook/index.html
 
 articles:
-- title: Working with meteoland ver. >= 2.0.0
+- title: Using meteoland
   contents:
   - starts_with("tidy-meteoland")
   - starts_with("reshaping-meteo")
@@ -40,7 +40,7 @@ reference:
   - worldmet2meteoland
   - complete_meteo
 - title: Example datasets
-  desc: New example datasets (ver. >= 2.0.0) 
+  desc: Example datasets
   contents:
   - meteoland_interpolator_example
   - meteoland_meteo_example

@@ -1,6 +1,3 @@
-#Default parameters for meteorological interpolation
-
-
 #' Default interpolation parameters
 #' 
 #' Returns a list with the default parameterization for interpolation. Most
@@ -37,7 +34,7 @@
 #' height (in m). \item\code{debug [= FALSE]}: Boolean flag to show extra
 #' console output. }
 #' @author Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF
-#' @seealso \code{\link{MeteorologyInterpolationData}}
+#' @seealso \code{\link{interpolate_data}}
 #' @references Thornton, P.E., Running, S.W., White, M. A., 1997. Generating
 #' surfaces of daily meteorological variables over large regions of complex
 #' terrain. J. Hydrol. 190, 214–251. doi:10.1016/S0022-1694(96)03128-9.

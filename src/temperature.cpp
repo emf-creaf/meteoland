@@ -41,9 +41,6 @@ double interpolateTemperaturePoint(double xp, double yp, double zp,
 
 //' Low-level interpolation functions
 //'
-//' @description
-//' `r lifecycle::badge("deprecated")`
-//'
 //' Low-level functions to interpolate meteorology (one day) on a set of points.
 //'
 //' @details

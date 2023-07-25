@@ -717,6 +717,20 @@ read_interpolator <- function(filename) {
 #' \code{update_interpolation_params} is FALSE, \code{interpolator_calibration}
 #' returns the interpolator provided with the parameters updated
 #'
+#' @references Thornton, P.E., Running, S.W., 1999. An improved algorithm for
+#' estimating incident daily solar radiation from measurements of temperature,
+#' humidity, and precipitation. Agric. For. Meteorol. 93, 211–228.
+#' doi:10.1016/S0168-1923(98)00126-9.
+#'
+#' De Caceres M, Martin-StPaul N, Turco M, Cabon A, Granda V (2018) Estimating
+#' daily meteorological data and downscaling climate models over landscapes.
+#' Environmental Modelling and Software 108: 186-196.
+#'
+#' @author 
+#' Miquel De \enc{Cáceres}{Caceres} Ainsa, EMF-CREAF
+#' 
+#' Victor Granda \enc{García}{Garcia}, EMF-CREAF
+#' 
 #' @examples
 #'
 #' \donttest{

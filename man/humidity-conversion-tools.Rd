@@ -18,7 +18,7 @@ humidity_relative2specific(Tc, HR)
 \arguments{
 \item{Tc}{A numeric vector of temperature in degrees Celsius.}
 
-\item{HR}{A numeric vector of relative Humidity (in \%).}
+\item{HR}{A numeric vector of relative humidity (in \%).}
 
 \item{Td}{A numeric vector of dew temperature in degrees Celsius.}
 
@@ -34,7 +34,7 @@ Functions to transform relative humidity to specific humidity or dew point
 temperature and viceversa.
 }
 \seealso{
-\code{\link{meteocomplete}}
+\code{\link{complete_meteo}}
 }
 \author{
 Nicholas Martin-StPaul, INRA

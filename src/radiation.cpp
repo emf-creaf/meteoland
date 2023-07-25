@@ -78,7 +78,7 @@ const double SIGMA_Wm2 = 5.67*pow(10,-8.0); //Stefan-Boltzmann constant J/s/K^4/
 //' \code{radiation_solarConstant()} and \code{radiation_solarDeclination()} was
 //' translated to C++ from R code in package 'insol' (by J. G. Corripio).
 //' @author Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF
-//' @seealso \code{\link{interpolationpoints}}
+//' @seealso \code{\link{interpolate_data}}
 //' @references Danby, J. M. Eqn. 6.16.4 in Fundamentals of Celestial Mechanics,
 //' 2nd ed. Richmond, VA: Willmann-Bell, p. 207, 1988.
 //'

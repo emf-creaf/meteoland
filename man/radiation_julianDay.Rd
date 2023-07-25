@@ -233,7 +233,7 @@ for modeling canopy photosynthesis. I. Components of incoming radiation.
 Agricultural and Forest Meteorology, 38, 231–242.
 }
 \seealso{
-\code{\link{interpolationpoints}}
+\code{\link{interpolate_data}}
 }
 \author{
 Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF

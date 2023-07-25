@@ -92,7 +92,7 @@ standard meteorological data: a pragmatic synthesis. Hydrology & Earth
 System Sciences 17, 1331–1363. doi:10.5194/hess-17-1331-2013.
 }
 \seealso{
-\code{\link{interpolationpoints}}
+\code{\link{interpolate_data}}
 }
 \author{
 Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF

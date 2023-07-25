@@ -243,7 +243,7 @@ double saturationVaporPressureCurveSlope(double temperature) {
 //' @param Rn Daily net radiation (MJ·m-2·day-1).
 //' @return Potential evapotranspiration (in mm of water).
 //' @author Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF
-//' @seealso \code{\link{interpolationpoints}}
+//' @seealso \code{\link{interpolate_data}}
 //' @references Penman, H. L. 1948. Natural evaporation from open water, bare
 //' soil and grass. Proceedings of the Royal Society of London. Series A.
 //' Mathematical and Physical Sciences, 193, 120-145.

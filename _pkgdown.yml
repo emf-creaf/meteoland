@@ -15,7 +15,7 @@ articles:
 
 reference:
 - title: Daily weather interpolation
-  desc: New functions (ver. >= 2.0.0) for daily weather interpolation
+  desc: Functions for daily weather interpolation
   contents:
   - add_topo
   - create_meteo_interpolator

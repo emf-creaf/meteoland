@@ -25,19 +25,21 @@ reference:
   - set_interpolation_params
   - summarise_interpolated_data
   - summarise_interpolator
+  - interpolation_cross_validation
+  - interpolator_calibration
   - with_meteo
-- title: I/O
+- title: Input/output functions
   desc: Input/output functions
   contents:
   - starts_with("read")
   - starts_with("write")
-- title: Weather data reshape
+- title: Weather data reshape functions
   desc: Functions to reshape weather data from other packages
   contents:
   - meteospain2meteoland
   - worldmet2meteoland
   - complete_meteo
-- title: Examples
+- title: Example datasets
   desc: New example datasets (ver. >= 2.0.0) 
   contents:
   - meteoland_interpolator_example
@@ -49,7 +51,10 @@ reference:
 - title: Low-level interpolation functions
   desc: Low-level interpolation functions
   contents:
-  - starts_with("interpolation")
+  - interpolation_temperature
+  - interpolation_precipitation
+  - interpolation_wind
+  - interpolation_dewtemperature
 - title: Solar radiation utility functions
   desc: Solar radiation utility functions
   contents:

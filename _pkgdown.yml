@@ -18,7 +18,6 @@ reference:
   desc: New functions (ver. >= 2.0.0) for daily weather interpolation
   contents:
   - add_topo
-  - complete_meteo
   - create_meteo_interpolator
   - get_interpolation_params
   - interpolate_data
@@ -31,6 +30,7 @@ reference:
   contents:
   - meteospain2meteoland
   - worldmet2meteoland
+  - complete_meteo
 - title: Examples
   desc: New example datasets (ver. >= 2.0.0) 
   contents:

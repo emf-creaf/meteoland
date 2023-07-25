@@ -67,6 +67,9 @@
 #' \code{\link{read_interpolator}()}, \code{\link{set_interpolation_params}()},
 #' \code{\link{with_meteo}()}, \code{\link{write_interpolator}()}
 #'
+#' @author 
+#' Victor Granda \enc{García}{Garcia}, EMF-CREAF
+#' 
 #' @examples
 #' # example interpolator
 #' data(meteoland_interpolator_example)
@@ -100,6 +103,9 @@ get_interpolation_params <- function(interpolator) {
 #' \code{\link{get_interpolation_params}()}, \code{\link{read_interpolator}()},
 #' \code{\link{with_meteo}()}, \code{\link{write_interpolator}()}
 #'
+#' @author 
+#' Victor Granda \enc{García}{Garcia}, EMF-CREAF
+#' 
 #' @examples
 #' # example interpolator
 #' data(meteoland_interpolator_example)
@@ -158,6 +164,11 @@ set_interpolation_params <- function(interpolator, params = NULL, verbose = getO
 #' \code{\link{set_interpolation_params}()}, \code{\link{with_meteo}()},
 #' \code{\link{write_interpolator}()}
 #'
+#' @author 
+#' Victor Granda \enc{García}{Garcia}, EMF-CREAF
+#' 
+#' Miquel De \enc{Cáceres}{Caceres} Ainsa, EMF-CREAF
+#' 
 #' @examples
 #'
 #' # example meteo data
@@ -456,6 +467,9 @@ create_meteo_interpolator <- function(meteo_with_topo, params = NULL, verbose = 
 #' # read it again
 #' read_interpolator(file.path(tmp_dir, "meteoland_interpolator_example.nc"))
 #' }
+#' 
+#' @author 
+#' Victor Granda \enc{García}{Garcia}, EMF-CREAF
 #'
 #' @export write_interpolator
 write_interpolator <- function(interpolator, filename, .overwrite = FALSE) {
@@ -594,6 +608,9 @@ write_interpolator <- function(interpolator, filename, .overwrite = FALSE) {
 #' read_interpolator(file.path(tmp_dir, "meteoland_interpolator_example.nc"))
 #' }
 #'
+#' @author 
+#' Victor Granda \enc{García}{Garcia}, EMF-CREAF
+#' 
 #' @export read_interpolator
 read_interpolator <- function(filename) {
   # debug

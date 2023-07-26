@@ -112,8 +112,6 @@ All functions return a vector with interpolated values for the
 target points.
 }
 \description{
-\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}
-
 Low-level functions to interpolate meteorology (one day) on a set of points.
 }
 \details{

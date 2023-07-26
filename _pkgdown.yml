@@ -4,7 +4,7 @@ home:
     href: https://emf-creaf.github.io/meteolandbook/index.html
 
 articles:
-- title: Working with meteoland ver. >= 2.0.0
+- title: Using meteoland
   contents:
   - starts_with("tidy-meteoland")
   - starts_with("reshaping-meteo")
@@ -14,86 +14,33 @@ articles:
   - starts_with("examples/interpolation-senegal")
 
 reference:
-- title: Daily weather classes
-  desc: Daily weather spatial objects
+- title: Daily weather interpolation
+  desc: Functions for daily weather interpolation
   contents:
-  - starts_with("Spatial")
-  - starts_with("examplegridtopography")
-  - starts_with("spplot")
-  - extractdates
-  - mergegrids
-  - meteoplot
-- title: Summary
-  desc: Spatial and temporal aggregation functions
-  contents:
-  - summarygrid
-  - summarypoint
-  - summaryinterpolationdata
-  - summarypoints
-  - summarypixels
-  - averagearea
-- title: Procedural classes
-  desc:  Objects containing data for interpolation and bias correction
-  contents:
+  - add_topo
+  - create_meteo_interpolator
+  - get_interpolation_params
+  - interpolate_data
   - defaultInterpolationParams
-  - defaultCorrectionParams
-  - defaultGenerationParams
-  - starts_with("Meteorology")
-  - starts_with("subsample")
-  - starts_with("exampleinterpolation")
-  - starts_with("examplecorrection")
-- title: Interpolation
-  desc: Interpolation functions
-  contents:
-  - starts_with("interpolation")
-- title: Bias-correction
-  desc: Bias-correction functions
-  contents:
-  - starts_with("correction")
-- title: Weather generation
-  desc: Weather generation functions
-  contents:
-  - starts_with("weathergeneration")
-- title: Solar radiation
-  desc: Solar radiation utility functions
-  contents:
-  - starts_with("radiation")
-- title: I/O
+  - set_interpolation_params
+  - summarise_interpolated_data
+  - summarise_interpolator
+  - interpolation_cross_validation
+  - interpolator_calibration
+  - with_meteo
+- title: Input/output functions
   desc: Input/output functions
   contents:
   - starts_with("read")
   - starts_with("write")
-  - starts_with("readNetCDF")
-  - extractNetCDF
-- title: Weather data download
-  desc: Functions to access daily weather data from national/regional APIs
+- title: Weather data reshape functions
+  desc: Functions to reshape weather data from other packages
   contents:
-  - starts_with("download")
-  - reshapeworldmet
-- title: Utility functions
-  desc: Meteorological and biophysical utility functions
-  contents:
-  - starts_with("utils")
-  - penman
-  - starts_with("humidity_")
-  - starts_with("precipitation")
-  - meteocomplete
-- title: meteoland tidy (ver. >= 2.0.0)
-  desc: New workflows for meteorologic data interpolation
-  contents:
-  - add_topo
-  - complete_meteo
-  - create_meteo_interpolator
-  - get_interpolation_params
-  - interpolate_data
   - meteospain2meteoland
-  - set_interpolation_params
-  - summarise_interpolated_data
-  - summarise_interpolator
-  - with_meteo
   - worldmet2meteoland
-- title: meteoland tidy examples (ver. >= 2.0.0)
-  desc: New example datasets
+  - complete_meteo
+- title: Example datasets
+  desc: Example datasets
   contents:
   - meteoland_interpolator_example
   - meteoland_meteo_example
@@ -101,3 +48,21 @@ reference:
   - meteoland_topo_example
   - points_to_interpolate_example
   - raster_to_interpolate_example
+- title: Low-level interpolation functions
+  desc: Low-level interpolation functions
+  contents:
+  - interpolation_temperature
+  - interpolation_precipitation
+  - interpolation_wind
+  - interpolation_dewtemperature
+- title: Solar radiation utility functions
+  desc: Solar radiation utility functions
+  contents:
+  - starts_with("radiation")
+- title: Other utility functions
+  desc: Meteorological and biophysical utility functions
+  contents:
+  - starts_with("utils")
+  - penman
+  - starts_with("humidity_")
+  - starts_with("precipitation")

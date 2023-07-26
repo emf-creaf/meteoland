@@ -7,8 +7,8 @@ meteoland - Landscape meteorology tools
 
 # Important notice
 
-Starting on June 2023, `rgdal`, `rgeos` and `maptools` R packages will
-enter a *maintenance* mode (meaning no new updates, more info at
+Starting on June 2023, `rgdal`, `rgeos` and `maptools` R packages
+entered a *maintenance* mode (meaning no new updates, more info at
 <https://github.com/r-spatial/evolution>). Coincidentally, `sp` and
 `raster` packages are now superseded by the more modern alternatives
 `sf`, `stars` and `terra`. This means that the `meteoland` classes,
@@ -19,8 +19,11 @@ Starting with version 2.0.0 of `meteoland` (February 2023) **all
 functions, methods and classes based on or using the `sp`, `raster` and
 `rgdal` package were soft-deprecated**.
 
-> **Since June 2023 (ver. 2.0.1), these functions, methods and classes
-> have been hard-deprecated, meaning they stopped working.**
+> **Since ver. 2.0.1, these functions, methods and classes were
+> hard-deprecated, meaning they stopped working.**
+
+> **Since ver. 2.1.0, these functions, methods and classes have been
+> removed from the package**
 
 See the [*Tidy
 meteoland*](https://emf-creaf.github.io/meteoland/articles/tidy-meteoland.html)

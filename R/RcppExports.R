@@ -109,7 +109,7 @@ interpolation_precipitation <- function(Xp, Yp, Zp, X, Y, Z, P, Psmooth, iniRp =
 #' \code{radiation_solarConstant()} and \code{radiation_solarDeclination()} was
 #' translated to C++ from R code in package 'insol' (by J. G. Corripio).
 #' @author Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF
-#' @seealso \code{\link{interpolationpoints}}
+#' @seealso \code{\link{interpolate_data}}
 #' @references Danby, J. M. Eqn. 6.16.4 in Fundamentals of Celestial Mechanics,
 #' 2nd ed. Richmond, VA: Willmann-Bell, p. 207, 1988.
 #'
@@ -270,9 +270,6 @@ interpolation_dewtemperature <- function(Xp, Yp, Zp, X, Y, Z, T, iniRp = 140000,
 }
 
 #' Low-level interpolation functions
-#'
-#' @description
-#' `r lifecycle::badge("deprecated")`
 #'
 #' Low-level functions to interpolate meteorology (one day) on a set of points.
 #'
@@ -499,7 +496,7 @@ utils_saturationVaporPressureCurveSlope <- function(temperature) {
 #' @param Rn Daily net radiation (MJ·m-2·day-1).
 #' @return Potential evapotranspiration (in mm of water).
 #' @author Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF
-#' @seealso \code{\link{interpolationpoints}}
+#' @seealso \code{\link{interpolate_data}}
 #' @references Penman, H. L. 1948. Natural evaporation from open water, bare
 #' soil and grass. Proceedings of the Royal Society of London. Series A.
 #' Mathematical and Physical Sciences, 193, 120-145.
@@ -542,5 +539,5 @@ interpolation_wind <- function(Xp, Yp, WS, WD, X, Y, iniRp = 140000, alpha = 2.0
 
 # Register entry points for exported C++ functions
 methods::setLoadAction(function(ns) {
-    .Call('_meteoland_RcppExport_registerCCallable', PACKAGE = 'meteoland')
+    .Call(`_meteoland_RcppExport_registerCCallable`)
 })

@@ -2,12 +2,14 @@
  NEWS for R Package "meteoland"
 -------------------------------
 
+# meteoland 2.1.0
+- Cleaning deprecated classes
+
 # meteoland 2.0.2
 - Modification of default variables for interpolator_calibration
 - Avoiding interpolation in cells with missing elevation
 - Fixed #21. Now `meteo_complete` works with missing Precipitation
 - Option 'ignore_convex_hull_check' allows ignoring when target point is outside the convex hull
-
 
 # meteoland 2.0.1
 - Hard deprecation of "sp", "raster" and "rgdal" depedencies, including functions and classes using

@@ -87,3 +87,8 @@ tidyr::unnest(res, cols = "interpolated_data")
 }
 
 }
+\author{
+Victor Granda \enc{García}{Garcia}, EMF-CREAF
+
+Miquel De \enc{Cáceres}{Caceres} Ainsa, EMF-CREAF
+}

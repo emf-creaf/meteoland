@@ -672,6 +672,11 @@
 #' \code{elevation}. It should also contain \code{aspect} and \code{slope} for
 #' a better interpolation process, though this two variables are not mandatory.
 #'
+#' @author 
+#' Victor Granda \enc{García}{Garcia}, EMF-CREAF
+#' 
+#' Miquel De \enc{Cáceres}{Caceres} Ainsa, EMF-CREAF
+#' 
 #' @examples
 #'
 #' \donttest{

@@ -51,3 +51,8 @@ Other interpolator functions: \code{\link{add_topo}()},
 \code{\link{set_interpolation_params}()}, \code{\link{with_meteo}()},
 \code{\link{write_interpolator}()}
 }
+\author{
+Victor Granda \enc{García}{Garcia}, EMF-CREAF
+
+Miquel De \enc{Cáceres}{Caceres} Ainsa, EMF-CREAF
+}

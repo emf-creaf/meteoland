@@ -58,3 +58,6 @@ Other interpolator functions: \code{\link{add_topo}()},
 \code{\link{get_interpolation_params}()}, \code{\link{read_interpolator}()},
 \code{\link{set_interpolation_params}()}, \code{\link{with_meteo}()}
 }
+\author{
+Victor Granda \enc{García}{Garcia}, EMF-CREAF
+}

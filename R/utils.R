@@ -5,7 +5,7 @@
 #' temperature and viceversa.
 #'
 #' @param Tc A numeric vector of temperature in degrees Celsius.
-#' @param HR A numeric vector of relative Humidity (in %).
+#' @param HR A numeric vector of relative humidity (in %).
 #' @param Td A numeric vector of dew temperature in degrees Celsius.
 #' @param HS A numeric vector of specific humidity (unitless).
 #' @param allowSaturated Logical flag to allow values over 100%
@@ -13,7 +13,7 @@
 #' @author Nicholas Martin-StPaul, INRA
 #'
 #' Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF
-#' @seealso \code{\link{meteocomplete}}
+#' @seealso \code{\link{complete_meteo}}
 #' @rdname humidity-conversion-tools
 #' @export
 humidity_relative2dewtemperature <- function(Tc, HR) {

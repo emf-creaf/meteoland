@@ -142,7 +142,7 @@ ggplot()+
 
 To perform weather interpolation, we need the topography (elevation, slope, aspect) of the target area. We can use function `elevation_30s()` from package **geodata** to download elevation data for Senegal:
 
-```{r, echo=FALSE}
+```{r}
 elev_raster <- geodata::elevation_30s(country="SEN", path = tempdir())
 names(elev_raster) <- "elevation"
 elev_raster

@@ -51,7 +51,7 @@ daily meteorological data and downscaling climate models over landscapes.
 Environmental Modelling and Software 108: 186-196.
 }
 \seealso{
-\code{\link{MeteorologyInterpolationData}}
+\code{\link{interpolate_data}}
 }
 \author{
 Miquel De \enc{Cáceres}{Caceres} Ainsa, CREAF

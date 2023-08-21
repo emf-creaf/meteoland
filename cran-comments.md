@@ -1,6 +1,6 @@
 ## Test environments
 
-* local R installation (Arch Linux), R 4.2.2
+* local R installation (Arch Linux), R 4.3.1
 * windows-latest (on github actions), R release
 * macOS-latest (on github actions), R release
 * ubuntu-latest (on github actions), R release
@@ -10,10 +10,9 @@
 
 ## R CMD check results
 
-In all CI tests:
-
-* checking CRAN incoming feasibility ... NOTE
+In all CI tests only NOTEs were produced
 
 ## Reverse/Downstream dependencies
 
-`meteoland` has no reverse dependencies
+`meteoland` has a reverse dependency with `medfate`, which is 
+under our responsibility.

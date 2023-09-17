@@ -18,7 +18,7 @@ parameter values are set according to Thornton et al. (1997)."><!-- mathjax --><
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">meteoland</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.1.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.2.0</span>
       </span>
     </div>
 
@@ -97,6 +97,12 @@ for precipitation regression extrapolations (0.6 equals to a maximum of 4
 times extrapolation).</p></li>
 <li><p><code>wind_height [= 10]</code>: Wind measurement
 height (in m).</p></li>
+<li><p><code>wind_roughness_height [= 0.001]</code>: Wind roughness
+height (in m), for PET calculations.</p></li>
+<li><p><code>penman_albedo [= 0.25]</code>: Albedo
+for PET calculations.</p></li>
+<li><p><code>penman_windfun [= "1956"]</code>: Wind speed function version,
+either "1948" or "1956", for PET calculation.</p></li>
 <li><p><code>debug [= FALSE]</code>: Boolean flag to show extra
 console output.</p></li>
 </ul></div>

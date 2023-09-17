@@ -377,15 +377,21 @@
 
     pet <- array(NA, dim = dim_out)
 
+    params <- get_interpolation_params(interpolator)
+    #Sets defaults if missing
+    if(!("wind_height" %in% names(params))) params$wind_roughness_height = 10
+    if(!("wind_roughness_height" %in% names(params))) params$wind_roughness_height = 0.001
+    if(!("penman_albedo" %in% names(params))) params$penman_albedo = 0.25
+    if(!("penman_windfun" %in% names(params))) params$penman_windfun = "1956"
     for (i in which(target_filter)) {
-      # .penmanpoint(latrad, elevation, slorad, asprad, J, tmin, tmax,
-      #              rhmin, rhmax, rad, Wsp, mPar$wind_height,
-      #              0.001, 0.25)
       pet[i,] <- .penmanpoint(
         latrad[i], sf$elevation[i], slorad[i], asprad[i], J,
         tmin[i,], tmax[i,], rhmin[i,], rhmax[i,], rad[i,],
-        wind$WS[i,], get_interpolation_params(interpolator)$wind_height,
-        0.001, 0.25
+        wind$WS[i,], 
+        params$wind_height,
+        params$wind_roughness_height, 
+        params$penman_albedo,
+        params$penman_windfun
       )
     }
   }

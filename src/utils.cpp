@@ -259,8 +259,8 @@ double saturationVaporPressureCurveSlope(double temperature) {
 // [[Rcpp::export("penman")]]
 double PenmanPET(double latrad, double elevation, double slorad, double asprad, int J,
                  double Tmin, double Tmax, double RHmin, double RHmax, double R_s,
-                 double u, double z = 2.0, double z0 = 0.001,
-                 double alpha = 0.08, String windfun = "1956") {
+                 double u, double z = 10.0, double z0 = 0.001,
+                 double alpha = 0.25, String windfun = "1956") {
   double Tday = (Tmax + Tmin)/2.0;
   double RHmean = (RHmax + RHmin)/2.0;
   //Atmospheric pressure kPa

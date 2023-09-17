@@ -34,7 +34,10 @@ smoothing of temperature range. \item\code{pop_crit [= 0.50]}: Critical
 precipitation occurrence parameter. \item\code{f_max [= 0.6]}: Maximum value
 for precipitation regression extrapolations (0.6 equals to a maximum of 4
 times extrapolation). \item\code{wind_height [= 10]}: Wind measurement
-height (in m). \item\code{debug [= FALSE]}: Boolean flag to show extra
+height (in m). \item\code{wind_roughness_height [= 0.001]}: Wind roughness
+height (in m), for PET calculations. \item\code{penman_albedo [= 0.25]}: Albedo
+for PET calculations. \item\code{penman_windfun [= "1956"]}: Wind speed function version,
+either "1948" or "1956", for PET calculation. \item\code{debug [= FALSE]}: Boolean flag to show extra
 console output. }
 }
 \description{

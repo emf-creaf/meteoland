@@ -612,7 +612,7 @@ namespace meteoland {
         return Rcpp::as<double >(rcpp_result_gen);
     }
 
-    inline double penman(double latrad, double elevation, double slorad, double asprad, int J, double Tmin, double Tmax, double RHmin, double RHmax, double R_s, double u, double z = 2.0, double z0 = 0.001, double alpha = 0.08, String windfun = "1956") {
+    inline double penman(double latrad, double elevation, double slorad, double asprad, int J, double Tmin, double Tmax, double RHmin, double RHmax, double R_s, double u, double z = 10.0, double z0 = 0.001, double alpha = 0.25, String windfun = "1956") {
         typedef SEXP(*Ptr_penman)(SEXP,SEXP,SEXP,SEXP,SEXP,SEXP,SEXP,SEXP,SEXP,SEXP,SEXP,SEXP,SEXP,SEXP,SEXP);
         static Ptr_penman p_penman = NULL;
         if (p_penman == NULL) {

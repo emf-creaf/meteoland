@@ -43,7 +43,8 @@ test_that("create_meteo_interpolator works as expected", {
     "alpha_DewTemperature", "alpha_PrecipitationEvent", "alpha_PrecipitationAmount",
     "alpha_Wind", "N_MinTemperature", "N_MaxTemperature", "N_DewTemperature",
     "N_PrecipitationEvent", "N_PrecipitationAmount", "N_Wind", "St_Precipitation",
-    "St_TemperatureRange", "pop_crit", "f_max", "wind_height", "debug"
+    "St_TemperatureRange", "pop_crit", "f_max", "wind_height", 
+    "wind_roughness_height", "penman_albedo", "penman_windfun","debug"
   )
   expect_named(suppressWarnings(.safely_create_interpolation_params(NULL)), params_names)
   expect_named(suppressWarnings(.safely_create_interpolation_params(list(tururu = 'tururu'))), params_names)
@@ -167,7 +168,8 @@ test_that("defaultInterpolationParams work as expected", {
     "alpha_DewTemperature", "alpha_PrecipitationEvent", "alpha_PrecipitationAmount",
     "alpha_Wind", "N_MinTemperature", "N_MaxTemperature", "N_DewTemperature",
     "N_PrecipitationEvent", "N_PrecipitationAmount", "N_Wind", "St_Precipitation",
-    "St_TemperatureRange", "pop_crit", "f_max", "wind_height", "debug"
+    "St_TemperatureRange", "pop_crit", "f_max", "wind_height", "wind_roughness_height", 
+    "penman_albedo", "penman_windfun","debug"
   )
   expect_type(defaultInterpolationParams(), "list")
   expect_length(defaultInterpolationParams(), length(interpolation_param_names))

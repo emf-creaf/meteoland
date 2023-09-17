@@ -17,9 +17,9 @@ penman(
   RHmax,
   R_s,
   u,
-  z = 2,
+  z = 10,
   z0 = 0.001,
-  alpha = 0.08,
+  alpha = 0.25,
   windfun = "1956"
 )
 

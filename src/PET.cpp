@@ -31,8 +31,8 @@ NumericVector dailyEquilibriumPET(NumericVector Temp, NumericVector Rn){
 // [[Rcpp::export(".penmanpoint")]]
 NumericVector PenmanPETPointSeries(double latrad, double elevation, double slorad, double asprad, IntegerVector J,
                  NumericVector Tmin, NumericVector Tmax, NumericVector RHmin, NumericVector RHmax, NumericVector R_s,
-                 NumericVector u, double z = 2.0,
-                 double z0 = 0.001, double alpha = 0.08, String windfun ="1956") {
+                 NumericVector u, double z = 10.0,
+                 double z0 = 0.001, double alpha = 0.25, String windfun ="1956") {
   int ndays = J.size();
   NumericVector PET(ndays);
   for(int d=0; d<ndays;d++) {
@@ -61,8 +61,8 @@ NumericVector PenmanMonteithPETPointSeries(double rc, double elevation,
 // [[Rcpp::export(".PenmanPETPointsDay")]]
 NumericVector PenmanPETPointsDay(NumericVector latrad, NumericVector elevation, NumericVector slorad, NumericVector asprad,  int J,
                                  NumericVector Tmin, NumericVector Tmax, NumericVector RHmin, NumericVector RHmax, NumericVector R_s,
-                                 NumericVector u, double z = 2.0,
-                                 double z0 = 0.001, double alpha = 0.08,
+                                 NumericVector u, double z = 10.0,
+                                 double z0 = 0.001, double alpha = 0.25,
                                  String windfun ="1956") {
   int points = latrad.size();
   NumericVector PET(points);

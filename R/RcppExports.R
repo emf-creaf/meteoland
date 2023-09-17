@@ -5,7 +5,7 @@
     .Call(`_meteoland_dailyEquilibriumPET`, Temp, Rn)
 }
 
-.penmanpoint <- function(latrad, elevation, slorad, asprad, J, Tmin, Tmax, RHmin, RHmax, R_s, u, z = 2.0, z0 = 0.001, alpha = 0.08, windfun = "1956") {
+.penmanpoint <- function(latrad, elevation, slorad, asprad, J, Tmin, Tmax, RHmin, RHmax, R_s, u, z = 10.0, z0 = 0.001, alpha = 0.25, windfun = "1956") {
     .Call(`_meteoland_PenmanPETPointSeries`, latrad, elevation, slorad, asprad, J, Tmin, Tmax, RHmin, RHmax, R_s, u, z, z0, alpha, windfun)
 }
 
@@ -13,7 +13,7 @@
     .Call(`_meteoland_PenmanMonteithPETPointSeries`, rc, elevation, Tmin, Tmax, RHmin, RHmax, Rn, u)
 }
 
-.PenmanPETPointsDay <- function(latrad, elevation, slorad, asprad, J, Tmin, Tmax, RHmin, RHmax, R_s, u, z = 2.0, z0 = 0.001, alpha = 0.08, windfun = "1956") {
+.PenmanPETPointsDay <- function(latrad, elevation, slorad, asprad, J, Tmin, Tmax, RHmin, RHmax, R_s, u, z = 10.0, z0 = 0.001, alpha = 0.25, windfun = "1956") {
     .Call(`_meteoland_PenmanPETPointsDay`, latrad, elevation, slorad, asprad, J, Tmin, Tmax, RHmin, RHmax, R_s, u, z, z0, alpha, windfun)
 }
 
@@ -509,7 +509,7 @@ utils_saturationVaporPressureCurveSlope <- function(temperature) {
 #' standard meteorological data: a pragmatic synthesis. Hydrology & Earth
 #' System Sciences 17, 1331–1363. doi:10.5194/hess-17-1331-2013.
 #' @export
-penman <- function(latrad, elevation, slorad, asprad, J, Tmin, Tmax, RHmin, RHmax, R_s, u, z = 2.0, z0 = 0.001, alpha = 0.08, windfun = "1956") {
+penman <- function(latrad, elevation, slorad, asprad, J, Tmin, Tmax, RHmin, RHmax, R_s, u, z = 10.0, z0 = 0.001, alpha = 0.25, windfun = "1956") {
     .Call(`_meteoland_PenmanPET`, latrad, elevation, slorad, asprad, J, Tmin, Tmax, RHmin, RHmax, R_s, u, z, z0, alpha, windfun)
 }
 

@@ -1,18 +1,33 @@
+url: https://emf-creaf.github.io/meteoland/
+
+template:
+  bootstrap: 5
+  bslib:
+    bootswatch: materia
+    pkgdown-nav-height: 100px
+    primary: "#241F1C"
+
 home:
   links:
   - text: Reference book
     href: https://emf-creaf.github.io/meteolandbook/index.html
 
-articles:
-- title: Using meteoland
-  contents:
-  - starts_with("tidy-meteoland")
-  - starts_with("reshaping-meteo")
-  
-- title: Examples
-  contents:
-  - starts_with("examples/interpolation-senegal")
 
+navbar:
+  components:
+    articles:
+      text: Articles
+      menu:
+      - text: Using meteoland
+      - text: Tidy meteoland
+        href: articles/tidy-meteoland.html
+      - text: Reshaping meteorological data for meteoland
+        href: articles/reshaping-meteo.html
+      - text: -------
+      - text: Examples
+      - text: Daily weather interpolation over Senegal
+        href: articles/examples/interpolation-senegal.html
+        
 reference:
 - title: Daily weather interpolation
   desc: Functions for daily weather interpolation

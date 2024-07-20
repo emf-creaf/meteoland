@@ -4,6 +4,7 @@
 vignettes/examples/*
 data-raw/*
 ^docs/*$
+^pkgdown$
 ^README\.Rmd$
 ^README\.md$
 _pkgdown.yml

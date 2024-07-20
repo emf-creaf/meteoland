@@ -3,7 +3,6 @@
 \docType{package}
 \name{meteoland-package}
 \alias{meteoland-package}
-\alias{_PACKAGE}
 \alias{meteoland}
 \title{meteoland: Landscape Meteorology Tools}
 \description{

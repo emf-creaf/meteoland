@@ -1,117 +1,41 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url>
-    <loc>/404.html</loc>
-  </url>
-  <url>
-    <loc>/articles/examples/interpolation-senegal.html</loc>
-  </url>
-  <url>
-    <loc>/articles/index.html</loc>
-  </url>
-  <url>
-    <loc>/articles/reshaping-meteo.html</loc>
-  </url>
-  <url>
-    <loc>/articles/tidy-meteoland.html</loc>
-  </url>
-  <url>
-    <loc>/authors.html</loc>
-  </url>
-  <url>
-    <loc>/index.html</loc>
-  </url>
-  <url>
-    <loc>/news/index.html</loc>
-  </url>
-  <url>
-    <loc>/reference/add_topo.html</loc>
-  </url>
-  <url>
-    <loc>/reference/complete_meteo.html</loc>
-  </url>
-  <url>
-    <loc>/reference/create_meteo_interpolator.html</loc>
-  </url>
-  <url>
-    <loc>/reference/defaultInterpolationParams.html</loc>
-  </url>
-  <url>
-    <loc>/reference/get_interpolation_params.html</loc>
-  </url>
-  <url>
-    <loc>/reference/humidity-conversion-tools.html</loc>
-  </url>
-  <url>
-    <loc>/reference/index.html</loc>
-  </url>
-  <url>
-    <loc>/reference/interpolate_data.html</loc>
-  </url>
-  <url>
-    <loc>/reference/interpolation_temperature.html</loc>
-  </url>
-  <url>
-    <loc>/reference/interpolator_calibration.html</loc>
-  </url>
-  <url>
-    <loc>/reference/meteoland-package.html</loc>
-  </url>
-  <url>
-    <loc>/reference/meteoland_interpolator_example.html</loc>
-  </url>
-  <url>
-    <loc>/reference/meteoland_meteo_example.html</loc>
-  </url>
-  <url>
-    <loc>/reference/meteoland_meteo_no_topo_example.html</loc>
-  </url>
-  <url>
-    <loc>/reference/meteoland_topo_example.html</loc>
-  </url>
-  <url>
-    <loc>/reference/meteospain2meteoland.html</loc>
-  </url>
-  <url>
-    <loc>/reference/penman.html</loc>
-  </url>
-  <url>
-    <loc>/reference/points_to_interpolate_example.html</loc>
-  </url>
-  <url>
-    <loc>/reference/precipitation_concentration.html</loc>
-  </url>
-  <url>
-    <loc>/reference/precipitation_rainfall_erosivity.html</loc>
-  </url>
-  <url>
-    <loc>/reference/radiation_julianDay.html</loc>
-  </url>
-  <url>
-    <loc>/reference/raster_to_interpolate_example.html</loc>
-  </url>
-  <url>
-    <loc>/reference/read_interpolator.html</loc>
-  </url>
-  <url>
-    <loc>/reference/set_interpolation_params.html</loc>
-  </url>
-  <url>
-    <loc>/reference/summarise_interpolated_data.html</loc>
-  </url>
-  <url>
-    <loc>/reference/summarise_interpolator.html</loc>
-  </url>
-  <url>
-    <loc>/reference/utils_saturationVP.html</loc>
-  </url>
-  <url>
-    <loc>/reference/with_meteo.html</loc>
-  </url>
-  <url>
-    <loc>/reference/worldmet2meteoland.html</loc>
-  </url>
-  <url>
-    <loc>/reference/write_interpolator.html</loc>
-  </url>
+<urlset xmlns = 'http://www.sitemaps.org/schemas/sitemap/0.9'>
+<url><loc>https://emf-creaf.github.io/meteoland/404.html</loc></url>
+<url><loc>https://emf-creaf.github.io/meteoland/articles/examples/interpolation-senegal.html</loc></url>
+<url><loc>https://emf-creaf.github.io/meteoland/articles/index.html</loc></url>
+<url><loc>https://emf-creaf.github.io/meteoland/articles/reshaping-meteo.html</loc></url>
+<url><loc>https://emf-creaf.github.io/meteoland/articles/tidy-meteoland.html</loc></url>
+<url><loc>https://emf-creaf.github.io/meteoland/authors.html</loc></url>
+<url><loc>https://emf-creaf.github.io/meteoland/index.html</loc></url>
+<url><loc>https://emf-creaf.github.io/meteoland/news/index.html</loc></url>
+<url><loc>https://emf-creaf.github.io/meteoland/reference/add_topo.html</loc></url>
+<url><loc>https://emf-creaf.github.io/meteoland/reference/complete_meteo.html</loc></url>
+<url><loc>https://emf-creaf.github.io/meteoland/reference/create_meteo_interpolator.html</loc></url>
+<url><loc>https://emf-creaf.github.io/meteoland/reference/defaultInterpolationParams.html</loc></url>
+<url><loc>https://emf-creaf.github.io/meteoland/reference/get_interpolation_params.html</loc></url>
+<url><loc>https://emf-creaf.github.io/meteoland/reference/humidity-conversion-tools.html</loc></url>
+<url><loc>https://emf-creaf.github.io/meteoland/reference/index.html</loc></url>
+<url><loc>https://emf-creaf.github.io/meteoland/reference/interpolate_data.html</loc></url>
+<url><loc>https://emf-creaf.github.io/meteoland/reference/interpolation_temperature.html</loc></url>
+<url><loc>https://emf-creaf.github.io/meteoland/reference/interpolator_calibration.html</loc></url>
+<url><loc>https://emf-creaf.github.io/meteoland/reference/meteoland-package.html</loc></url>
+<url><loc>https://emf-creaf.github.io/meteoland/reference/meteoland_interpolator_example.html</loc></url>
+<url><loc>https://emf-creaf.github.io/meteoland/reference/meteoland_meteo_example.html</loc></url>
+<url><loc>https://emf-creaf.github.io/meteoland/reference/meteoland_meteo_no_topo_example.html</loc></url>
+<url><loc>https://emf-creaf.github.io/meteoland/reference/meteoland_topo_example.html</loc></url>
+<url><loc>https://emf-creaf.github.io/meteoland/reference/meteospain2meteoland.html</loc></url>
+<url><loc>https://emf-creaf.github.io/meteoland/reference/penman.html</loc></url>
+<url><loc>https://emf-creaf.github.io/meteoland/reference/points_to_interpolate_example.html</loc></url>
+<url><loc>https://emf-creaf.github.io/meteoland/reference/precipitation_concentration.html</loc></url>
+<url><loc>https://emf-creaf.github.io/meteoland/reference/precipitation_rainfall_erosivity.html</loc></url>
+<url><loc>https://emf-creaf.github.io/meteoland/reference/radiation_julianDay.html</loc></url>
+<url><loc>https://emf-creaf.github.io/meteoland/reference/raster_to_interpolate_example.html</loc></url>
+<url><loc>https://emf-creaf.github.io/meteoland/reference/read_interpolator.html</loc></url>
+<url><loc>https://emf-creaf.github.io/meteoland/reference/set_interpolation_params.html</loc></url>
+<url><loc>https://emf-creaf.github.io/meteoland/reference/summarise_interpolated_data.html</loc></url>
+<url><loc>https://emf-creaf.github.io/meteoland/reference/summarise_interpolator.html</loc></url>
+<url><loc>https://emf-creaf.github.io/meteoland/reference/utils_saturationVP.html</loc></url>
+<url><loc>https://emf-creaf.github.io/meteoland/reference/with_meteo.html</loc></url>
+<url><loc>https://emf-creaf.github.io/meteoland/reference/worldmet2meteoland.html</loc></url>
+<url><loc>https://emf-creaf.github.io/meteoland/reference/write_interpolator.html</loc></url>
 </urlset>
+

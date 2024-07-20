@@ -65,15 +65,14 @@
 <div class="row">
   <main id="main" class="col-md-9"><div class="section level1">
 <div class="page-header">
-<img src="logo.png" class="logo" alt=""><h1 id="meteoland---landscape-meteorology-tools-">meteoland - Landscape meteorology tools 
-<a class="anchor" aria-label="anchor" href="#meteoland---landscape-meteorology-tools-"></a>
+<img src="logo.png" class="logo" alt=""><h1 id="landscape-meteorology-tools-">Landscape meteorology tools 
+<a class="anchor" aria-label="anchor" href="#landscape-meteorology-tools-"></a>
 </h1>
 </div>
 <p><a href="https://cran.r-project.org/package=meteoland" class="external-link"><img src="http://www.r-pkg.org/badges/version/meteoland" alt="CRAN_Status_Badge"></a> <a href="https://cran.rstudio.com/web/packages/meteoland/index.html" class="external-link"><img src="https://cranlogs.r-pkg.org/badges/meteoland"></a> <a href="https://github.com/emf-creaf/meteoland/actions" class="external-link"><img src="https://github.com/emf-creaf/meteoland/workflows/R-CMD-check/badge.svg" alt="R-CMD-check"></a></p>
-</div>
-<div class="section level1">
-<h1 id="important-notice">Important notice<a class="anchor" aria-label="anchor" href="#important-notice"></a>
-</h1>
+<div class="section level2">
+<h2 id="important-notice">Important notice<a class="anchor" aria-label="anchor" href="#important-notice"></a>
+</h2>
 <p>Starting on June 2023, <code>rgdal</code>, <code>rgeos</code> and <code>maptools</code> R packages entered a <em>maintenance</em> mode (meaning no new updates, more info at <a href="https://github.com/r-spatial/evolution" class="external-link uri">https://github.com/r-spatial/evolution</a>). Coincidentally, <code>sp</code> and <code>raster</code> packages are now superseded by the more modern alternatives <code>sf</code>, <code>stars</code> and <code>terra</code>. This means that the <code>meteoland</code> classes, which are based on <code>sp</code>, need to be updated to deal with these changes in the R-spatial ecosystem.</p>
 <p>Starting with version 2.0.0 of <code>meteoland</code> (February 2023) <strong>all functions, methods and classes based on or using the <code>sp</code>, <code>raster</code> and <code>rgdal</code> package were soft-deprecated</strong>.</p>
 <blockquote>
@@ -83,6 +82,7 @@
 <p><strong>Since ver. 2.1.0, these functions, methods and classes have been removed from the package</strong></p>
 </blockquote>
 <p>See the <a href="https://emf-creaf.github.io/meteoland/articles/tidy-meteoland.html"><em>Tidy meteoland</em></a> vignette (<code><a href="articles/tidy-meteoland.html">vignette("tidy-meteoland", package = "meteoland")</a></code>) for more info about this changes.</p>
+</div>
 <div class="section level2">
 <h2 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
 </h2>
@@ -138,7 +138,6 @@
 </ul>
 </div>
 </div>
-
   </main><aside class="col-md-3"><div class="links">
 <h2 data-toc-skip>Links</h2>
 <ul class="list-unstyled">

@@ -28,6 +28,7 @@
 <li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
       </ul><ul class="navbar-nav"><li class="nav-item"><form class="form-inline" role="search">
  <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json"></form></li>
+<li class="nav-item"><a class="external-link nav-link" href="https://github.com/emf-creaf/meteoland/" aria-label="GitHub"><span class="fa fab fa-github fa-lg"></span></a></li>
       </ul></div>
 
 
@@ -36,7 +37,7 @@
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>From worldmet to meteoland meteo objects</h1>
-
+      <small class="dont-index">Source: <a href="https://github.com/emf-creaf/meteoland/blob/HEAD/R/tidy_reshape_meteo.R" class="external-link"><code>R/tidy_reshape_meteo.R</code></a></small>
       <div class="d-none name"><code>worldmet2meteoland.Rd</code></div>
     </div>
 
@@ -91,7 +92,7 @@ subdaily data as well as complete missing variables if possible (setting
 <span class="r-in"><span>  <span class="fu">worldmet2meteoland</span><span class="op">(</span><span class="va">worldmet_subdaily_2022</span>, complete <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="op">}</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Importing NOAA Data <span style="color: #00BB00;">■■■■■■■■■■■■■■■■                </span>  50% |  ETA:  7s</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Importing NOAA Data <span style="color: #00BB00;">■■■■■■■■■■■■■■■■                </span>  50% |  ETA:  6s</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Provided meteo data seems to be in subdaily time steps, aggregating to daily</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> scale</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Provided meteo data seems to be in subdaily time steps, aggregating to daily</span>

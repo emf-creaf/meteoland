@@ -28,6 +28,7 @@
 <li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
       </ul><ul class="navbar-nav"><li class="nav-item"><form class="form-inline" role="search">
  <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json"></form></li>
+<li class="nav-item"><a class="external-link nav-link" href="https://github.com/emf-creaf/meteoland/" aria-label="GitHub"><span class="fa fab fa-github fa-lg"></span></a></li>
       </ul></div>
 
 
@@ -36,7 +37,7 @@
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>Setting interpolation parameters in an interpolator object</h1>
-
+      <small class="dont-index">Source: <a href="https://github.com/emf-creaf/meteoland/blob/HEAD/R/tidy_interpolator.R" class="external-link"><code>R/tidy_interpolator.R</code></a></small>
       <div class="d-none name"><code>set_interpolation_params.Rd</code></div>
     </div>
 
@@ -115,7 +116,7 @@ are not changed.</p>
 <span class="r-in"><span><span class="va">old_parameters</span><span class="op">$</span><span class="va">debug</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] FALSE</span>
 <span class="r-in"><span><span class="co"># the rest should be the same</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/sets.html" class="external-link">setdiff</a></span><span class="op">(</span><span class="va">old_parameters</span>, <span class="fu"><a href="get_interpolation_params.html">get_interpolation_params</a></span><span class="op">(</span><span class="va">meteoland_interpolator_example</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://generics.r-lib.org/reference/setops.html" class="external-link">setdiff</a></span><span class="op">(</span><span class="va">old_parameters</span>, <span class="fu"><a href="get_interpolation_params.html">get_interpolation_params</a></span><span class="op">(</span><span class="va">meteoland_interpolator_example</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $debug</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] FALSE</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>

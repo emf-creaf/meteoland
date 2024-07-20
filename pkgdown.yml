@@ -5,7 +5,7 @@ articles:
   examples/interpolation-senegal: examples/interpolation-senegal.html
   reshaping-meteo: reshaping-meteo.html
   tidy-meteoland: tidy-meteoland.html
-last_built: 2024-07-20T14:27Z
+last_built: 2024-07-20T14:34Z
 urls:
   reference: https://emf-creaf.github.io/meteoland/reference
   article: https://emf-creaf.github.io/meteoland/articles

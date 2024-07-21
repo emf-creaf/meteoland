@@ -16,4 +16,5 @@ interpolator_test*
 inst/doc
 CRAN-SUBMISSION
 revdep/
+docs/
 pkgdown/favicon/*

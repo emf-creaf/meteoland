@@ -5,47 +5,39 @@
 [![](https://cranlogs.r-pkg.org/badges/meteoland)](https://cran.rstudio.com/web/packages/meteoland/index.html)
 [![R-CMD-check](https://github.com/emf-creaf/meteoland/workflows/R-CMD-check/badge.svg)](https://github.com/emf-creaf/meteoland/actions)
 
-## Introduction
-
-With the aim to assist research of climatic impacts on forests, the R
-package `meteoland` provides utilities to estimate daily weather
-variables at any position over complex terrains:
-
-- Spatial interpolation of daily weather records from meteorological
-  stations.
-- Statistical correction of meteorological data series (e.g. from
-  climate models). Note that this functionality is deprecated starting
-  in version 2.0.0.
-- Multisite and multivariate stochastic weather generation. Note that
-  this functionality is deprecated starting in version 2.0.0.
-
-A more detailed introduction to the package functionality can be found
-in De Cáceres et al. (2018).
-
 ## Important notice
 
 Starting on June 2023, `rgdal`, `rgeos` and `maptools` R packages
-entered a *maintenance* mode (meaning no new updates, more info at
-<https://github.com/r-spatial/evolution>). Coincidentally, `sp` and
-`raster` packages are now superseded by the more modern alternatives
-`sf`, `stars` and `terra`. This means that the `meteoland` classes,
-which are based on `sp`, need to be updated to deal with these changes
-in the R-spatial ecosystem.
+entered a *maintenance* mode (meaning no new updates). Coincidentally,
+`sp` and `raster` packages are now superseded by the more modern
+alternatives `sf`, `stars` and `terra`. This means that the `meteoland`
+classes, which are based on `sp`, need to be updated to deal with these
+changes in the R-spatial ecosystem.
 
-Starting with version 2.0.0 of `meteoland` (February 2023) **all
+Starting with version 2.0.0 of `meteoland` (February 2023) all
 functions, methods and classes based on or using the `sp`, `raster` and
-`rgdal` package were soft-deprecated**.
-
-> **Since ver. 2.0.1, these functions, methods and classes were
-> hard-deprecated, meaning they stopped working.**
+`rgdal` package were soft-deprecated.
 
 > **Since ver. 2.1.0, these functions, methods and classes have been
 > removed from the package**
 
 See the [*Tidy
 meteoland*](https://emf-creaf.github.io/meteoland/articles/tidy-meteoland.html)
-vignette (`vignette("tidy-meteoland", package = "meteoland")`) for more
-info about this changes.
+vignette for more info about this changes.
+
+## Introduction
+
+With the aim to assist research of climatic impacts on forests, the R
+package `meteoland` provides utilities to estimate daily weather
+variables at any position over complex terrains (De Cáceres et al 2018):
+
+- Spatial interpolation of daily weather records from meteorological
+  stations.
+- Statistical correction of meteorological data series (e.g from climate
+  models). Note that this functionality is deprecated starting in
+  version 2.0.0.
+- Multisite and multivariate stochastic weather generation. Note that
+  this functionality is deprecated starting in version 2.0.0.
 
 ## Package installation and documentation
 
@@ -59,17 +51,8 @@ installed first):
 remotes::install_github("emf-creaf/meteoland")
 ```
 
-Alternatively, users can have help to run package functions directly as
-package vignettes, by forcing their inclusion in installation:
-
-``` r
-remotes::install_github("emf-creaf/meteoland", 
-                        build_opts = c("--no-resave-data", "--no-manual"),
-                        build_vignettes = TRUE)
-```
-
-Detailed documentation on **meteoland** calculation routines can be
-found at (<https://emf-creaf.github.io/meteolandbook/index.html>).
+Detailed documentation regarding **meteoland** calculation routines can
+be found at (<https://emf-creaf.github.io/meteolandbook/index.html>).
 
 ## Companion packages
 

@@ -2,7 +2,7 @@ Package: meteoland
 Type: Package
 Title: Landscape Meteorology Tools
 Version: 2.2.1
-Date: 2023-11-29
+Date: 2024-07-21
 Authors@R: c(
 	person('Miquel', 'De Cáceres', role=c('aut','cre'),
 	email='miquelcaceres@gmail.com', comment = c(ORCID = "0000-0001-7132-2080")),
@@ -11,7 +11,7 @@ Authors@R: c(
 	person('Antoine', 'Cabon', role='aut', comment = c(ORCID = "0000-0001-6426-1726")))
 Description: Functions to estimate weather variables at any position of a landscape [De Caceres et al. (2018) <doi:10.1016/j.envsoft.2018.08.003>].
 License: GPL (>= 2)
-URL: https://emf-creaf.github.io/meteoland/index.html
+URL: https://emf-creaf.github.io/meteoland/
 LazyData: TRUE
 Depends:
     R (>= 3.5.0)
@@ -44,7 +44,7 @@ LinkingTo: Rcpp
 Encoding: UTF-8
 NeedsCompilation: yes
 VignetteBuilder: knitr
-RoxygenNote: 7.3.1
+RoxygenNote: 7.3.2
 BugReports: https://github.com/emf-creaf/meteoland/issues
 Config/testthat/edition: 3
 Config/testthat/parallel: true

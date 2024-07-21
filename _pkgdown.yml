@@ -12,7 +12,6 @@ home:
   - text: Reference book
     href: https://emf-creaf.github.io/meteolandbook/index.html
 
-
 navbar:
   components:
     articles:

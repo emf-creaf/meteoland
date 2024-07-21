@@ -1,7 +1,3 @@
--------------------------------
- NEWS for R Package "meteoland"
--------------------------------
-
 # meteoland 2.2.1
 - Correction of error caused by Rcpp bug
 

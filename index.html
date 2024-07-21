@@ -74,26 +74,22 @@
 <div class="section level2">
 <h2 id="important-notice">Important notice<a class="anchor" aria-label="anchor" href="#important-notice"></a>
 </h2>
-<p>Starting on June 2023, <code>rgdal</code>, <code>rgeos</code> and <code>maptools</code> R packages entered a <em>maintenance</em> mode (meaning no new updates, more info at <a href="https://github.com/r-spatial/evolution" class="external-link uri">https://github.com/r-spatial/evolution</a>). Coincidentally, <code>sp</code> and <code>raster</code> packages are now superseded by the more modern alternatives <code>sf</code>, <code>stars</code> and <code>terra</code>. This means that the <code>meteoland</code> classes, which are based on <code>sp</code>, need to be updated to deal with these changes in the R-spatial ecosystem.</p>
-<p>Starting with version 2.0.0 of <code>meteoland</code> (February 2023) <strong>all functions, methods and classes based on or using the <code>sp</code>, <code>raster</code> and <code>rgdal</code> package were soft-deprecated</strong>.</p>
-<blockquote>
-<p><strong>Since ver. 2.0.1, these functions, methods and classes were hard-deprecated, meaning they stopped working.</strong></p>
-</blockquote>
+<p>Starting on June 2023, <code>rgdal</code>, <code>rgeos</code> and <code>maptools</code> R packages entered a <em>maintenance</em> mode (meaning no new updates). Coincidentally, <code>sp</code> and <code>raster</code> packages are now superseded by the more modern alternatives <code>sf</code>, <code>stars</code> and <code>terra</code>. This means that the <code>meteoland</code> classes, which are based on <code>sp</code>, need to be updated to deal with these changes in the R-spatial ecosystem.</p>
+<p>Starting with version 2.0.0 of <code>meteoland</code> (February 2023) all functions, methods and classes based on or using the <code>sp</code>, <code>raster</code> and <code>rgdal</code> package were soft-deprecated.</p>
 <blockquote>
 <p><strong>Since ver. 2.1.0, these functions, methods and classes have been removed from the package</strong></p>
 </blockquote>
-<p>See the <a href="https://emf-creaf.github.io/meteoland/articles/tidy-meteoland.html"><em>Tidy meteoland</em></a> vignette (<code><a href="articles/tidy-meteoland.html">vignette("tidy-meteoland", package = "meteoland")</a></code>) for more info about this changes.</p>
+<p>See the <a href="https://emf-creaf.github.io/meteoland/articles/tidy-meteoland.html"><em>Tidy meteoland</em></a> vignette for more info about this changes.</p>
 </div>
 <div class="section level2">
 <h2 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
 </h2>
-<p>With the aim to assist research of climatic impacts on forests, the R package <code>meteoland</code> provides utilities to estimate daily weather variables at any position over complex terrains:</p>
+<p>With the aim to assist research of climatic impacts on forests, the R package <code>meteoland</code> provides utilities to estimate daily weather variables at any position over complex terrains (De Cáceres et al 2018):</p>
 <ul>
 <li>Spatial interpolation of daily weather records from meteorological stations.</li>
-<li>Statistical correction of meteorological data series (e.g. from climate models). Note that this functionality is deprecated starting in version 2.0.0.</li>
+<li>Statistical correction of meteorological data series (e.g from climate models). Note that this functionality is deprecated starting in version 2.0.0.</li>
 <li>Multisite and multivariate stochastic weather generation. Note that this functionality is deprecated starting in version 2.0.0.</li>
 </ul>
-<p>A more detailed introduction to the package functionality can be found in De Cáceres et al. (2018).</p>
 </div>
 <div class="section level2">
 <h2 id="package-installation-and-documentation">Package installation and documentation<a class="anchor" aria-label="anchor" href="#package-installation-and-documentation"></a>
@@ -101,12 +97,7 @@
 <p>Package <strong>meteoland</strong> can be found at <a href="https://cran.r-project.org/" class="external-link">CRAN</a>, but the version in this repository may not be the most recent one. Latest stable versions can be downloaded and installed from GitHub as follows (package <code>remotes</code> should be installed first):</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"emf-creaf/meteoland"</span><span class="op">)</span></span></code></pre></div>
-<p>Alternatively, users can have help to run package functions directly as package vignettes, by forcing their inclusion in installation:</p>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"emf-creaf/meteoland"</span>, </span>
-<span>                        build_opts <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"--no-resave-data"</span>, <span class="st">"--no-manual"</span><span class="op">)</span>,</span>
-<span>                        build_vignettes <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
-<p>Detailed documentation on <strong>meteoland</strong> calculation routines can be found at (<a href="https://emf-creaf.github.io/meteolandbook/index.html" class="uri">https://emf-creaf.github.io/meteolandbook/index.html</a>).</p>
+<p>Detailed documentation regarding <strong>meteoland</strong> calculation routines can be found at (<a href="https://emf-creaf.github.io/meteolandbook/index.html" class="uri">https://emf-creaf.github.io/meteolandbook/index.html</a>).</p>
 </div>
 <div class="section level2">
 <h2 id="companion-packages">Companion packages<a class="anchor" aria-label="anchor" href="#companion-packages"></a>

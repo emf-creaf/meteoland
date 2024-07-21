@@ -5,6 +5,23 @@
 [![](https://cranlogs.r-pkg.org/badges/meteoland)](https://cran.rstudio.com/web/packages/meteoland/index.html)
 [![R-CMD-check](https://github.com/emf-creaf/meteoland/workflows/R-CMD-check/badge.svg)](https://github.com/emf-creaf/meteoland/actions)
 
+## Introduction
+
+With the aim to assist research of climatic impacts on forests, the R
+package `meteoland` provides utilities to estimate daily weather
+variables at any position over complex terrains:
+
+- Spatial interpolation of daily weather records from meteorological
+  stations.
+- Statistical correction of meteorological data series (e.g. from
+  climate models). Note that this functionality is deprecated starting
+  in version 2.0.0.
+- Multisite and multivariate stochastic weather generation. Note that
+  this functionality is deprecated starting in version 2.0.0.
+
+A more detailed introduction to the package functionality can be found
+in De Cáceres et al. (2018).
+
 ## Important notice
 
 Starting on June 2023, `rgdal`, `rgeos` and `maptools` R packages
@@ -29,23 +46,6 @@ See the [*Tidy
 meteoland*](https://emf-creaf.github.io/meteoland/articles/tidy-meteoland.html)
 vignette (`vignette("tidy-meteoland", package = "meteoland")`) for more
 info about this changes.
-
-## Introduction
-
-With the aim to assist research of climatic impacts on forests, the R
-package `meteoland` provides utilities to estimate daily weather
-variables at any position over complex terrains:
-
-- Spatial interpolation of daily weather records from meteorological
-  stations.
-- Statistical correction of meteorological data series (e.g. from
-  climate models). Note that this functionality is deprecated starting
-  in version 2.0.0.
-- Multisite and multivariate stochastic weather generation. Note that
-  this functionality is deprecated starting in version 2.0.0.
-
-A more detailed introduction to the package functionality can be found
-in De Cáceres et al. (2018).
 
 ## Package installation and documentation
 

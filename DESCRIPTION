@@ -45,6 +45,7 @@ Encoding: UTF-8
 NeedsCompilation: yes
 VignetteBuilder: knitr
 RoxygenNote: 7.3.1
+BugReports: https://github.com/emf-creaf/meteoland/issues
 Config/testthat/edition: 3
 Config/testthat/parallel: true
 Roxygen: list(markdown = TRUE)

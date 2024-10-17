@@ -11,7 +11,8 @@ Authors@R: c(
 	person('Antoine', 'Cabon', role='aut', comment = c(ORCID = "0000-0001-6426-1726")))
 Description: Functions to estimate weather variables at any position of a landscape [De Caceres et al. (2018) <doi:10.1016/j.envsoft.2018.08.003>].
 License: GPL (>= 2)
-URL: https://emf-creaf.github.io/meteoland/
+URL: https://emf-creaf.github.io/meteoland/, https://github.com/emf-creaf/meteoland
+BugReports: https://github.com/emf-creaf/meteoland/issues
 LazyData: TRUE
 Depends:
     R (>= 3.5.0)

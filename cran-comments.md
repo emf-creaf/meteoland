@@ -14,5 +14,5 @@ In all CI tests only NOTEs were produced
 
 ## Reverse/Downstream dependencies
 
-`meteoland` has a reverse dependency with `medfate`, which is 
-under our responsibility.
+`meteoland` has a reverse dependency with `medfate` and `medfateland`, both 
+under our responsibility. No dependency issues expected.

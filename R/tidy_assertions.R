@@ -78,7 +78,8 @@ assertthat::on_failure(has_topo_names) <- function(call, env) {
 #' @noRd
 has_unique_ids <- function(meteo) {
   distinct_rows <- meteo |>
-    dplyr::select("stationID") |>
+    dplyr::as_tibble() |>
+    dplyr::select("stationID", attr(meteo, "sf_column")) |>
     dplyr::distinct()
 
   nrow(distinct_rows) == length(unique(distinct_rows[["stationID"]]))

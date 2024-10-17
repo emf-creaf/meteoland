@@ -1,3 +1,6 @@
+# meteoland 2.2.2
+- Avoid spatial operations when unnecessary when creating interpolator
+
 # meteoland 2.2.1
 - Correction of error caused by Rcpp bug
 

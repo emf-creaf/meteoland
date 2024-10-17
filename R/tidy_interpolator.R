@@ -271,25 +271,30 @@ create_meteo_interpolator <- function(meteo_with_topo, params = NULL, verbose = 
           .data$aspect
         )
       ) |>
-      dplyr::ungroup() |>
-      sf::st_as_sf()
+      dplyr::ungroup() #|>
+      # sf::st_as_sf()
   }
 
   # data arranging
   meteo_arranged <- meteo_with_topo |>
+    dplyr::as_tibble() |>
     # very important step, as we need all combinations to fill the arrays
     tidyr::complete(.data$dates, .data$stationID, explicit = FALSE) |>
     dplyr::arrange(.data$stationID, .data$dates) |>
     # .fill_elevation()
     .fill_topo()
+  
+  geom_var <- attr(meteo_with_topo, "sf_column")
 
   # stations and dates
   stations <- meteo_arranged |>
     dplyr::filter(
-      !sf::st_is_empty(!!dplyr::sym(attr(meteo_arranged, "sf_column")))
+      # !sf::st_is_empty(!!dplyr::sym(attr(meteo_with_topo, "sf_column")))
+      !sf::st_is_empty(.data[[geom_var]])
     ) |>
-    dplyr::select("stationID") |>
+    dplyr::select(dplyr::all_of(c("stationID", geom_var))) |>
     dplyr::distinct() |>
+    dplyr::pull(geom_var) |>
     sf::st_geometry()
   dates <- unique(meteo_arranged$dates)
 
@@ -380,20 +385,15 @@ create_meteo_interpolator <- function(meteo_with_topo, params = NULL, verbose = 
     verbose
   )
 
-  params$initial_Rp <-
-    meteo_arranged |>
-    # We need to pass the Rp in the same units the coordinates are,
-    # because the C++ methods calculate distances with the points as
-    # planar/cartesian distances. i.e. If Rp are in meters (which happens
-    # if we have a CRS setted), but coordinates are lat/long, C++ methods will
-    # calculate distance with points wrongly (as coordinates are in degrees)
-    # For this, we extract the coordinates and pass unique. This ensures the
-    # CRS is lost, so distances are calculated in the arbitrary units (the
-    # same as coordinates).
-    # dplyr::select(attr(meteo_arranged, "sf_column")) |>
-    sf::st_geometry(meteo_arranged) |>
-    unique() |>
-    sf::st_as_sfc() |>
+  # We need to pass the Rp in the same units the coordinates are,
+  # because the C++ methods calculate distances with the points as
+  # planar/cartesian distances. i.e. If Rp are in meters (which happens
+  # if we have a CRS setted), but coordinates are lat/long, C++ methods will
+  # calculate distance with points wrongly (as coordinates are in degrees)
+  # For this, we extract the coordinates and pass unique. This ensures the
+  # CRS is lost, so distances are calculated in the arbitrary units (the
+  # same as coordinates).
+  params$initial_Rp <- stations |>
     sf::st_distance() |>
     as.numeric() |>
     mean(na.rm = TRUE)

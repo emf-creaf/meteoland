@@ -26,7 +26,7 @@
 
     <a class="navbar-brand me-2" href="../../index.html">meteoland</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.2.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.2.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -70,7 +70,7 @@
                         <h4 data-toc-skip class="author">Miquel De
 Cáceres</h4>
             
-            <h4 data-toc-skip class="date">2024-07-21</h4>
+            <h4 data-toc-skip class="date">2024-10-17</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/emf-creaf/meteoland/blob/HEAD/vignettes/examples/interpolation-senegal.Rmd" class="external-link"><code>vignettes/examples/interpolation-senegal.Rmd</code></a></small>
       <div class="d-none name"><code>interpolation-senegal.Rmd</code></div>
@@ -91,7 +91,7 @@ We’ll use Senegal as case study.</p>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://r-spatial.github.io/stars/" class="external-link">stars</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">geodata</span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dieghernan.github.io/tidyterra/" class="external-link">tidyterra</a></span><span class="op">)</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://emf-creaf.github.io/meteoland/index.html">meteoland</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://emf-creaf.github.io/meteoland/">meteoland</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://wilkelab.org/cowplot/" class="external-link">cowplot</a></span><span class="op">)</span></span></code></pre></div>
 <p>We will also use package <strong>afrilearndata</strong> from GitHub,
@@ -108,7 +108,7 @@ access to over 30.000 weather stations across the globe:</p>
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://davidcarslaw.github.io/worldmet/index.html" class="external-link">worldmet</a></span><span class="op">)</span></span></code></pre></div>
 <p>In order to download weather data, we must first obtain the codes of
 the weather stations available for our study area. This can be done
-using function <code><a href="http://davidcarslaw.github.io/worldmet/reference/getMeta.html" class="external-link">getMeta()</a></code> from worldmet, which we use to
+using function <code><a href="https://davidcarslaw.github.io/worldmet/reference/getMeta.html" class="external-link">getMeta()</a></code> from worldmet, which we use to
 know available weather stations for Senegal and neighbouring
 countries:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
@@ -119,12 +119,12 @@ countries:</p>
 <span><span class="co">#   Mali - ML </span></span>
 <span><span class="co">#   Mauritania - MR</span></span>
 <span><span class="co">#   Guinea bissau - PU</span></span>
-<span><span class="va">sg_st</span> <span class="op">&lt;-</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind_rows.html" class="external-link">bind_rows</a></span><span class="op">(</span><span class="fu">worldmet</span><span class="fu">::</span><span class="fu"><a href="http://davidcarslaw.github.io/worldmet/reference/getMeta.html" class="external-link">getMeta</a></span><span class="op">(</span>country<span class="op">=</span><span class="st">"SG"</span>, plot <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>,</span>
-<span>                          <span class="fu">worldmet</span><span class="fu">::</span><span class="fu"><a href="http://davidcarslaw.github.io/worldmet/reference/getMeta.html" class="external-link">getMeta</a></span><span class="op">(</span>country<span class="op">=</span><span class="st">"GA"</span>, plot <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>,</span>
-<span>                          <span class="fu">worldmet</span><span class="fu">::</span><span class="fu"><a href="http://davidcarslaw.github.io/worldmet/reference/getMeta.html" class="external-link">getMeta</a></span><span class="op">(</span>country<span class="op">=</span><span class="st">"GV"</span>, plot <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>,</span>
-<span>                          <span class="fu">worldmet</span><span class="fu">::</span><span class="fu"><a href="http://davidcarslaw.github.io/worldmet/reference/getMeta.html" class="external-link">getMeta</a></span><span class="op">(</span>country<span class="op">=</span><span class="st">"ML"</span>, plot <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>,</span>
-<span>                          <span class="fu">worldmet</span><span class="fu">::</span><span class="fu"><a href="http://davidcarslaw.github.io/worldmet/reference/getMeta.html" class="external-link">getMeta</a></span><span class="op">(</span>country<span class="op">=</span><span class="st">"MR"</span>, plot <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>,</span>
-<span>                          <span class="fu">worldmet</span><span class="fu">::</span><span class="fu"><a href="http://davidcarslaw.github.io/worldmet/reference/getMeta.html" class="external-link">getMeta</a></span><span class="op">(</span>country<span class="op">=</span><span class="st">"PU"</span>, plot <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<span><span class="va">sg_st</span> <span class="op">&lt;-</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind_rows.html" class="external-link">bind_rows</a></span><span class="op">(</span><span class="fu">worldmet</span><span class="fu">::</span><span class="fu"><a href="https://davidcarslaw.github.io/worldmet/reference/getMeta.html" class="external-link">getMeta</a></span><span class="op">(</span>country<span class="op">=</span><span class="st">"SG"</span>, plot <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>,</span>
+<span>                          <span class="fu">worldmet</span><span class="fu">::</span><span class="fu"><a href="https://davidcarslaw.github.io/worldmet/reference/getMeta.html" class="external-link">getMeta</a></span><span class="op">(</span>country<span class="op">=</span><span class="st">"GA"</span>, plot <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>,</span>
+<span>                          <span class="fu">worldmet</span><span class="fu">::</span><span class="fu"><a href="https://davidcarslaw.github.io/worldmet/reference/getMeta.html" class="external-link">getMeta</a></span><span class="op">(</span>country<span class="op">=</span><span class="st">"GV"</span>, plot <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>,</span>
+<span>                          <span class="fu">worldmet</span><span class="fu">::</span><span class="fu"><a href="https://davidcarslaw.github.io/worldmet/reference/getMeta.html" class="external-link">getMeta</a></span><span class="op">(</span>country<span class="op">=</span><span class="st">"ML"</span>, plot <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>,</span>
+<span>                          <span class="fu">worldmet</span><span class="fu">::</span><span class="fu"><a href="https://davidcarslaw.github.io/worldmet/reference/getMeta.html" class="external-link">getMeta</a></span><span class="op">(</span>country<span class="op">=</span><span class="st">"MR"</span>, plot <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>,</span>
+<span>                          <span class="fu">worldmet</span><span class="fu">::</span><span class="fu"><a href="https://davidcarslaw.github.io/worldmet/reference/getMeta.html" class="external-link">getMeta</a></span><span class="op">(</span>country<span class="op">=</span><span class="st">"PU"</span>, plot <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p>The station metadata looks like this:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sg_st</span></span></code></pre></div>
@@ -145,14 +145,14 @@ countries:</p>
 <span><span class="co">## <span style="color: #949494;"># ℹ 2 more variables: end &lt;date&gt;, code &lt;chr&gt;</span></span></span></code></pre>
 <p>Let’s assume that we want to interpolate weather for year 2020. We
 can download hourly weather station data for the selected stations and
-year 2020 using function <code><a href="http://davidcarslaw.github.io/worldmet/reference/importNOAA.html" class="external-link">importNOAA()</a></code> and programming a
+year 2020 using function <code><a href="https://davidcarslaw.github.io/worldmet/reference/importNOAA.html" class="external-link">importNOAA()</a></code> and programming a
 loop over stations:</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">hourData</span> <span class="op">&lt;-</span> <span class="cn">NULL</span></span>
 <span><span class="kw">for</span><span class="op">(</span><span class="va">i</span> <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">sg_st</span><span class="op">$</span><span class="va">code</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">sg_st</span><span class="op">$</span><span class="va">code</span><span class="op">[</span><span class="va">i</span><span class="op">]</span>,<span class="st">" "</span><span class="op">)</span><span class="op">)</span></span>
 <span>  <span class="kw"><a href="https://rdrr.io/r/base/conditions.html" class="external-link">tryCatch</a></span><span class="op">(</span><span class="op">{</span></span>
-<span>    <span class="va">hi</span> <span class="op">&lt;-</span> <span class="fu">worldmet</span><span class="fu">::</span><span class="fu"><a href="http://davidcarslaw.github.io/worldmet/reference/importNOAA.html" class="external-link">importNOAA</a></span><span class="op">(</span>code <span class="op">=</span> <span class="va">sg_st</span><span class="op">$</span><span class="va">code</span><span class="op">[</span><span class="va">i</span><span class="op">]</span>, year<span class="op">=</span><span class="fl">2020</span>, quiet<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span>
+<span>    <span class="va">hi</span> <span class="op">&lt;-</span> <span class="fu">worldmet</span><span class="fu">::</span><span class="fu"><a href="https://davidcarslaw.github.io/worldmet/reference/importNOAA.html" class="external-link">importNOAA</a></span><span class="op">(</span>code <span class="op">=</span> <span class="va">sg_st</span><span class="op">$</span><span class="va">code</span><span class="op">[</span><span class="va">i</span><span class="op">]</span>, year<span class="op">=</span><span class="fl">2020</span>, quiet<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span>
 <span>    <span class="kw">if</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/NULL.html" class="external-link">is.null</a></span><span class="op">(</span><span class="va">hourData</span><span class="op">)</span><span class="op">)</span>  <span class="op">{</span><span class="va">hourData</span> <span class="op">&lt;-</span> <span class="va">hi</span><span class="op">}</span></span>
 <span>    <span class="kw">else</span> <span class="op">{</span><span class="va">hourData</span> <span class="op">&lt;-</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind_rows.html" class="external-link">bind_rows</a></span><span class="op">(</span><span class="va">hourData</span>,<span class="va">hi</span><span class="op">)</span><span class="op">}</span></span>
 <span>    <span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">" [success]."</span><span class="op">)</span></span>
@@ -319,32 +319,32 @@ object.</p>
 <pre><code><span><span class="co">## stars object with 3 dimensions and 14 attributes</span></span>
 <span><span class="co">## attribute(s):</span></span>
 <span><span class="co">##                              Min.      1st Qu.     Median        Mean</span></span>
-<span><span class="co">## MeanTemperature       25.65364684  26.23864756  28.345599  28.7768531</span></span>
-<span><span class="co">## MinTemperature        17.80178919  18.59377204  22.771621  22.6439269</span></span>
-<span><span class="co">## MaxTemperature        30.54605716  31.19507875  32.304597  32.7642672</span></span>
-<span><span class="co">## Precipitation          3.21585191   3.52096659   3.978737   4.3363956</span></span>
-<span><span class="co">## MeanRelativeHumidity  28.25354806  32.85716167  51.729265  51.1044770</span></span>
-<span><span class="co">## MinRelativeHumidity   21.21382417  24.69259011  41.347453  41.6214869</span></span>
-<span><span class="co">## MaxRelativeHumidity   44.86207590  52.05561466  74.291399  71.4489409</span></span>
-<span><span class="co">## Radiation              2.80195474  15.55513556  16.100066  16.8713725</span></span>
-<span><span class="co">## WindSpeed              0.41014585   2.10398623   2.703641   2.8029064</span></span>
-<span><span class="co">## WindDirection          0.14994145  47.96274583  59.838221  63.5942582</span></span>
-<span><span class="co">## PET                    1.12632050   4.29583587   4.646448   4.8194632</span></span>
+<span><span class="co">## MeanTemperature       25.25838764  26.16479444  27.686636  28.0025642</span></span>
+<span><span class="co">## MinTemperature        17.11318673  18.77982536  22.519572  22.4126015</span></span>
+<span><span class="co">## MaxTemperature        30.55411232  30.96624299  31.082571  31.6369625</span></span>
+<span><span class="co">## Precipitation          5.34088363   6.73363037   6.884830   6.8389368</span></span>
+<span><span class="co">## MeanRelativeHumidity  28.65437146  29.09174731  50.854068  50.6953364</span></span>
+<span><span class="co">## MinRelativeHumidity   21.87662939  22.02252891  41.944510  42.4431496</span></span>
+<span><span class="co">## MaxRelativeHumidity   44.23668041  45.55919715  70.016819  67.8519075</span></span>
+<span><span class="co">## Radiation              2.61567898  15.27139843  15.655768  17.0814750</span></span>
+<span><span class="co">## WindSpeed              2.26233592   2.26234598   2.708679   2.7086797</span></span>
+<span><span class="co">## WindDirection         57.40138707  57.40154733  57.401623  57.4016181</span></span>
+<span><span class="co">## PET                    1.26655319   4.14083508   4.264019   4.6983995</span></span>
 <span><span class="co">## elevation              1.31000000  34.45750000  48.660000  54.0612085</span></span>
 <span><span class="co">## slope                  0.01792378   0.09556268   0.188352   0.2429773</span></span>
 <span><span class="co">## aspect                67.35251383 168.39402989 192.848440 189.9267863</span></span>
 <span><span class="co">##                           3rd Qu.       Max. NA's</span></span>
-<span><span class="co">## MeanTemperature        31.4373275  32.148596 4556</span></span>
-<span><span class="co">## MinTemperature         26.7186160  27.303999 4556</span></span>
-<span><span class="co">## MaxTemperature         34.4804223  35.541945 4556</span></span>
-<span><span class="co">## Precipitation           4.9962097   7.225850 6724</span></span>
-<span><span class="co">## MeanRelativeHumidity   68.7716839  74.486197 4556</span></span>
-<span><span class="co">## MinRelativeHumidity    58.1442049  65.381005 4556</span></span>
-<span><span class="co">## MaxRelativeHumidity    89.7925874  94.773621 4556</span></span>
-<span><span class="co">## Radiation              18.5510236  20.952236 4556</span></span>
-<span><span class="co">## WindSpeed               3.2935873   5.768750 4556</span></span>
-<span><span class="co">## WindDirection          74.5020305 359.999997 6724</span></span>
-<span><span class="co">## PET                     5.2584016   7.192732 4556</span></span>
+<span><span class="co">## MeanTemperature        29.9002891  30.169109 4556</span></span>
+<span><span class="co">## MinTemperature         26.1097100  26.201119 4556</span></span>
+<span><span class="co">## MaxTemperature         32.3647910  32.748957 4556</span></span>
+<span><span class="co">## Precipitation           7.0427412   7.431656 6724</span></span>
+<span><span class="co">## MeanRelativeHumidity   72.1145029  76.164817 4556</span></span>
+<span><span class="co">## MinRelativeHumidity    62.6830459  67.685735 4556</span></span>
+<span><span class="co">## MaxRelativeHumidity    89.9232937  91.655080 4556</span></span>
+<span><span class="co">## Radiation              19.1876582  21.588368 4556</span></span>
+<span><span class="co">## WindSpeed               3.1550137   3.155025 4556</span></span>
+<span><span class="co">## WindDirection          57.4016959  57.401802 6724</span></span>
+<span><span class="co">## PET                     5.3296309   5.619150 4556</span></span>
 <span><span class="co">## elevation              62.6900000 215.770000 4556</span></span>
 <span><span class="co">## slope                   0.3307207   2.613510 4616</span></span>
 <span><span class="co">## aspect                213.6666970 287.613543 4616</span></span>
@@ -377,7 +377,7 @@ object.</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
 </div>
 
     </footer>

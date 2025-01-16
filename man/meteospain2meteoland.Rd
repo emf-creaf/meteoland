@@ -4,13 +4,19 @@
 \alias{meteospain2meteoland}
 \title{From meteospain to meteoland meteo objects}
 \usage{
-meteospain2meteoland(meteo, complete = FALSE)
+meteospain2meteoland(
+  meteo,
+  complete = FALSE,
+  params = defaultInterpolationParams()
+)
 }
 \arguments{
 \item{meteo}{meteospain meteo object.}
 
 \item{complete}{logical indicating if the meteo data missing variables
 should be calculated (if possible). Default to FALSE.}
+
+\item{params}{A list containing parameters for PET estimation. By default the result of \code{\link{defaultInterpolationParams}}.}
 }
 \value{
 a compatible meteo object to use with meteoland.

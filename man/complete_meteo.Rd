@@ -4,10 +4,16 @@
 \alias{complete_meteo}
 \title{Complete missing meteo variables}
 \usage{
-complete_meteo(meteo, verbose = getOption("meteoland_verbosity", TRUE))
+complete_meteo(
+  meteo,
+  params = defaultInterpolationParams(),
+  verbose = getOption("meteoland_verbosity", TRUE)
+)
 }
 \arguments{
 \item{meteo}{meteoland weather data}
+
+\item{params}{A list containing parameters for PET estimation. By default the result of \code{\link{defaultInterpolationParams}}.}
 
 \item{verbose}{Logical indicating if the function must show messages and info.
 Default value checks \code{"meteoland_verbosity"} option and if not set, defaults

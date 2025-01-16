@@ -9,6 +9,7 @@
 #' @param meteo meteospain meteo object.
 #' @param complete logical indicating if the meteo data missing variables
 #' should be calculated (if possible). Default to FALSE.
+#' @param params A list containing parameters for PET estimation. By default the result of \code{\link{defaultInterpolationParams}}.
 #' @return a compatible meteo object to use with meteoland.
 #'
 #' @examples
@@ -29,7 +30,7 @@
 #' }
 #'
 #' @export meteospain2meteoland
-meteospain2meteoland <- function(meteo, complete = FALSE) {
+meteospain2meteoland <- function(meteo, complete = FALSE, params = defaultInterpolationParams()) {
 
   # assertions
   assertthat::assert_that(
@@ -47,7 +48,7 @@ meteospain2meteoland <- function(meteo, complete = FALSE) {
     dictionary <- .meteospain_variables_dictionary(FALSE)
   }
 
-  .reshape_meteo(meteo, dictionary, complete)
+  .reshape_meteo(meteo, dictionary, complete, params)
 
 }
 
@@ -64,6 +65,7 @@ meteospain2meteoland <- function(meteo, complete = FALSE) {
 #' @param meteo worldmet meteo object.
 #' @param complete logical indicating if the meteo data missing variables
 #' should be calculated (if possible). Default to FALSE.
+#' @param params A list containing parameters for PET estimation. By default the result of \code{\link{defaultInterpolationParams}}.
 #' @return a compatible meteo object to use with meteoland.
 #'
 #' @examples
@@ -83,7 +85,7 @@ meteospain2meteoland <- function(meteo, complete = FALSE) {
 #' }
 #'
 #' @export
-worldmet2meteoland <- function(meteo, complete = FALSE) {
+worldmet2meteoland <- function(meteo, complete = FALSE, params = defaultInterpolationParams()) {
 
   # assertions
   assertthat::assert_that(
@@ -105,7 +107,8 @@ worldmet2meteoland <- function(meteo, complete = FALSE) {
     # And reshape
     .reshape_meteo(
       dictionary = .worldmet_variables_dictionary(),
-      complete = complete
+      complete = complete,
+      params = params
     )
 
 }
@@ -145,11 +148,12 @@ worldmet2meteoland <- function(meteo, complete = FALSE) {
 #' @param meteo Meteo sf object
 #' @param dictionary A dictionary (named list) with the names of the meteo object variables.
 #'   See details.
+#' @param params A list containing parameters for PET estimation. By default the result of \code{\link{defaultInterpolationParams}}.
 #'
 #' @return A meteo sf object complying with meteoland \code{\link{with_meteo}} standard
 #'
 #' @noRd
-.reshape_meteo <- function(meteo, dictionary, complete) {
+.reshape_meteo <- function(meteo, dictionary, complete, params) {
 
   # browser()
 
@@ -166,7 +170,7 @@ worldmet2meteoland <- function(meteo, complete = FALSE) {
 
   if (complete) {
     processed_meteo <- processed_meteo |>
-      complete_meteo()
+      complete_meteo(params = params)
   }
 
   return(processed_meteo)
@@ -480,6 +484,7 @@ worldmet2meteoland <- function(meteo, complete = FALSE) {
 #' missing variable if it is possible
 #'
 #' @param meteo meteoland weather data
+#' @param params A list containing parameters for PET estimation. By default the result of \code{\link{defaultInterpolationParams}}.
 #' @param verbose Logical indicating if the function must show messages and info.
 #' Default value checks \code{"meteoland_verbosity"} option and if not set, defaults
 #' to TRUE. It can be turned off for the function with FALSE, or session wide with
@@ -526,7 +531,9 @@ worldmet2meteoland <- function(meteo, complete = FALSE) {
 #' }
 #'
 #' @export complete_meteo
-complete_meteo <- function(meteo, verbose = getOption("meteoland_verbosity", TRUE)) {
+complete_meteo <- function(meteo,
+                           params = defaultInterpolationParams(),
+                           verbose = getOption("meteoland_verbosity", TRUE)) {
 
   # assertions
   assertthat::assert_that(has_meteo(meteo))
@@ -629,11 +636,58 @@ complete_meteo <- function(meteo, verbose = getOption("meteoland_verbosity", TRU
       radiation_solarRadiation
     )
   }
+  
+  .complete_pet<-function(PET, dates, MinTemperature, MaxTemperature,
+                          MinRelativeHumidity, MaxRelativeHumidity,
+                          Radiation, WindSpeed,
+                          elevation, slope, aspect,
+                          geometry, params, 
+                          verbose) {
+    
+    .verbosity_control(
+      cli::cli_ul("PET"),
+      verbose
+    )
+    if(!("wind_height" %in% names(params))) params$wind_height = 10
+    if(!("wind_roughness_height" %in% names(params))) params$wind_roughness_height = 0.001
+    if(!("penman_albedo" %in% names(params))) params$penman_albedo = 0.25
+    if(!("penman_windfun" %in% names(params))) params$penman_windfun = "1956"
+    
+    julian_day <- purrr::map_int(
+      dates,
+      ~ radiation_julianDay(
+        as.numeric(format(.x, "%Y")),
+        as.numeric(format(.x, "%m")),
+        as.numeric(format(.x, "%d"))
+      )
+    )
+    slope_rad <- dplyr::if_else(
+      is.na(slope), 0, slope*(pi/180)
+    )
+    aspect_rad <- dplyr::if_else(
+      is.na(aspect), 0, aspect*(pi/180)
+    )
+    latitude_rad <-
+      sf::st_coordinates(sf::st_transform(geometry, 4326))[,2] * (pi/180)
+    
+    purrr::pmap_dbl(
+      list(
+        latitude_rad, elevation, slope_rad, aspect_rad, julian_day,
+        MinTemperature, MaxTemperature, MinRelativeHumidity, MaxRelativeHumidity, 
+        Radiation, WindSpeed,
+        z = params$wind_height,
+        z0 = params$wind_roughness_height,
+        alpha = params$penman_albedo,
+        windfun = params$penman_windfun
+      ),
+      penman
+    )
+  }
 
   # fill missong vars in meteo with NA
   c(
     "MeanTemperature", "MeanRelativeHumidity", "MinRelativeHumidity", "MaxRelativeHumidity",
-    "Precipitation", "Radiation", "aspect", "slope"
+    "Precipitation", "Radiation","PET", "aspect", "slope"
   ) |>
     purrr::walk(
       \(variable) {
@@ -660,6 +714,13 @@ complete_meteo <- function(meteo, verbose = getOption("meteoland_verbosity", TRU
         .data$Precipitation,
         .data$elevation, .data$slope, .data$aspect,
         sf::st_geometry(meteo), verbose
+      ),
+      PET = .complete_pet(.data$PET, .data$dates, .data$MinTemperature, .data$MaxTemperature,
+                          .data$MinRelativeHumidity, .data$MaxRelativeHumidity,
+                          .data$Radiation, .data$WindSpeed,
+                          .data$elevation, .data$slope, .data$aspect,
+                          sf::st_geometry(meteo), params, 
+                          verbose
       )
     )
 

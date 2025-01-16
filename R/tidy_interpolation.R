@@ -379,7 +379,7 @@
 
     params <- get_interpolation_params(interpolator)
     #Sets defaults if missing
-    if(!("wind_height" %in% names(params))) params$wind_roughness_height = 10
+    if(!("wind_height" %in% names(params))) params$wind_height = 10
     if(!("wind_roughness_height" %in% names(params))) params$wind_roughness_height = 0.001
     if(!("penman_albedo" %in% names(params))) params$penman_albedo = 0.25
     if(!("penman_windfun" %in% names(params))) params$penman_windfun = "1956"

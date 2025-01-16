@@ -1,3 +1,6 @@
+# meteoland 2.2.3
+- Completing PET in complete_meteo(), implementing issue #23
+
 # meteoland 2.2.2
 - Avoid spatial operations when unnecessary when creating interpolator
 

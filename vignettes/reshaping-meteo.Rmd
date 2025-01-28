@@ -97,7 +97,7 @@ And *voilà*, we have our meteo data in the correct format
 
 `meteoland` offers transformation functions for meteorological data downloaded from the
 [`meteospain`](https://emf-creaf.github.io/meteospain/) and
-[`worldmet`](https://davidcarslaw.github.io/worldmet/) R packages.
+[`worldmet`](https://openair-project.github.io/worldmet/) R packages.
 
 #### `meteospain` data
 

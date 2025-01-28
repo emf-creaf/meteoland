@@ -15,7 +15,7 @@ URL: https://emf-creaf.github.io/meteoland/, https://github.com/emf-creaf/meteol
 BugReports: https://github.com/emf-creaf/meteoland/issues
 LazyData: TRUE
 Depends:
-    R (>= 3.5.0)
+    R (>= 4.1.0)
 Imports: 
     methods,
     sf,

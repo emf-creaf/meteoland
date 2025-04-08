@@ -438,6 +438,10 @@ create_meteo_interpolator <- function(meteo_with_topo, params = NULL, verbose = 
 #' @param filename file name for the interpolator nc file
 #' @param .overwrite logical indicating if the file should be overwritten if it
 #' already exists
+#' @param verbose Logical indicating if the function must show messages and info.
+#' Default value checks \code{"meteoland_verbosity"} option and if not set, defaults
+#' to TRUE. It can be turned off for the function with FALSE, or session wide with
+#' \code{options(meteoland_verbosity = FALSE)}
 #' @return invisible interpolator object, to allow using this function as a
 #' step in a pipe
 #' @seealso Other interpolator functions: \code{\link{add_topo}()},
@@ -472,7 +476,11 @@ create_meteo_interpolator <- function(meteo_with_topo, params = NULL, verbose = 
 #' Victor Granda \enc{García}{Garcia}, EMF-CREAF
 #'
 #' @export write_interpolator
-write_interpolator <- function(interpolator, filename, .overwrite = FALSE) {
+write_interpolator <- function(
+  interpolator, filename,
+  .overwrite = FALSE,
+  .verbose = getOption("meteoland_verbosity", TRUE)
+) {
   # debug
   # browser()
 
@@ -524,7 +532,10 @@ write_interpolator <- function(interpolator, filename, .overwrite = FALSE) {
 
   ## write logic
   cf_conventions_web <- "https://cfconventions.org/cf-conventions/cf-conventions.html"
-  cli::cli_alert_info("Creating nc file following the NetCDF-CF conventions {.url {cf_conventions_web}}")
+  .verbosity_control(
+    cli::cli_alert_info("Creating nc file following the NetCDF-CF conventions {.url {cf_conventions_web}}"),
+    .verbose
+  )
 
   ### TODO add correct units
   list(prepared_data_list, names(prepared_data_list), prepared_data_units) |>
@@ -560,14 +571,20 @@ write_interpolator <- function(interpolator, filename, .overwrite = FALSE) {
       )
     )
 
-  cli::cli_alert_info("Adding spatial info to nc file")
+  .verbosity_control(
+    cli::cli_alert_info("Adding spatial info to nc file"),
+    .verbose
+  )
   filename <- ncdfgeom::write_geometry(
     nc_file = filename,
     geom_data = sf::st_as_sf(stars::st_get_dimension_values(interpolator, "station")),
     variables = c("instance_name", "time", "lat", "lon", names(prepared_data_list))
   )
 
-  cli::cli_alert_success("Done")
+  .verbosity_control(
+    cli::cli_alert_success("Done"),
+    .verbose
+  )
   return(invisible(interpolator))
 }
 

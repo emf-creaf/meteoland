@@ -438,7 +438,7 @@ create_meteo_interpolator <- function(meteo_with_topo, params = NULL, verbose = 
 #' @param filename file name for the interpolator nc file
 #' @param .overwrite logical indicating if the file should be overwritten if it
 #' already exists
-#' @param verbose Logical indicating if the function must show messages and info.
+#' @param .verbose Logical indicating if the function must show messages and info.
 #' Default value checks \code{"meteoland_verbosity"} option and if not set, defaults
 #' to TRUE. It can be turned off for the function with FALSE, or session wide with
 #' \code{options(meteoland_verbosity = FALSE)}

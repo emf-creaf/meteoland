@@ -20,7 +20,7 @@ write_interpolator(
 \item{.overwrite}{logical indicating if the file should be overwritten if it
 already exists}
 
-\item{verbose}{Logical indicating if the function must show messages and info.
+\item{.verbose}{Logical indicating if the function must show messages and info.
 Default value checks \code{"meteoland_verbosity"} option and if not set, defaults
 to TRUE. It can be turned off for the function with FALSE, or session wide with
 \code{options(meteoland_verbosity = FALSE)}}

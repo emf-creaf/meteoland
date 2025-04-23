@@ -4,7 +4,12 @@
 \alias{write_interpolator}
 \title{Write the interpolator object}
 \usage{
-write_interpolator(interpolator, filename, .overwrite = FALSE)
+write_interpolator(
+  interpolator,
+  filename,
+  .overwrite = FALSE,
+  .verbose = getOption("meteoland_verbosity", TRUE)
+)
 }
 \arguments{
 \item{interpolator}{meteoland interpolator object, as created by
@@ -14,6 +19,11 @@ write_interpolator(interpolator, filename, .overwrite = FALSE)
 
 \item{.overwrite}{logical indicating if the file should be overwritten if it
 already exists}
+
+\item{.verbose}{Logical indicating if the function must show messages and info.
+Default value checks \code{"meteoland_verbosity"} option and if not set, defaults
+to TRUE. It can be turned off for the function with FALSE, or session wide with
+\code{options(meteoland_verbosity = FALSE)}}
 }
 \value{
 invisible interpolator object, to allow using this function as a

@@ -1,3 +1,6 @@
+# meteoland 2.2.4
+- Warning raised for interpolation weights that would generate NaN in temperature interpolation (NA is returned)
+
 # meteoland 2.2.3.9000
 - Implemented verbose in write interpolator method, fix #32
 

@@ -41,13 +41,13 @@ NumericVector weightedRegression(NumericVector Y, NumericVector X, NumericVector
   NumericVector YW = Y*W;
   int n = X.size();
   double Wsum = std::accumulate(W.begin(), W.end(), 0.0);
-  W = (((double) n)/Wsum)*W; //Normalize weights to sum n
+  NumericVector Wnorm = (((double) n)/Wsum)*W; //Normalize weights to sum n
   double wMeanX = std::accumulate(XW.begin(), XW.end(), 0.0)/((double)n);
   double wMeanY = std::accumulate(YW.begin(), YW.end(), 0.0)/((double)n);
   double cov = 0.0, var = 0.0;
   for (int k = 0; k < n; k++) {
-    var = var + W[k] * X[k] * X[k];
-    cov = cov + W[k] * X[k] * Y[k];
+    var = var + Wnorm[k] * X[k] * X[k];
+    cov = cov + Wnorm[k] * X[k] * Y[k];
   }
   cov = cov -((double)n)*wMeanX*wMeanY;
   var = var - ((double) n)*wMeanX*wMeanX;

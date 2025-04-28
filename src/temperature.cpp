@@ -19,12 +19,19 @@ double interpolateTemperaturePoint(double xp, double yp, double zp,
   //Weights for weighted regression
   NumericVector WDif(nDif,0.0);
   int c = 0;
+  double WDifcum = 0.0;
   for(int i=0;i<nstations;i++) {
     for(int j=0;j<i;j++) {
       WDif[c] = W[i]*W[j];
-      // if(debug) Rcout<<" "<<tDif[c]<<" "<<WDif[c]<<"\n";
+      WDifcum += WDif[c];
+      // if(debug) Rcout<<c<<" "<<tDif[c]<<" "<<WDif[c]<<"\n";
       c++;
     }
+  }
+  if(debug) Rcout<< " tDif size "<< nDif << " c " << c << " WDifcum " << WDifcum << "\n";
+  if(WDifcum==0.0) {
+    warning("Cannot perform temperature interpolation because of zero product weights in weighted regression");
+    return(NA_REAL);
   }
   //Weighted regression
   NumericVector wr = weightedRegression(tDif, zDif, WDif);
@@ -34,7 +41,9 @@ double interpolateTemperaturePoint(double xp, double yp, double zp,
     // Rcout<<T[i]<<"/";
     Wnum +=W[i]*(T[i]+wr[0]+wr[1]*(zp-Z[i]));
   }
-  if(debug) Rcout<< " nstations: "<< nstations<<" wr0: "<<wr[0]<<" wr1: "<< wr[1]<<" Wnum: "<<Wnum<<" sumW: "<<std::accumulate(W.begin(), W.end(), 0.0)<<"\n";
+  if(debug) {
+    Rcout<< " nstations: "<< nstations<<" sum(W): "<< sum(W)<<" sum(WDif): "<< sum(WDif) << " wr0: "<<wr[0]<<" wr1: "<< wr[1]<<" Wnum: "<<Wnum<<"\n";
+  }
   return(Wnum/std::accumulate(W.begin(), W.end(), 0.0));
 }
 

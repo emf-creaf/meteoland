@@ -17,7 +17,7 @@ interpolator_calibration(
   stations = NULL,
   update_interpolation_params = FALSE,
   variable = "MinTemperature",
-  N_seq = seq(5, 30, by = 5),
+  N_seq = seq(10, 30, by = 5),
   alpha_seq = seq(0.25, 10, by = 0.25),
   verbose = getOption("meteoland_verbosity", TRUE)
 )

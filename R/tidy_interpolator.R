@@ -804,7 +804,7 @@ interpolator_calibration <- function(
     stations = NULL,
     update_interpolation_params = FALSE,
     variable = "MinTemperature",
-    N_seq = seq(5, 30, by = 5),
+    N_seq = seq(10, 30, by = 5),
     alpha_seq = seq(0.25, 10, by = 0.25),
     verbose = getOption("meteoland_verbosity", TRUE)
 ) {
@@ -834,6 +834,12 @@ interpolator_calibration <- function(
     is.numeric(alpha_seq),
     msg = "N_seq must be a numeric vector"
   )
+  if (variable %in% c("MinTemperature", "MaxTemperature")) {
+    assertthat::assert_that(
+      all(N_seq >= 10),
+      msg = "N_seq must start at 10 or bigger when calibrating temperature (Min or Max)"
+    )
+  }
 
   # get selected stations
   stations_sfc <- stars::st_get_dimension_values(interpolator, "station")
@@ -1016,6 +1022,17 @@ interpolator_calibration <- function(
       if (variable %in% c("MinTemperature", "MaxTemperature", "DewTemperature")) {
         mae_matrix[as.character(i), as.character(j)] <-
           mean(abs(predicted_variable_matrix - selected_variable_matrix), na.rm = TRUE)
+        
+        # check if NAs are generated (weights are zero for the parameter combination) and increase
+        # MAE to discard this parameter combination. Remember, increased MAE has to be bigger than
+        # the min_mae initial value (min_mae <- 9999999.0)
+        if (any(is.na(predicted_variable_matrix))) {
+          .verbosity_control(
+            cli::cli_ul("N = {.val {i}} & alpha = {.val {j}} removed from calibration as they generate zero weights in regression"),
+            verbose
+          )
+          mae_matrix[as.character(i), as.character(j)] <- 9999999.9
+        }
       } else {
         denominator_1 <- 0
         denominator_2 <- 0

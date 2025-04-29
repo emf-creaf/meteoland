@@ -315,8 +315,60 @@ test_that("interpolation process works as intended", {
         )
       }
     )
+  
+  # test interpolation when using N_*Temperature < 10 and NAs are generated when
+  # weights become zero.
 
+  # Browse[1]> selected_stations_coords[station, 1]
+  #       X 
+  # 0.66789 
 
+  # Browse[1]> selected_stations_coords[station, 2]
+  #        Y 
+  # 41.35991 
+  # Browse[1]> selected_stations_elevation[station]
+  #  UM 
+  # 505 
+  # Browse[1]> stations_elevation[-original_station_index] |> names()
+  # Rp 1.13
+  req_stations <- c(
+    "C6", "C7", "C8", "C9", "CC", "CD", "CE", "CG", "CI", "CJ", "CL", "CP",
+    "CQ", "CR", "CT", "CW", "CY", "D1", "D2", "D3", "D4", "D5", "D6", "D7",
+    "D8", "D9", "DB", "DF", "DG", "DI", "DJ", "DK", "DL",
+    "DN", "DO", "DP", "DQ", "H1", "J5", "KP", "MQ", "MR", "MS", "MV", "U1",
+    "U2", "U3", "U4", "U6", "U7", "U9", "UA", "UB", "UE", "UF", "UG", "UH",
+    "UI", "UJ", "UK", "UN", "UO", "UP", "UQ", "US", "UU",
+    "UW", "UX", "UY", "V1", "V3", "V4", "V5", "V8", "VA", "VB", "VC", "VD",
+    "VE", "VH", "VK", "VM", "VN", "VO", "VP", "VQ", "VS", "VU", "VV", "VX",
+    "VY", "VZ", "W1", "W4", "W5", "W8", "W9", "WA", "WB",
+    "WC", "WD", "WE", "WG", "WI", "WJ", "WK", "WL", "WM", "WN", "WO", "WP",
+    "WQ", "WR", "WS", "WT", "WU", "WV", "WW", "WX", "WZ", "X1", "X2", "X3",
+    "X4", "X5", "X6", "X7", "X8", "X9", "XA", "XB", "XC",
+    "XD", "XE", "XF", "XG", "XH", "XI", "XJ", "XK", "XL", "XM", "XN", "XO",
+    "XP", "XQ", "XR", "XS", "XT", "XU", "XV", "XX", "XY", "XZ", "Y4", "Y5",
+    "Y6", "YA", "YB", "YC", "YD", "YE", "YF", "YG", "YH",
+    "YJ", "YK", "YL", "YM", "YN", "YO", "YP", "YQ", "Z1", "Z2", "Z3", "Z5",
+    "Z6", "Z7", "Z8", "Z9", "ZB", "ZC", "ZD"
+  )
+  interpolator_stations <- meteoland_interpolator_example[["elevation"]] |> colnames()
+
+  low_n_interpolator <- set_interpolation_params(
+    meteoland_interpolator_example[,,which(interpolator_stations %in% req_stations)],
+    list(N_MinTemperature = 5, alpha_MinTemperature = 9.5, initial_Rp = 1.13644)
+  )
+  low_n_trigger_points <- dplyr::bind_cols(
+    stars::st_get_dimension_values(meteoland_interpolator_example, "station")[65],
+    meteoland_interpolator_example[["elevation"]][1,65],
+    meteoland_interpolator_example[["aspect"]][1,65],
+    meteoland_interpolator_example[["slope"]][1,65]
+  ) |>
+    purrr::set_names("geometry", "elevation", "aspect", "slope") |>
+    sf::st_as_sf()
+
+  expect_warning(
+    interpolate_data(low_n_trigger_points, low_n_interpolator),
+    "zero product weights in weighted regression"
+  )
 })
 
 test_that("interpolator calibration works as expected", {
@@ -342,10 +394,15 @@ test_that("interpolator calibration works as expected", {
     interpolator_calibration(interpolator_no_meteo_names),
     "Names found in interpolator don't comply with the required names"
   )
+  # N under 10
+  expect_error(
+    interpolator_calibration(meteoland_interpolator_example, N_seq = c(5, 10), alpha_seq = c(9, 9.5)),
+    "start at 10 or bigger"
+  )
 
   expect_type(
-    (test_calibration <-
-       interpolator_calibration(meteoland_interpolator_example, N_seq = c(5, 10), alpha_seq = c(9, 9.5))),
+    suppressWarnings(test_calibration <-
+       interpolator_calibration(meteoland_interpolator_example, N_seq = c(10, 20), alpha_seq = c(9, 9.5))),
     'list'
   )
   expect_named(test_calibration, c("MAE", "minMAE", "N", "alpha", "observed", "predicted"))
@@ -372,7 +429,7 @@ test_that("interpolator calibration works as expected", {
     (test_calibration_three_stations <- interpolator_calibration(
       meteoland_interpolator_example,
       stations = c(76, 83, 187),
-      N_seq = c(5, 10), alpha_seq = c(9, 9.5))),
+      N_seq = c(10, 20), alpha_seq = c(9, 9.5))),
     'list'
   )
 
@@ -399,7 +456,7 @@ test_that("interpolator calibration works as expected", {
     (test_calibration_three_stations_names <- interpolator_calibration(
       meteoland_interpolator_example,
       stations = c("V3", "VD", "ZB"),
-      N_seq = c(5, 10), alpha_seq = c(9, 9.5))),
+      N_seq = c(10, 20), alpha_seq = c(9, 9.5))),
     'list'
   )
   expect_identical(test_calibration_three_stations_names, test_calibration_three_stations)
@@ -410,7 +467,7 @@ test_that("interpolator calibration works as expected", {
       meteoland_interpolator_example,
       stations = c(76, 83, 187),
       update_interpolation_params = TRUE,
-      N_seq = c(5, 10), alpha_seq = c(9, 9.5))),
+      N_seq = c(10, 20), alpha_seq = c(9, 9.5))),
     'stars'
   )
   expect_error(.is_interpolator(test_calibrated_interpolator), NA)

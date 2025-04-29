@@ -30,8 +30,7 @@ double interpolateTemperaturePoint(double xp, double yp, double zp,
   }
   if(debug) Rcout<< " tDif size "<< nDif << " c " << c << " WDifcum " << WDifcum << "\n";
   if(WDifcum==0.0) {
-    warning("Cannot perform temperature interpolation because of zero product weights in weighted regression");
-    return(NA_REAL);
+    return(R_NaN);
   }
   //Weighted regression
   NumericVector wr = weightedRegression(tDif, zDif, WDif);
@@ -164,6 +163,7 @@ NumericVector interpolateTemperaturePoints(NumericVector Xp, NumericVector Yp, N
       c++;
     }
   }
+  
   for(int i=0;i<npoints;i++) {
     Tp[i] = interpolateTemperaturePoint(Xp[i], Yp[i], Zp[i], X,Y,Z,T, zDif, tDif,
                                         iniRp, alpha, N, iterations, debug);
@@ -180,6 +180,7 @@ NumericMatrix interpolateTemperatureSeriesPoints(NumericVector Xp, NumericVector
   int nDays = T.ncol();
   NumericMatrix Tp(npoints,nDays);
   LogicalVector missing(nstations);
+  int numNaN = 0;
   for(int d = 0;d<nDays;d++) {
     // Rcout<<"Day: "<<d<<"\n";
     int nmis = 0;
@@ -207,9 +208,17 @@ NumericMatrix interpolateTemperatureSeriesPoints(NumericVector Xp, NumericVector
                                                        Xday, Yday, Zday, Tday,
                                                        iniRp, alpha, N, iterations, debug);
     for(int p=0;p<npoints;p++) {
-      Tp(p,d) = Tpday[p];
+      if(Rcpp::traits::is_nan<REALSXP>(Tpday[p])) {
+        numNaN++;
+        Tp(p,d) = NA_REAL;
+      } else {
+        Tp(p,d) = Tpday[p];
+      }
       // Rcout<<" value: "<<Tpday[p]<<"\n";
     }
+  }
+  if(numNaN>0) {
+    warning("Could not perform temperature interpolation in %i point-days because of zero product weights in weighted regression (N = %d, alpha = %d)", numNaN, N, alpha);
   }
   return(Tp);
 }

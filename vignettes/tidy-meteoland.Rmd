@@ -250,7 +250,7 @@ get_interpolation_params(interpolator)$alpha_MinTemperature
 interpolator <- interpolator_calibration(
   interpolator,
   variable = "MinTemperature",
-  N_seq = c(5, 20),
+  N_seq = c(10, 20),
   alpha_seq = c(1, 10),
   update_interpolation_params = TRUE
 )
@@ -268,19 +268,19 @@ interpolator <- with_meteo(meteoland_meteo_example) |>
   create_meteo_interpolator() |>
   interpolator_calibration(
     variable = "MinTemperature",
-    N_seq = c(5, 20),
+    N_seq = c(10, 20),
     alpha_seq = c(1, 10),
     update_interpolation_params = TRUE
   ) |>
   interpolator_calibration(
     variable = "MaxTemperature",
-    N_seq = c(5, 20),
+    N_seq = c(10, 20),
     alpha_seq = c(1, 10),
     update_interpolation_params = TRUE
   ) |>
   interpolator_calibration(
     variable = "DewTemperature",
-    N_seq = c(5, 20),
+    N_seq = c(10, 20),
     alpha_seq = c(1, 10),
     update_interpolation_params = TRUE
   ) |>

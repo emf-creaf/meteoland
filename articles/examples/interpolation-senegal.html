@@ -6,12 +6,11 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <title>Daily weather interpolation over Senegal • meteoland</title>
-<!-- favicons --><link rel="icon" type="image/png" sizes="16x16" href="../../favicon-16x16.png">
-<link rel="icon" type="image/png" sizes="32x32" href="../../favicon-32x32.png">
-<link rel="apple-touch-icon" type="image/png" sizes="180x180" href="../../apple-touch-icon.png">
-<link rel="apple-touch-icon" type="image/png" sizes="120x120" href="../../apple-touch-icon-120x120.png">
-<link rel="apple-touch-icon" type="image/png" sizes="76x76" href="../../apple-touch-icon-76x76.png">
-<link rel="apple-touch-icon" type="image/png" sizes="60x60" href="../../apple-touch-icon-60x60.png">
+<!-- favicons --><link rel="icon" type="image/png" sizes="96x96" href="../../favicon-96x96.png">
+<link rel="icon" type="”image/svg+xml”" href="../../favicon.svg">
+<link rel="apple-touch-icon" sizes="180x180" href="../../apple-touch-icon.png">
+<link rel="icon" sizes="any" href="../../favicon.ico">
+<link rel="manifest" href="../../site.webmanifest">
 <script src="../../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
 <script src="../../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
@@ -26,7 +25,7 @@
 
     <a class="navbar-brand me-2" href="../../index.html">meteoland</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.2.3</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.2.4</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -70,7 +69,7 @@
                         <h4 data-toc-skip class="author">Miquel De
 Cáceres</h4>
             
-            <h4 data-toc-skip class="date">2025-01-16</h4>
+            <h4 data-toc-skip class="date">2025-04-30</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/emf-creaf/meteoland/blob/HEAD/vignettes/examples/interpolation-senegal.Rmd" class="external-link"><code>vignettes/examples/interpolation-senegal.Rmd</code></a></small>
       <div class="d-none name"><code>interpolation-senegal.Rmd</code></div>
@@ -105,10 +104,10 @@ to display African country limits:</p>
 <p>We start by loading package <strong>worldmet</strong>, which provides
 access to over 30.000 weather stations across the globe:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://davidcarslaw.github.io/worldmet/index.html" class="external-link">worldmet</a></span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://openair-project.github.io/worldmet/" class="external-link">worldmet</a></span><span class="op">)</span></span></code></pre></div>
 <p>In order to download weather data, we must first obtain the codes of
 the weather stations available for our study area. This can be done
-using function <code><a href="https://rdrr.io/pkg/worldmet/man/getMeta.html" class="external-link">getMeta()</a></code> from worldmet, which we use to
+using function <code><a href="https://openair-project.github.io/worldmet/reference/getMeta.html" class="external-link">getMeta()</a></code> from worldmet, which we use to
 know available weather stations for Senegal and neighbouring
 countries:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
@@ -119,12 +118,12 @@ countries:</p>
 <span><span class="co">#   Mali - ML </span></span>
 <span><span class="co">#   Mauritania - MR</span></span>
 <span><span class="co">#   Guinea bissau - PU</span></span>
-<span><span class="va">sg_st</span> <span class="op">&lt;-</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind_rows.html" class="external-link">bind_rows</a></span><span class="op">(</span><span class="fu">worldmet</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/worldmet/man/getMeta.html" class="external-link">getMeta</a></span><span class="op">(</span>country<span class="op">=</span><span class="st">"SG"</span>, plot <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>,</span>
-<span>                          <span class="fu">worldmet</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/worldmet/man/getMeta.html" class="external-link">getMeta</a></span><span class="op">(</span>country<span class="op">=</span><span class="st">"GA"</span>, plot <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>,</span>
-<span>                          <span class="fu">worldmet</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/worldmet/man/getMeta.html" class="external-link">getMeta</a></span><span class="op">(</span>country<span class="op">=</span><span class="st">"GV"</span>, plot <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>,</span>
-<span>                          <span class="fu">worldmet</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/worldmet/man/getMeta.html" class="external-link">getMeta</a></span><span class="op">(</span>country<span class="op">=</span><span class="st">"ML"</span>, plot <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>,</span>
-<span>                          <span class="fu">worldmet</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/worldmet/man/getMeta.html" class="external-link">getMeta</a></span><span class="op">(</span>country<span class="op">=</span><span class="st">"MR"</span>, plot <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>,</span>
-<span>                          <span class="fu">worldmet</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/worldmet/man/getMeta.html" class="external-link">getMeta</a></span><span class="op">(</span>country<span class="op">=</span><span class="st">"PU"</span>, plot <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<span><span class="va">sg_st</span> <span class="op">&lt;-</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind_rows.html" class="external-link">bind_rows</a></span><span class="op">(</span><span class="fu">worldmet</span><span class="fu">::</span><span class="fu"><a href="https://openair-project.github.io/worldmet/reference/getMeta.html" class="external-link">getMeta</a></span><span class="op">(</span>country<span class="op">=</span><span class="st">"SG"</span>, plot <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>,</span>
+<span>                          <span class="fu">worldmet</span><span class="fu">::</span><span class="fu"><a href="https://openair-project.github.io/worldmet/reference/getMeta.html" class="external-link">getMeta</a></span><span class="op">(</span>country<span class="op">=</span><span class="st">"GA"</span>, plot <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>,</span>
+<span>                          <span class="fu">worldmet</span><span class="fu">::</span><span class="fu"><a href="https://openair-project.github.io/worldmet/reference/getMeta.html" class="external-link">getMeta</a></span><span class="op">(</span>country<span class="op">=</span><span class="st">"GV"</span>, plot <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>,</span>
+<span>                          <span class="fu">worldmet</span><span class="fu">::</span><span class="fu"><a href="https://openair-project.github.io/worldmet/reference/getMeta.html" class="external-link">getMeta</a></span><span class="op">(</span>country<span class="op">=</span><span class="st">"ML"</span>, plot <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>,</span>
+<span>                          <span class="fu">worldmet</span><span class="fu">::</span><span class="fu"><a href="https://openair-project.github.io/worldmet/reference/getMeta.html" class="external-link">getMeta</a></span><span class="op">(</span>country<span class="op">=</span><span class="st">"MR"</span>, plot <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>,</span>
+<span>                          <span class="fu">worldmet</span><span class="fu">::</span><span class="fu"><a href="https://openair-project.github.io/worldmet/reference/getMeta.html" class="external-link">getMeta</a></span><span class="op">(</span>country<span class="op">=</span><span class="st">"PU"</span>, plot <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p>The station metadata looks like this:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sg_st</span></span></code></pre></div>
@@ -145,14 +144,14 @@ countries:</p>
 <span><span class="co">## <span style="color: #949494;"># ℹ 2 more variables: end &lt;date&gt;, code &lt;chr&gt;</span></span></span></code></pre>
 <p>Let’s assume that we want to interpolate weather for year 2020. We
 can download hourly weather station data for the selected stations and
-year 2020 using function <code><a href="https://rdrr.io/pkg/worldmet/man/importNOAA.html" class="external-link">importNOAA()</a></code> and programming a
+year 2020 using function <code><a href="https://openair-project.github.io/worldmet/reference/importNOAA.html" class="external-link">importNOAA()</a></code> and programming a
 loop over stations:</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">hourData</span> <span class="op">&lt;-</span> <span class="cn">NULL</span></span>
 <span><span class="kw">for</span><span class="op">(</span><span class="va">i</span> <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">sg_st</span><span class="op">$</span><span class="va">code</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">sg_st</span><span class="op">$</span><span class="va">code</span><span class="op">[</span><span class="va">i</span><span class="op">]</span>,<span class="st">" "</span><span class="op">)</span><span class="op">)</span></span>
 <span>  <span class="kw"><a href="https://rdrr.io/r/base/conditions.html" class="external-link">tryCatch</a></span><span class="op">(</span><span class="op">{</span></span>
-<span>    <span class="va">hi</span> <span class="op">&lt;-</span> <span class="fu">worldmet</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/worldmet/man/importNOAA.html" class="external-link">importNOAA</a></span><span class="op">(</span>code <span class="op">=</span> <span class="va">sg_st</span><span class="op">$</span><span class="va">code</span><span class="op">[</span><span class="va">i</span><span class="op">]</span>, year<span class="op">=</span><span class="fl">2020</span>, quiet<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span>
+<span>    <span class="va">hi</span> <span class="op">&lt;-</span> <span class="fu">worldmet</span><span class="fu">::</span><span class="fu"><a href="https://openair-project.github.io/worldmet/reference/importNOAA.html" class="external-link">importNOAA</a></span><span class="op">(</span>code <span class="op">=</span> <span class="va">sg_st</span><span class="op">$</span><span class="va">code</span><span class="op">[</span><span class="va">i</span><span class="op">]</span>, year<span class="op">=</span><span class="fl">2020</span>, quiet<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span>
 <span>    <span class="kw">if</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/NULL.html" class="external-link">is.null</a></span><span class="op">(</span><span class="va">hourData</span><span class="op">)</span><span class="op">)</span>  <span class="op">{</span><span class="va">hourData</span> <span class="op">&lt;-</span> <span class="va">hi</span><span class="op">}</span></span>
 <span>    <span class="kw">else</span> <span class="op">{</span><span class="va">hourData</span> <span class="op">&lt;-</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind_rows.html" class="external-link">bind_rows</a></span><span class="op">(</span><span class="va">hourData</span>,<span class="va">hi</span><span class="op">)</span><span class="op">}</span></span>
 <span>    <span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">" [success]."</span><span class="op">)</span></span>
@@ -326,13 +325,13 @@ object.</p>
 <span><span class="co">## MeanRelativeHumidity  28.65437146  29.09174731  50.854068  50.6953364</span></span>
 <span><span class="co">## MinRelativeHumidity   21.87662939  22.02252891  41.944510  42.4431496</span></span>
 <span><span class="co">## MaxRelativeHumidity   44.23668041  45.55919715  70.016819  67.8519075</span></span>
-<span><span class="co">## Radiation              2.61567898  15.27139843  15.655768  17.0814750</span></span>
+<span><span class="co">## Radiation              2.61567898  15.27139843  15.655768  17.0814753</span></span>
 <span><span class="co">## WindSpeed              2.26233592   2.26234598   2.708679   2.7086797</span></span>
 <span><span class="co">## WindDirection         57.40138707  57.40154733  57.401623  57.4016181</span></span>
-<span><span class="co">## PET                    1.26655319   4.14083508   4.264019   4.6983995</span></span>
+<span><span class="co">## PET                    1.26655319   4.14083508   4.264019   4.6983996</span></span>
 <span><span class="co">## elevation              1.31000000  34.45750000  48.660000  54.0612085</span></span>
 <span><span class="co">## slope                  0.01792378   0.09556268   0.188352   0.2429773</span></span>
-<span><span class="co">## aspect                67.35251383 168.39402989 192.848440 189.9267863</span></span>
+<span><span class="co">## aspect                67.35251383 168.39402989 192.848440 189.9203858</span></span>
 <span><span class="co">##                           3rd Qu.       Max. NA's</span></span>
 <span><span class="co">## MeanTemperature        29.9002891  30.169109 4556</span></span>
 <span><span class="co">## MinTemperature         26.1097100  26.201119 4556</span></span>
@@ -377,7 +376,7 @@ object.</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.2.</p>
 </div>
 
     </footer>

@@ -6,12 +6,11 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <title>Tidy meteoland • meteoland</title>
-<!-- favicons --><link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
-<link rel="icon" type="image/png" sizes="32x32" href="../favicon-32x32.png">
-<link rel="apple-touch-icon" type="image/png" sizes="180x180" href="../apple-touch-icon.png">
-<link rel="apple-touch-icon" type="image/png" sizes="120x120" href="../apple-touch-icon-120x120.png">
-<link rel="apple-touch-icon" type="image/png" sizes="76x76" href="../apple-touch-icon-76x76.png">
-<link rel="apple-touch-icon" type="image/png" sizes="60x60" href="../apple-touch-icon-60x60.png">
+<!-- favicons --><link rel="icon" type="image/png" sizes="96x96" href="../favicon-96x96.png">
+<link rel="icon" type="”image/svg+xml”" href="../favicon.svg">
+<link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png">
+<link rel="icon" sizes="any" href="../favicon.ico">
+<link rel="manifest" href="../site.webmanifest">
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
 <script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
@@ -26,7 +25,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">meteoland</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.2.3</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.2.4</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -79,11 +78,11 @@ Granda</h4>
     
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://emf-creaf.github.io/meteoland/">meteoland</a></span><span class="op">)</span></span>
-<span><span class="co">#&gt; Package 'meteoland' [ver. 2.2.3]</span></span>
+<span><span class="co">#&gt; Package 'meteoland' [ver. 2.2.4]</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://r-spatial.github.io/stars/" class="external-link">stars</a></span><span class="op">)</span></span>
 <span><span class="co">#&gt; Loading required package: abind</span></span>
 <span><span class="co">#&gt; Loading required package: sf</span></span>
-<span><span class="co">#&gt; Linking to GEOS 3.10.2, GDAL 3.4.1, PROJ 8.2.1; sf_use_s2() is TRUE</span></span>
+<span><span class="co">#&gt; Linking to GEOS 3.12.1, GDAL 3.8.4, PROJ 9.4.0; sf_use_s2() is TRUE</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Attaching package: 'dplyr'</span></span>
@@ -706,7 +705,7 @@ to explore a wider range of these values.</code></pre>
 <span><span class="va">interpolator</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/interpolator_calibration.html">interpolator_calibration</a></span><span class="op">(</span></span>
 <span>  <span class="va">interpolator</span>,</span>
 <span>  variable <span class="op">=</span> <span class="st">"MinTemperature"</span>,</span>
-<span>  N_seq <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">5</span>, <span class="fl">20</span><span class="op">)</span>,</span>
+<span>  N_seq <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">10</span>, <span class="fl">20</span><span class="op">)</span>,</span>
 <span>  alpha_seq <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">10</span><span class="op">)</span>,</span>
 <span>  update_interpolation_params <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span>
@@ -715,15 +714,15 @@ to explore a wider range of these values.</code></pre>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Number of stations used for MAE calculation: <span style="color: #0000BB;">185</span></span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Number of parameters combinations to test: <span style="color: #0000BB;">4</span></span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Starting evaluation of parameter combinations for <span style="color: #0000BB;">"MinTemperature"</span>...</span></span>
-<span><span class="co">#&gt; • Evaluating N: <span style="color: #0000BB;">5</span>, alpha: <span style="color: #0000BB;">1</span>...</span></span>
-<span><span class="co">#&gt; • Evaluating N: <span style="color: #0000BB;">5</span>, alpha: <span style="color: #0000BB;">10</span>...</span></span>
+<span><span class="co">#&gt; • Evaluating N: <span style="color: #0000BB;">10</span>, alpha: <span style="color: #0000BB;">1</span>...</span></span>
+<span><span class="co">#&gt; • Evaluating N: <span style="color: #0000BB;">10</span>, alpha: <span style="color: #0000BB;">10</span>...</span></span>
 <span><span class="co">#&gt; • Evaluating N: <span style="color: #0000BB;">20</span>, alpha: <span style="color: #0000BB;">1</span>...</span></span>
 <span><span class="co">#&gt; • Evaluating N: <span style="color: #0000BB;">20</span>, alpha: <span style="color: #0000BB;">10</span>...</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Calibration done: Minimum MAE: <span style="color: #0000BB;">1.6027204710918</span>; N: <span style="color: #0000BB;">5</span>; alpha: <span style="color: #0000BB;">1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Calibration done: Minimum MAE: <span style="color: #0000BB;">1.60272632009794</span>; N: <span style="color: #0000BB;">10</span>; alpha: <span style="color: #0000BB;">1</span></span></span>
 <span></span>
 <span><span class="co"># parameters after calibration</span></span>
 <span><span class="fu"><a href="../reference/get_interpolation_params.html">get_interpolation_params</a></span><span class="op">(</span><span class="va">interpolator</span><span class="op">)</span><span class="op">$</span><span class="va">N_MinTemperature</span></span>
-<span><span class="co">#&gt; [1] 5</span></span>
+<span><span class="co">#&gt; [1] 10</span></span>
 <span><span class="fu"><a href="../reference/get_interpolation_params.html">get_interpolation_params</a></span><span class="op">(</span><span class="va">interpolator</span><span class="op">)</span><span class="op">$</span><span class="va">alpha_MinTemperature</span></span>
 <span><span class="co">#&gt; [1] 1</span></span></code></pre></div>
 <p>One advantage of the new data flows in <code>meteoland</code> is that
@@ -734,19 +733,19 @@ interpolator, as well as the writing:</p>
 <span>  <span class="fu"><a href="../reference/create_meteo_interpolator.html">create_meteo_interpolator</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="../reference/interpolator_calibration.html">interpolator_calibration</a></span><span class="op">(</span></span>
 <span>    variable <span class="op">=</span> <span class="st">"MinTemperature"</span>,</span>
-<span>    N_seq <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">5</span>, <span class="fl">20</span><span class="op">)</span>,</span>
+<span>    N_seq <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">10</span>, <span class="fl">20</span><span class="op">)</span>,</span>
 <span>    alpha_seq <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">10</span><span class="op">)</span>,</span>
 <span>    update_interpolation_params <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span>  <span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="../reference/interpolator_calibration.html">interpolator_calibration</a></span><span class="op">(</span></span>
 <span>    variable <span class="op">=</span> <span class="st">"MaxTemperature"</span>,</span>
-<span>    N_seq <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">5</span>, <span class="fl">20</span><span class="op">)</span>,</span>
+<span>    N_seq <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">10</span>, <span class="fl">20</span><span class="op">)</span>,</span>
 <span>    alpha_seq <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">10</span><span class="op">)</span>,</span>
 <span>    update_interpolation_params <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span>  <span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="../reference/interpolator_calibration.html">interpolator_calibration</a></span><span class="op">(</span></span>
 <span>    variable <span class="op">=</span> <span class="st">"DewTemperature"</span>,</span>
-<span>    N_seq <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">5</span>, <span class="fl">20</span><span class="op">)</span>,</span>
+<span>    N_seq <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">10</span>, <span class="fl">20</span><span class="op">)</span>,</span>
 <span>    alpha_seq <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">10</span><span class="op">)</span>,</span>
 <span>    update_interpolation_params <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span>  <span class="op">)</span> <span class="op">|&gt;</span></span>
@@ -767,31 +766,31 @@ interpolator, as well as the writing:</p>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Number of stations used for MAE calculation: <span style="color: #0000BB;">185</span></span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Number of parameters combinations to test: <span style="color: #0000BB;">4</span></span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Starting evaluation of parameter combinations for <span style="color: #0000BB;">"MinTemperature"</span>...</span></span>
-<span><span class="co">#&gt; • Evaluating N: <span style="color: #0000BB;">5</span>, alpha: <span style="color: #0000BB;">1</span>...</span></span>
-<span><span class="co">#&gt; • Evaluating N: <span style="color: #0000BB;">5</span>, alpha: <span style="color: #0000BB;">10</span>...</span></span>
+<span><span class="co">#&gt; • Evaluating N: <span style="color: #0000BB;">10</span>, alpha: <span style="color: #0000BB;">1</span>...</span></span>
+<span><span class="co">#&gt; • Evaluating N: <span style="color: #0000BB;">10</span>, alpha: <span style="color: #0000BB;">10</span>...</span></span>
 <span><span class="co">#&gt; • Evaluating N: <span style="color: #0000BB;">20</span>, alpha: <span style="color: #0000BB;">1</span>...</span></span>
 <span><span class="co">#&gt; • Evaluating N: <span style="color: #0000BB;">20</span>, alpha: <span style="color: #0000BB;">10</span>...</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Calibration done: Minimum MAE: <span style="color: #0000BB;">1.6027204710918</span>; N: <span style="color: #0000BB;">5</span>; alpha: <span style="color: #0000BB;">1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Calibration done: Minimum MAE: <span style="color: #0000BB;">1.60272632009794</span>; N: <span style="color: #0000BB;">10</span>; alpha: <span style="color: #0000BB;">1</span></span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Total number of stations: <span style="color: #0000BB;">189</span></span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Number of stations with available data: <span style="color: #0000BB;">185</span></span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Number of stations used for MAE calculation: <span style="color: #0000BB;">185</span></span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Number of parameters combinations to test: <span style="color: #0000BB;">4</span></span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Starting evaluation of parameter combinations for <span style="color: #0000BB;">"MaxTemperature"</span>...</span></span>
-<span><span class="co">#&gt; • Evaluating N: <span style="color: #0000BB;">5</span>, alpha: <span style="color: #0000BB;">1</span>...</span></span>
-<span><span class="co">#&gt; • Evaluating N: <span style="color: #0000BB;">5</span>, alpha: <span style="color: #0000BB;">10</span>...</span></span>
+<span><span class="co">#&gt; • Evaluating N: <span style="color: #0000BB;">10</span>, alpha: <span style="color: #0000BB;">1</span>...</span></span>
+<span><span class="co">#&gt; • Evaluating N: <span style="color: #0000BB;">10</span>, alpha: <span style="color: #0000BB;">10</span>...</span></span>
 <span><span class="co">#&gt; • Evaluating N: <span style="color: #0000BB;">20</span>, alpha: <span style="color: #0000BB;">1</span>...</span></span>
 <span><span class="co">#&gt; • Evaluating N: <span style="color: #0000BB;">20</span>, alpha: <span style="color: #0000BB;">10</span>...</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Calibration done: Minimum MAE: <span style="color: #0000BB;">1.53561011116304</span>; N: <span style="color: #0000BB;">5</span>; alpha: <span style="color: #0000BB;">1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Calibration done: Minimum MAE: <span style="color: #0000BB;">1.53562144932804</span>; N: <span style="color: #0000BB;">10</span>; alpha: <span style="color: #0000BB;">1</span></span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Total number of stations: <span style="color: #0000BB;">189</span></span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Number of stations with available data: <span style="color: #0000BB;">185</span></span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Number of stations used for MAE calculation: <span style="color: #0000BB;">185</span></span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Number of parameters combinations to test: <span style="color: #0000BB;">4</span></span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Starting evaluation of parameter combinations for <span style="color: #0000BB;">"DewTemperature"</span>...</span></span>
-<span><span class="co">#&gt; • Evaluating N: <span style="color: #0000BB;">5</span>, alpha: <span style="color: #0000BB;">1</span>...</span></span>
-<span><span class="co">#&gt; • Evaluating N: <span style="color: #0000BB;">5</span>, alpha: <span style="color: #0000BB;">10</span>...</span></span>
+<span><span class="co">#&gt; • Evaluating N: <span style="color: #0000BB;">10</span>, alpha: <span style="color: #0000BB;">1</span>...</span></span>
+<span><span class="co">#&gt; • Evaluating N: <span style="color: #0000BB;">10</span>, alpha: <span style="color: #0000BB;">10</span>...</span></span>
 <span><span class="co">#&gt; • Evaluating N: <span style="color: #0000BB;">20</span>, alpha: <span style="color: #0000BB;">1</span>...</span></span>
 <span><span class="co">#&gt; • Evaluating N: <span style="color: #0000BB;">20</span>, alpha: <span style="color: #0000BB;">10</span>...</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Calibration done: Minimum MAE: <span style="color: #0000BB;">2.52357658243</span>; N: <span style="color: #0000BB;">5</span>; alpha: <span style="color: #0000BB;">10</span></span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Calibration done: Minimum MAE: <span style="color: #0000BB;">2.52763750837408</span>; N: <span style="color: #0000BB;">10</span>; alpha: <span style="color: #0000BB;">10</span></span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Creating nc file following the NetCDF-CF conventions <span style="color: #0000BB; font-style: italic;">&lt;https://cfconventions.org/cf-conventions/cf-conventions.html&gt;</span></span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Adding spatial info to nc file</span></span>
 <span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Done</span></span></code></pre></div>
@@ -856,16 +855,16 @@ measures.</p>
 <span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 30 × 19</span></span></span>
 <span><span class="co">#&gt;    dates               MinTemperature_date_bias MaxTemperature_date_bias</span></span>
 <span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;dttm&gt;</span>                                 <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>                    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> 2022-04-01 <span style="color: #949494;">00:00:00</span>                -<span style="color: #BB0000;">0.065</span><span style="color: #BB0000; text-decoration: underline;">0</span>                    0.007<span style="text-decoration: underline;">06</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> 2022-04-01 <span style="color: #949494;">00:00:00</span>                -<span style="color: #BB0000;">0.065</span><span style="color: #BB0000; text-decoration: underline;">0</span>                    0.007<span style="text-decoration: underline;">05</span></span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> 2022-04-02 <span style="color: #949494;">00:00:00</span>                -<span style="color: #BB0000;">0.065</span><span style="color: #BB0000; text-decoration: underline;">3</span>                   -<span style="color: #BB0000;">0.037</span><span style="color: #BB0000; text-decoration: underline;">5</span> </span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> 2022-04-03 <span style="color: #949494;">00:00:00</span>                -<span style="color: #BB0000;">0.093</span><span style="color: #BB0000; text-decoration: underline;">2</span>                   -<span style="color: #BB0000;">0.199</span>  </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> 2022-04-04 <span style="color: #949494;">00:00:00</span>                 0.004<span style="text-decoration: underline;">43</span>                  -<span style="color: #BB0000;">0.057</span><span style="color: #BB0000; text-decoration: underline;">7</span> </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> 2022-04-04 <span style="color: #949494;">00:00:00</span>                 0.004<span style="text-decoration: underline;">44</span>                  -<span style="color: #BB0000;">0.057</span><span style="color: #BB0000; text-decoration: underline;">7</span> </span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> 2022-04-05 <span style="color: #949494;">00:00:00</span>                -<span style="color: #BB0000;">0.036</span><span style="color: #BB0000; text-decoration: underline;">3</span>                   -<span style="color: #BB0000;">0.168</span>  </span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> 2022-04-06 <span style="color: #949494;">00:00:00</span>                -<span style="color: #BB0000;">0.025</span><span style="color: #BB0000; text-decoration: underline;">4</span>                   -<span style="color: #BB0000;">0.096</span><span style="color: #BB0000; text-decoration: underline;">0</span> </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> 2022-04-07 <span style="color: #949494;">00:00:00</span>                -<span style="color: #BB0000;">0.055</span><span style="color: #BB0000; text-decoration: underline;">6</span>                   -<span style="color: #BB0000;">0.063</span><span style="color: #BB0000; text-decoration: underline;">5</span> </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> 2022-04-07 <span style="color: #949494;">00:00:00</span>                -<span style="color: #BB0000;">0.055</span><span style="color: #BB0000; text-decoration: underline;">6</span>                   -<span style="color: #BB0000;">0.063</span><span style="color: #BB0000; text-decoration: underline;">6</span> </span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> 2022-04-08 <span style="color: #949494;">00:00:00</span>                -<span style="color: #BB0000;">0.042</span><span style="color: #BB0000; text-decoration: underline;">3</span>                   -<span style="color: #BB0000;">0.087</span><span style="color: #BB0000; text-decoration: underline;">9</span> </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> 2022-04-09 <span style="color: #949494;">00:00:00</span>                -<span style="color: #BB0000;">0.004</span><span style="color: #BB0000; text-decoration: underline;">75</span>                  -<span style="color: #BB0000;">0.151</span>  </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> 2022-04-10 <span style="color: #949494;">00:00:00</span>                 0.000<span style="text-decoration: underline;">355</span>                 -<span style="color: #BB0000;">0.021</span><span style="color: #BB0000; text-decoration: underline;">7</span> </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> 2022-04-09 <span style="color: #949494;">00:00:00</span>                -<span style="color: #BB0000;">0.004</span><span style="color: #BB0000; text-decoration: underline;">76</span>                  -<span style="color: #BB0000;">0.152</span>  </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> 2022-04-10 <span style="color: #949494;">00:00:00</span>                 0.000<span style="text-decoration: underline;">356</span>                 -<span style="color: #BB0000;">0.021</span><span style="color: #BB0000; text-decoration: underline;">7</span> </span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># ℹ 20 more rows</span></span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># ℹ 16 more variables: RangeTemperature_date_bias &lt;dbl&gt;,</span></span></span>
 <span><span class="co">#&gt; <span style="color: #949494;">#   RelativeHumidity_date_bias &lt;dbl&gt;, Radiation_date_bias &lt;dbl&gt;,</span></span></span>
@@ -875,19 +874,19 @@ measures.</p>
 <span><span class="co">#&gt; <span style="color: #949494;">#   TotalPrecipitation_date_predicted &lt;dbl&gt;, …</span></span></span>
 <span><span class="va">cross_validation</span><span class="op">$</span><span class="va">r2</span></span>
 <span><span class="co">#&gt; $MinTemperature</span></span>
-<span><span class="co">#&gt; [1] 0.9078204</span></span>
+<span><span class="co">#&gt; [1] 0.9078197</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $MaxTemperature</span></span>
-<span><span class="co">#&gt; [1] 0.9480268</span></span>
+<span><span class="co">#&gt; [1] 0.9480262</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $RangeTemperature</span></span>
-<span><span class="co">#&gt; [1] 0.7381057</span></span>
+<span><span class="co">#&gt; [1] 0.7381034</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $RelativeHumidity</span></span>
-<span><span class="co">#&gt; [1] 0.5239921</span></span>
+<span><span class="co">#&gt; [1] 0.5231079</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $Radiation</span></span>
-<span><span class="co">#&gt; [1] 0.8179956</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] 0.8179651</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="interpolation-utils">Interpolation utils<a class="anchor" aria-label="anchor" href="#interpolation-utils"></a>
@@ -1096,32 +1095,32 @@ interpolator object we created before, we will use it.</p>
 <span><span class="co">#&gt; stars object with 3 dimensions and 14 attributes</span></span>
 <span><span class="co">#&gt; attribute(s):</span></span>
 <span><span class="co">#&gt;                              Min.     1st Qu.      Median       Mean    3rd Qu.</span></span>
-<span><span class="co">#&gt; MeanTemperature         2.8490685  11.4140124  13.7598565  13.112530  15.735033</span></span>
-<span><span class="co">#&gt; MinTemperature         -3.9757908   5.2174761   7.2458931   6.133787   8.331070</span></span>
-<span><span class="co">#&gt; MaxTemperature          7.2863532  14.4514222  18.2719171  17.649865  21.016998</span></span>
+<span><span class="co">#&gt; MeanTemperature         2.8490648  11.4140076  13.7598510  13.112524  15.735024</span></span>
+<span><span class="co">#&gt; MinTemperature         -3.9757928   5.2174718   7.2458877   6.133785   8.331064</span></span>
+<span><span class="co">#&gt; MaxTemperature          7.2863484  14.4514055  18.2719087  17.649855  21.016983</span></span>
 <span><span class="co">#&gt; Precipitation           0.0000000   0.0000000   0.0000000   2.032412   0.000000</span></span>
-<span><span class="co">#&gt; MeanRelativeHumidity   38.4046701  57.9488939  64.6675057  65.883604  72.902099</span></span>
-<span><span class="co">#&gt; MinRelativeHumidity    29.1944822  41.4375541  47.1815665  49.919633  55.107484</span></span>
-<span><span class="co">#&gt; MaxRelativeHumidity    57.6690290  99.8283631 100.0000000  96.890080 100.000000</span></span>
-<span><span class="co">#&gt; Radiation               7.0824367  16.3640048  21.1338825  19.681679  23.762288</span></span>
+<span><span class="co">#&gt; MeanRelativeHumidity   38.4267872  57.9520715  64.6876407  65.897412  72.914524</span></span>
+<span><span class="co">#&gt; MinRelativeHumidity    29.1965595  41.4457445  47.1793793  49.929963  55.104881</span></span>
+<span><span class="co">#&gt; MaxRelativeHumidity    57.7022192  99.8411153 100.0000000  96.895373 100.000000</span></span>
+<span><span class="co">#&gt; Radiation               7.0825040  16.3638164  21.1332488  19.681308  23.761188</span></span>
 <span><span class="co">#&gt; WindSpeed               0.1360482   0.4943011   0.9828521   1.226064   1.760093</span></span>
 <span><span class="co">#&gt; WindDirection           5.6223719 133.2179877 192.2048919 184.924892 266.634100</span></span>
-<span><span class="co">#&gt; PET                     1.0799252   2.4105199   3.1073349   2.994288   3.634284</span></span>
+<span><span class="co">#&gt; PET                     1.0797807   2.4104736   3.1072622   2.994170   3.633948</span></span>
 <span><span class="co">#&gt; elevation             240.0000000 370.0000000 447.0000000 460.322314 525.000000</span></span>
 <span><span class="co">#&gt; slope                   1.4320962   5.7204332  11.3481197  13.073426  19.758511</span></span>
 <span><span class="co">#&gt; aspect                  5.1944275  74.7448807 174.3693237 181.679232 291.037506</span></span>
 <span><span class="co">#&gt;                             Max. NA's</span></span>
-<span><span class="co">#&gt; MeanTemperature        19.994545    0</span></span>
-<span><span class="co">#&gt; MinTemperature         11.397858    0</span></span>
-<span><span class="co">#&gt; MaxTemperature         26.415313    0</span></span>
+<span><span class="co">#&gt; MeanTemperature        19.994531    0</span></span>
+<span><span class="co">#&gt; MinTemperature         11.397862    0</span></span>
+<span><span class="co">#&gt; MaxTemperature         26.415294    0</span></span>
 <span><span class="co">#&gt; Precipitation          13.948289    0</span></span>
 <span><span class="co">#&gt; MeanRelativeHumidity  100.000000    0</span></span>
-<span><span class="co">#&gt; MinRelativeHumidity    91.378195    0</span></span>
+<span><span class="co">#&gt; MinRelativeHumidity    91.400189    0</span></span>
 <span><span class="co">#&gt; MaxRelativeHumidity   100.000000    0</span></span>
-<span><span class="co">#&gt; Radiation              27.507153    0</span></span>
+<span><span class="co">#&gt; Radiation              27.506054    0</span></span>
 <span><span class="co">#&gt; WindSpeed               3.782339    0</span></span>
 <span><span class="co">#&gt; WindDirection         341.434389 1331</span></span>
-<span><span class="co">#&gt; PET                     4.681350    0</span></span>
+<span><span class="co">#&gt; PET                     4.680851    0</span></span>
 <span><span class="co">#&gt; elevation             786.000000    0</span></span>
 <span><span class="co">#&gt; slope                  31.071896    0</span></span>
 <span><span class="co">#&gt; aspect                360.000000    0</span></span>
@@ -1148,29 +1147,29 @@ format can also be aggregated temporally.</p>
 <span><span class="co">#&gt; stars object with 3 dimensions and 11 attributes</span></span>
 <span><span class="co">#&gt; attribute(s):</span></span>
 <span><span class="co">#&gt;                              Min.     1st Qu.      Median       Mean    3rd Qu.</span></span>
-<span><span class="co">#&gt; MeanTemperature         3.4231321  11.3148331  12.9934711  12.389619  15.344801</span></span>
-<span><span class="co">#&gt; MinTemperature         -2.8484722   3.6641287   7.1416303   5.430248   8.110323</span></span>
-<span><span class="co">#&gt; MaxTemperature          7.5007098  15.8406986  17.4581810  16.914360  19.987659</span></span>
+<span><span class="co">#&gt; MeanTemperature         3.4231242  11.3148273  12.9934658  12.389613  15.344793</span></span>
+<span><span class="co">#&gt; MinTemperature         -2.8484754   3.6641267   7.1416277   5.430246   8.110321</span></span>
+<span><span class="co">#&gt; MaxTemperature          7.5006989  15.8406904  17.4581732  16.914350  19.987648</span></span>
 <span><span class="co">#&gt; Precipitation           0.0000000   0.0000000   0.6909051   1.761854   2.198979</span></span>
-<span><span class="co">#&gt; MeanRelativeHumidity   43.5098418  57.1389592  65.6719708  64.012805  70.918833</span></span>
-<span><span class="co">#&gt; MinRelativeHumidity    32.3273448  41.3883368  48.1120850  48.379066  54.795645</span></span>
-<span><span class="co">#&gt; MaxRelativeHumidity    70.3602839  95.4932615  99.4412483  94.914150 100.000000</span></span>
-<span><span class="co">#&gt; Radiation              12.0626614  17.5780911  19.5819002  19.729816  22.125481</span></span>
+<span><span class="co">#&gt; MeanRelativeHumidity   43.5236496  57.1458476  65.6950977  64.026954  70.938816</span></span>
+<span><span class="co">#&gt; MinRelativeHumidity    32.3377893  41.3946450  48.1248785  48.389657  54.801677</span></span>
+<span><span class="co">#&gt; MaxRelativeHumidity    70.3819446  95.5026366  99.4423268  94.921346 100.000000</span></span>
+<span><span class="co">#&gt; Radiation              12.0625342  17.5779569  19.5813399  19.729452  22.125191</span></span>
 <span><span class="co">#&gt; WindSpeed               0.4260045   0.9835564   1.0015541   1.394959   1.659769</span></span>
 <span><span class="co">#&gt; WindDirection         145.0180598 145.0181215 175.2971446 175.297140 205.576159</span></span>
-<span><span class="co">#&gt; PET                     1.5436698   2.6916067   2.9990159   2.988580   3.320094</span></span>
+<span><span class="co">#&gt; PET                     1.5434263   2.6915520   2.9987228   2.988443   3.319860</span></span>
 <span><span class="co">#&gt;                             Max. NA's</span></span>
-<span><span class="co">#&gt; MeanTemperature        17.027719    0</span></span>
+<span><span class="co">#&gt; MeanTemperature        17.027711    0</span></span>
 <span><span class="co">#&gt; MinTemperature          9.419550    0</span></span>
-<span><span class="co">#&gt; MaxTemperature         22.354708    0</span></span>
+<span><span class="co">#&gt; MaxTemperature         22.354696    0</span></span>
 <span><span class="co">#&gt; Precipitation           6.150887    0</span></span>
-<span><span class="co">#&gt; MeanRelativeHumidity   87.501581    0</span></span>
-<span><span class="co">#&gt; MinRelativeHumidity    70.118399    0</span></span>
+<span><span class="co">#&gt; MeanRelativeHumidity   87.508839    0</span></span>
+<span><span class="co">#&gt; MinRelativeHumidity    70.124105    0</span></span>
 <span><span class="co">#&gt; MaxRelativeHumidity   100.000000    0</span></span>
-<span><span class="co">#&gt; Radiation              25.537752    0</span></span>
+<span><span class="co">#&gt; Radiation              25.537471    0</span></span>
 <span><span class="co">#&gt; WindSpeed               2.903910    0</span></span>
 <span><span class="co">#&gt; WindDirection         205.576212  363</span></span>
-<span><span class="co">#&gt; PET                     3.979733    0</span></span>
+<span><span class="co">#&gt; PET                     3.979590    0</span></span>
 <span><span class="co">#&gt; dimension(s):</span></span>
 <span><span class="co">#&gt;      from to          offset    delta  refsys point x/y</span></span>
 <span><span class="co">#&gt; time    1  5 2022-03-28 CEST   7 days POSIXct    NA    </span></span>
@@ -1438,7 +1437,7 @@ deprecated in <code>meteoland</code>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.2.</p>
 </div>
 
     </footer>

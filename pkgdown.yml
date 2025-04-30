@@ -1,11 +1,11 @@
 pandoc: '3.2'
-pkgdown: 2.1.1
+pkgdown: 2.1.2
 pkgdown_sha: ~
 articles:
   examples/interpolation-senegal: examples/interpolation-senegal.html
   reshaping-meteo: reshaping-meteo.html
   tidy-meteoland: tidy-meteoland.html
-last_built: 2025-01-16T16:53Z
+last_built: 2025-04-30T09:16Z
 urls:
   reference: https://emf-creaf.github.io/meteoland/reference
   article: https://emf-creaf.github.io/meteoland/articles

@@ -1,5 +1,4 @@
 # test data needed
-skip()
 
 
 ## Radiation functions tests ####

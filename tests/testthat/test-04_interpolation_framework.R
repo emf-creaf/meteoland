@@ -367,7 +367,7 @@ test_that("interpolation process works as intended", {
 
   expect_warning(
     interpolate_data(low_n_trigger_points, low_n_interpolator),
-    "zero product weights in weighted regression"
+    "Could not perform temperature interpolation"
   )
 })
 
@@ -394,10 +394,19 @@ test_that("interpolator calibration works as expected", {
     interpolator_calibration(interpolator_no_meteo_names),
     "Names found in interpolator don't comply with the required names"
   )
-  # N under 10
+  # N under 10 only for temps
   expect_error(
     interpolator_calibration(meteoland_interpolator_example, N_seq = c(5, 10), alpha_seq = c(9, 9.5)),
     "start at 10 or bigger"
+  )
+  expect_type(
+    suppressWarnings(
+      interpolator_calibration(
+        meteoland_interpolator_example, variable = "DewTemperature",
+        N_seq = c(5, 10), alpha_seq = c(9, 9.5)
+      )
+    ),
+    'list'
   )
 
   expect_type(

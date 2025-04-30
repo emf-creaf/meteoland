@@ -1022,7 +1022,7 @@ interpolator_calibration <- function(
       if (variable %in% c("MinTemperature", "MaxTemperature", "DewTemperature")) {
         mae_matrix[as.character(i), as.character(j)] <-
           mean(abs(predicted_variable_matrix - selected_variable_matrix), na.rm = TRUE)
-        
+
         # check if NAs are generated (weights are zero for the parameter combination) and increase
         # MAE to discard this parameter combination. Remember, increased MAE has to be bigger than
         # the min_mae initial value (min_mae <- 9999999.0)

@@ -1,3 +1,6 @@
+# meteoland 2.2.5
+- Swap interpolated MinTemperature and MaxTemperature values when MinTemperature > MaxTemperature
+
 # meteoland 2.2.4
 - Warning raised for interpolation weights that would generate NaN in temperature interpolation (NA is returned), added tests, fix #33
 

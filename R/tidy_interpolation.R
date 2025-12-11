@@ -190,7 +190,18 @@
       iterations = get_interpolation_params(interpolator)$iterations,
       debug = get_interpolation_params(interpolator)$debug
     )
-
+    
+    # Swap values if tmin > tmax
+    swap_filter <- (tmin > tmax)
+    swap_filter[!target_filter, ] <- FALSE
+    swap_filter[is.na(swap_filter)] <- FALSE
+    if(sum(swap_filter)>0) {
+      tmax_tmp <- tmax[swap_filter]
+      tmax[swap_filter] <- tmin[swap_filter]
+      tmin[swap_filter] <- tmax_tmp
+    }
+    
+    # Estimate tmean
     tmean <- 0.606*tmax+0.394*tmin
   }
 

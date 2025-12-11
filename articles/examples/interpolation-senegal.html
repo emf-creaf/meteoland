@@ -25,7 +25,7 @@
 
     <a class="navbar-brand me-2" href="../../index.html">meteoland</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.2.4</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.2.5</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -69,7 +69,7 @@
                         <h4 data-toc-skip class="author">Miquel De
 Cáceres</h4>
             
-            <h4 data-toc-skip class="date">2025-04-30</h4>
+            <h4 data-toc-skip class="date">2025-12-11</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/emf-creaf/meteoland/blob/HEAD/vignettes/examples/interpolation-senegal.Rmd" class="external-link"><code>vignettes/examples/interpolation-senegal.Rmd</code></a></small>
       <div class="d-none name"><code>interpolation-senegal.Rmd</code></div>
@@ -232,7 +232,7 @@ the study area. In our case we will use the following code:</p>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html" class="external-link">geom_sf</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">sf_sen</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>, size <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span><span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/lims.html" class="external-link">xlim</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">20</span>,<span class="fl">0</span><span class="op">)</span><span class="op">)</span><span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/lims.html" class="external-link">ylim</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">30</span><span class="op">)</span><span class="op">)</span><span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_bw</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<p><img src="interpolation-senegal_files/figure-html/unnamed-chunk-13-1.png" width="384"></p>
+<p><img src="interpolation-senegal_files/figure-html/unnamed-chunk-13-1.png" class="r-plt" width="384"></p>
 </div>
 <div class="section level2">
 <h2 id="accessing-and-arranging-topographic-data">Accessing and arranging topographic data<a class="anchor" aria-label="anchor" href="#accessing-and-arranging-topographic-data"></a>
@@ -246,7 +246,7 @@ download elevation data for Senegal:</p>
 <span><span class="fu"><a href="https://rspatial.github.io/terra/reference/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">elev_raster</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="st">"elevation"</span></span>
 <span><span class="va">elev_raster</span></span></code></pre></div>
 <pre><code><span><span class="co">## class       : SpatRaster </span></span>
-<span><span class="co">## dimensions  : 564, 780, 1  (nrow, ncol, nlyr)</span></span>
+<span><span class="co">## size        : 564, 780, 1  (nrow, ncol, nlyr)</span></span>
 <span><span class="co">## resolution  : 0.008333333, 0.008333333  (x, y)</span></span>
 <span><span class="co">## extent      : -17.7, -11.2, 12.1, 16.8  (xmin, xmax, ymin, ymax)</span></span>
 <span><span class="co">## coord. ref. : lon/lat WGS 84 (EPSG:4326) </span></span>
@@ -272,7 +272,7 @@ package:</p>
 <span><span class="va">p3</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="op">)</span><span class="op">+</span></span>
 <span>  <span class="fu">tidyterra</span><span class="fu">::</span><span class="fu"><a href="https://dieghernan.github.io/tidyterra/reference/geom_spatraster.html" class="external-link">geom_spatraster</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">aspect_raster</span><span class="op">)</span></span>
 <span><span class="fu">cowplot</span><span class="fu">::</span><span class="fu"><a href="https://wilkelab.org/cowplot/reference/plot_grid.html" class="external-link">plot_grid</a></span><span class="op">(</span><span class="va">p1</span>, <span class="va">p2</span>, <span class="va">p3</span>, nrow<span class="op">=</span><span class="fl">3</span><span class="op">)</span></span></code></pre></div>
-<p><img src="interpolation-senegal_files/figure-html/unnamed-chunk-16-1.png" width="384"></p>
+<p><img src="interpolation-senegal_files/figure-html/unnamed-chunk-16-1.png" class="r-plt" width="384"></p>
 <p>We now assemble the three rasters into a single object:</p>
 <div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">topo_spatraster</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">elev_raster</span>, <span class="va">slope_raster</span>, <span class="va">aspect_raster</span><span class="op">)</span></span></code></pre></div>
@@ -363,7 +363,7 @@ object.</p>
 <span>      <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_viridis.html" class="external-link">scale_fill_viridis_c</a></span><span class="op">(</span><span class="op">)</span><span class="op">+</span></span>
 <span>      <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>title <span class="op">=</span> <span class="st">"2020-07-01"</span><span class="op">)</span></span>
 <span><span class="fu">cowplot</span><span class="fu">::</span><span class="fu"><a href="https://wilkelab.org/cowplot/reference/plot_grid.html" class="external-link">plot_grid</a></span><span class="op">(</span><span class="va">p1</span>, <span class="va">p2</span>, nrow <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></code></pre></div>
-<p><img src="interpolation-senegal_files/figure-html/unnamed-chunk-22-1.png" width="672"></p>
+<p><img src="interpolation-senegal_files/figure-html/unnamed-chunk-22-1.png" class="r-plt" width="672"></p>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>
@@ -376,7 +376,7 @@ object.</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.2.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
 </div>
 
     </footer>

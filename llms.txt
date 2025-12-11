@@ -1,0 +1,234 @@
+# Landscape meteorology tools
+
+[![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/meteoland)](https://cran.r-project.org/package=meteoland)
+[![](https://cranlogs.r-pkg.org/badges/meteoland)](https://cran.rstudio.com/web/packages/meteoland/index.html)
+[![R-CMD-check](https://github.com/emf-creaf/meteoland/workflows/R-CMD-check/badge.svg)](https://github.com/emf-creaf/meteoland/actions)
+
+## Important notice
+
+Starting on June 2023, `rgdal`, `rgeos` and `maptools` R packages
+entered a *maintenance* mode (meaning no new updates). Coincidentally,
+`sp` and `raster` packages are now superseded by the more modern
+alternatives `sf`, `stars` and `terra`. This means that the `meteoland`
+classes, which are based on `sp`, need to be updated to deal with these
+changes in the R-spatial ecosystem.
+
+Starting with version 2.0.0 of `meteoland` (February 2023) all
+functions, methods and classes based on or using the `sp`, `raster` and
+`rgdal` package were soft-deprecated.
+
+> **Since ver. 2.1.0, these functions, methods and classes have been
+> removed from the package**
+
+See the [*Tidy
+meteoland*](https://emf-creaf.github.io/meteoland/articles/tidy-meteoland.html)
+vignette for more info about this changes.
+
+## Introduction
+
+With the aim to assist research of climatic impacts on forests, the R
+package `meteoland` provides utilities to estimate daily weather
+variables at any position over complex terrains (De Cáceres et al 2018):
+
+- Spatial interpolation of daily weather records from meteorological
+  stations.
+- Statistical correction of meteorological data series (e.g from climate
+  models). Note that this functionality is deprecated starting in
+  version 2.0.0.
+- Multisite and multivariate stochastic weather generation. Note that
+  this functionality is deprecated starting in version 2.0.0.
+
+## Package installation and documentation
+
+Package **meteoland** can be found at
+[CRAN](https://cran.r-project.org/), but the version in this repository
+may not be the most recent one. Latest stable versions can be downloaded
+and installed from GitHub as follows (package `remotes` should be
+installed first):
+
+``` r
+remotes::install_github("emf-creaf/meteoland")
+```
+
+Detailed documentation regarding **meteoland** calculation routines can
+be found at (<https://emf-creaf.github.io/meteolandbook/index.html>).
+
+## Companion packages
+
+### Package meteospain
+
+During the development of **meteoland** some functions to download
+weather station data from several Spanish networks were originally
+developed. After **meteoland** version 1.0.1, the user is recommended to
+use package [**meteospain**](https://emf-creaf.github.io/meteospain/),
+which can also be found at
+[CRAN](https://cran.rstudio.com/web/packages/meteospain/index.html).
+Functions to download weather station data are still available in
+**meteoland** but they have been deprecated and make internal calls to
+functions in package
+[**meteospain**](https://emf-creaf.github.io/meteospain/).
+
+### Packages medfate and medfateland
+
+Package **meteoland** has been designed to provide input weather data
+for simulations of forest function and dynamics via the following
+packages
+
+- Package [**medfate**](https://emf-creaf.github.io/medfate) provides
+  functions for simulating forest function and dynamics.
+- Package [**medfateland**](https://emf-creaf.github.io/medfateland)
+  extends **medfate** by allowing simulations to be performed in a
+  spatially explicit context.
+
+## Authorship
+
+R package **meteoland** is developed and maintained by the [*Ecosystem
+Modelling Facility*](https://emf.creaf.cat) at CREAF (Catalonia, Spain).
+
+## References
+
+- De Caceres M, Martin-StPaul N, Turco M, Cabon A, Granda V (2018)
+  Estimating daily meteorological data and downscaling climate models
+  over landscapes. Environmental Modelling and Software 108: 186-196.
+  (<doi:10.1016/j.envsoft.2018.08.003>).
+
+# Package index
+
+## Daily weather interpolation
+
+Functions for daily weather interpolation
+
+- [`add_topo()`](https://emf-creaf.github.io/meteoland/reference/add_topo.md)
+  : Add topography data to meteo object
+- [`create_meteo_interpolator()`](https://emf-creaf.github.io/meteoland/reference/create_meteo_interpolator.md)
+  : Meteoland interpolator creation
+- [`get_interpolation_params()`](https://emf-creaf.github.io/meteoland/reference/get_interpolation_params.md)
+  : Retrieving interpolation parameters from interpolator object
+- [`interpolate_data()`](https://emf-creaf.github.io/meteoland/reference/interpolate_data.md)
+  : Interpolation process for spatial data
+- [`defaultInterpolationParams()`](https://emf-creaf.github.io/meteoland/reference/defaultInterpolationParams.md)
+  : Default interpolation parameters
+- [`set_interpolation_params()`](https://emf-creaf.github.io/meteoland/reference/set_interpolation_params.md)
+  : Setting interpolation parameters in an interpolator object
+- [`summarise_interpolated_data()`](https://emf-creaf.github.io/meteoland/reference/summarise_interpolated_data.md)
+  **\[experimental\]** : Summarise interpolated data by temporal
+  dimension
+- [`summarise_interpolator()`](https://emf-creaf.github.io/meteoland/reference/summarise_interpolator.md)
+  **\[experimental\]** : Summarise interpolator objects by temporal
+  dimension
+- [`interpolation_cross_validation()`](https://emf-creaf.github.io/meteoland/reference/interpolator_calibration.md)
+  [`interpolator_calibration()`](https://emf-creaf.github.io/meteoland/reference/interpolator_calibration.md)
+  : Calibration and validation of interpolation procedures
+- [`with_meteo()`](https://emf-creaf.github.io/meteoland/reference/with_meteo.md)
+  : Ensure meteo object is ready to create an interpolator object
+
+## Input/output functions
+
+Input/output functions
+
+- [`read_interpolator()`](https://emf-creaf.github.io/meteoland/reference/read_interpolator.md)
+  : Read interpolator files
+- [`write_interpolator()`](https://emf-creaf.github.io/meteoland/reference/write_interpolator.md)
+  : Write the interpolator object
+
+## Weather data reshape functions
+
+Functions to reshape weather data from other packages
+
+- [`meteospain2meteoland()`](https://emf-creaf.github.io/meteoland/reference/meteospain2meteoland.md)
+  : From meteospain to meteoland meteo objects
+- [`worldmet2meteoland()`](https://emf-creaf.github.io/meteoland/reference/worldmet2meteoland.md)
+  : From worldmet to meteoland meteo objects
+- [`complete_meteo()`](https://emf-creaf.github.io/meteoland/reference/complete_meteo.md)
+  : Complete missing meteo variables
+
+## Example datasets
+
+Example datasets
+
+- [`meteoland_interpolator_example`](https://emf-creaf.github.io/meteoland/reference/meteoland_interpolator_example.md)
+  **\[experimental\]** : Example interpolator object
+- [`meteoland_meteo_example`](https://emf-creaf.github.io/meteoland/reference/meteoland_meteo_example.md)
+  **\[experimental\]** : Example data set for meteo data from weather
+  stations
+- [`meteoland_meteo_no_topo_example`](https://emf-creaf.github.io/meteoland/reference/meteoland_meteo_no_topo_example.md)
+  **\[experimental\]** : Example data set for meteo data from weather
+  stations, without topography
+- [`meteoland_topo_example`](https://emf-creaf.github.io/meteoland/reference/meteoland_topo_example.md)
+  **\[experimental\]** : Example data set for topography data from
+  weather stations, without meteo
+- [`points_to_interpolate_example`](https://emf-creaf.github.io/meteoland/reference/points_to_interpolate_example.md)
+  **\[experimental\]** : Example data set of points for interpolation of
+  weather variables
+- [`raster_to_interpolate_example`](https://emf-creaf.github.io/meteoland/reference/raster_to_interpolate_example.md)
+  **\[experimental\]** : Example raster data set for interpolation of
+  weather variables
+
+## Low-level interpolation functions
+
+Low-level interpolation functions
+
+- [`interpolation_precipitation()`](https://emf-creaf.github.io/meteoland/reference/interpolation_temperature.md)
+  [`interpolation_dewtemperature()`](https://emf-creaf.github.io/meteoland/reference/interpolation_temperature.md)
+  [`interpolation_temperature()`](https://emf-creaf.github.io/meteoland/reference/interpolation_temperature.md)
+  [`interpolation_wind()`](https://emf-creaf.github.io/meteoland/reference/interpolation_temperature.md)
+  : Low-level interpolation functions
+
+## Solar radiation utility functions
+
+Solar radiation utility functions
+
+- [`radiation_julianDay()`](https://emf-creaf.github.io/meteoland/reference/radiation_julianDay.md)
+  [`radiation_dateStringToJulianDays()`](https://emf-creaf.github.io/meteoland/reference/radiation_julianDay.md)
+  [`radiation_solarDeclination()`](https://emf-creaf.github.io/meteoland/reference/radiation_julianDay.md)
+  [`radiation_solarConstant()`](https://emf-creaf.github.io/meteoland/reference/radiation_julianDay.md)
+  [`radiation_sunRiseSet()`](https://emf-creaf.github.io/meteoland/reference/radiation_julianDay.md)
+  [`radiation_solarElevation()`](https://emf-creaf.github.io/meteoland/reference/radiation_julianDay.md)
+  [`radiation_daylength()`](https://emf-creaf.github.io/meteoland/reference/radiation_julianDay.md)
+  [`radiation_daylengthseconds()`](https://emf-creaf.github.io/meteoland/reference/radiation_julianDay.md)
+  [`radiation_potentialRadiation()`](https://emf-creaf.github.io/meteoland/reference/radiation_julianDay.md)
+  [`radiation_solarRadiation()`](https://emf-creaf.github.io/meteoland/reference/radiation_julianDay.md)
+  [`radiation_directDiffuseInstant()`](https://emf-creaf.github.io/meteoland/reference/radiation_julianDay.md)
+  [`radiation_directDiffuseDay()`](https://emf-creaf.github.io/meteoland/reference/radiation_julianDay.md)
+  [`radiation_skyLongwaveRadiation()`](https://emf-creaf.github.io/meteoland/reference/radiation_julianDay.md)
+  [`radiation_outgoingLongwaveRadiation()`](https://emf-creaf.github.io/meteoland/reference/radiation_julianDay.md)
+  [`radiation_netRadiation()`](https://emf-creaf.github.io/meteoland/reference/radiation_julianDay.md)
+  : Solar radiation utility functions
+
+## Other utility functions
+
+Meteorological and biophysical utility functions
+
+- [`utils_saturationVP()`](https://emf-creaf.github.io/meteoland/reference/utils_saturationVP.md)
+  [`utils_averageDailyVP()`](https://emf-creaf.github.io/meteoland/reference/utils_saturationVP.md)
+  [`utils_atmosphericPressure()`](https://emf-creaf.github.io/meteoland/reference/utils_saturationVP.md)
+  [`utils_airDensity()`](https://emf-creaf.github.io/meteoland/reference/utils_saturationVP.md)
+  [`utils_averageDaylightTemperature()`](https://emf-creaf.github.io/meteoland/reference/utils_saturationVP.md)
+  [`utils_latentHeatVaporisation()`](https://emf-creaf.github.io/meteoland/reference/utils_saturationVP.md)
+  [`utils_latentHeatVaporisationMol()`](https://emf-creaf.github.io/meteoland/reference/utils_saturationVP.md)
+  [`utils_psychrometricConstant()`](https://emf-creaf.github.io/meteoland/reference/utils_saturationVP.md)
+  [`utils_saturationVaporPressureCurveSlope()`](https://emf-creaf.github.io/meteoland/reference/utils_saturationVP.md)
+  : Physical utility functions
+- [`penman()`](https://emf-creaf.github.io/meteoland/reference/penman.md)
+  [`penmanmonteith()`](https://emf-creaf.github.io/meteoland/reference/penman.md)
+  : Potential evapotranspiration
+- [`humidity_relative2dewtemperature()`](https://emf-creaf.github.io/meteoland/reference/humidity-conversion-tools.md)
+  [`humidity_dewtemperature2relative()`](https://emf-creaf.github.io/meteoland/reference/humidity-conversion-tools.md)
+  [`humidity_specific2relative()`](https://emf-creaf.github.io/meteoland/reference/humidity-conversion-tools.md)
+  [`humidity_relative2specific()`](https://emf-creaf.github.io/meteoland/reference/humidity-conversion-tools.md)
+  : Humidity conversion tools
+- [`precipitation_concentration()`](https://emf-creaf.github.io/meteoland/reference/precipitation_concentration.md)
+  : Precipitation daily concentration
+- [`precipitation_rainfall_erosivity()`](https://emf-creaf.github.io/meteoland/reference/precipitation_rainfall_erosivity.md)
+  **\[experimental\]** : Precipitation rainfall erosivity
+
+# Articles
+
+### All vignettes
+
+- [Daily weather interpolation over
+  Senegal](https://emf-creaf.github.io/meteoland/articles/examples/interpolation-senegal.md):
+- [Reshaping meteorological data for
+  meteoland](https://emf-creaf.github.io/meteoland/articles/reshaping-meteo.md):
+- [Tidy
+  meteoland](https://emf-creaf.github.io/meteoland/articles/tidy-meteoland.md):

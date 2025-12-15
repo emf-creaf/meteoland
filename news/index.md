@@ -2,6 +2,8 @@
 
 ## meteoland 2.2.5
 
+CRAN release: 2025-12-12
+
 - Swap interpolated MinTemperature and MaxTemperature values when
   MinTemperature \> MaxTemperature
 

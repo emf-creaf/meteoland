@@ -1,6 +1,6 @@
 ## Test environments
 
-* local R installation (Arch Linux), R 4.4.1
+* local R installation (Arch Linux), R 4.5.2
 * windows-latest (on github actions), R release
 * macOS-latest (on github actions), R release
 * ubuntu-latest (on github actions), R release

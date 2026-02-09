@@ -1,3 +1,4 @@
+#include "Rcpp.h"
 #include "meteoland/utils_c.hpp"
 
 #ifndef RADIATION_C_H
@@ -6,6 +7,42 @@
 struct SunriseSet {
   double sunrise;
   double set;
+};
+
+struct DirectDiffuseInstant_RESULT {
+  double SolarElevation;
+  double Rpot;
+  double Rpot_flat;
+  double Rg;
+  double SWR_direct;
+  double SWR_diffuse;
+  double PAR_direct;
+  double PAR_diffuse;
+};
+
+struct DirectDiffuseDay_RESULT {
+  std::vector<double> SolarHour;
+  std::vector<double> SolarElevation;
+  std::vector<double> Rpot;
+  std::vector<double> Rpot_flat;
+  std::vector<double> Rg;
+  std::vector<double> SWR_direct;
+  std::vector<double> SWR_diffuse;
+  std::vector<double> PAR_direct;
+  std::vector<double> PAR_diffuse;
+  
+  DirectDiffuseDay_RESULT(size_t ntimesteps) {
+    double NA_DOUBLE = std::numeric_limits<double>::quiet_NaN();
+    SolarHour = std::vector<double>(ntimesteps, NA_DOUBLE);
+    SolarElevation = std::vector<double>(ntimesteps, NA_DOUBLE);
+    Rpot = std::vector<double>(ntimesteps, NA_DOUBLE);
+    Rpot_flat = std::vector<double>(ntimesteps, NA_DOUBLE);
+    Rg = std::vector<double>(ntimesteps, NA_DOUBLE);
+    SWR_direct = std::vector<double>(ntimesteps, NA_DOUBLE);
+    SWR_diffuse = std::vector<double>(ntimesteps, NA_DOUBLE);
+    PAR_direct = std::vector<double>(ntimesteps, NA_DOUBLE);
+    PAR_diffuse = std::vector<double>(ntimesteps, NA_DOUBLE);
+  }
 };
 
 
@@ -81,6 +118,14 @@ inline double solarElevation_c(double latrad, double delta, double hrad) {
 }
 
 
+/**
+ * Returns the sunrise and sunset hours in hour angle (radians)
+ *
+ * latrad - Latitude of actual slope, in radians
+ * slorad - Inclination of slope, in radians above horizontal
+ * asprad - Azimuth of slope (aspect), in radians from north
+ * delta - Solar declination, in radians
+ */
 inline void sunRiseSet_c(SunriseSet& ss, double latrad, double slorad, double asprad, double delta){
   double L1 = asin(cos(slorad)*sin(latrad)+sin(slorad)*cos(latrad)*cos(asprad)); //latitude on equivalent slope
   double den = cos(slorad)*cos(latrad)-sin(slorad)*sin(latrad)*cos(asprad);
@@ -308,4 +353,144 @@ inline double netRadiation_c(double solarConstant, double latrad,  double elevat
   //Net radiation
   return(std::max(0.0,R_ns - R_nl));
 }
+
+
+/**
+ * Calculates instantaneous direct and diffuse radiation (in kW) from daily global radiation
+ *
+ *  solarConstant - Solar constant (in kW/m2)
+ *  latrad - Latitude (in radians)
+ *  slorad - Zenith angle of the vector normal to the slope (= slope?) in radians
+ *  asprad - Azimuth of slope, in radians from north
+ *  delta - Solar declination (in radians)
+ *  hrad - Solar hour (in radians)
+ *  R_p - Potential daily solar radiation (MJ·m-2)
+ *  R_s - Global daily solar radiation (MJ·m-2)
+ *  clearday - Boolean to indicate that is a clearsky (TRUE) vs overcast (FALSE)
+ *
+ * Spitters, C.J.T., Toussaint, H.A.J.M. & Goudriaan, J. (1986). Separating the diffuse and direct components of global radiation and its implications for modeling canopy photosynthesis. I. Components of incoming radiation.
+ * Agricultural and Forest Meteoroloogy, 38, 231–242.
+ */
+inline void directDiffuseInstant_c(DirectDiffuseInstant_RESULT& res,
+                            double solarConstant, double latrad, double slorad, double asprad, double delta,
+                            double hrad, double R_s,
+                            double R_p_flat, double Rpotinst_flat, double R_p_topo, double Rpotinst_topo,
+                            bool clearday) {
+  // Rcout<< slorad<<" "<<R_p_topo<<"\n";
+  //Solar elevation (for corrections)
+  double beta = solarElevation_c(latrad, delta, hrad);
+  
+  //Estimation of SgSo ratio (transmittance) assuming flat surface.
+  double SgSoday = R_s/R_p_flat;
+  double SdfSgday = NA_REAL;
+  if(SgSoday<0.07){
+    SdfSgday = 1.0;
+  } else if(SgSoday<0.35) {
+    SdfSgday = 1.0 - 2.3*pow(SgSoday-0.07,2.0);
+  } else if(SgSoday<0.75) {
+    SdfSgday = 1.33 -1.46*SgSoday;
+  } else {
+    SdfSgday = 0.23;
+  }
+  double SdfSgday2 = SdfSgday;
+  //If clear day (e.g. not rainy) modify for circumsolar part of diffuse radiation
+  if(clearday) {
+    SdfSgday2 = SdfSgday/(1.0+(1.0-pow(SdfSgday,2.0))*pow(cos(M_PI/4.0-beta),2.0)*pow(cos(beta),3.0));
+  }
+  
+  double PARday = R_s*0.5; //Daily PAR radiation (MJ)
+  double SdfSdPAR = (1.0+0.3*(1.0-pow(SdfSgday,2.0)))*SdfSgday2;
+  double Sdfday = SdfSgday2*R_s; //MJ Diffuse daily radiation
+  double Sdrday = R_s - Sdfday; //MJ Direct daily radiation
+  double Sdrinst = (Sdrday*1000.0)*(Rpotinst_topo/(R_p_topo*1000.0));//kW Direct light is affected by topography
+  double Sdfinst = (Sdfday*1000.0)*(Rpotinst_flat/(R_p_flat*1000.0));//kW Diffuse light not affected by topography
+  if(R_p_topo==0.0) {
+    Sdrinst = 0.0;
+  }
+  if(R_p_flat==0.0) {
+    Sdfinst = 0.0;
+  }
+  double Sginst = Sdfinst + Sdrinst;
+  double SdfdayPAR = SdfSdPAR*PARday;
+  double SginstPAR = Sginst*0.5;
+  double SdfinstPAR = std::min((SdfdayPAR*1000.0)*(Rpotinst_flat/(R_p_flat*1000.0)), SginstPAR);//kW
+  if(R_p_flat==0.0) {
+    SdfinstPAR = 0.0;
+  }
+  double SdrinstPAR = SginstPAR-SdfinstPAR;
+  
+  res.SolarElevation = beta;
+  res.Rpot= Rpotinst_topo;
+  res.Rpot_flat = Rpotinst_flat;
+  res.Rg = Sginst;
+  res.SWR_direct = Sdrinst;
+  res.SWR_diffuse = Sdfinst;
+  res.PAR_direct = SdrinstPAR;
+  res.PAR_diffuse = SdfinstPAR;
+}
+
+
+/**
+ * Calculates daily variation of direct and diffuse radiation (in kW) from daily global radiation
+ *
+ *  solarConstant - Solar constant (in kW/m2)
+ *  latrad - Latitude (in radians)
+ *  slorad - Zenith angle of the vector normal to the slope (= slope?) in radians
+ *  asprad - Azimuth of slope, in radians from north
+ *  delta - Solar declination (in radians)
+ *  R_s - Global daily solar radiation (MJ·m-2)
+ *  clearday - Boolean to indicate that is a clearsky (TRUE) vs overcast (FALSE)
+ *  nsteps - Number of steps to divide the day
+ *
+ * Spitters, C.J.T., Toussaint, H.A.J.M. & Goudriaan, J. (1986). Separating the diffuse and direct components of global radiation and its implications for modeling canopy photosynthesis. I. Components of incoming radiation.
+ * Agricultural and Forest Meteoroloogy, 38, 231–242.
+ */
+inline void directDiffuseDay_c(DirectDiffuseDay_RESULT& res, 
+                        double solarConstant, double latrad, double slorad, double asprad, double delta,
+                        double R_s, bool clearday) {
+  int nsteps = res.PAR_diffuse.size();
+  double R_p_flat = RpotDay_c(solarConstant, latrad, 0.0, 0.0, delta);
+  double R_p_topo = R_p_flat;
+  if(slorad>0.0) {
+    R_p_topo = RpotDay_c(solarConstant, latrad, slorad, asprad, delta);
+  }
+  SunriseSet srs; 
+  sunRiseSet_c(srs, latrad, slorad, asprad, delta);
+  DirectDiffuseInstant_RESULT ddi;
+  for(int i=0;i<nsteps;i++) {
+    res.SolarHour[i] = -M_PI + (((double)i)+0.5)*(2.0*M_PI/((double)nsteps));
+    double Rpotinst_flat = std::max(0.0,RpotInstant_c(solarConstant, latrad, 0.0, 0.0, delta, res.SolarHour[i]));//kW
+    double Rpotinst_topo = Rpotinst_flat;
+    if(slorad>0.0) {
+      Rpotinst_topo = 0.0;
+      if(res.SolarHour[i] >= srs.sunrise && res.SolarHour[i]< srs.set) Rpotinst_topo = std::max(0.0,RpotInstant_c(solarConstant, latrad, slorad, asprad, delta, res.SolarHour[i]));//kW
+    }
+    directDiffuseInstant_c(ddi, solarConstant, latrad, slorad, asprad, delta,
+                           res.SolarHour[i], R_s, R_p_flat, Rpotinst_flat, R_p_topo, Rpotinst_topo, clearday);
+    res.SolarElevation[i] = ddi.SolarElevation;
+    res.Rpot[i] = Rpotinst_topo;
+    res.Rpot_flat[i] = Rpotinst_flat;
+    res.Rg[i] = ddi.Rg;
+    res.SWR_direct[i] = ddi.SWR_direct;
+    res.SWR_diffuse[i] = ddi.SWR_diffuse;
+    res.PAR_direct[i] = ddi.PAR_direct;
+    res.PAR_diffuse[i] = ddi.PAR_diffuse;
+  }
+}
+
+
+inline Rcpp::DataFrame copyDirectDiffuseDayResult_c(const DirectDiffuseDay_RESULT& ddd) {
+  Rcpp::DataFrame res = Rcpp::DataFrame::create(Rcpp::Named("SolarHour") = Rcpp::wrap(ddd.SolarHour),
+                                                Rcpp::Named("SolarElevation") = Rcpp::wrap(ddd.SolarElevation),
+                                                Rcpp::Named("Rpot") = Rcpp::wrap(ddd.Rpot),
+                                                Rcpp::Named("Rpot_flat") = Rcpp::wrap(ddd.Rpot_flat),
+                                                Rcpp::Named("Rg") = Rcpp::wrap(ddd.Rg),
+                                                Rcpp::Named("SWR_direct") = Rcpp::wrap(ddd.SWR_direct),
+                                                Rcpp::Named("SWR_diffuse") = Rcpp::wrap(ddd.SWR_diffuse),
+                                                Rcpp::Named("PAR_direct") = Rcpp::wrap(ddd.PAR_direct),
+                                                Rcpp::Named("PAR_diffuse") = Rcpp::wrap(ddd.PAR_diffuse));
+  return(res);
+}
+
+
 #endif

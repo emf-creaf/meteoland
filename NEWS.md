@@ -1,3 +1,6 @@
+# meteoland 2.2.6
+- Internal C++ functions moved to header-only libraries for compilation with medfate
+
 # meteoland 2.2.5
 - Swap interpolated MinTemperature and MaxTemperature values when MinTemperature > MaxTemperature
 

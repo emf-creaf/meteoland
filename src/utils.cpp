@@ -108,4 +108,6 @@ double saturationVaporPressureCurveSlope(double temperature) {
 }
 
 
-
+double dewpointTemperatureFromRH(double T, double RH) {
+  return(dewpointTemperatureFromRH_c(T,RH));
+}

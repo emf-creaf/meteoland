@@ -1,4 +1,5 @@
 #include "utils_c.hpp"
+#include "radiation_c.hpp"
 #ifndef PET_C_H
 #define PET_C_H
 

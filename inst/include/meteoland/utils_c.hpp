@@ -2,6 +2,12 @@
 #define UTILS_C_H
 
 inline const double Cp_MJKG = 0.00101386;// MJ * kg^-1 * ºC^-1
+inline const double GSC_MJminm2 = 0.0820; //solar constant in MJ/m2/min
+inline const double GSC_kWm2 = 1.361; //in kW/m2
+inline const double SIGMA_MJ_day = 4.903*pow(10,-9.0); //Stefan-Boltzmann constant MJ/K^4/m2/day
+inline const double SIGMA_Wm2 = 5.67*pow(10,-8.0); //Stefan-Boltzmann constant J/s/K^4/m2
+inline const double Cp_Jmol = 29.37152; // J * mol^-1 * ºC^-1
+inline const double Cp_JKG = 1013.86; // J * kg^-1 * ºC^-1
 
 /**
  *  Calculates saturation vapour pressure (in kPa)
@@ -28,7 +34,7 @@ inline double vapourPressureFromRH_c(double T, double RH) {
   return(temp2SVP_c(T)*(RH/100.0));
 }
 
-double dewpointTemperatureFromRH_c(double T, double RH) {
+inline double dewpointTemperatureFromRH_c(double T, double RH) {
   double vp = vapourPressureFromRH_c(T,RH);
   return(std::min((237.3*log(vp/0.61078))/(17.269-log(vp/0.61078)),40.0));
 }
@@ -78,7 +84,7 @@ inline double averageDaylightTemperature_c(double Tmin, double Tmax) {
 *
 *  Units: MJ.kg^-1
 */
-double latentHeatVaporisation_c(double temperature) {
+inline double latentHeatVaporisation_c(double temperature) {
   return(2.5023 - 0.00243054*temperature);
 }
 /**
@@ -88,7 +94,7 @@ double latentHeatVaporisation_c(double temperature) {
 *
 *  Units: J.mol^-1
 */
-double latentHeatVaporisationMol_c(double temperature) {
+inline double latentHeatVaporisationMol_c(double temperature) {
   return(latentHeatVaporisation_c(temperature)*pow(10.0,6.0)*0.018);
 }
 
@@ -102,7 +108,7 @@ double latentHeatVaporisationMol_c(double temperature) {
 *
 *  Units: kPa*ºC-1
 */
-double psychrometricConstant_c(double temperature, double Patm) {
+inline double psychrometricConstant_c(double temperature, double Patm) {
   return((0.00163*Patm)/latentHeatVaporisation_c(temperature));
 }
 
@@ -113,7 +119,7 @@ double psychrometricConstant_c(double temperature, double Patm) {
 *
 *  Units: kPa*ºC-1
 */
-double saturationVaporPressureCurveSlope_c(double temperature) {
+inline double saturationVaporPressureCurveSlope_c(double temperature) {
   return(4098.0 * (0.6108 * exp((17.27 * temperature)/(temperature + 237.3)))/pow(temperature + 237.3,2.0));
 }
 

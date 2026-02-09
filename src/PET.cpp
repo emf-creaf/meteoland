@@ -1,5 +1,5 @@
 #include <Rcpp.h>
-#include "utils.h"
+#include "meteoland/utils_c.hpp"
 #include "meteoland/pet_c.hpp"
 
 
@@ -110,8 +110,10 @@ double PenmanMonteithPET(double rc, double elevation,
                          double Tmin, double Tmax,
                          double RHmin, double RHmax,
                          double Rn, double u = NA_REAL) {
-  
-
+  return(PenmanMonteithPET_c(rc, elevation,
+                             Tmin, Tmax,
+                             RHmin, RHmax,
+                             Rn, u));
 }
 
 // [[Rcpp::export(".penmanpoint")]]

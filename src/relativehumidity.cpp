@@ -1,5 +1,5 @@
 #include <Rcpp.h>
-#include "utils.h"
+#include "meteoland/utils_c.hpp"
 #include "interpolationutils.h"
 
 using namespace Rcpp;
@@ -97,7 +97,7 @@ NumericMatrix vapourPressureFromRH(NumericMatrix T, NumericMatrix RH) {
       if(NumericVector::is_na(T(i,j)) || NumericVector::is_na(RH(i,j)) ) {
         VP(i,j) = NA_REAL;
       } else {
-        VP(i,j) = vapourPressureFromRH(T(i,j), RH(i,j));
+        VP(i,j) = vapourPressureFromRH_c(T(i,j), RH(i,j));
       }
     }
   }
@@ -114,7 +114,7 @@ NumericMatrix dewpointTemperatureFromRH(NumericMatrix T, NumericMatrix RH) {
       if(NumericVector::is_na(T(i,j)) || NumericVector::is_na(RH(i,j)) ) {
         DT(i,j) = NA_REAL;
       } else {
-        DT(i,j) = dewpointTemperatureFromRH(T(i,j), RH(i,j));
+        DT(i,j) = dewpointTemperatureFromRH_c(T(i,j), RH(i,j));
       }
     }
   }
@@ -128,7 +128,7 @@ NumericMatrix dewpointTemperatureFromRH(NumericMatrix T, NumericMatrix RH) {
 // [[Rcpp::export(".temp2SVP")]]
 NumericVector temp2SVP(NumericVector TD) {
   NumericVector vp(TD.size());
-  for(int i=0;i<TD.size();i++) vp[i] = temp2SVP(TD[i]);
+  for(int i=0;i<TD.size();i++) vp[i] = temp2SVP_c(TD[i]);
   return(vp);
 }
 
@@ -136,14 +136,14 @@ NumericVector temp2SVP(NumericVector TD) {
 // [[Rcpp::export(".relativeHumidityFromMinMaxTemp")]]
 NumericVector relativeHumidityFromMinMaxTemp(NumericVector Tmin,NumericVector Tmax) {
   NumericVector rh(Tmin.size());
-  for(int i=0;i<Tmin.size();i++) rh[i] = relativeHumidity(Tmax[i]*0.606+Tmin[i]*0.394, Tmin[i]);
+  for(int i=0;i<Tmin.size();i++) rh[i] = relativeHumidity_c(Tmax[i]*0.606+Tmin[i]*0.394, Tmin[i]);
   return(rh);
 }
 
 // [[Rcpp::export(".relativeHumidityFromDewpointTemp")]]
 NumericVector relativeHumidityFromDewpointTemp(NumericVector T, NumericVector TD) {
   NumericVector rh(T.size());
-  for(int i=0;i<T.size();i++) rh[i] = relativeHumidity(T[i], TD[i]);
+  for(int i=0;i<T.size();i++) rh[i] = relativeHumidity_c(T[i], TD[i]);
   return(rh);
 }
 

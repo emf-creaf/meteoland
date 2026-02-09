@@ -612,48 +612,6 @@ namespace meteoland {
         return Rcpp::as<double >(rcpp_result_gen);
     }
 
-    inline double penman(double latrad, double elevation, double slorad, double asprad, int J, double Tmin, double Tmax, double RHmin, double RHmax, double R_s, double u, double z = 10.0, double z0 = 0.001, double alpha = 0.25, String windfun = "1956") {
-        typedef SEXP(*Ptr_penman)(SEXP,SEXP,SEXP,SEXP,SEXP,SEXP,SEXP,SEXP,SEXP,SEXP,SEXP,SEXP,SEXP,SEXP,SEXP);
-        static Ptr_penman p_penman = NULL;
-        if (p_penman == NULL) {
-            validateSignature("double(*penman)(double,double,double,double,int,double,double,double,double,double,double,double,double,double,String)");
-            p_penman = (Ptr_penman)R_GetCCallable("meteoland", "_meteoland_penman");
-        }
-        RObject rcpp_result_gen;
-        {
-            RNGScope RCPP_rngScope_gen;
-            rcpp_result_gen = p_penman(Shield<SEXP>(Rcpp::wrap(latrad)), Shield<SEXP>(Rcpp::wrap(elevation)), Shield<SEXP>(Rcpp::wrap(slorad)), Shield<SEXP>(Rcpp::wrap(asprad)), Shield<SEXP>(Rcpp::wrap(J)), Shield<SEXP>(Rcpp::wrap(Tmin)), Shield<SEXP>(Rcpp::wrap(Tmax)), Shield<SEXP>(Rcpp::wrap(RHmin)), Shield<SEXP>(Rcpp::wrap(RHmax)), Shield<SEXP>(Rcpp::wrap(R_s)), Shield<SEXP>(Rcpp::wrap(u)), Shield<SEXP>(Rcpp::wrap(z)), Shield<SEXP>(Rcpp::wrap(z0)), Shield<SEXP>(Rcpp::wrap(alpha)), Shield<SEXP>(Rcpp::wrap(windfun)));
-        }
-        if (rcpp_result_gen.inherits("interrupted-error"))
-            throw Rcpp::internal::InterruptedException();
-        if (Rcpp::internal::isLongjumpSentinel(rcpp_result_gen))
-            throw Rcpp::LongjumpException(rcpp_result_gen);
-        if (rcpp_result_gen.inherits("try-error"))
-            throw Rcpp::exception(Rcpp::as<std::string>(rcpp_result_gen).c_str());
-        return Rcpp::as<double >(rcpp_result_gen);
-    }
-
-    inline double penmanmonteith(double rc, double elevation, double Tmin, double Tmax, double RHmin, double RHmax, double Rn, double u = NA_REAL) {
-        typedef SEXP(*Ptr_penmanmonteith)(SEXP,SEXP,SEXP,SEXP,SEXP,SEXP,SEXP,SEXP);
-        static Ptr_penmanmonteith p_penmanmonteith = NULL;
-        if (p_penmanmonteith == NULL) {
-            validateSignature("double(*penmanmonteith)(double,double,double,double,double,double,double,double)");
-            p_penmanmonteith = (Ptr_penmanmonteith)R_GetCCallable("meteoland", "_meteoland_penmanmonteith");
-        }
-        RObject rcpp_result_gen;
-        {
-            RNGScope RCPP_rngScope_gen;
-            rcpp_result_gen = p_penmanmonteith(Shield<SEXP>(Rcpp::wrap(rc)), Shield<SEXP>(Rcpp::wrap(elevation)), Shield<SEXP>(Rcpp::wrap(Tmin)), Shield<SEXP>(Rcpp::wrap(Tmax)), Shield<SEXP>(Rcpp::wrap(RHmin)), Shield<SEXP>(Rcpp::wrap(RHmax)), Shield<SEXP>(Rcpp::wrap(Rn)), Shield<SEXP>(Rcpp::wrap(u)));
-        }
-        if (rcpp_result_gen.inherits("interrupted-error"))
-            throw Rcpp::internal::InterruptedException();
-        if (Rcpp::internal::isLongjumpSentinel(rcpp_result_gen))
-            throw Rcpp::LongjumpException(rcpp_result_gen);
-        if (rcpp_result_gen.inherits("try-error"))
-            throw Rcpp::exception(Rcpp::as<std::string>(rcpp_result_gen).c_str());
-        return Rcpp::as<double >(rcpp_result_gen);
-    }
-
 }
 
 #endif // RCPP_meteoland_RCPPEXPORTS_H_GEN_

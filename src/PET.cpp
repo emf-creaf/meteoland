@@ -1,3 +1,4 @@
+// [[Rcpp::interfaces(r,cpp)]]
 #include <Rcpp.h>
 #include "meteoland/utils_c.hpp"
 #include "meteoland/pet_c.hpp"

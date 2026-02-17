@@ -2,7 +2,7 @@ Package: meteoland
 Type: Package
 Title: Landscape Meteorology Tools
 Version: 2.2.6
-Date: 2026-02-09
+Date: 2026-02-17
 Authors@R: c(
 	person('Miquel', 'De Cáceres', role=c('aut','cre'),
 	email='miquelcaceres@gmail.com', comment = c(ORCID = "0000-0001-7132-2080")),

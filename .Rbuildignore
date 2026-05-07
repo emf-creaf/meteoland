@@ -18,3 +18,5 @@ tests/testthat/old_rds
 ^CRAN-SUBMISSION$
 ^revdep$
 ^featured.png$
+^\.positai$
+^\.claude$

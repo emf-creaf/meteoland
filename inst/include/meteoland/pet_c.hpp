@@ -1,3 +1,4 @@
+#include <algorithm>
 #include "meteoland/utils_c.hpp"
 #include "meteoland/radiation_c.hpp"
 #ifndef PET_C_H

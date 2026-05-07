@@ -1,3 +1,5 @@
+#include <algorithm>
+
 #ifndef UTILS_C_H
 #define UTILS_C_H
 

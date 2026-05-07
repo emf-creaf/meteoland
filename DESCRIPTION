@@ -1,8 +1,8 @@
 Package: meteoland
 Type: Package
 Title: Landscape Meteorology Tools
-Version: 2.2.6
-Date: 2026-02-17
+Version: 2.2.60001
+Date: 2026-05-07
 Authors@R: c(
 	person('Miquel', 'De Cáceres', role=c('aut','cre'),
 	email='miquelcaceres@gmail.com', comment = c(ORCID = "0000-0001-7132-2080")),
@@ -45,7 +45,7 @@ LinkingTo: Rcpp
 Encoding: UTF-8
 NeedsCompilation: yes
 VignetteBuilder: knitr
-RoxygenNote: 7.3.3
 Config/testthat/edition: 3
 Config/testthat/parallel: true
 Roxygen: list(markdown = TRUE)
+Config/roxygen2/version: 8.0.0

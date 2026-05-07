@@ -341,7 +341,7 @@
   ))
 }
 
-#' @describeIn interpolator_calibration
+#' @rdname interpolator_calibration
 #'
 #' @return \code{interpolation_cross_validation} returns a list with the
 #' following items

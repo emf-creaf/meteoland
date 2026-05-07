@@ -100,11 +100,6 @@ calibration and cross validation procedures, predictions for each
 meteorological station are made using a \emph{leave-one-out} procedure (i.e.
 after excluding the station from the predictive set).
 }
-\section{Functions}{
-\itemize{
-\item \code{interpolation_cross_validation()}: 
-
-}}
 \examples{
 
 \donttest{

@@ -177,6 +177,7 @@ Miquel De Cáceres Ainsa, CREAF
 ## Examples
 
 ``` r
+
 Xp <- as.numeric(sf::st_coordinates(points_to_interpolate_example)[,1])
 Yp <- as.numeric(sf::st_coordinates(points_to_interpolate_example)[,2])
 Zp <- points_to_interpolate_example$elevation

@@ -42,6 +42,7 @@ adapting the names to comply with meteoland requirements.
 ## Examples
 
 ``` r
+
 if (interactive()) {
   # meteospain data
   library(meteospain)
@@ -56,6 +57,44 @@ if (interactive()) {
   meteospain2meteoland(mg_april_2022_data, complete = TRUE)
 
 }
-#> Error in dplyr::as_tibble(httr2::resp_body_json(httr2::req_perform(meteogalicia_request),     flatten = TRUE, simplifyDataFrame = TRUE)): All columns in a tibble must be vectors.
-#> ✖ Column `idTipo` is NULL.
+#> ℹ A información divulgada a través deste servidor ofrécese gratuitamente aos
+#>   cidadáns para que poida ser
+#> utilizada libremente por eles, co único compromiso de mencionar expresamente a
+#> MeteoGalicia e á
+#> Consellería de Medio Ambiente, Territorio e Vivenda da Xunta de Galicia como
+#> fonte da mesma cada vez
+#> que as utilice para os usos distintos do particular e privado.
+#> https://www.meteogalicia.gal/aviso-legal
+#> ℹ Completing missing variables if possible:
+#> • RelativeHumidity
+#> • MinRelativeHumidity
+#> • MaxRelativeHumidity
+#> • Radiation
+#> • PET
+#> ✔ Done
+#> Simple feature collection with 4800 features and 30 fields (with 300 geometries empty)
+#> Geometry type: POINT
+#> Dimension:     XY
+#> Bounding box:  xmin: -9.178318 ymin: 41.8982 xmax: -6.765224 ymax: 43.70426
+#> Geodetic CRS:  WGS 84
+#> # A tibble: 4,800 × 31
+#>    dates               service stationID station_name station_province elevation
+#>  * <dttm>              <chr>   <chr>     <chr>        <chr>                <dbl>
+#>  1 2022-04-01 00:00:00 meteog… 10045     Mabegondo    A Coruña                94
+#>  2 2022-04-01 00:00:00 meteog… 10046     Marco da Cu… A Coruña               651
+#>  3 2022-04-01 00:00:00 meteog… 10047     Pedro Murias Lugo                    51
+#>  4 2022-04-01 00:00:00 meteog… 10048     O Invernade… Ourense               1026
+#>  5 2022-04-01 00:00:00 meteog… 10049     Corrubedo    A Coruña                30
+#>  6 2022-04-01 00:00:00 meteog… 10050     CIS Ferrol   A Coruña                37
+#>  7 2022-04-01 00:00:00 meteog… 10052     Muralla      A Coruña               661
+#>  8 2022-04-01 00:00:00 meteog… 10053     Campus Lugo  Lugo                   400
+#>  9 2022-04-01 00:00:00 meteog… 10055     Guitiriz-Mi… Lugo                   684
+#> 10 2022-04-01 00:00:00 meteog… 10056     Marroxo      Lugo                   645
+#> # ℹ 4,790 more rows
+#> # ℹ 25 more variables: MeanTemperature <dbl>, MinTemperature <dbl>,
+#> #   MaxTemperature <dbl>, MeanRelativeHumidity <dbl>,
+#> #   MinRelativeHumidity <dbl>, MaxRelativeHumidity <dbl>, Precipitation <dbl>,
+#> #   WindDirection <dbl>, max_wind_direction <dbl>, WindSpeed <dbl>,
+#> #   max_wind_speed <dbl>, insolation <dbl>, insolation_ratio <dbl>,
+#> #   global_solar_irradiation <dbl>, mean_atmospheric_pressure <dbl>, …
 ```

@@ -17,5 +17,6 @@ sf object
 ## Examples
 
 ``` r
+
 data(meteoland_meteo_no_topo_example)
 ```

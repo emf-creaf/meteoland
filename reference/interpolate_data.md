@@ -90,6 +90,7 @@ Miquel De Cáceres Ainsa, EMF-CREAF
 ## Examples
 
 ``` r
+
 # \donttest{
 # example of data to interpolate and example interpolator
 data("points_to_interpolate_example")

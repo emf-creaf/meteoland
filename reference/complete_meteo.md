@@ -70,6 +70,7 @@ Victor Granda García, EMF-CREAF
 ## Examples
 
 ``` r
+
 # \donttest{
 # example data
 data("meteoland_meteo_example")

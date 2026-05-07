@@ -1,8 +1,9 @@
 # Tidy meteoland
 
 ``` r
+
 library(meteoland)
-#> Package 'meteoland' [ver. 2.2.5]
+#> Package 'meteoland' [ver. 2.2.60001]
 library(stars)
 #> Loading required package: abind
 #> Loading required package: sf
@@ -78,6 +79,7 @@ including the `elevation` (in m.a.s.l.), `slope` (in degrees) and
 `aspect` (in degrees) variables, such as:
 
 ``` r
+
 points_to_interpolate_example
 #> Simple feature collection with 15 features and 4 fields
 #> Geometry type: POINT
@@ -109,6 +111,7 @@ including `elevation` (in m.a.s.l.), `slope` (in degrees) and `aspect`
 (in degrees) as attributes, such as:
 
 ``` r
+
 raster_to_interpolate_example
 #> stars object with 2 dimensions and 3 attributes
 #> attribute(s):
@@ -135,6 +138,7 @@ with the reference locations, and daily values of the weather variables
 needed to perform the interpolation, for example:
 
 ``` r
+
 meteoland_meteo_example
 #> Simple feature collection with 5652 features and 18 fields
 #> Geometry type: POINT
@@ -165,6 +169,7 @@ meteoland_meteo_example
 `meteoland` expects variable names to be as indicated in the example:
 
 ``` r
+
 names(meteoland_meteo_example)
 #>  [1] "dates"                "service"              "stationID"           
 #>  [4] "station_name"         "station_province"     "elevation"           
@@ -189,6 +194,7 @@ With the necessary data in the correct format we can perform the
 interpolation right away:
 
 ``` r
+
 # creating the interpolator object
 interpolator <- with_meteo(meteoland_meteo_example) |>
   create_meteo_interpolator()
@@ -252,12 +258,14 @@ Let’s see this step by step.
   informative error is shown:
 
 ``` r
+
 meteo_without_temp <- meteoland_meteo_example
 meteo_without_temp[["MinTemperature"]] <- NULL
 meteo_without_temp[["MaxTemperature"]] <- NULL
 with_meteo(meteo_without_temp)
 #> ℹ Checking meteorology object...
-#> Error: Names found in meteo don't comply with the required names:
+#> Error:
+#> ! Names found in meteo don't comply with the required names:
 #> meteo should have the following meteorology variables:
 #>   - MinTemperature ***
 #>   - MaxTemperature ***
@@ -281,6 +289,7 @@ with_meteo(meteo_without_temp)
   [`get_interpolation_params()`](https://emf-creaf.github.io/meteoland/reference/get_interpolation_params.md):
 
 ``` r
+
 # parameters
 get_interpolation_params(interpolator)
 #> $initial_Rp
@@ -360,6 +369,7 @@ get_interpolation_params(interpolator)
   column called `interpolated_data`:
 
 ``` r
+
 # interpolated meteo for the first location
 points_interpolated[["interpolated_data"]][1]
 #> [[1]]
@@ -386,6 +396,7 @@ We can “unnest” the results to get the data in a *long* format (each
 combination of location and date in a different row):
 
 ``` r
+
 tidyr::unnest(points_interpolated, cols = "interpolated_data")
 #> Simple feature collection with 450 features and 17 fields
 #> Geometry type: POINT
@@ -422,6 +433,7 @@ deprecated, and the interpolator object created by
 inherits directly from `stars` class.
 
 ``` r
+
 class(interpolator)
 #> [1] "stars"
 ```
@@ -431,9 +443,12 @@ as dimensions, and meteorological and topographical variables as
 attributes.
 
 ``` r
+
 interpolator
 #> stars object with 2 dimensions and 13 attributes
 #> attribute(s):
+#> Warning in (function (..., deparse.level = 1) : number of columns of result is
+#> not a multiple of vector length (arg 9)
 #>                                 Min.    1st Qu.    Median       Mean   3rd Qu.
 #> Temperature               -14.200000   8.800000  12.60000  11.324991  14.80000
 #> MinTemperature            -15.900000   3.300000   6.90000   5.883189   9.40000
@@ -448,20 +463,20 @@ interpolator
 #> slope                       0.000000   0.000000   0.00000   0.000000   0.00000
 #> SmoothedPrecipitation       0.100000   1.862500   5.55000   6.197496   9.07500
 #> SmoothedTemperatureRange    4.695000   9.863542  11.66307  11.400932  13.26868
-#>                                 Max. NA's
-#> Temperature                 23.40000  148
-#> MinTemperature              20.10000  138
-#> MaxTemperature              29.90000  139
-#> RelativeHumidity           100.00000  145
-#> Precipitation              160.90000   79
-#> Radiation                   28.10878  139
-#> WindDirection              359.00000 4171
-#> WindSpeed                    6.90000 4160
-#> elevation                 2535.00000    0
-#> aspect                       0.00000    0
-#> slope                        0.00000    0
-#> SmoothedPrecipitation       65.10000  818
-#> SmoothedTemperatureRange    17.72778  124
+#>                                 Max.  NAs NA's
+#> Temperature                 23.40000  148    0
+#> MinTemperature              20.10000  138    0
+#> MaxTemperature              29.90000  139    0
+#> RelativeHumidity           100.00000  145    0
+#> Precipitation              160.90000   79    0
+#> Radiation                   28.10878  139    0
+#> WindDirection              359.00000 4171    0
+#> WindSpeed                    6.90000 4160    0
+#> elevation                 2535.00000    0    0
+#> aspect                       0.00000    0    0
+#> slope                        0.00000    0    0
+#> SmoothedPrecipitation       65.10000  818    0
+#> SmoothedTemperatureRange    17.72778  124    0
 #> dimension(s):
 #>         from  to         offset  delta  refsys point
 #> date       1  30 2022-04-01 UTC 1 days POSIXct FALSE
@@ -476,6 +491,7 @@ that can be accessed with
 [`get_interpolation_params()`](https://emf-creaf.github.io/meteoland/reference/get_interpolation_params.md).
 
 ``` r
+
 get_interpolation_params(interpolator)
 #> $initial_Rp
 #> [1] 104929
@@ -551,6 +567,7 @@ Interpolation parameters can also be changed with
 [`set_interpolation_params()`](https://emf-creaf.github.io/meteoland/reference/set_interpolation_params.md).
 
 ``` r
+
 # wind_height parameter
 get_interpolation_params(interpolator)$wind_height
 #> [1] 10
@@ -573,6 +590,7 @@ NetCDF-CF format
 be also opened with any GIS software that supports NetCDF-CF.
 
 ``` r
+
 temporal_folder <- tempdir()
 write_interpolator(interpolator, file.path(temporal_folder, "interpolator.nc"))
 #> ℹ Creating nc file following the NetCDF-CF conventions <https://cfconventions.org/cf-conventions/cf-conventions.html>
@@ -588,6 +606,7 @@ To load the interpolator in your session again, you can use the
 function.
 
 ``` r
+
 file_interpolator <- read_interpolator(file.path(temporal_folder, "interpolator.nc"))
 # the read interpolator should be identical to the one we have already
 identical(file_interpolator, interpolator)
@@ -611,6 +630,7 @@ function.
     to explore a wider range of these values.
 
 ``` r
+
 # min temperature N and alpha before calibration
 get_interpolation_params(interpolator)$N_MinTemperature
 #> [1] 30
@@ -648,6 +668,7 @@ the creation and the calibration of the interpolator, as well as the
 writing:
 
 ``` r
+
 interpolator <- with_meteo(meteoland_meteo_example) |>
   create_meteo_interpolator() |>
   interpolator_calibration(
@@ -728,6 +749,7 @@ function. This function takes an interpolator object and calculates
 different error measures.
 
 ``` r
+
 cross_validation <- interpolation_cross_validation(interpolator, verbose = FALSE)
 cross_validation$errors
 #> # A tibble: 5,670 × 21
@@ -826,6 +848,7 @@ The function returns the same interpolated data given as input, but with
 the weekly summary in an additional column.
 
 ``` r
+
 summarise_interpolated_data(
   points_interpolated,
   fun = "mean",
@@ -865,6 +888,7 @@ erosivity value, with the
 function. This can be used for individual locations:
 
 ``` r
+
 precipitation_rainfall_erosivity(
   points_interpolated$interpolated_data[[1]],
   longitude = sf::st_coordinates(points_interpolated$geometry[[1]])[,1],
@@ -878,6 +902,7 @@ But also for all locations in the results obtained from the call to
 [`interpolate_data()`](https://emf-creaf.github.io/meteoland/reference/interpolate_data.md):
 
 ``` r
+
 points_interpolated |>
   mutate(erosivity = precipitation_rainfall_erosivity(
     interpolated_data,
@@ -915,6 +940,7 @@ points_interpolated |>
 `meteoland` new data flows also allows for piping all processes:
 
 ``` r
+
 points_interpolated <- points_to_interpolate_example |>
   interpolate_data(interpolator) |>
   summarise_interpolated_data(
@@ -983,6 +1009,7 @@ topography information in a `stars` object, with `elevation`, `aspect`
 and `slope` variables as raster attributes:
 
 ``` r
+
 raster_to_interpolate_example
 #> stars object with 2 dimensions and 3 attributes
 #> attribute(s):
@@ -1001,6 +1028,7 @@ Catalonia. As the raster is inside the area covered by the interpolator
 object we created before, we will use it.
 
 ``` r
+
 raster_interpolated <- raster_to_interpolate_example |>
   interpolate_data(interpolator)
 #> ℹ Starting interpolation...
@@ -1022,6 +1050,8 @@ raster_interpolated <- raster_to_interpolate_example |>
 raster_interpolated
 #> stars object with 3 dimensions and 14 attributes
 #> attribute(s):
+#> Warning in (function (..., deparse.level = 1) : number of columns of result is
+#> not a multiple of vector length (arg 1)
 #>                              Min.     1st Qu.      Median       Mean    3rd Qu.
 #> MeanTemperature         2.8490648  11.4140076  13.7598510  13.112524  15.735024
 #> MinTemperature         -3.9757928   5.2174718   7.2458877   6.133785   8.331064
@@ -1037,21 +1067,21 @@ raster_interpolated
 #> elevation             240.0000000 370.0000000 447.0000000 460.322314 525.000000
 #> slope                   1.4320962   5.7204332  11.3481197  13.073426  19.758511
 #> aspect                  5.1944275  74.7448807 174.3693237 181.679232 291.037506
-#>                             Max. NA's
-#> MeanTemperature        19.994531    0
-#> MinTemperature         11.397862    0
-#> MaxTemperature         26.415294    0
-#> Precipitation          13.948289    0
-#> MeanRelativeHumidity  100.000000    0
-#> MinRelativeHumidity    91.400189    0
-#> MaxRelativeHumidity   100.000000    0
-#> Radiation              27.506054    0
-#> WindSpeed               3.782339    0
-#> WindDirection         341.434389 1331
-#> PET                     4.680851    0
-#> elevation             786.000000    0
-#> slope                  31.071896    0
-#> aspect                360.000000    0
+#>                             Max.  NAs        NA's
+#> MeanTemperature        19.994531    0   2.8490648
+#> MinTemperature         11.397862    0  -3.9757928
+#> MaxTemperature         26.415294    0   7.2863484
+#> Precipitation          13.948289    0   0.0000000
+#> MeanRelativeHumidity  100.000000    0  38.4267872
+#> MinRelativeHumidity    91.400189    0  29.1965595
+#> MaxRelativeHumidity   100.000000    0  57.7022192
+#> Radiation              27.506054    0   7.0825040
+#> WindSpeed               3.782339    0   0.1360482
+#> WindDirection         341.434389 1331   0.0000000
+#> PET                     4.680851    0   1.0797807
+#> elevation             786.000000    0 240.0000000
+#> slope                  31.071896    0   1.4320962
+#> aspect                360.000000    0   5.1944275
 #> dimension(s):
 #>      from to         offset    delta  refsys point x/y
 #> x       1 11          1.671  0.01058  WGS 84 FALSE [x]
@@ -1070,6 +1100,7 @@ Like with the point location example, interpolated data in raster format
 can also be aggregated temporally.
 
 ``` r
+
 summarise_interpolated_data(
   raster_interpolated,
   fun = "mean",
@@ -1077,6 +1108,8 @@ summarise_interpolated_data(
 )
 #> stars object with 3 dimensions and 11 attributes
 #> attribute(s):
+#> Warning in (function (..., deparse.level = 1) : number of columns of result is
+#> not a multiple of vector length (arg 1)
 #>                              Min.     1st Qu.      Median       Mean    3rd Qu.
 #> MeanTemperature         3.4231242  11.3148273  12.9934658  12.389613  15.344793
 #> MinTemperature         -2.8484754   3.6641267   7.1416277   5.430246   8.110321
@@ -1089,18 +1122,18 @@ summarise_interpolated_data(
 #> WindSpeed               0.4260045   0.9835564   1.0015541   1.394959   1.659769
 #> WindDirection         145.0180598 145.0181215 175.2971446 175.297140 205.576159
 #> PET                     1.5434263   2.6915520   2.9987228   2.988443   3.319860
-#>                             Max. NA's
-#> MeanTemperature        17.027711    0
-#> MinTemperature          9.419550    0
-#> MaxTemperature         22.354696    0
-#> Precipitation           6.150887    0
-#> MeanRelativeHumidity   87.508839    0
-#> MinRelativeHumidity    70.124105    0
-#> MaxRelativeHumidity   100.000000    0
-#> Radiation              25.537471    0
-#> WindSpeed               2.903910    0
-#> WindDirection         205.576212  363
-#> PET                     3.979590    0
+#>                             Max. NAs       NA's
+#> MeanTemperature        17.027711   0  3.4231242
+#> MinTemperature          9.419550   0 -2.8484754
+#> MaxTemperature         22.354696   0  7.5006989
+#> Precipitation           6.150887   0  0.0000000
+#> MeanRelativeHumidity   87.508839   0 43.5236496
+#> MinRelativeHumidity    70.124105   0 32.3377893
+#> MaxRelativeHumidity   100.000000   0 70.3819446
+#> Radiation              25.537471   0 12.0625342
+#> WindSpeed               2.903910   0  0.4260045
+#> WindDirection         205.576212 363  0.0000000
+#> PET                     3.979590   0  1.5434263
 #> dimension(s):
 #>      from to          offset    delta  refsys point x/y
 #> time    1  5 2022-03-28 CEST   7 days POSIXct    NA    
@@ -1118,6 +1151,7 @@ This way, if we are only interested in the mean monthly temperature in
 our study area, we can do:
 
 ``` r
+
 monthly_mean_temperature <- raster_to_interpolate_example |>
   interpolate_data(interpolator, variables = "Temperature") |>
   summarise_interpolated_data(

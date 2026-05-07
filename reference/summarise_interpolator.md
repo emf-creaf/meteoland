@@ -85,6 +85,7 @@ Víctor Granda García, CREAF
 meteoland_interpolator_example
 #> stars object with 2 dimensions and 13 attributes
 #> attribute(s):
+#> Warning: number of columns of result is not a multiple of vector length (arg 9)
 #>                                 Min.    1st Qu.    Median       Mean   3rd Qu.
 #> Temperature               -14.200000   8.800000  12.60000  11.324991  14.80000
 #> MinTemperature            -15.900000   3.300000   6.90000   5.883189   9.40000
@@ -99,20 +100,20 @@ meteoland_interpolator_example
 #> slope                       0.000000   0.000000   0.00000   0.000000   0.00000
 #> SmoothedPrecipitation       0.100000   1.862500   5.55000   6.197496   9.07500
 #> SmoothedTemperatureRange    4.695000   9.863542  11.66307  11.400932  13.26868
-#>                                 Max. NA's
-#> Temperature                 23.40000  148
-#> MinTemperature              20.10000  138
-#> MaxTemperature              29.90000  139
-#> RelativeHumidity           100.00000  145
-#> Precipitation              160.90000   79
-#> Radiation                   28.10878  139
-#> WindDirection              359.00000 4171
-#> WindSpeed                    6.90000 4160
-#> elevation                 2535.00000    0
-#> aspect                       0.00000    0
-#> slope                        0.00000    0
-#> SmoothedPrecipitation       65.10000  818
-#> SmoothedTemperatureRange    17.72778  124
+#>                                 Max.  NAs NA's
+#> Temperature                 23.40000  148    0
+#> MinTemperature              20.10000  138    0
+#> MaxTemperature              29.90000  139    0
+#> RelativeHumidity           100.00000  145    0
+#> Precipitation              160.90000   79    0
+#> Radiation                   28.10878  139    0
+#> WindDirection              359.00000 4171    0
+#> WindSpeed                    6.90000 4160    0
+#> elevation                 2535.00000    0    0
+#> aspect                       0.00000    0    0
+#> slope                        0.00000    0    0
+#> SmoothedPrecipitation       65.10000  818    0
+#> SmoothedTemperatureRange    17.72778  124    0
 #> dimension(s):
 #>         from  to         offset  delta  refsys point
 #> date       1  30 2022-04-01 UTC 1 days POSIXct FALSE
@@ -125,6 +126,7 @@ meteoland_interpolator_example
 summarise_interpolator(meteoland_interpolator_example, fun = "max")
 #> stars object with 2 dimensions and 13 attributes
 #> attribute(s):
+#> Warning: number of columns of result is not a multiple of vector length (arg 11)
 #>                                Min.    1st Qu.    Median       Mean   3rd Qu.
 #> Temperature                 4.40000  16.200000  17.50000  16.893443  18.90000
 #> MinTemperature              1.90000  10.000000  11.75000  11.290761  12.92500
@@ -139,32 +141,33 @@ summarise_interpolator(meteoland_interpolator_example, fun = "max")
 #> elevation                   0.00000 147.000000 317.00000 515.629630 668.00000
 #> slope                       0.00000   0.000000   0.00000   0.000000   0.00000
 #> aspect                      0.00000   0.000000   0.00000   0.000000   0.00000
-#>                                 Max. NA's
-#> Temperature                 23.40000    6
-#> MinTemperature              20.10000    5
-#> MaxTemperature              29.90000    5
-#> Precipitation              160.90000    3
-#> RelativeHumidity           100.00000    6
-#> Radiation                   28.10878    5
-#> WindSpeed                    6.90000  140
-#> WindDirection              359.00000  140
-#> SmoothedPrecipitation       29.30000  129
-#> SmoothedTemperatureRange    17.72778    5
-#> elevation                 2535.00000    0
-#> slope                        0.00000    0
-#> aspect                       0.00000    0
+#>                                 Max. NAs NA's
+#> Temperature                 23.40000   6    0
+#> MinTemperature              20.10000   5    0
+#> MaxTemperature              29.90000   5    0
+#> Precipitation              160.90000   3    0
+#> RelativeHumidity           100.00000   6    0
+#> Radiation                   28.10878   5    0
+#> WindSpeed                    6.90000 140    0
+#> WindDirection              359.00000 140    0
+#> SmoothedPrecipitation       29.30000 129    0
+#> SmoothedTemperatureRange    17.72778   5    0
+#> elevation                 2535.00000   0    0
+#> slope                        0.00000   0    0
+#> aspect                       0.00000   0    0
 #> dimension(s):
-#>         from  to  refsys point
-#> date       1   1 POSIXct    NA
-#> station    1 189  WGS 84  TRUE
+#>         from  to          offset  refsys point
+#> date       1   1 2022-04-01 CEST POSIXct    NA
+#> station    1 189              NA  WGS 84  TRUE
 #>                                                       values
-#> date                                         2022-04-01 CEST
+#> date                                                    NULL
 #> station POINT (0.95172 41.6566),...,POINT (1.89716 42.32211)
 
 # aggregate weekly, calculating mean values
 summarise_interpolator(meteoland_interpolator_example, frequency = "week")
 #> stars object with 2 dimensions and 13 attributes
 #> attribute(s):
+#> Warning: number of columns of result is not a multiple of vector length (arg 11)
 #>                                 Min.    1st Qu.      Median       Mean
 #> Temperature               -13.600000   7.714286  12.1071429  10.581211
 #> MinTemperature            -15.666667   2.246429   6.3666667   5.168547
@@ -179,20 +182,20 @@ summarise_interpolator(meteoland_interpolator_example, frequency = "week")
 #> elevation                   0.000000 147.000000 317.0000000 515.629630
 #> slope                       0.000000   0.000000   0.0000000   0.000000
 #> aspect                      0.000000   0.000000   0.0000000   0.000000
-#>                              3rd Qu.       Max. NA's
-#> Temperature                14.367857   18.15000   25
-#> MinTemperature              8.707143   14.83333   23
-#> MaxTemperature             20.571429   25.03333   23
-#> Precipitation               2.759524   29.51429   13
-#> RelativeHumidity           75.000000   94.85714   25
-#> Radiation                  22.198744   27.06309   23
-#> WindSpeed                   2.085714    5.70000  694
-#> WindDirection             242.000000  350.00000  696
-#> SmoothedPrecipitation       8.487679   46.68286  299
-#> SmoothedTemperatureRange   13.316941   17.39137   21
-#> elevation                 668.000000 2535.00000    0
-#> slope                       0.000000    0.00000    0
-#> aspect                      0.000000    0.00000    0
+#>                              3rd Qu.       Max. NAs NA's
+#> Temperature                14.367857   18.15000  25    0
+#> MinTemperature              8.707143   14.83333  23    0
+#> MaxTemperature             20.571429   25.03333  23    0
+#> Precipitation               2.759524   29.51429  13    0
+#> RelativeHumidity           75.000000   94.85714  25    0
+#> Radiation                  22.198744   27.06309  23    0
+#> WindSpeed                   2.085714    5.70000 694    0
+#> WindDirection             242.000000  350.00000 696    0
+#> SmoothedPrecipitation       8.487679   46.68286 299    0
+#> SmoothedTemperatureRange   13.316941   17.39137  21    0
+#> elevation                 668.000000 2535.00000   0    0
+#> slope                       0.000000    0.00000   0    0
+#> aspect                      0.000000    0.00000   0    0
 #> dimension(s):
 #>         from  to          offset  delta  refsys point
 #> date       1   5 2022-03-28 CEST 7 days POSIXct    NA

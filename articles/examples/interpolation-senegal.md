@@ -8,6 +8,7 @@ for reference weather station data. We’ll use Senegal as case study.
 We begin by loading necessary libraries, all available from CRAN:
 
 ``` r
+
 library(sf)
 library(dplyr)
 library(terra)
@@ -23,6 +24,7 @@ We will also use package **afrilearndata** from GitHub, to display
 African country limits:
 
 ``` r
+
 # remotes::install_github("afrimapr/afrilearndata")
 library(afrilearndata)
 ```
@@ -33,17 +35,19 @@ We start by loading package **worldmet**, which provides access to over
 30.000 weather stations across the globe:
 
 ``` r
+
 library(worldmet)
 ```
 
 In order to download weather data, we must first obtain the codes of the
 weather stations available for our study area. This can be done using
 function
-[`getMeta()`](https://openair-project.github.io/worldmet/reference/getMeta.html)
+[`getMeta()`](https://openair-project.github.io/worldmet/reference/deprecated-isd.html)
 from worldmet, which we use to know available weather stations for
 Senegal and neighbouring countries:
 
 ``` r
+
 # Country codes:
 #   Senegal - SG
 #   Gambia - GA 
@@ -62,6 +66,7 @@ sg_st <- dplyr::bind_rows(worldmet::getMeta(country="SG", plot = FALSE),
 The station metadata looks like this:
 
 ``` r
+
 sg_st
 ```
 
@@ -84,10 +89,11 @@ sg_st
 Let’s assume that we want to interpolate weather for year 2020. We can
 download hourly weather station data for the selected stations and year
 2020 using function
-[`importNOAA()`](https://openair-project.github.io/worldmet/reference/importNOAA.html)
+[`importNOAA()`](https://openair-project.github.io/worldmet/reference/deprecated-isd.html)
 and programming a loop over stations:
 
 ``` r
+
 hourData <- NULL
 for(i in 1:length(sg_st$code)) {
   cat(paste0(sg_st$code[i]," "))
@@ -109,6 +115,7 @@ from **meteoland**, we can reshape the hourly data of the remaining
 stations into daily data in form of an `sf` object:
 
 ``` r
+
 sf_sen <- worldmet2meteoland(hourData, complete = TRUE)
 sf_sen
 ```
@@ -119,6 +126,7 @@ parameters. This can be obtained using function
 [`create_meteo_interpolator()`](https://emf-creaf.github.io/meteoland/reference/create_meteo_interpolator.md):
 
 ``` r
+
 interpolator_sen <- meteoland::create_meteo_interpolator(sf_sen, verbose = FALSE)
 ```
 
@@ -132,11 +140,16 @@ before using the reference data for interpolation.
 The interpolator object is of class **stars**:
 
 ``` r
+
 interpolator_sen
 ```
 
     ## stars object with 2 dimensions and 13 attributes
     ## attribute(s):
+
+    ## Warning in (function (..., deparse.level = 1) : number of columns of result is
+    ## not a multiple of vector length (arg 9)
+
     ##                                 Min.   1st Qu.     Median       Mean   3rd Qu.
     ## Temperature               11.0000000 26.450000  28.537500  28.750958  30.91154
     ## MinTemperature             8.5000000 21.000000  24.000000  23.712257  26.00000
@@ -151,20 +164,20 @@ interpolator_sen
     ## slope                      0.0000000  0.000000   0.000000   0.000000   0.00000
     ## SmoothedPrecipitation      0.1000000  3.000000   8.000000  11.312237  14.66667
     ## SmoothedTemperatureRange   0.0000000  5.555667   9.225806   9.525796  14.16504
-    ##                                 Max.  NA's
-    ## Temperature                 48.00000  3893
-    ## MinTemperature              48.00000  3893
-    ## MaxTemperature              48.20000  3893
-    ## RelativeHumidity           100.00000  3893
-    ## Precipitation              381.30000 15778
-    ## Radiation                   28.92108  3893
-    ## WindDirection              360.00000  4464
-    ## WindSpeed                   33.50000  3983
-    ## elevation                 1035.10000     0
-    ## aspect                       0.00000     0
-    ## slope                        0.00000     0
-    ## SmoothedPrecipitation      137.30000 12897
-    ## SmoothedTemperatureRange    21.40484  1816
+    ##                                 Max.   NAs NA's
+    ## Temperature                 48.00000  3893    0
+    ## MinTemperature              48.00000  3893    0
+    ## MaxTemperature              48.20000  3893    0
+    ## RelativeHumidity           100.00000  3893    0
+    ## Precipitation              381.30000 15778    0
+    ## Radiation                   28.92108  3893    0
+    ## WindDirection              360.00000  4464    0
+    ## WindSpeed                   33.50000  3983    0
+    ## elevation                 1035.10000     0    1
+    ## aspect                       0.00000     0    0
+    ## slope                        0.00000     0    0
+    ## SmoothedPrecipitation      137.30000 12897    0
+    ## SmoothedTemperatureRange    21.40484  1816    0
     ## dimension(s):
     ##         from  to         offset  delta  refsys point
     ## date       1 366 2020-01-01 UTC 1 days POSIXct FALSE
@@ -178,6 +191,7 @@ with country limits. This is useful to know the station density in the
 study area. In our case we will use the following code:
 
 ``` r
+
 data("africountries")
 senegal <- africountries[africountries$name=="Senegal",]
 ggplot()+
@@ -194,23 +208,30 @@ ggplot()+
 
 To perform weather interpolation, we need the topography (elevation,
 slope, aspect) of the target area. We can use function
-[`elevation_30s()`](https://rdrr.io/pkg/geodata/man/elevation.html) from
-package **geodata** to download elevation data for Senegal:
+[`elevation_30s()`](https://rspatial.github.io/geodata/reference/elevation.html)
+from package **geodata** to download elevation data for Senegal:
 
 ``` r
+
 elev_raster <- geodata::elevation_30s(country="SEN", path = tempdir())
+```
+
+    ## Cached as: /tmp/RtmpAoTvLE/elevation/SEN_elv_msk.zip
+
+``` r
+
 names(elev_raster) <- "elevation"
 elev_raster
 ```
 
-    ## class       : SpatRaster 
+    ## class       : SpatRaster
     ## size        : 564, 780, 1  (nrow, ncol, nlyr)
     ## resolution  : 0.008333333, 0.008333333  (x, y)
     ## extent      : -17.7, -11.2, 12.1, 16.8  (xmin, xmax, ymin, ymax)
-    ## coord. ref. : lon/lat WGS 84 (EPSG:4326) 
-    ## source      : SEN_elv_msk.tif 
-    ## name        : elevation 
-    ## min value   :        -7 
+    ## coord. ref. : lon/lat WGS 84 (EPSG:4326)
+    ## source      : SEN_elv_msk.tif
+    ## name        : elevation
+    ## min value   :        -7
     ## max value   :       542
 
 The previous function return `SpatRaster` object (package **terra**). In
@@ -219,6 +240,7 @@ order to estimate slope and aspect we can use function
 from the **terra** package:
 
 ``` r
+
 slope_raster <- terra::terrain(elev_raster, v = "slope", unit="degrees")
 aspect_raster <- terra::terrain(elev_raster, v = "aspect", unit="degrees")
 ```
@@ -229,6 +251,7 @@ We can plot the three rasters using with
 from package **tidyterra**:
 
 ``` r
+
 p1 <- ggplot()+
   tidyterra::geom_spatraster(data = elev_raster)
 p2 <- ggplot()+
@@ -243,6 +266,7 @@ cowplot::plot_grid(p1, p2, p3, nrow=3)
 We now assemble the three rasters into a single object:
 
 ``` r
+
 topo_spatraster <- c(elev_raster, slope_raster, aspect_raster)
 ```
 
@@ -253,6 +277,7 @@ from package **terra** to lower the resolution and speed-up
 calculations, but one may skip this step.
 
 ``` r
+
 fact <- 10
 topo_spatraster_agg <- terra::aggregate(topo_spatraster, fact = fact)
 ```
@@ -260,6 +285,7 @@ topo_spatraster_agg <- terra::aggregate(topo_spatraster, fact = fact)
 Finally, we reshape the raster into an object of package **stars**:
 
 ``` r
+
 topo_stars_agg <- stars::st_as_stars(topo_spatraster_agg, as_attributes=TRUE)
 ```
 
@@ -272,6 +298,7 @@ from **meteoland**. Here we restrict the interpolation to two dates in
 2020 to speed up calculations:
 
 ``` r
+
 raster_interpolated <- topo_stars_agg |>
   interpolate_data(interpolator_sen, dates = c(as.Date("2020-01-01"), as.Date("2020-07-01")), 
                    verbose = FALSE)
@@ -293,6 +320,7 @@ are outside the convex hull of the stations in the interpolator object.
 The result of the interpolation is a raster object of class **stars**:
 
 ``` r
+
 raster_interpolated
 ```
 
@@ -313,7 +341,7 @@ raster_interpolated
     ## elevation              1.31000000  34.45750000  48.660000  54.0612085
     ## slope                  0.01792378   0.09556268   0.188352   0.2429773
     ## aspect                67.35251383 168.39402989 192.848440 189.9203858
-    ##                           3rd Qu.       Max. NA's
+    ##                           3rd Qu.       Max.  NAs
     ## MeanTemperature        29.9002891  30.169109 4556
     ## MinTemperature         26.1097100  26.201119 4556
     ## MaxTemperature         32.3647910  32.748957 4556
@@ -337,6 +365,7 @@ raster_interpolated
 We can display the maps for specific dates and variables using:
 
 ``` r
+
 p1 <- ggplot()+
       geom_stars(data = raster_interpolated["MeanTemperature",,,1])+
       scale_fill_viridis_c()+

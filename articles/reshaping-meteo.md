@@ -1,8 +1,9 @@
 # Reshaping meteorological data for meteoland
 
 ``` r
+
 library(meteoland)
-#> Package 'meteoland' [ver. 2.2.5]
+#> Package 'meteoland' [ver. 2.2.60001]
 library(stars)
 #> Loading required package: abind
 #> Loading required package: sf
@@ -28,6 +29,7 @@ of the meteorological variables needed to perform the interpolation,
 *i.e.*:
 
 ``` r
+
 meteoland_meteo_example
 #> Simple feature collection with 5652 features and 18 fields
 #> Geometry type: POINT
@@ -58,6 +60,7 @@ meteoland_meteo_example
 `meteoland` expects names to be as in the example:
 
 ``` r
+
 names(meteoland_meteo_example)
 #>  [1] "dates"                "service"              "stationID"           
 #>  [4] "station_name"         "station_province"     "elevation"           
@@ -85,6 +88,7 @@ it from our own weather stations, or download it from other source in
 this format) we can just simply transform it to the desired format:
 
 ``` r
+
 unformatted_meteo
 #> # A tibble: 15 × 7
 #>    date       station latitude longitude min_temp max_temp    rh
@@ -107,6 +111,7 @@ unformatted_meteo
 ```
 
 ``` r
+
 ready_meteo <- unformatted_meteo |>
   # convert names to correct ones
   dplyr::mutate(
@@ -162,6 +167,7 @@ For data coming from `meteospain` package we have the
 `meteospain2meteoland` function that transforming the data for us:
 
 ``` r
+
 library(meteospain)
 get_meteo_from(
   "meteogalicia",
@@ -176,6 +182,7 @@ For data coming from `worldmet` package we have the `worldmet2meteoland`
 function that do the reshaping for us:
 
 ``` r
+
 library(worldmet)
 worldmet::importNOAA("081120-99999", year = 2022) |>
   worldmet2meteoland()
@@ -196,9 +203,12 @@ meteorological data:
     (elevation, aspect and slope) data for the interpolator to work.
 
 ``` r
+
 raster_meteo_reference
 #> stars object with 3 dimensions and 14 attributes
 #> attribute(s):
+#> Warning in (function (..., deparse.level = 1) : number of columns of result is
+#> not a multiple of vector length (arg 1)
 #>                               Min.     1st Qu.     Median       Mean
 #> MeanTemperature         3.47453413  11.4535839  13.940206  13.471788
 #> MinTemperature         -3.27100714   4.3824425   6.969667   5.860040
@@ -214,21 +224,21 @@ raster_meteo_reference
 #> elevation             240.00000000 370.0000000 447.000000 460.322314
 #> slope                   1.43209624   5.7204332  11.348120  13.073426
 #> aspect                  5.19442749  74.7448807 174.369324 181.679232
-#>                           3rd Qu.       Max. NA's
-#> MeanTemperature        16.1442989  20.781408    0
-#> MinTemperature          8.2924049  11.071295    0
-#> MaxTemperature         22.0316730  28.801911    0
-#> Precipitation           0.2922964  21.000409    0
-#> MeanRelativeHumidity   75.5124486 100.000000    0
-#> MinRelativeHumidity    55.7307897  90.243329    0
-#> MaxRelativeHumidity   100.0000000 100.000000    0
-#> Radiation              23.7299248  27.982274    0
-#> WindSpeed               1.7444530   5.811866   30
-#> WindDirection         264.0404014 359.908196 1350
-#> PET                     3.7736818   5.625855    0
-#> elevation             525.0000000 786.000000    0
-#> slope                  19.7585106  31.071896    0
-#> aspect                291.0375061 360.000000    0
+#>                           3rd Qu.       Max.  NAs       NA's
+#> MeanTemperature        16.1442989  20.781408    0   3.474534
+#> MinTemperature          8.2924049  11.071295    0  -3.271007
+#> MaxTemperature         22.0316730  28.801911    0   7.162658
+#> Precipitation           0.2922964  21.000409    0   0.000000
+#> MeanRelativeHumidity   75.5124486 100.000000    0  35.082683
+#> MinRelativeHumidity    55.7307897  90.243329    0  26.857833
+#> MaxRelativeHumidity   100.0000000 100.000000    0  53.842059
+#> Radiation              23.7299248  27.982274    0   7.543725
+#> WindSpeed               1.7444530   5.811866   30   0.000000
+#> WindDirection         264.0404014 359.908196 1350   0.000000
+#> PET                     3.7736818   5.625855    0   1.090270
+#> elevation             525.0000000 786.000000    0 240.000000
+#> slope                  19.7585106  31.071896    0   1.432096
+#> aspect                291.0375061 360.000000    0   5.194427
 #> dimension(s):
 #>      from to         offset    delta  refsys point x/y
 #> x       1 11          1.671  0.01058  WGS 84 FALSE [x]
@@ -239,6 +249,7 @@ raster_meteo_reference
 we need to convert it to points:
 
 ``` r
+
 points_meteo_reference <- names(raster_meteo_reference) |>
   # for each variable
   purrr::map(
@@ -303,6 +314,7 @@ points_meteo_reference
 And now we can use it to build an interpolator object:
 
 ``` r
+
 with_meteo(points_meteo_reference) |>
   create_meteo_interpolator()
 #> ℹ Checking meteorology object...
@@ -315,6 +327,8 @@ with_meteo(points_meteo_reference) |>
 #> ✔ Interpolator created.
 #> stars object with 2 dimensions and 13 attributes
 #> attribute(s):
+#> Warning in (function (..., deparse.level = 1) : number of columns of result is
+#> not a multiple of vector length (arg 1)
 #>                                   Min.     1st Qu.     Median       Mean
 #> Temperature                 3.47453413  11.4535839  13.940206  13.471788
 #> MinTemperature             -3.27100714   4.3824425   6.969667   5.860040
@@ -329,20 +343,20 @@ with_meteo(points_meteo_reference) |>
 #> slope                       1.43209624   5.7204332  11.348120  13.073426
 #> SmoothedPrecipitation       0.25336109   1.5179424   3.874980   3.862412
 #> SmoothedTemperatureRange    9.41552220  11.8383211  12.587418  12.458785
-#>                               3rd Qu.       Max. NA's
-#> Temperature                16.1442989  20.781408    0
-#> MinTemperature              8.2924049  11.071295    0
-#> MaxTemperature             22.0316730  28.801911    0
-#> RelativeHumidity           75.5124486 100.000000    0
-#> Precipitation               0.2922964  21.000409    0
-#> Radiation                  23.7299248  27.982274    0
-#> WindDirection             264.0404014 359.908196 1350
-#> WindSpeed                   1.7444530   5.811866   30
-#> elevation                 525.0000000 786.000000    0
-#> aspect                    291.0375061 360.000000    0
-#> slope                      19.7585106  31.071896    0
-#> SmoothedPrecipitation       6.2789283  11.753856  505
-#> SmoothedTemperatureRange   13.2623789  15.014616    0
+#>                               3rd Qu.       Max.  NAs       NA's
+#> Temperature                16.1442989  20.781408    0   3.474534
+#> MinTemperature              8.2924049  11.071295    0  -3.271007
+#> MaxTemperature             22.0316730  28.801911    0   7.162658
+#> RelativeHumidity           75.5124486 100.000000    0  35.082683
+#> Precipitation               0.2922964  21.000409    0   0.000000
+#> Radiation                  23.7299248  27.982274    0   7.543725
+#> WindDirection             264.0404014 359.908196 1350   0.000000
+#> WindSpeed                   1.7444530   5.811866   30   0.000000
+#> elevation                 525.0000000 786.000000    0 240.000000
+#> aspect                    291.0375061 360.000000    0   5.194427
+#> slope                      19.7585106  31.071896    0   1.432096
+#> SmoothedPrecipitation       6.2789283  11.753856  505   0.000000
+#> SmoothedTemperatureRange   13.2623789  15.014616    0   9.415522
 #> dimension(s):
 #>         from  to     offset  delta refsys point
 #> date       1  30 2022-04-01 1 days   Date FALSE

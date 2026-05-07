@@ -1,5 +1,16 @@
 # Changelog
 
+## meteoland 2.2.60001
+
+- Compilation patch for C++ 17 (#include )
+
+## meteoland 2.2.6
+
+CRAN release: 2026-02-18
+
+- Internal C++ functions moved to header-only libraries for compilation
+  with medfate
+
 ## meteoland 2.2.5
 
 CRAN release: 2025-12-12

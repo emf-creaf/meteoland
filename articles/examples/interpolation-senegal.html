@@ -25,7 +25,7 @@
 
     <a class="navbar-brand me-2" href="../../index.html">meteoland</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.2.5</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.2.60001</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -69,7 +69,7 @@
                         <h4 data-toc-skip class="author">Miquel De
 Cáceres</h4>
             
-            <h4 data-toc-skip class="date">2025-12-15</h4>
+            <h4 data-toc-skip class="date">2026-05-07</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/emf-creaf/meteoland/blob/HEAD/vignettes/examples/interpolation-senegal.Rmd" class="external-link"><code>vignettes/examples/interpolation-senegal.Rmd</code></a></small>
       <div class="d-none name"><code>interpolation-senegal.Rmd</code></div>
@@ -88,7 +88,7 @@ We’ll use Senegal as case study.</p>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://rspatial.org/" class="external-link">terra</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://r-spatial.github.io/stars/" class="external-link">stars</a></span><span class="op">)</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">geodata</span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://rspatial.github.io/geodata/" class="external-link">geodata</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dieghernan.github.io/tidyterra/" class="external-link">tidyterra</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://emf-creaf.github.io/meteoland/">meteoland</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span>
@@ -107,7 +107,7 @@ access to over 30.000 weather stations across the globe:</p>
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://openair-project.github.io/worldmet/" class="external-link">worldmet</a></span><span class="op">)</span></span></code></pre></div>
 <p>In order to download weather data, we must first obtain the codes of
 the weather stations available for our study area. This can be done
-using function <code><a href="https://openair-project.github.io/worldmet/reference/getMeta.html" class="external-link">getMeta()</a></code> from worldmet, which we use to
+using function <code><a href="https://openair-project.github.io/worldmet/reference/deprecated-isd.html" class="external-link">getMeta()</a></code> from worldmet, which we use to
 know available weather stations for Senegal and neighbouring
 countries:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
@@ -118,12 +118,12 @@ countries:</p>
 <span><span class="co">#   Mali - ML </span></span>
 <span><span class="co">#   Mauritania - MR</span></span>
 <span><span class="co">#   Guinea bissau - PU</span></span>
-<span><span class="va">sg_st</span> <span class="op">&lt;-</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind_rows.html" class="external-link">bind_rows</a></span><span class="op">(</span><span class="fu">worldmet</span><span class="fu">::</span><span class="fu"><a href="https://openair-project.github.io/worldmet/reference/getMeta.html" class="external-link">getMeta</a></span><span class="op">(</span>country<span class="op">=</span><span class="st">"SG"</span>, plot <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>,</span>
-<span>                          <span class="fu">worldmet</span><span class="fu">::</span><span class="fu"><a href="https://openair-project.github.io/worldmet/reference/getMeta.html" class="external-link">getMeta</a></span><span class="op">(</span>country<span class="op">=</span><span class="st">"GA"</span>, plot <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>,</span>
-<span>                          <span class="fu">worldmet</span><span class="fu">::</span><span class="fu"><a href="https://openair-project.github.io/worldmet/reference/getMeta.html" class="external-link">getMeta</a></span><span class="op">(</span>country<span class="op">=</span><span class="st">"GV"</span>, plot <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>,</span>
-<span>                          <span class="fu">worldmet</span><span class="fu">::</span><span class="fu"><a href="https://openair-project.github.io/worldmet/reference/getMeta.html" class="external-link">getMeta</a></span><span class="op">(</span>country<span class="op">=</span><span class="st">"ML"</span>, plot <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>,</span>
-<span>                          <span class="fu">worldmet</span><span class="fu">::</span><span class="fu"><a href="https://openair-project.github.io/worldmet/reference/getMeta.html" class="external-link">getMeta</a></span><span class="op">(</span>country<span class="op">=</span><span class="st">"MR"</span>, plot <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>,</span>
-<span>                          <span class="fu">worldmet</span><span class="fu">::</span><span class="fu"><a href="https://openair-project.github.io/worldmet/reference/getMeta.html" class="external-link">getMeta</a></span><span class="op">(</span>country<span class="op">=</span><span class="st">"PU"</span>, plot <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<span><span class="va">sg_st</span> <span class="op">&lt;-</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind_rows.html" class="external-link">bind_rows</a></span><span class="op">(</span><span class="fu">worldmet</span><span class="fu">::</span><span class="fu"><a href="https://openair-project.github.io/worldmet/reference/deprecated-isd.html" class="external-link">getMeta</a></span><span class="op">(</span>country<span class="op">=</span><span class="st">"SG"</span>, plot <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>,</span>
+<span>                          <span class="fu">worldmet</span><span class="fu">::</span><span class="fu"><a href="https://openair-project.github.io/worldmet/reference/deprecated-isd.html" class="external-link">getMeta</a></span><span class="op">(</span>country<span class="op">=</span><span class="st">"GA"</span>, plot <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>,</span>
+<span>                          <span class="fu">worldmet</span><span class="fu">::</span><span class="fu"><a href="https://openair-project.github.io/worldmet/reference/deprecated-isd.html" class="external-link">getMeta</a></span><span class="op">(</span>country<span class="op">=</span><span class="st">"GV"</span>, plot <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>,</span>
+<span>                          <span class="fu">worldmet</span><span class="fu">::</span><span class="fu"><a href="https://openair-project.github.io/worldmet/reference/deprecated-isd.html" class="external-link">getMeta</a></span><span class="op">(</span>country<span class="op">=</span><span class="st">"ML"</span>, plot <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>,</span>
+<span>                          <span class="fu">worldmet</span><span class="fu">::</span><span class="fu"><a href="https://openair-project.github.io/worldmet/reference/deprecated-isd.html" class="external-link">getMeta</a></span><span class="op">(</span>country<span class="op">=</span><span class="st">"MR"</span>, plot <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>,</span>
+<span>                          <span class="fu">worldmet</span><span class="fu">::</span><span class="fu"><a href="https://openair-project.github.io/worldmet/reference/deprecated-isd.html" class="external-link">getMeta</a></span><span class="op">(</span>country<span class="op">=</span><span class="st">"PU"</span>, plot <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p>The station metadata looks like this:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sg_st</span></span></code></pre></div>
@@ -144,14 +144,14 @@ countries:</p>
 <span><span class="co">## <span style="color: #949494;"># ℹ 2 more variables: end &lt;date&gt;, code &lt;chr&gt;</span></span></span></code></pre>
 <p>Let’s assume that we want to interpolate weather for year 2020. We
 can download hourly weather station data for the selected stations and
-year 2020 using function <code><a href="https://openair-project.github.io/worldmet/reference/importNOAA.html" class="external-link">importNOAA()</a></code> and programming a
+year 2020 using function <code><a href="https://openair-project.github.io/worldmet/reference/deprecated-isd.html" class="external-link">importNOAA()</a></code> and programming a
 loop over stations:</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">hourData</span> <span class="op">&lt;-</span> <span class="cn">NULL</span></span>
 <span><span class="kw">for</span><span class="op">(</span><span class="va">i</span> <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">sg_st</span><span class="op">$</span><span class="va">code</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">sg_st</span><span class="op">$</span><span class="va">code</span><span class="op">[</span><span class="va">i</span><span class="op">]</span>,<span class="st">" "</span><span class="op">)</span><span class="op">)</span></span>
 <span>  <span class="kw"><a href="https://rdrr.io/r/base/conditions.html" class="external-link">tryCatch</a></span><span class="op">(</span><span class="op">{</span></span>
-<span>    <span class="va">hi</span> <span class="op">&lt;-</span> <span class="fu">worldmet</span><span class="fu">::</span><span class="fu"><a href="https://openair-project.github.io/worldmet/reference/importNOAA.html" class="external-link">importNOAA</a></span><span class="op">(</span>code <span class="op">=</span> <span class="va">sg_st</span><span class="op">$</span><span class="va">code</span><span class="op">[</span><span class="va">i</span><span class="op">]</span>, year<span class="op">=</span><span class="fl">2020</span>, quiet<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span>
+<span>    <span class="va">hi</span> <span class="op">&lt;-</span> <span class="fu">worldmet</span><span class="fu">::</span><span class="fu"><a href="https://openair-project.github.io/worldmet/reference/deprecated-isd.html" class="external-link">importNOAA</a></span><span class="op">(</span>code <span class="op">=</span> <span class="va">sg_st</span><span class="op">$</span><span class="va">code</span><span class="op">[</span><span class="va">i</span><span class="op">]</span>, year<span class="op">=</span><span class="fl">2020</span>, quiet<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span>
 <span>    <span class="kw">if</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/NULL.html" class="external-link">is.null</a></span><span class="op">(</span><span class="va">hourData</span><span class="op">)</span><span class="op">)</span>  <span class="op">{</span><span class="va">hourData</span> <span class="op">&lt;-</span> <span class="va">hi</span><span class="op">}</span></span>
 <span>    <span class="kw">else</span> <span class="op">{</span><span class="va">hourData</span> <span class="op">&lt;-</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind_rows.html" class="external-link">bind_rows</a></span><span class="op">(</span><span class="va">hourData</span>,<span class="va">hi</span><span class="op">)</span><span class="op">}</span></span>
 <span>    <span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">" [success]."</span><span class="op">)</span></span>
@@ -184,8 +184,10 @@ before using the reference data for interpolation.</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">interpolator_sen</span></span></code></pre></div>
 <pre><code><span><span class="co">## stars object with 2 dimensions and 13 attributes</span></span>
-<span><span class="co">## attribute(s):</span></span>
-<span><span class="co">##                                 Min.   1st Qu.     Median       Mean   3rd Qu.</span></span>
+<span><span class="co">## attribute(s):</span></span></code></pre>
+<pre><code><span><span class="co">## Warning in (function (..., deparse.level = 1) : number of columns of result is</span></span>
+<span><span class="co">## not a multiple of vector length (arg 9)</span></span></code></pre>
+<pre><code><span><span class="co">##                                 Min.   1st Qu.     Median       Mean   3rd Qu.</span></span>
 <span><span class="co">## Temperature               11.0000000 26.450000  28.537500  28.750958  30.91154</span></span>
 <span><span class="co">## MinTemperature             8.5000000 21.000000  24.000000  23.712257  26.00000</span></span>
 <span><span class="co">## MaxTemperature            11.0000000 31.000000  34.050000  34.322865  38.00000</span></span>
@@ -199,20 +201,20 @@ before using the reference data for interpolation.</p>
 <span><span class="co">## slope                      0.0000000  0.000000   0.000000   0.000000   0.00000</span></span>
 <span><span class="co">## SmoothedPrecipitation      0.1000000  3.000000   8.000000  11.312237  14.66667</span></span>
 <span><span class="co">## SmoothedTemperatureRange   0.0000000  5.555667   9.225806   9.525796  14.16504</span></span>
-<span><span class="co">##                                 Max.  NA's</span></span>
-<span><span class="co">## Temperature                 48.00000  3893</span></span>
-<span><span class="co">## MinTemperature              48.00000  3893</span></span>
-<span><span class="co">## MaxTemperature              48.20000  3893</span></span>
-<span><span class="co">## RelativeHumidity           100.00000  3893</span></span>
-<span><span class="co">## Precipitation              381.30000 15778</span></span>
-<span><span class="co">## Radiation                   28.92108  3893</span></span>
-<span><span class="co">## WindDirection              360.00000  4464</span></span>
-<span><span class="co">## WindSpeed                   33.50000  3983</span></span>
-<span><span class="co">## elevation                 1035.10000     0</span></span>
-<span><span class="co">## aspect                       0.00000     0</span></span>
-<span><span class="co">## slope                        0.00000     0</span></span>
-<span><span class="co">## SmoothedPrecipitation      137.30000 12897</span></span>
-<span><span class="co">## SmoothedTemperatureRange    21.40484  1816</span></span>
+<span><span class="co">##                                 Max.   NAs NA's</span></span>
+<span><span class="co">## Temperature                 48.00000  3893    0</span></span>
+<span><span class="co">## MinTemperature              48.00000  3893    0</span></span>
+<span><span class="co">## MaxTemperature              48.20000  3893    0</span></span>
+<span><span class="co">## RelativeHumidity           100.00000  3893    0</span></span>
+<span><span class="co">## Precipitation              381.30000 15778    0</span></span>
+<span><span class="co">## Radiation                   28.92108  3893    0</span></span>
+<span><span class="co">## WindDirection              360.00000  4464    0</span></span>
+<span><span class="co">## WindSpeed                   33.50000  3983    0</span></span>
+<span><span class="co">## elevation                 1035.10000     0    1</span></span>
+<span><span class="co">## aspect                       0.00000     0    0</span></span>
+<span><span class="co">## slope                        0.00000     0    0</span></span>
+<span><span class="co">## SmoothedPrecipitation      137.30000 12897    0</span></span>
+<span><span class="co">## SmoothedTemperatureRange    21.40484  1816    0</span></span>
 <span><span class="co">## dimension(s):</span></span>
 <span><span class="co">##         from  to         offset  delta  refsys point</span></span>
 <span><span class="co">## date       1 366 2020-01-01 UTC 1 days POSIXct FALSE</span></span>
@@ -223,7 +225,7 @@ before using the reference data for interpolation.</p>
 <p>If needed, we can display the location of the weather stations on a
 map with country limits. This is useful to know the station density in
 the study area. In our case we will use the following code:</p>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"africountries"</span><span class="op">)</span></span>
 <span><span class="va">senegal</span> <span class="op">&lt;-</span> <span class="va">africountries</span><span class="op">[</span><span class="va">africountries</span><span class="op">$</span><span class="va">name</span><span class="op">==</span><span class="st">"Senegal"</span>,<span class="op">]</span></span>
 <span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="op">)</span><span class="op">+</span></span>
@@ -232,39 +234,41 @@ the study area. In our case we will use the following code:</p>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html" class="external-link">geom_sf</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">sf_sen</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>, size <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span><span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/lims.html" class="external-link">xlim</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">20</span>,<span class="fl">0</span><span class="op">)</span><span class="op">)</span><span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/lims.html" class="external-link">ylim</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">30</span><span class="op">)</span><span class="op">)</span><span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_bw</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<p><img src="interpolation-senegal_files/figure-html/unnamed-chunk-13-1.png" class="r-plt" width="384"></p>
+<p><img src="interpolation-senegal_files/figure-html/unnamed-chunk-13-1.png" class="r-plt" alt="" width="384"></p>
 </div>
 <div class="section level2">
 <h2 id="accessing-and-arranging-topographic-data">Accessing and arranging topographic data<a class="anchor" aria-label="anchor" href="#accessing-and-arranging-topographic-data"></a>
 </h2>
 <p>To perform weather interpolation, we need the topography (elevation,
 slope, aspect) of the target area. We can use function
-<code><a href="https://rdrr.io/pkg/geodata/man/elevation.html" class="external-link">elevation_30s()</a></code> from package <strong>geodata</strong> to
+<code><a href="https://rspatial.github.io/geodata/reference/elevation.html" class="external-link">elevation_30s()</a></code> from package <strong>geodata</strong> to
 download elevation data for Senegal:</p>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">elev_raster</span> <span class="op">&lt;-</span> <span class="fu">geodata</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/geodata/man/elevation.html" class="external-link">elevation_30s</a></span><span class="op">(</span>country<span class="op">=</span><span class="st">"SEN"</span>, path <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rspatial.github.io/terra/reference/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">elev_raster</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="st">"elevation"</span></span>
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">elev_raster</span> <span class="op">&lt;-</span> <span class="fu">geodata</span><span class="fu">::</span><span class="fu"><a href="https://rspatial.github.io/geodata/reference/elevation.html" class="external-link">elevation_30s</a></span><span class="op">(</span>country<span class="op">=</span><span class="st">"SEN"</span>, path <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## Cached as: /tmp/RtmpAoTvLE/elevation/SEN_elv_msk.zip</span></span></code></pre>
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rspatial.github.io/terra/reference/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">elev_raster</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="st">"elevation"</span></span>
 <span><span class="va">elev_raster</span></span></code></pre></div>
-<pre><code><span><span class="co">## class       : SpatRaster </span></span>
+<pre><code><span><span class="co">## class       : SpatRaster</span></span>
 <span><span class="co">## size        : 564, 780, 1  (nrow, ncol, nlyr)</span></span>
 <span><span class="co">## resolution  : 0.008333333, 0.008333333  (x, y)</span></span>
 <span><span class="co">## extent      : -17.7, -11.2, 12.1, 16.8  (xmin, xmax, ymin, ymax)</span></span>
-<span><span class="co">## coord. ref. : lon/lat WGS 84 (EPSG:4326) </span></span>
-<span><span class="co">## source      : SEN_elv_msk.tif </span></span>
-<span><span class="co">## name        : elevation </span></span>
-<span><span class="co">## min value   :        -7 </span></span>
+<span><span class="co">## coord. ref. : lon/lat WGS 84 (EPSG:4326)</span></span>
+<span><span class="co">## source      : SEN_elv_msk.tif</span></span>
+<span><span class="co">## name        : elevation</span></span>
+<span><span class="co">## min value   :        -7</span></span>
 <span><span class="co">## max value   :       542</span></span></code></pre>
 <p>The previous function return <code>SpatRaster</code> object (package
 <strong>terra</strong>). In order to estimate slope and aspect we can
 use function <code><a href="https://rspatial.github.io/terra/reference/terrain.html" class="external-link">terrain()</a></code> from the <strong>terra</strong>
 package:</p>
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">slope_raster</span> <span class="op">&lt;-</span> <span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/terrain.html" class="external-link">terrain</a></span><span class="op">(</span><span class="va">elev_raster</span>, v <span class="op">=</span> <span class="st">"slope"</span>, unit<span class="op">=</span><span class="st">"degrees"</span><span class="op">)</span></span>
 <span><span class="va">aspect_raster</span> <span class="op">&lt;-</span> <span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/terrain.html" class="external-link">terrain</a></span><span class="op">(</span><span class="va">elev_raster</span>, v <span class="op">=</span> <span class="st">"aspect"</span>, unit<span class="op">=</span><span class="st">"degrees"</span><span class="op">)</span></span></code></pre></div>
 <p>We can plot the three rasters using with <code><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot()</a></code> using
 <code><a href="https://dieghernan.github.io/tidyterra/reference/geom_spatraster.html" class="external-link">geom_spatraster()</a></code> from package
 <strong>tidyterra</strong>:</p>
-<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">p1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="op">)</span><span class="op">+</span></span>
 <span>  <span class="fu">tidyterra</span><span class="fu">::</span><span class="fu"><a href="https://dieghernan.github.io/tidyterra/reference/geom_spatraster.html" class="external-link">geom_spatraster</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">elev_raster</span><span class="op">)</span></span>
 <span><span class="va">p2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="op">)</span><span class="op">+</span></span>
@@ -272,21 +276,21 @@ package:</p>
 <span><span class="va">p3</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="op">)</span><span class="op">+</span></span>
 <span>  <span class="fu">tidyterra</span><span class="fu">::</span><span class="fu"><a href="https://dieghernan.github.io/tidyterra/reference/geom_spatraster.html" class="external-link">geom_spatraster</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">aspect_raster</span><span class="op">)</span></span>
 <span><span class="fu">cowplot</span><span class="fu">::</span><span class="fu"><a href="https://wilkelab.org/cowplot/reference/plot_grid.html" class="external-link">plot_grid</a></span><span class="op">(</span><span class="va">p1</span>, <span class="va">p2</span>, <span class="va">p3</span>, nrow<span class="op">=</span><span class="fl">3</span><span class="op">)</span></span></code></pre></div>
-<p><img src="interpolation-senegal_files/figure-html/unnamed-chunk-16-1.png" class="r-plt" width="384"></p>
+<p><img src="interpolation-senegal_files/figure-html/unnamed-chunk-16-1.png" class="r-plt" alt="" width="384"></p>
 <p>We now assemble the three rasters into a single object:</p>
-<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">topo_spatraster</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">elev_raster</span>, <span class="va">slope_raster</span>, <span class="va">aspect_raster</span><span class="op">)</span></span></code></pre></div>
 <p>The resolution of the raster is quite high, which would make
 interpolation quite slow. For this reason, we use function
 <code><a href="https://rspatial.github.io/terra/reference/aggregate.html" class="external-link">aggregate()</a></code> from package <strong>terra</strong> to lower
 the resolution and speed-up calculations, but one may skip this
 step.</p>
-<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">fact</span> <span class="op">&lt;-</span> <span class="fl">10</span></span>
 <span><span class="va">topo_spatraster_agg</span> <span class="op">&lt;-</span> <span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/aggregate.html" class="external-link">aggregate</a></span><span class="op">(</span><span class="va">topo_spatraster</span>, fact <span class="op">=</span> <span class="va">fact</span><span class="op">)</span></span></code></pre></div>
 <p>Finally, we reshape the raster into an object of package
 <strong>stars</strong>:</p>
-<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">topo_stars_agg</span> <span class="op">&lt;-</span> <span class="fu">stars</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/stars/reference/st_as_stars.html" class="external-link">st_as_stars</a></span><span class="op">(</span><span class="va">topo_spatraster_agg</span>, as_attributes<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
@@ -296,7 +300,7 @@ step.</p>
 study area. We can simply call function <code><a href="../../reference/interpolate_data.html">interpolate_data()</a></code>
 from <strong>meteoland</strong>. Here we restrict the interpolation to
 two dates in 2020 to speed up calculations:</p>
-<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">raster_interpolated</span> <span class="op">&lt;-</span> <span class="va">topo_stars_agg</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="../../reference/interpolate_data.html">interpolate_data</a></span><span class="op">(</span><span class="va">interpolator_sen</span>, dates <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/as.Date.html" class="external-link">as.Date</a></span><span class="op">(</span><span class="st">"2020-01-01"</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/as.Date.html" class="external-link">as.Date</a></span><span class="op">(</span><span class="st">"2020-07-01"</span><span class="op">)</span><span class="op">)</span>, </span>
 <span>                   verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
@@ -313,7 +317,7 @@ ocean) are outside the convex hull of the stations in the interpolator
 object.</p>
 <p>The result of the interpolation is a raster object of class
 <strong>stars</strong>:</p>
-<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">raster_interpolated</span></span></code></pre></div>
 <pre><code><span><span class="co">## stars object with 3 dimensions and 14 attributes</span></span>
 <span><span class="co">## attribute(s):</span></span>
@@ -332,7 +336,7 @@ object.</p>
 <span><span class="co">## elevation              1.31000000  34.45750000  48.660000  54.0612085</span></span>
 <span><span class="co">## slope                  0.01792378   0.09556268   0.188352   0.2429773</span></span>
 <span><span class="co">## aspect                67.35251383 168.39402989 192.848440 189.9203858</span></span>
-<span><span class="co">##                           3rd Qu.       Max. NA's</span></span>
+<span><span class="co">##                           3rd Qu.       Max.  NAs</span></span>
 <span><span class="co">## MeanTemperature        29.9002891  30.169109 4556</span></span>
 <span><span class="co">## MinTemperature         26.1097100  26.201119 4556</span></span>
 <span><span class="co">## MaxTemperature         32.3647910  32.748957 4556</span></span>
@@ -353,7 +357,7 @@ object.</p>
 <span><span class="co">## y       1 57      16.76 -0.08333 WGS 84 FALSE [y]</span></span>
 <span><span class="co">## date    1  2 2020-01-01 182 days   Date FALSE</span></span></code></pre>
 <p>We can display the maps for specific dates and variables using:</p>
-<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">p1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="op">)</span><span class="op">+</span></span>
 <span>      <span class="fu"><a href="https://r-spatial.github.io/stars/reference/geom_stars.html" class="external-link">geom_stars</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">raster_interpolated</span><span class="op">[</span><span class="st">"MeanTemperature"</span>,,,<span class="fl">1</span><span class="op">]</span><span class="op">)</span><span class="op">+</span></span>
 <span>      <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_viridis.html" class="external-link">scale_fill_viridis_c</a></span><span class="op">(</span><span class="op">)</span><span class="op">+</span></span>
@@ -363,7 +367,7 @@ object.</p>
 <span>      <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_viridis.html" class="external-link">scale_fill_viridis_c</a></span><span class="op">(</span><span class="op">)</span><span class="op">+</span></span>
 <span>      <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>title <span class="op">=</span> <span class="st">"2020-07-01"</span><span class="op">)</span></span>
 <span><span class="fu">cowplot</span><span class="fu">::</span><span class="fu"><a href="https://wilkelab.org/cowplot/reference/plot_grid.html" class="external-link">plot_grid</a></span><span class="op">(</span><span class="va">p1</span>, <span class="va">p2</span>, nrow <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></code></pre></div>
-<p><img src="interpolation-senegal_files/figure-html/unnamed-chunk-22-1.png" class="r-plt" width="672"></p>
+<p><img src="interpolation-senegal_files/figure-html/unnamed-chunk-22-1.png" class="r-plt" alt="" width="672"></p>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>

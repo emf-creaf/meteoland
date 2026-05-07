@@ -133,6 +133,7 @@ raster_to_interpolate_example |>
   summarise_interpolated_data()
 #> stars object with 3 dimensions and 11 attributes
 #> attribute(s):
+#> Warning: number of columns of result is not a multiple of vector length (arg 1)
 #>                             Min.   1st Qu.    Median      Mean   3rd Qu.
 #> MeanTemperature       11.5704340 13.085384 13.580366 13.471788 14.000217
 #> MinTemperature         5.4241252  5.723106  5.834485  5.860040  6.015028
@@ -145,22 +146,22 @@ raster_to_interpolate_example |>
 #> WindSpeed              0.9485546  1.032881  1.262741  1.385929  1.680294
 #> WindDirection                 NA        NA        NA       NaN        NA
 #> PET                    1.9918440  2.851873  3.153198  3.087621  3.402888
-#>                            Max. NA's
-#> MeanTemperature       14.659490    0
-#> MinTemperature         6.280687    0
-#> MaxTemperature        20.321977    0
-#> Precipitation          1.445986    0
-#> MeanRelativeHumidity  73.956489    0
-#> MinRelativeHumidity   58.061458    0
-#> MaxRelativeHumidity   97.482022    0
-#> Radiation             22.812720    0
-#> WindSpeed              2.382469    1
-#> WindDirection                NA  121
-#> PET                    4.214379    0
+#>                            Max. NAs      NA's
+#> MeanTemperature       14.659490   0 11.570434
+#> MinTemperature         6.280687   0  5.424125
+#> MaxTemperature        20.321977   0 15.461866
+#> Precipitation          1.445986   0  1.038468
+#> MeanRelativeHumidity  73.956489   0 60.796296
+#> MinRelativeHumidity   58.061458   0 43.345272
+#> MaxRelativeHumidity   97.482022   0 96.294250
+#> Radiation             22.812720   0 13.984608
+#> WindSpeed              2.382469   1  0.000000
+#> WindDirection                NA 121  0.000000
+#> PET                    4.214379   0  1.991844
 #> dimension(s):
-#>      from to offset    delta  refsys point          values x/y
-#> time    1  1     NA       NA POSIXct    NA 2022-04-01 CEST    
-#> x       1 11  1.671  0.01058  WGS 84 FALSE            NULL [x]
-#> y       1 11  41.76 -0.01058  WGS 84 FALSE            NULL [y]
+#>      from to          offset    delta  refsys point x/y
+#> time    1  1 2022-04-01 CEST       NA POSIXct    NA    
+#> x       1 11           1.671  0.01058  WGS 84 FALSE [x]
+#> y       1 11           41.76 -0.01058  WGS 84 FALSE [y]
 # }
 ```

@@ -16,5 +16,6 @@ Spanish National Forest Inventory
 ## Examples
 
 ``` r
+
 data(meteoland_interpolator_example)
 ```

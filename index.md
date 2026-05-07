@@ -47,6 +47,7 @@ and installed from GitHub as follows (package `remotes` should be
 installed first):
 
 ``` r
+
 remotes::install_github("emf-creaf/meteoland")
 ```
 

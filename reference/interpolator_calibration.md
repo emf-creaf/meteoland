@@ -128,10 +128,6 @@ procedures, predictions for each meteorological station are made using a
 *leave-one-out* procedure (i.e. after excluding the station from the
 predictive set).
 
-## Functions
-
-- `interpolation_cross_validation()`:
-
 ## References
 
 Thornton, P.E., Running, S.W., 1999. An improved algorithm for
@@ -152,6 +148,7 @@ Victor Granda García, EMF-CREAF
 ## Examples
 
 ``` r
+
 # \donttest{
 # example interpolator
 data("meteoland_interpolator_example")

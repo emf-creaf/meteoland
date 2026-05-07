@@ -59,6 +59,7 @@ Miquel De Cáceres Ainsa, EMF-CREAF
 ## Examples
 
 ``` r
+
 # example meteo data
 data(meteoland_meteo_example)
 
@@ -75,6 +76,7 @@ with_meteo(meteoland_meteo_example) |>
 #> ✔ Interpolator created.
 #> stars object with 2 dimensions and 13 attributes
 #> attribute(s):
+#> Warning: number of columns of result is not a multiple of vector length (arg 9)
 #>                                 Min.    1st Qu.    Median       Mean   3rd Qu.
 #> Temperature               -14.200000   8.800000  12.60000  11.324991  14.80000
 #> MinTemperature            -15.900000   3.300000   6.90000   5.883189   9.40000
@@ -89,20 +91,20 @@ with_meteo(meteoland_meteo_example) |>
 #> slope                       0.000000   0.000000   0.00000   0.000000   0.00000
 #> SmoothedPrecipitation       0.100000   1.862500   5.55000   6.197496   9.07500
 #> SmoothedTemperatureRange    4.695000   9.863542  11.66307  11.400932  13.26868
-#>                                 Max. NA's
-#> Temperature                 23.40000  148
-#> MinTemperature              20.10000  138
-#> MaxTemperature              29.90000  139
-#> RelativeHumidity           100.00000  145
-#> Precipitation              160.90000   79
-#> Radiation                   28.10878  139
-#> WindDirection              359.00000 4171
-#> WindSpeed                    6.90000 4160
-#> elevation                 2535.00000    0
-#> aspect                       0.00000    0
-#> slope                        0.00000    0
-#> SmoothedPrecipitation       65.10000  818
-#> SmoothedTemperatureRange    17.72778  124
+#>                                 Max.  NAs NA's
+#> Temperature                 23.40000  148    0
+#> MinTemperature              20.10000  138    0
+#> MaxTemperature              29.90000  139    0
+#> RelativeHumidity           100.00000  145    0
+#> Precipitation              160.90000   79    0
+#> Radiation                   28.10878  139    0
+#> WindDirection              359.00000 4171    0
+#> WindSpeed                    6.90000 4160    0
+#> elevation                 2535.00000    0    0
+#> aspect                       0.00000    0    0
+#> slope                        0.00000    0    0
+#> SmoothedPrecipitation       65.10000  818    0
+#> SmoothedTemperatureRange    17.72778  124    0
 #> dimension(s):
 #>         from  to         offset  delta  refsys point
 #> date       1  30 2022-04-01 UTC 1 days POSIXct FALSE
@@ -123,6 +125,7 @@ with_meteo(meteoland_meteo_example) |>
 #> ✔ Interpolator created.
 #> stars object with 2 dimensions and 13 attributes
 #> attribute(s):
+#> Warning: number of columns of result is not a multiple of vector length (arg 9)
 #>                                 Min.    1st Qu.    Median       Mean   3rd Qu.
 #> Temperature               -14.200000   8.800000  12.60000  11.324991  14.80000
 #> MinTemperature            -15.900000   3.300000   6.90000   5.883189   9.40000
@@ -137,20 +140,20 @@ with_meteo(meteoland_meteo_example) |>
 #> slope                       0.000000   0.000000   0.00000   0.000000   0.00000
 #> SmoothedPrecipitation       0.100000   1.862500   5.55000   6.197496   9.07500
 #> SmoothedTemperatureRange    4.695000   9.863542  11.66307  11.400932  13.26868
-#>                                 Max. NA's
-#> Temperature                 23.40000  148
-#> MinTemperature              20.10000  138
-#> MaxTemperature              29.90000  139
-#> RelativeHumidity           100.00000  145
-#> Precipitation              160.90000   79
-#> Radiation                   28.10878  139
-#> WindDirection              359.00000 4171
-#> WindSpeed                    6.90000 4160
-#> elevation                 2535.00000    0
-#> aspect                       0.00000    0
-#> slope                        0.00000    0
-#> SmoothedPrecipitation       65.10000  818
-#> SmoothedTemperatureRange    17.72778  124
+#>                                 Max.  NAs NA's
+#> Temperature                 23.40000  148    0
+#> MinTemperature              20.10000  138    0
+#> MaxTemperature              29.90000  139    0
+#> RelativeHumidity           100.00000  145    0
+#> Precipitation              160.90000   79    0
+#> Radiation                   28.10878  139    0
+#> WindDirection              359.00000 4171    0
+#> WindSpeed                    6.90000 4160    0
+#> elevation                 2535.00000    0    0
+#> aspect                       0.00000    0    0
+#> slope                        0.00000    0    0
+#> SmoothedPrecipitation       65.10000  818    0
+#> SmoothedTemperatureRange    17.72778  124    0
 #> dimension(s):
 #>         from  to         offset  delta  refsys point
 #> date       1  30 2022-04-01 UTC 1 days POSIXct FALSE

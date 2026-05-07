@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">meteoland</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.2.5</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.2.60001</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -115,6 +115,7 @@ parameters and creates the interpolator object to be ready to use.</p>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Interpolator created.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> stars object with 2 dimensions and 13 attributes</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> attribute(s):</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>number of columns of result is not a multiple of vector length (arg 9)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                                 Min.    1st Qu.    Median       Mean   3rd Qu.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Temperature               -14.200000   8.800000  12.60000  11.324991  14.80000</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> MinTemperature            -15.900000   3.300000   6.90000   5.883189   9.40000</span>
@@ -129,20 +130,20 @@ parameters and creates the interpolator object to be ready to use.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> slope                       0.000000   0.000000   0.00000   0.000000   0.00000</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> SmoothedPrecipitation       0.100000   1.862500   5.55000   6.197496   9.07500</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> SmoothedTemperatureRange    4.695000   9.863542  11.66307  11.400932  13.26868</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                                 Max. NA's</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Temperature                 23.40000  148</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> MinTemperature              20.10000  138</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> MaxTemperature              29.90000  139</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> RelativeHumidity           100.00000  145</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Precipitation              160.90000   79</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Radiation                   28.10878  139</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> WindDirection              359.00000 4171</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> WindSpeed                    6.90000 4160</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> elevation                 2535.00000    0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> aspect                       0.00000    0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> slope                        0.00000    0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> SmoothedPrecipitation       65.10000  818</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> SmoothedTemperatureRange    17.72778  124</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                 Max.  NAs NA's</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Temperature                 23.40000  148    0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> MinTemperature              20.10000  138    0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> MaxTemperature              29.90000  139    0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> RelativeHumidity           100.00000  145    0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Precipitation              160.90000   79    0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Radiation                   28.10878  139    0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> WindDirection              359.00000 4171    0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> WindSpeed                    6.90000 4160    0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> elevation                 2535.00000    0    0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> aspect                       0.00000    0    0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> slope                        0.00000    0    0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> SmoothedPrecipitation       65.10000  818    0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> SmoothedTemperatureRange    17.72778  124    0</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> dimension(s):</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         from  to         offset  delta  refsys point</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> date       1  30 2022-04-01 UTC 1 days POSIXct FALSE</span>
@@ -163,6 +164,7 @@ parameters and creates the interpolator object to be ready to use.</p>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Interpolator created.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> stars object with 2 dimensions and 13 attributes</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> attribute(s):</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>number of columns of result is not a multiple of vector length (arg 9)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                                 Min.    1st Qu.    Median       Mean   3rd Qu.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Temperature               -14.200000   8.800000  12.60000  11.324991  14.80000</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> MinTemperature            -15.900000   3.300000   6.90000   5.883189   9.40000</span>
@@ -177,20 +179,20 @@ parameters and creates the interpolator object to be ready to use.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> slope                       0.000000   0.000000   0.00000   0.000000   0.00000</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> SmoothedPrecipitation       0.100000   1.862500   5.55000   6.197496   9.07500</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> SmoothedTemperatureRange    4.695000   9.863542  11.66307  11.400932  13.26868</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                                 Max. NA's</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Temperature                 23.40000  148</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> MinTemperature              20.10000  138</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> MaxTemperature              29.90000  139</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> RelativeHumidity           100.00000  145</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Precipitation              160.90000   79</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Radiation                   28.10878  139</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> WindDirection              359.00000 4171</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> WindSpeed                    6.90000 4160</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> elevation                 2535.00000    0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> aspect                       0.00000    0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> slope                        0.00000    0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> SmoothedPrecipitation       65.10000  818</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> SmoothedTemperatureRange    17.72778  124</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                 Max.  NAs NA's</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Temperature                 23.40000  148    0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> MinTemperature              20.10000  138    0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> MaxTemperature              29.90000  139    0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> RelativeHumidity           100.00000  145    0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Precipitation              160.90000   79    0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Radiation                   28.10878  139    0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> WindDirection              359.00000 4171    0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> WindSpeed                    6.90000 4160    0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> elevation                 2535.00000    0    0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> aspect                       0.00000    0    0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> slope                        0.00000    0    0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> SmoothedPrecipitation       65.10000  818    0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> SmoothedTemperatureRange    17.72778  124    0</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> dimension(s):</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         from  to         offset  delta  refsys point</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> date       1  30 2022-04-01 UTC 1 days POSIXct FALSE</span>

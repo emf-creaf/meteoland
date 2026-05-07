@@ -25,7 +25,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">meteoland</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.2.5</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.2.60001</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -78,7 +78,7 @@ Granda</h4>
     
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://emf-creaf.github.io/meteoland/">meteoland</a></span><span class="op">)</span></span>
-<span><span class="co">#&gt; Package 'meteoland' [ver. 2.2.5]</span></span>
+<span><span class="co">#&gt; Package 'meteoland' [ver. 2.2.60001]</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://r-spatial.github.io/stars/" class="external-link">stars</a></span><span class="op">)</span></span>
 <span><span class="co">#&gt; Loading required package: abind</span></span>
 <span><span class="co">#&gt; Loading required package: sf</span></span>
@@ -248,7 +248,7 @@ for us:</p>
 us:</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://openair-project.github.io/worldmet/" class="external-link">worldmet</a></span><span class="op">)</span></span>
-<span><span class="fu">worldmet</span><span class="fu">::</span><span class="fu"><a href="https://openair-project.github.io/worldmet/reference/importNOAA.html" class="external-link">importNOAA</a></span><span class="op">(</span><span class="st">"081120-99999"</span>, year <span class="op">=</span> <span class="fl">2022</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span><span class="fu">worldmet</span><span class="fu">::</span><span class="fu"><a href="https://openair-project.github.io/worldmet/reference/deprecated-isd.html" class="external-link">importNOAA</a></span><span class="op">(</span><span class="st">"081120-99999"</span>, year <span class="op">=</span> <span class="fl">2022</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="../reference/worldmet2meteoland.html">worldmet2meteoland</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 </div>
 </div>
@@ -268,6 +268,8 @@ meteorological data:</p>
 <code class="sourceCode R"><span><span class="va">raster_meteo_reference</span></span>
 <span><span class="co">#&gt; stars object with 3 dimensions and 14 attributes</span></span>
 <span><span class="co">#&gt; attribute(s):</span></span>
+<span><span class="co">#&gt; Warning in (function (..., deparse.level = 1) : number of columns of result is</span></span>
+<span><span class="co">#&gt; not a multiple of vector length (arg 1)</span></span>
 <span><span class="co">#&gt;                               Min.     1st Qu.     Median       Mean</span></span>
 <span><span class="co">#&gt; MeanTemperature         3.47453413  11.4535839  13.940206  13.471788</span></span>
 <span><span class="co">#&gt; MinTemperature         -3.27100714   4.3824425   6.969667   5.860040</span></span>
@@ -283,21 +285,21 @@ meteorological data:</p>
 <span><span class="co">#&gt; elevation             240.00000000 370.0000000 447.000000 460.322314</span></span>
 <span><span class="co">#&gt; slope                   1.43209624   5.7204332  11.348120  13.073426</span></span>
 <span><span class="co">#&gt; aspect                  5.19442749  74.7448807 174.369324 181.679232</span></span>
-<span><span class="co">#&gt;                           3rd Qu.       Max. NA's</span></span>
-<span><span class="co">#&gt; MeanTemperature        16.1442989  20.781408    0</span></span>
-<span><span class="co">#&gt; MinTemperature          8.2924049  11.071295    0</span></span>
-<span><span class="co">#&gt; MaxTemperature         22.0316730  28.801911    0</span></span>
-<span><span class="co">#&gt; Precipitation           0.2922964  21.000409    0</span></span>
-<span><span class="co">#&gt; MeanRelativeHumidity   75.5124486 100.000000    0</span></span>
-<span><span class="co">#&gt; MinRelativeHumidity    55.7307897  90.243329    0</span></span>
-<span><span class="co">#&gt; MaxRelativeHumidity   100.0000000 100.000000    0</span></span>
-<span><span class="co">#&gt; Radiation              23.7299248  27.982274    0</span></span>
-<span><span class="co">#&gt; WindSpeed               1.7444530   5.811866   30</span></span>
-<span><span class="co">#&gt; WindDirection         264.0404014 359.908196 1350</span></span>
-<span><span class="co">#&gt; PET                     3.7736818   5.625855    0</span></span>
-<span><span class="co">#&gt; elevation             525.0000000 786.000000    0</span></span>
-<span><span class="co">#&gt; slope                  19.7585106  31.071896    0</span></span>
-<span><span class="co">#&gt; aspect                291.0375061 360.000000    0</span></span>
+<span><span class="co">#&gt;                           3rd Qu.       Max.  NAs       NA's</span></span>
+<span><span class="co">#&gt; MeanTemperature        16.1442989  20.781408    0   3.474534</span></span>
+<span><span class="co">#&gt; MinTemperature          8.2924049  11.071295    0  -3.271007</span></span>
+<span><span class="co">#&gt; MaxTemperature         22.0316730  28.801911    0   7.162658</span></span>
+<span><span class="co">#&gt; Precipitation           0.2922964  21.000409    0   0.000000</span></span>
+<span><span class="co">#&gt; MeanRelativeHumidity   75.5124486 100.000000    0  35.082683</span></span>
+<span><span class="co">#&gt; MinRelativeHumidity    55.7307897  90.243329    0  26.857833</span></span>
+<span><span class="co">#&gt; MaxRelativeHumidity   100.0000000 100.000000    0  53.842059</span></span>
+<span><span class="co">#&gt; Radiation              23.7299248  27.982274    0   7.543725</span></span>
+<span><span class="co">#&gt; WindSpeed               1.7444530   5.811866   30   0.000000</span></span>
+<span><span class="co">#&gt; WindDirection         264.0404014 359.908196 1350   0.000000</span></span>
+<span><span class="co">#&gt; PET                     3.7736818   5.625855    0   1.090270</span></span>
+<span><span class="co">#&gt; elevation             525.0000000 786.000000    0 240.000000</span></span>
+<span><span class="co">#&gt; slope                  19.7585106  31.071896    0   1.432096</span></span>
+<span><span class="co">#&gt; aspect                291.0375061 360.000000    0   5.194427</span></span>
 <span><span class="co">#&gt; dimension(s):</span></span>
 <span><span class="co">#&gt;      from to         offset    delta  refsys point x/y</span></span>
 <span><span class="co">#&gt; x       1 11          1.671  0.01058  WGS 84 FALSE [x]</span></span>
@@ -378,6 +380,8 @@ meteorological data:</p>
 <span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Interpolator created.</span></span>
 <span><span class="co">#&gt; stars object with 2 dimensions and 13 attributes</span></span>
 <span><span class="co">#&gt; attribute(s):</span></span>
+<span><span class="co">#&gt; Warning in (function (..., deparse.level = 1) : number of columns of result is</span></span>
+<span><span class="co">#&gt; not a multiple of vector length (arg 1)</span></span>
 <span><span class="co">#&gt;                                   Min.     1st Qu.     Median       Mean</span></span>
 <span><span class="co">#&gt; Temperature                 3.47453413  11.4535839  13.940206  13.471788</span></span>
 <span><span class="co">#&gt; MinTemperature             -3.27100714   4.3824425   6.969667   5.860040</span></span>
@@ -392,20 +396,20 @@ meteorological data:</p>
 <span><span class="co">#&gt; slope                       1.43209624   5.7204332  11.348120  13.073426</span></span>
 <span><span class="co">#&gt; SmoothedPrecipitation       0.25336109   1.5179424   3.874980   3.862412</span></span>
 <span><span class="co">#&gt; SmoothedTemperatureRange    9.41552220  11.8383211  12.587418  12.458785</span></span>
-<span><span class="co">#&gt;                               3rd Qu.       Max. NA's</span></span>
-<span><span class="co">#&gt; Temperature                16.1442989  20.781408    0</span></span>
-<span><span class="co">#&gt; MinTemperature              8.2924049  11.071295    0</span></span>
-<span><span class="co">#&gt; MaxTemperature             22.0316730  28.801911    0</span></span>
-<span><span class="co">#&gt; RelativeHumidity           75.5124486 100.000000    0</span></span>
-<span><span class="co">#&gt; Precipitation               0.2922964  21.000409    0</span></span>
-<span><span class="co">#&gt; Radiation                  23.7299248  27.982274    0</span></span>
-<span><span class="co">#&gt; WindDirection             264.0404014 359.908196 1350</span></span>
-<span><span class="co">#&gt; WindSpeed                   1.7444530   5.811866   30</span></span>
-<span><span class="co">#&gt; elevation                 525.0000000 786.000000    0</span></span>
-<span><span class="co">#&gt; aspect                    291.0375061 360.000000    0</span></span>
-<span><span class="co">#&gt; slope                      19.7585106  31.071896    0</span></span>
-<span><span class="co">#&gt; SmoothedPrecipitation       6.2789283  11.753856  505</span></span>
-<span><span class="co">#&gt; SmoothedTemperatureRange   13.2623789  15.014616    0</span></span>
+<span><span class="co">#&gt;                               3rd Qu.       Max.  NAs       NA's</span></span>
+<span><span class="co">#&gt; Temperature                16.1442989  20.781408    0   3.474534</span></span>
+<span><span class="co">#&gt; MinTemperature              8.2924049  11.071295    0  -3.271007</span></span>
+<span><span class="co">#&gt; MaxTemperature             22.0316730  28.801911    0   7.162658</span></span>
+<span><span class="co">#&gt; RelativeHumidity           75.5124486 100.000000    0  35.082683</span></span>
+<span><span class="co">#&gt; Precipitation               0.2922964  21.000409    0   0.000000</span></span>
+<span><span class="co">#&gt; Radiation                  23.7299248  27.982274    0   7.543725</span></span>
+<span><span class="co">#&gt; WindDirection             264.0404014 359.908196 1350   0.000000</span></span>
+<span><span class="co">#&gt; WindSpeed                   1.7444530   5.811866   30   0.000000</span></span>
+<span><span class="co">#&gt; elevation                 525.0000000 786.000000    0 240.000000</span></span>
+<span><span class="co">#&gt; aspect                    291.0375061 360.000000    0   5.194427</span></span>
+<span><span class="co">#&gt; slope                      19.7585106  31.071896    0   1.432096</span></span>
+<span><span class="co">#&gt; SmoothedPrecipitation       6.2789283  11.753856  505   0.000000</span></span>
+<span><span class="co">#&gt; SmoothedTemperatureRange   13.2623789  15.014616    0   9.415522</span></span>
 <span><span class="co">#&gt; dimension(s):</span></span>
 <span><span class="co">#&gt;         from  to     offset  delta refsys point</span></span>
 <span><span class="co">#&gt; date       1  30 2022-04-01 1 days   Date FALSE</span></span>

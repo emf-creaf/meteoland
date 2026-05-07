@@ -16,5 +16,6 @@ Spanish National Forest Inventory
 ## Examples
 
 ``` r
+
 data(points_to_interpolate_example)
 ```

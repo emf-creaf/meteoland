@@ -11,12 +11,7 @@ using namespace Rcpp;
 //' radiation.
 //'
 //'
-//' @aliases radiation_dateStringToJulianDays radiation_daylength
-//' radiation_daylengthseconds radiation_directDiffuseInstant
-//' radiation_directDiffuseDay radiation_potentialRadiation radiation_julianDay
-//' radiation_skyLongwaveRadiation radiation_outgoingLongwaveRadiation
-//' radiation_netRadiation radiation_solarRadiation radiation_solarConstant
-//' radiation_solarElevation radiation_solarDeclination radiation_sunRiseSet
+//' @aliases radiation_dateStringToJulianDays radiation_daylength radiation_daylengthseconds radiation_directDiffuseInstant radiation_directDiffuseDay radiation_potentialRadiation radiation_julianDay radiation_skyLongwaveRadiation radiation_outgoingLongwaveRadiation radiation_netRadiation radiation_solarRadiation radiation_solarConstant radiation_solarElevation radiation_solarDeclination radiation_sunRiseSet
 //' @param dateStrings A character vector with dates in format "YYYY-MM-DD".
 //' @param latrad Latitude (in radians North).
 //' @param slorad Slope (in radians).

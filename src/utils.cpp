@@ -9,10 +9,7 @@ using namespace Rcpp;
 //' Set of functions used in the calculation of physical variables.
 //'
 //'
-//' @aliases utils_airDensity utils_atmosphericPressure utils_averageDailyVP
-//' utils_averageDaylightTemperature utils_latentHeatVaporisation
-//' utils_latentHeatVaporisationMol utils_psychrometricConstant
-//' utils_saturationVP utils_saturationVaporPressureCurveSlope
+//' @aliases utils_airDensity utils_atmosphericPressure utils_averageDailyVP utils_averageDaylightTemperature utils_latentHeatVaporisation utils_latentHeatVaporisationMol utils_psychrometricConstant utils_saturationVP utils_saturationVaporPressureCurveSlope
 //' @param temperature Air temperature (ºC).
 //' @param Tmin,Tmax Minimum and maximum daily temperature (ºC).
 //' @param RHmin,RHmax Minimum and maximum relative humidity (%).

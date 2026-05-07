@@ -59,8 +59,7 @@ double interpolateTemperaturePoint(double xp, double yp, double zp,
 //' notation (\code{:::}), but their use is not recommended)
 //'
 //'
-//' @aliases interpolation_dewtemperature interpolation_temperature
-//' interpolation_precipitation interpolation_wind
+//' @aliases interpolation_dewtemperature interpolation_temperature interpolation_precipitation interpolation_wind
 //' @param Xp,Yp,Zp Spatial coordinates and elevation (Zp; in m.a.s.l) of target
 //' points.
 //' @param X,Y,Z Spatial coordinates and elevation (Zp; in m.a.s.l) of reference

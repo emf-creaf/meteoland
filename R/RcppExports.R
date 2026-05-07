@@ -106,12 +106,7 @@ interpolation_precipitation <- function(Xp, Yp, Zp, X, Y, Z, P, Psmooth, iniRp =
 #' radiation.
 #'
 #'
-#' @aliases radiation_dateStringToJulianDays radiation_daylength
-#' radiation_daylengthseconds radiation_directDiffuseInstant
-#' radiation_directDiffuseDay radiation_potentialRadiation radiation_julianDay
-#' radiation_skyLongwaveRadiation radiation_outgoingLongwaveRadiation
-#' radiation_netRadiation radiation_solarRadiation radiation_solarConstant
-#' radiation_solarElevation radiation_solarDeclination radiation_sunRiseSet
+#' @aliases radiation_dateStringToJulianDays radiation_daylength radiation_daylengthseconds radiation_directDiffuseInstant radiation_directDiffuseDay radiation_potentialRadiation radiation_julianDay radiation_skyLongwaveRadiation radiation_outgoingLongwaveRadiation radiation_netRadiation radiation_solarRadiation radiation_solarConstant radiation_solarElevation radiation_solarDeclination radiation_sunRiseSet
 #' @param dateStrings A character vector with dates in format "YYYY-MM-DD".
 #' @param latrad Latitude (in radians North).
 #' @param slorad Slope (in radians).
@@ -334,8 +329,7 @@ interpolation_dewtemperature <- function(Xp, Yp, Zp, X, Y, Z, T, iniRp = 140000,
 #' notation (\code{:::}), but their use is not recommended)
 #'
 #'
-#' @aliases interpolation_dewtemperature interpolation_temperature
-#' interpolation_precipitation interpolation_wind
+#' @aliases interpolation_dewtemperature interpolation_temperature interpolation_precipitation interpolation_wind
 #' @param Xp,Yp,Zp Spatial coordinates and elevation (Zp; in m.a.s.l) of target
 #' points.
 #' @param X,Y,Z Spatial coordinates and elevation (Zp; in m.a.s.l) of reference
@@ -435,10 +429,7 @@ interpolation_temperature <- function(Xp, Yp, Zp, X, Y, Z, T, iniRp = 140000, al
 #' Set of functions used in the calculation of physical variables.
 #'
 #'
-#' @aliases utils_airDensity utils_atmosphericPressure utils_averageDailyVP
-#' utils_averageDaylightTemperature utils_latentHeatVaporisation
-#' utils_latentHeatVaporisationMol utils_psychrometricConstant
-#' utils_saturationVP utils_saturationVaporPressureCurveSlope
+#' @aliases utils_airDensity utils_atmosphericPressure utils_averageDailyVP utils_averageDaylightTemperature utils_latentHeatVaporisation utils_latentHeatVaporisationMol utils_psychrometricConstant utils_saturationVP utils_saturationVaporPressureCurveSlope
 #' @param temperature Air temperature (ºC).
 #' @param Tmin,Tmax Minimum and maximum daily temperature (ºC).
 #' @param RHmin,RHmax Minimum and maximum relative humidity (%).

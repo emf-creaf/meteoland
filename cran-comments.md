@@ -1,6 +1,9 @@
+## Compilation patch submission
+Tries to avoid compilation problems of reverse depending packages using C++ 20 (by #include "algorithm")
+
 ## Test environments
 
-* local R installation (Arch Linux), R 4.5.2
+* local R installation (Arch Linux), R 4.6.0
 * windows-latest (on github actions), R release
 * macOS-latest (on github actions), R release
 * ubuntu-latest (on github actions), R release

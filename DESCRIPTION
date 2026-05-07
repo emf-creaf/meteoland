@@ -1,7 +1,7 @@
 Package: meteoland
 Type: Package
 Title: Landscape Meteorology Tools
-Version: 2.2.60001
+Version: 2.2.6.9000
 Date: 2026-05-07
 Authors@R: c(
 	person('Miquel', 'De Cáceres', role=c('aut','cre'),

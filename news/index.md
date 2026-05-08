@@ -2,7 +2,7 @@
 
 ## meteoland 2.2.7
 
-- Compilation patch for C++ 17 (#include “algorithm”)
+- Compilation patch for C++ 20 (#include “algorithm”)
 
 ## meteoland 2.2.6
 

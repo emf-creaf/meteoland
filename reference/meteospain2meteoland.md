@@ -57,6 +57,14 @@ if (interactive()) {
   meteospain2meteoland(mg_april_2022_data, complete = TRUE)
 
 }
+#> ℹ A información divulgada a través deste servidor ofrécese gratuitamente aos
+#>   cidadáns para que poida ser
+#> utilizada libremente por eles, co único compromiso de mencionar expresamente a
+#> MeteoGalicia e á
+#> Consellería de Medio Ambiente, Territorio e Vivenda da Xunta de Galicia como
+#> fonte da mesma cada vez
+#> que as utilice para os usos distintos do particular e privado.
+#> https://www.meteogalicia.gal/aviso-legal
 #> ℹ Completing missing variables if possible:
 #> • RelativeHumidity
 #> • MinRelativeHumidity

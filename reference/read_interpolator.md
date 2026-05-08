@@ -54,9 +54,7 @@ write_interpolator(
   meteoland_interpolator_example,
   file.path(tmp_dir, "meteoland_interpolator_example.nc")
 )
-#> ℹ Creating nc file following the NetCDF-CF conventions <https://cfconventions.org/cf-conventions/cf-conventions.html>
-#> ℹ Adding spatial info to nc file
-#> ✔ Done
+#> Error: /tmp/Rtmpn7fDbg/meteoland_interpolator_example.nc file already exists. Please provide another filename or set .overwrite to TRUE
 
 # check file exists
 file.exists(file.path(tmp_dir, "meteoland_interpolator_example.nc"))

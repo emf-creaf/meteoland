@@ -61,13 +61,7 @@ if (interactive()) {
   worldmet2meteoland(worldmet_subdaily_2022, complete = TRUE)
 
 }
-#> Warning: ! The integrated surface database has been deprecated by NOAA, and data is now
-#>   only available until 2025.
-#> ℹ Please consider using `worldmet::import_ghcn_stations()` and
-#>   `worldmet::import_ghcn_hourly()` to access data from the new Global
-#>   Historical Climatology Network.
-#> This warning is displayed once every 8 hours.
-#>  ■■■■■■■■■■■■■■■■                  50% |  ETA:  5s
+#>  ■■■■■■■■■■■■■■■■                  50% |  ETA:  6s
 #> Warning: Provided meteo data seems to be in subdaily time steps, aggregating to daily
 #> scale
 #> Warning: Provided meteo data seems to be in subdaily time steps, aggregating to daily

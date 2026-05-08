@@ -1,5 +1,5 @@
 ## Compilation patch submission
-Tries to avoid compilation problems of reverse depending packages using C++ 20 (by #include "algorithm")
+`meteoland` v. 2.2.7 to avoid compilation problems of reverse depending packages in OSX platforms using C++ 20 (by #include "algorithm")
 
 ## Test environments
 

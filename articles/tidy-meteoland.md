@@ -3,7 +3,7 @@
 ``` r
 
 library(meteoland)
-#> Package 'meteoland' [ver. 2.2.6.9000]
+#> Package 'meteoland' [ver. 2.2.7]
 library(stars)
 #> Loading required package: abind
 #> Loading required package: sf

@@ -2,7 +2,7 @@
 
 ## meteoland 2.2.8
 
-- Compilation patch (#include ) in include files
+- Compilation patch (#include “cmath”) in hpp files
 
 ## meteoland 2.2.7
 

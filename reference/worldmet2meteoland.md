@@ -67,7 +67,7 @@ if (interactive()) {
 #>   `worldmet::import_ghcn_hourly()` to access data from the new Global
 #>   Historical Climatology Network.
 #> This warning is displayed once every 8 hours.
-#>  ■■■■■■■■■■■■■■■■                  50% |  ETA: 11s
+#>  ■■■■■■■■■■■■■■■■                  50% |  ETA:  7s
 #> Warning: Provided meteo data seems to be in subdaily time steps, aggregating to daily
 #> scale
 #> Warning: Provided meteo data seems to be in subdaily time steps, aggregating to daily

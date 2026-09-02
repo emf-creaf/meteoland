@@ -1,6 +1,12 @@
 # Changelog
 
+## meteoland 2.2.8
+
+- Compilation patch (#include ) in include files
+
 ## meteoland 2.2.7
+
+CRAN release: 2026-05-08
 
 - Compilation patch for C++ 20 (#include “algorithm”)
 

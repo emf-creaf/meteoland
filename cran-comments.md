@@ -1,9 +1,9 @@
 ## Compilation patch submission
-`meteoland` v. 2.2.7 to avoid compilation problems of reverse depending packages in OSX platforms using C++ 20 (by #include "algorithm")
+`meteoland` v. 2.2.8 to avoid compilation problems of reverse depending packages (by #include <cmath> in hpp files)
 
 ## Test environments
 
-* local R installation (Arch Linux), R 4.6.0
+* local R installation (Arch Linux), R 4.6.1
 * windows-latest (on github actions), R release
 * macOS-latest (on github actions), R release
 * ubuntu-latest (on github actions), R release
@@ -18,4 +18,4 @@ In all CI tests only NOTEs were produced
 ## Reverse/Downstream dependencies
 
 `meteoland` has a reverse dependency with `medfate` and `medfateland`, both 
-under our responsibility. No dependency issues expected.
+under our responsibility. A new submission of package `medfate` will immediately follow the acceptance of this version.

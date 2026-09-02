@@ -1,4 +1,5 @@
 #include <algorithm>
+#include <cmath>
 #include "Rcpp.h"
 #include "meteoland/utils_c.hpp"
 

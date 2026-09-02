@@ -1,4 +1,5 @@
 #include <algorithm>
+#include <cmath>
 
 #ifndef UTILS_C_H
 #define UTILS_C_H

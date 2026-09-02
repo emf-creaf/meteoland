@@ -1,5 +1,8 @@
+# meteoland 2.2.8
+- Compilation patch (#include <cmath>) in include files
+
 # meteoland 2.2.7
-- Compilation patch for C++ 17 (#include "algorithm")
+- Compilation patch for C++ 20 (#include "algorithm")
 
 # meteoland 2.2.6
 - Internal C++ functions moved to header-only libraries for compilation with medfate

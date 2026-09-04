@@ -216,7 +216,7 @@ from package **geodata** to download elevation data for Senegal:
 elev_raster <- geodata::elevation_30s(country="SEN", path = tempdir())
 ```
 
-    ## Cached as: /tmp/RtmpLt5wsB/elevation/SEN_elv_msk.zip
+    ## Cached as: /tmp/RtmpLk60HE/elevation/SEN_elv_msk.zip
 
 ``` r
 
